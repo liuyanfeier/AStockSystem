@@ -180,3 +180,18 @@ def identity_bootstrap(authority: str = typer.Option(..., '--authority'),
     except Exception:
         typer.echo('PHASE 1C.0 STATUS: BLOCKED (safe details only; no automatic retry)')
         raise typer.Exit(1)
+
+
+slice_app = typer.Typer(help='Fixed Phase 1C.1 historical rehearsal only.', add_completion=False)
+data_app.add_typer(slice_app, name='slice')
+
+
+@slice_app.command('plan')
+def slice_plan_command() -> None:
+    from astock.data.slice_plan import request_manifest
+    import json
+    try:
+        typer.echo(json.dumps(request_manifest(get_project_root()), indent=2, sort_keys=True))
+    except Exception:
+        typer.echo('Slice plan: FAIL (safe details only)')
+        raise typer.Exit(1)

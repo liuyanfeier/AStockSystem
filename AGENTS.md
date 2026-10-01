@@ -2,7 +2,7 @@
 
 ## Scope & Structure
 
-AStockSystem is a macOS A-share research project. Phase 1B.1 is accepted; historical identity findings remain retained. Phase 1C.0 permits identity bootstrap from existing captures, contract v2, typed curation governance and bounded BSE authority evidence only. At most one Tushare bse_mapping capture; never rerun the 47-request probe. No Phase 1C.1/1C.2 slices/backfill, strategies, backtests, broker integration or orders. Preserve contract v1, migrations 001–004, planning documents and historical reviews. Follow Codex_Phase1C0_Identity_Bootstrap_Prompt_v1.0.md. Stop after validation, commit, push and CI verification for review.
+AStockSystem is a macOS A-share research project. Phase 1C.0 is complete; Phase 1C.1 permits only the user-approved 21-session historical rehearsal and seven small SSE calendar checks (133 logical requests, one attempt each). Follow Codex_Phase1C1_Implementation_Prompt_v1.0.md and config/slices/phase1c1.yaml. Preserve earlier catalogs/specs, migrations 001–005 and historical reviews. No full backfill, Phase 1C.2, strategies, signals, backtests, portfolio, broker or orders. Stop on identity ambiguity, mapping conflict, lineage break, row cap or schema guessing. Follow the four implementation commits, test, commit/push and verify CI; stop for review.
 
 Use `src/astock/` for Python, `tests/` for pytest, `config/` for versioned configuration, `sql/` for schema, `docs/` for contracts and governance, and `skills/` for workflows. Local data belongs in `data/{raw,curated,warehouse}/`; generated outputs belong in `reports/`.
 

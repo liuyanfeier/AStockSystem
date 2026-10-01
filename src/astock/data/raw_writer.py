@@ -20,7 +20,7 @@ from astock.data.tushare_client import ProviderTable
 
 def migrate(db, root: Path):
     for name in ('001_foundation_schema', '002_provider_lineage', '003_probe_mode',
-                 '004_security_identifier_history', '005_identity_bootstrap_governance'):
+                 '004_security_identifier_history', '005_identity_bootstrap_governance', '006_bounded_slice_lifecycle'):
         number = int(name[:3])
         exists = db.execute("SELECT count(*) FROM information_schema.tables WHERE table_name='schema_version'").fetchone()[0]
         if exists and db.execute('SELECT count(*) FROM schema_version WHERE version=?', [number]).fetchone()[0]:

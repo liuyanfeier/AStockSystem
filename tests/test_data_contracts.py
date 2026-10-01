@@ -46,7 +46,7 @@ def test_contract_diagnostic_is_offline_read_only_and_has_no_ingestion_commands(
     assert result.exit_code == 0, result.output
     assert 'Contracts: PASS (12)' in result.output
     assert 'UNKNOWN' in result.output
-    assert set(get_command(app).commands['data'].commands) == {'contracts', 'probe', 'identity'}
+    assert set(get_command(app).commands['data'].commands) == {'contracts', 'probe', 'identity', 'slice'}
     assert set(root.glob('data/**/*')) == before
 
 

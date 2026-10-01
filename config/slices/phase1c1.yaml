@@ -1,0 +1,22 @@
+version: '1.0'
+contract_catalog: v2
+curation_version: v2
+max_market_dates: 21
+max_requests: 133
+max_attempts_per_request: 1
+minimum_interval_seconds: 1.25
+slices:
+- name: baseline_2013
+  dates: ['2013-01-04', '2013-01-07', '2013-01-08']
+- name: chinext_boundary
+  dates: ['2020-08-21', '2020-08-24', '2020-08-25']
+- name: bse_opening
+  dates: ['2021-11-12', '2021-11-15', '2021-11-16']
+- name: bse_pilot_switch
+  dates: ['2025-04-30', '2025-05-06', '2025-05-07']
+- name: bse_remaining_switch
+  dates: ['2025-09-30', '2025-10-09', '2025-10-10']
+- name: after_hours_fields
+  dates: ['2026-07-03', '2026-07-06', '2026-07-07']
+- name: latest_sample
+  dates: ['2026-09-28', '2026-09-29', '2026-09-30']
