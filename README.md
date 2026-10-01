@@ -2,9 +2,9 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；Phase 1A 已通过 REVIEW；当前 **Phase 1B** 仅实现八个接口的小样本探测、raw 存档和质量审计。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，等待 REVIEW。详见 [本轮证据](docs/reviews/2026-10-01-phase1c1-review.md)。
 
-仅允许指定日期的小样本下载，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
+本轮已执行固定 21 个交易日和 7 个小窗口日历检查，共 133 次请求；后续仅审查已有本地证据。已生成带身份隔离和谱系的 Parquet 审查输出，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 
 ## 本机运行
 
@@ -66,11 +66,11 @@ uv sync --locked
 | 依赖 | 用途 |
 |---|---|
 | pandas / NumPy | 按规格预留未来结构化计算；Phase 0 不计算因子 |
-| DuckDB | 内存数据库诊断及 schema 验证 |
-| PyArrow | 预留 Parquet 数据交换 |
+| DuckDB | 内存诊断、schema 验证和本地谱系治理 |
+| PyArrow | 不可变 raw 与类型化 curated Parquet |
 | Pydantic / pydantic-settings | 类型校验、环境配置与秘密包装 |
-| Typer | 诊断 CLI |
-| httpx / tenacity | httpx 用于固定 HTTPS REST probe；限速和至多一次重试 |
+| Typer | 离线诊断与显式有界采集 CLI |
+| httpx / tenacity | 固定 HTTPS；旧 probe 至多一次重试，Phase 1C.1 每请求仅一次尝试 |
 | PyYAML | 配置文件格式校验；后续配置加载 |
 | pytest | 开发测试 |
 | pytz | DuckDB Python 驱动读取 TIMESTAMPTZ 的运行时支持；首轮测试发现必需 |
@@ -91,7 +91,7 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1B Prompt](Codex_Phase1B_Small_Real_Data_Probe_Prompt_v1.0.md) 控制本轮范围。Phase 1B 通过人工 REVIEW 前不开始 Phase 1C。旧规划不扩大本轮任务。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 控制本轮范围。数据门 BLOCKED：停止新采集，等待 REVIEW，不开始 Phase 1C.2。旧规划不扩大本轮任务。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
 
@@ -101,7 +101,7 @@ uv sync --locked
 
 本公开仓库禁止包含 provider token、券商凭据、余额、持仓、个人成交历史、私密报告和原始供应商数据。`private/`、`data/private/`、市场数据及运行报告均被忽略；不要 force-add。审核摘要放在 `docs/reviews/`，只使用脱敏的元数据。
 
-## Phase 1B bounded probe
+## Phase 1B bounded probe（历史命令，本轮不重跑）
 
 ```bash
 uv run --offline --frozen astock data probe plan
@@ -121,3 +121,16 @@ ignored default `data/warehouse/astock.duckdb`. Local aggregate status lives in
 ignored `data/private/phase1b/`. Public summaries contain aggregates only. No token
 belongs in GitHub Actions. Observed historical records become available at actual
 retrieval time, and cannot be used for historical strategy backtests.
+
+## Phase 1C.1 有界演练
+
+```bash
+uv run --offline --frozen astock data slice plan
+uv run --offline --frozen astock data slice specs
+uv run --offline --frozen astock data slice dq --batch 1d34d71f-c711-4893-9729-0b719bbba6dd
+```
+
+前两条只验证固定配置；DQ 只读取已有本地采样与整理输出，有错误时退出 1。
+真实请求、主动中断和恢复已执行完毕，禁止重跑或扩展预算。整理与重建不调用 API。
+配置、空表类型、单位、身份区间、隔离、逐行谱系、因果审计及恢复限制见
+[整理说明](docs/phase1c1_curation.md)。当前整理输出不能作为已验收研究输入。
