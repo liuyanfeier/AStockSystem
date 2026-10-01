@@ -124,3 +124,27 @@ are required before each commit; post-staging results are appended with CI evide
 No real token or `.env`; no market download/backfill, strategies/signals/backtests,
 broker integration/orders, personal data, reporting infrastructure or Phase 1B.
 Stop after commit, push and verified CI; wait for reviewer approval.
+
+## Post-push acceptance addendum — 2026-10-01
+
+**Phase 1A implementation validation: PASS; pending human/GPT reviewer approval.**
+
+Implementation commit: `5238b9552783d7c5f3719ebe066f8a7da18f5b93`, pushed to main.
+[GitHub Actions run 36810558194](https://github.com/liuyanfeier/AStockSystem/actions/runs/36810558194)
+completed **Success** (Foundation checks, push, total duration 16s). Confirmed on
+GitHub's authenticated Actions summary; tested commit link matches the exact SHA.
+This supersedes the initial pre-push pending-CI snapshot above. Public API rate limit
+was handled by reading the UI, not extracting or committing credentials.
+
+Pre-staging and index audits passed for all **33 explicit files**. Checked filenames,
+staged content and secret-like key/token patterns; no .env, credentials, database,
+market/private data, .tools, .venv or runtime output was staged. Hidden files remain
+tracked, .env.example's token placeholder is empty, and ignore checks passed for
+private/raw/curated/warehouse/report paths. Phase 0 SQL/report and dependency files
+are unchanged. No real token/data or personal-account information was used.
+
+After implementation push, `git status --short --branch` showed main synchronized
+with origin/main and no worktree changes. `uv sync --locked --offline` resolved 36
+and checked 34 packages without changing the lock. The acceptance evidence itself
+is added by a subsequent documentation-only commit; its remote CI will also be
+checked before the final handoff. It does not change the validated implementation.
