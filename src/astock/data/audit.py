@@ -9,7 +9,7 @@ from uuid import UUID
 import httpx
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_serializer, model_validator
 
-from astock.data.contracts import DATASETS, require_https
+from astock.data.contracts import ALL_DATASETS, DATASETS, require_https
 
 
 class SafeModel(BaseModel):
@@ -132,7 +132,7 @@ class MockProviderTransport:
 class RawObjectManifest(SafeModel):
     object_id: UUID
     run_id: UUID
-    dataset: Literal[*DATASETS]
+    dataset: Literal[*ALL_DATASETS]
     relative_path: str
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     retrieved_at: AwareDatetime

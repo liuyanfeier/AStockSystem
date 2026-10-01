@@ -77,7 +77,7 @@ def run_probe(root, settings, *, client=None):
     if not settings.token_configured:
         raise ValueError('TUSHARE_TOKEN is not configured. Configure it locally outside chat/model input.')
     plan = load_plan(root)
-    contracts = {c.dataset: c for c in load_contracts(root)}
+    contracts = {c.dataset: c for c in load_contracts(root, catalog_version="v1")}
     client = client or TushareClient(settings.tushare_token)
     commit = _commit(root)
     config_hash = hashlib.sha256(canonical_json({

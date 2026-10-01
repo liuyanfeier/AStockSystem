@@ -30,3 +30,7 @@ jobs:
         run: uv run --offline --frozen astock data contracts
       - name: Validate bounded probe plan offline
         run: uv run --offline --frozen astock data probe plan
+      - name: Validate v2 and typed curation specs offline
+        run: |
+          uv run --offline --frozen astock data contracts --catalog v2
+          uv run --offline --frozen astock data identity specs

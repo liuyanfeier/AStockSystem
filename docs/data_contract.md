@@ -140,3 +140,37 @@ This bounded audit reads existing captures only and fetches public evidence, nev
 market-data API responses. Private full-row findings stay ignored; the public review
 contains only the three anomaly identifiers, classifications, evidenced transitions
 and resolution limits. Historical backfill and Phase 1C require separate approval.
+
+## Phase 1C.0 addendum: identity and typed curation governance
+
+Catalog v1 remains immutable. Python callers must supply `catalog_version='v1'`
+ or `'v2'`; there is no implicit latest catalog. Phase 1B continues using v1.
+Catalog v2 adds `bse_mapping`, extends daily/daily_basic fields and excludes
+current industry/ownership classifications from historical identity research.
+No new stock_basic snapshot is needed: the existing v1 identity columns are
+sufficient for this bootstrap; fullname/currency are not fabricated retrospectively.
+
+`config/curation/v1/` declares Arrow types, null preservation, provider units,
+identity requirements and dataset usage. Empty schemas come from these specs.
+No values are rounded or scaled implicitly. Daily after-hours fields permit
+historical nulls before their documented 2026-07-06 start.
+
+| Dataset | Permitted research usage |
+| --- | --- |
+| daily | SIGNAL_ELIGIBLE_NEXT_SESSION, subject to actual availability |
+| daily_basic | CURRENT_RECONSTRUCTION; historical valuations are not strict PIT alpha |
+| adj_factor | AUDIT_RECONSTRUCTION_ONLY |
+| stk_limit | EXECUTION_CONSTRAINT_ONLY |
+| suspend_d | EXECUTION_FACT_ONLY |
+| stock_st | UNIVERSE_RISK_STATE_ONLY |
+
+Identity admission requires verified local raw lineage, a reviewed direct BSE
+extract and exact equality of every provider/official old-new pair. Neither names
+nor code suffixes establish identity. Mapping effective dates do not imply
+historical knowledge availability. Observation timestamps remain current.
+
+Migration 005 contains governance only. There are no curated market row tables
+or historical download/curation runners. Future writers must register validated
+immutable objects against curation runs and verify quarantine raw-object references.
+The private authority file is a human-reviewed evidence boundary, not an automatic
+web scraper or an assertion that arbitrary JSON is official evidence.

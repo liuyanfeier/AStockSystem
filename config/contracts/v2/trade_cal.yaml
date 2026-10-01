@@ -1,0 +1,38 @@
+contract_version: '2.0'
+dataset: trade_cal
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- exchange
+- cal_date
+- is_open
+- pretrade_date
+natural_key:
+- exchange
+- cal_date
+max_rows: null
+timezone: Asia/Shanghai
+units:
+  is_open: provider 0/1
+  cal_date: YYYYMMDD exchange-local date
+  pretrade_date: YYYYMMDD exchange-local date
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- exchange
+- start_date
+- end_date
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=26
+documentation_checked_on: '2026-10-01'
+update_schedule: null
+notes:
+- BSE calendar coverage requires audit; do not relabel SSE/SZSE rows as BSE.
+- No explicit single-request row cap found in cited documentation; null is unknown,
+  not unlimited.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

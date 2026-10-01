@@ -11,7 +11,7 @@ from astock.paths import get_project_root
 
 
 def test_all_versioned_contracts_validate_and_unknown_caps_stay_unknown():
-    contracts = load_contracts(get_project_root())
+    contracts = load_contracts(get_project_root(), catalog_version="v1")
     assert {c.dataset for c in contracts} == set(DATASETS)
     assert {c.dataset for c in contracts if c.max_rows is None} == {
         'trade_cal', 'adj_factor', 'index_daily', 'index_classify',
@@ -24,11 +24,11 @@ def test_all_versioned_contracts_validate_and_unknown_caps_stay_unknown():
     {'endpoint': 'http://api.tushare.pro'}, {'max_rows': 0}, {'max_rows': -1},
     {'natural_key': ['missing_column']}, {'required_fields': []},
     {'required_fields': ['ts_code', 'ts_code']}, {'timezone': 'UTC'},
-    {'availability_policy': 'ASSUME_CLOSE'}, {'contract_version': '2.0'},
+    {'availability_policy': 'ASSUME_CLOSE'}, {'contract_version': '3.0'},
     {'units': {'nonexistent_column': 'yuan'}}, {'fetch_partition': ['']},
 ])
 def test_contract_rejects_unsafe_or_ambiguous_configuration(change):
-    payload = deepcopy(load_contracts(get_project_root())[0].model_dump())
+    payload = deepcopy(load_contracts(get_project_root(), catalog_version="v1")[0].model_dump())
     payload.update(change)
     with pytest.raises(ValidationError):
         DatasetContract.model_validate(payload)
@@ -36,7 +36,7 @@ def test_contract_rejects_unsafe_or_ambiguous_configuration(change):
 
 def test_contract_catalog_requires_all_tier_a_files(tmp_path):
     with pytest.raises(ValueError, match='twelve'):
-        load_contracts(tmp_path)
+        load_contracts(tmp_path, catalog_version="v1")
 
 
 def test_contract_diagnostic_is_offline_read_only_and_has_no_ingestion_commands():
@@ -46,7 +46,7 @@ def test_contract_diagnostic_is_offline_read_only_and_has_no_ingestion_commands(
     assert result.exit_code == 0, result.output
     assert 'Contracts: PASS (12)' in result.output
     assert 'UNKNOWN' in result.output
-    assert set(get_command(app).commands['data'].commands) == {'contracts', 'probe'}
+    assert set(get_command(app).commands['data'].commands) == {'contracts', 'probe', 'identity'}
     assert set(root.glob('data/**/*')) == before
 
 

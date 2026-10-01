@@ -137,13 +137,13 @@ def test_missing_token_creates_no_files_or_requests(root):
 
 
 def test_stk_contract_enriched():
-    contracts={c.dataset:c for c in load_contracts(get_project_root())}
+    contracts={c.dataset:c for c in load_contracts(get_project_root(), catalog_version="v1")}
     assert contracts['stk_limit'].required_fields==[
         'trade_date','ts_code','pre_close','up_limit','down_limit','asset_type','exchange']
 
 
 def test_fingerprint_column_and_row_reordering_preserves_nulls():
-    contract={c.dataset:c for c in load_contracts(get_project_root())}['adj_factor']
+    contract={c.dataset:c for c in load_contracts(get_project_root(), catalog_version="v1")}['adj_factor']
     a=ProviderTable(fields=['ts_code','trade_date','adj_factor'],
         items=[['600001.SH','20240103',None],['600002.SH','20240103',1.0]],retrieved_at=NOW)
     b=ProviderTable(fields=['adj_factor','trade_date','ts_code'],
@@ -154,7 +154,7 @@ def test_fingerprint_column_and_row_reordering_preserves_nulls():
 
 
 def test_dq_cap_duplicates_null_factor_and_cross_close_mismatch():
-    contracts={c.dataset:c for c in load_contracts(get_project_root())}
+    contracts={c.dataset:c for c in load_contracts(get_project_root(), catalog_version="v1")}
     client,_=fake_client()
     daily=client.fetch(contracts['daily'],RequestParams(trade_date=date(2019,6,25)))
     basic=client.fetch(contracts['daily_basic'],RequestParams(trade_date=date(2019,6,25)))

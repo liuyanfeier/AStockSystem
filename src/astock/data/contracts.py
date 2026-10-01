@@ -16,6 +16,11 @@ DATASETS = (
 )
 
 
+V2_DATASETS = ("stock_basic", "bse_mapping", "trade_cal", "daily", "daily_basic",
+               "adj_factor", "stk_limit", "stock_st", "suspend_d")
+ALL_DATASETS = (*DATASETS, "bse_mapping")
+
+
 TUSHARE_HTTPS_ENDPOINT = "https://api.tushare.pro"
 
 
@@ -35,7 +40,7 @@ def require_https(url: str) -> str:
 class DatasetContract(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, hide_input_in_errors=True)
 
-    contract_version: Literal["1.0"]
+    contract_version: Literal["1.0", "2.0"]
     dataset: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
     provider: Literal["tushare"]
     endpoint: str
@@ -70,13 +75,18 @@ class DatasetContract(BaseModel):
         return self
 
 
-def load_contracts(root: Path) -> tuple[DatasetContract, ...]:
+def load_contracts(root: Path, *, catalog_version: Literal["v1", "v2"]) -> tuple[DatasetContract, ...]:
+    if catalog_version not in ("v1", "v2"):
+        raise ValueError("An explicit supported catalog version is required")
+    expected = DATASETS if catalog_version == "v1" else V2_DATASETS
     contracts = []
-    for path in sorted((root / "config/contracts/v1").glob("*.yaml")):
+    for path in sorted((root / "config/contracts" / catalog_version).glob("*.yaml")):
         contract = DatasetContract.model_validate(yaml.safe_load(path.read_text()))
+        if contract.contract_version != ("1.0" if catalog_version == "v1" else "2.0"):
+            raise ValueError("Contract version differs from requested catalog")
         if path.stem != contract.dataset:
             raise ValueError("Contract filename must match dataset")
         contracts.append(contract)
-    if {c.dataset for c in contracts} != set(DATASETS) or len(contracts) != len(DATASETS):
-        raise ValueError("Exactly the twelve Tier-A contracts are required")
+    if {c.dataset for c in contracts} != set(expected) or len(contracts) != len(expected):
+        raise ValueError("Catalog must contain all twelve v1 datasets" if catalog_version == "v1" else "Catalog must contain all nine v2 datasets")
     return tuple(contracts)

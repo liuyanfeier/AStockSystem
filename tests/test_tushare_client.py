@@ -13,7 +13,7 @@ from astock.paths import get_project_root
 
 
 SECRET = 'synthetic-real-path-token-not-an-actual-credential'
-CONTRACT = {c.dataset:c for c in load_contracts(get_project_root())}['trade_cal']
+CONTRACT = {c.dataset:c for c in load_contracts(get_project_root(), catalog_version="v1")}['trade_cal']
 
 
 def make_client(handler):
@@ -131,6 +131,6 @@ def test_exhausted_transient_has_only_two_attempts():
 
 def test_index_endpoints_cannot_be_probed():
     client,_=make_client(lambda r:success())
-    contract={c.dataset:c for c in load_contracts(get_project_root())}['index_daily']
+    contract={c.dataset:c for c in load_contracts(get_project_root(), catalog_version="v1")}['index_daily']
     with pytest.raises(ValueError):client.fetch(contract,RequestParams())
     assert client.request_count==0

@@ -1,0 +1,60 @@
+contract_version: '2.0'
+dataset: daily_basic
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- trade_date
+- close
+- turnover_rate
+- turnover_rate_f
+- volume_ratio
+- pe
+- pe_ttm
+- pb
+- ps
+- ps_ttm
+- dv_ratio
+- dv_ttm
+- total_share
+- float_share
+- free_share
+- total_mv
+- circ_mv
+- limit_status
+natural_key:
+- ts_code
+- trade_date
+max_rows: 6000
+timezone: Asia/Shanghai
+units:
+  close: price in security currency
+  turnover_rate: percent
+  pe: ratio; nullable for loss-making securities
+  pb: ratio
+  total_share: ten thousand shares
+  total_mv: ten thousand yuan
+  turnover_rate_f: percent
+  dv_ratio: percent
+  dv_ttm: percent
+  float_share: ten thousand shares
+  free_share: ten thousand shares
+  circ_mv: ten thousand CNY
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- trade_date
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=32
+documentation_checked_on: '2026-10-01'
+update_schedule: Trading days 15:00–17:00
+notes:
+- Required columns do not imply nonnull cells; valuation nulls need field-specific
+  checks.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.
+- 'CURRENT_RECONSTRUCTION: valuation fields are not strict PIT alpha inputs.'

@@ -1,0 +1,30 @@
+contract_version: '2.0'
+dataset: bse_mapping
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- name
+- o_code
+- n_code
+- list_date
+natural_key:
+- o_code
+- n_code
+max_rows: 1000
+timezone: Asia/Shanghai
+units: {}
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- all
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- official_pair_set_equality
+source_url: https://tushare.pro/document/2?doc_id=375
+documentation_checked_on: '2026-10-01'
+update_schedule: null
+notes:
+- One request maximum; no retry. Documented universe fewer than 300 pairs.
+- list_date is not a switch date. Match every pair against the official BSE table.

@@ -229,3 +229,28 @@ nullable. The source-scoped lineage plus `available_at` is the primary key.
 No real mappings are seeded; code reuse must not collapse distinct securities.
 Apply through `astock.data.raw_writer.migrate`, which skips recorded migrations.
 Cross-row conflicts require `IdentityHistory.append`; SQL checks alone are insufficient.
+
+## Phase 1C.0 governance addendum
+
+Migration `005_identity_bootstrap_governance.sql` preserves existing lineage and
+admits the bounded `bse_mapping` audit dataset. It adds:
+
+| Table | Meaning / key fields |
+| --- | --- |
+| security_venue_history | Stable security_id + venue + half-open effective interval; original provider_list_date/provider_delist_date retained separately; observation availability/retrieval and evidence_source |
+| curation_run | UUID, dataset/partition, start/finish/status, exact code_commit, config/input-manifest/identity-snapshot SHA-256, provider/resolved/quarantined counts |
+| curated_object_manifest | UUID, parent run UUID, relative immutable path, content/schema hashes, row count and event bounds |
+| identity_quarantine | Native identifier retained verbatim, optional event date, reason, registered raw_object_id, parent run UUID and first_seen_at |
+| dataset_date_audit | Dataset/date/run, provider/resolved/quarantined/duplicate counts, cap_hit, status and allowlisted integer-count JSON details |
+
+Quarantine supports NO_IDENTIFIER_MAPPING, AMBIGUOUS_IDENTIFIER,
+NON_NORMALIZED_IDENTIFIER, OUTSIDE_IDENTIFIER_INTERVAL, PRE_BSE_LEGACY,
+ASSET_OUT_OF_SCOPE, MISSING_LIST_DATE and IDENTITY_METADATA_REVIEW.
+Application admission validates cross-row identity conflicts and raw provenance;
+SQL CHECK constraints alone do not prove temporal identity consistency.
+
+Typed specs in `config/curation/v1/` define future column names and units:
+`volume_hands`, `amount_cny_thousand`, `total_share_10k`,
+`total_mv_10k_cny`, plus explicit turnover/dividend `_pct` values.
+Numeric values remain unrounded; nullable values are preserved. These specs are
+schema definitions, not populated market-data tables.

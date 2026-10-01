@@ -1,0 +1,55 @@
+contract_version: '2.0'
+dataset: daily
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- trade_date
+- open
+- high
+- low
+- close
+- pre_close
+- change
+- pct_chg
+- vol
+- amount
+- ah_vol
+- ah_amount
+natural_key:
+- ts_code
+- trade_date
+max_rows: 6000
+timezone: Asia/Shanghai
+units:
+  open: price in security currency
+  high: price in security currency
+  low: price in security currency
+  close: price in security currency
+  pre_close: provider ex-right reference price
+  change: price in security currency
+  pct_chg: percent
+  vol: provider lots (手)
+  amount: thousand yuan
+  ah_vol: hands
+  ah_amount: thousand CNY
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- trade_date
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=27
+documentation_checked_on: '2026-10-01'
+update_schedule: Trading days 15:00–16:00
+notes:
+- Unadjusted bars; suspended securities have no daily rows.
+- No bar is not proof of a missing download. Detect truncation before any future complete-universe
+  fetch.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.
+- ah_vol and ah_amount documented from 2026-07-06; earlier nulls are valid. SIGNAL_ELIGIBLE_NEXT_SESSION
+  subject to observed availability.

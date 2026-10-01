@@ -65,3 +65,34 @@ BSE pairs and switch dates require the official table/notices, distinguishing
 six-stock pilot from remaining-stock transition. Preserve all-status universes;
 current delisted names/codes alone cannot resolve historical joins. See the bounded
 [Phase 1B.1 review](reviews/2026-10-01-phase1b1-identity-review.md).
+
+## Phase 1C.0 bootstrap admission
+
+The fixed UUID5 namespace is `ccebbf83-788c-5e65-bc85-5fc2be681202`.
+Seed text is `exchange|identity_anchor_identifier|YYYY-MM-DD`, using the original
+provider listing date. SSE/SZSE anchors are normalized native identifiers; mapped
+BSE anchors are the exact official OLD identifiers. Names never enter the seed.
+Distinct proven listing episodes get distinct IDs. Duplicate/overlapping snapshot
+candidates are quarantined; this phase does not guess their episode boundaries.
+
+BSE old/new aliases share one ID. Six officially named pilot pairs switch on
+2025-05-06; remaining mapped pairs switch on 2025-10-09. Intervals are `[from,to)`.
+BSE venue and BSE-scoped identifiers start at `max(provider_list_date,2021-11-15)`.
+Pre-opening `.BJ` facts can be classified PRE_BSE_LEGACY. The earlier provider
+listing date remains metadata for continuous-listing tenure and the stable seed.
+
+`T600018.SH` stays NON_NORMALIZED_IDENTIFIER/unresolved and never merges with
+current `600018.SH`. Missing listing dates receive no guessed ID. Endpoints implied
+only by provider delist_date are **not** converted into exclusive end dates:
+provider_delist_date is retained, effective_to remains unknown. Delisted universe
+filtering requires authoritative boundary review before Phase 1C.1 admission.
+
+Admission uses current OBSERVED_CAPTURE availability and null published_at; it
+cannot resolve identifiers as if mappings had been known historically. Repeating
+identical reviewed input is idempotent. Changed admitted provider metadata,
+configuration or evidence stops for review without silently recomputing IDs.
+
+The versioned CURRENT_RECONSTRUCTION `identity_snapshot_hash` sorts effective
+identifier rows, venue rows and quarantine classifications, retaining evidence
+and raw provenance. It excludes published/available/retrieved observation times
+so deterministic rebuilds agree. It is distinct from a future PIT knowledge hash.

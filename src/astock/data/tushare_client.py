@@ -85,17 +85,25 @@ class TushareClient:
         self._last_start = self._clock()
 
     def fetch(self, contract: DatasetContract, params: RequestParams) -> ProviderTable:
+        if contract.dataset not in PROBE_DATASETS or contract.contract_version != '1.0':
+            raise ValueError('Endpoint outside pinned Phase 1B catalog')
+        return self._fetch(contract, params, attempts=2)
+
+    def fetch_bse_mapping(self, contract: DatasetContract) -> ProviderTable:
+        if contract.dataset != 'bse_mapping' or contract.contract_version != '2.0' or self.request_count:
+            raise ValueError('Only one Phase 1C.0 mapping attempt is permitted')
+        return self._fetch(contract, RequestParams(), attempts=1)
+
+    def _fetch(self, contract: DatasetContract, params: RequestParams, *, attempts: int) -> ProviderTable:
         if threading.get_ident() != self._owner_thread:
             raise ValueError('Phase 1B client is single-threaded')
         require_https(self._endpoint)
-        if contract.dataset not in PROBE_DATASETS:
-            raise ValueError('Endpoint outside Phase 1B')
         require_https(contract.endpoint)
         wire_params = params.public_dict()
         for key in ('trade_date', 'start_date', 'end_date'):
             if key in wire_params:
                 wire_params[key] = wire_params[key].replace('-', '')
-        for attempt in range(2):
+        for attempt in range(attempts):
             self._pace()
             self.request_count += 1
             retry = False
@@ -143,6 +151,6 @@ class TushareClient:
                             return table
                     except (ValueError, KeyError, TypeError):
                         error = SafeError(category=ErrorCategory.INVALID_RESPONSE, http_status=200)
-            if not retry or attempt == 1:
+            if not retry or attempt == attempts - 1:
                 raise ProviderFailure(error) from None
         raise AssertionError('Unreachable')

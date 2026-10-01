@@ -104,7 +104,7 @@ def test_native_identifier_retention_and_separate_normalization(tmp_path):
     history = IdentityHistory([entry(identifier=native, exchange="SSE")])
     assert resolve(history, native, exchange="SSE") == "synthetic-security"
     assert resolve(history, "123456.SH", exchange="SSE") is None
-    contract = next(c for c in load_contracts(get_project_root()) if c.dataset == "adj_factor")
+    contract = next(c for c in load_contracts(get_project_root(), catalog_version="v1") if c.dataset == "adj_factor")
     table = ProviderTable(fields=["ts_code", "trade_date", "adj_factor"],
                           items=[[native, "20250102", 1.0]], retrieved_at=NOW)
     audit = table_audit(table, contract)
@@ -138,7 +138,7 @@ def test_migration_and_transactional_append_reject_ambiguity_and_preserve_histor
         history.append(db, entry(valid_to=date(2025, 10, 9), available_at=LATER, retrieved_at=LATER))
         migrate(db, get_project_root())
         assert db.execute("SELECT count(*) FROM security_identifier_history").fetchone() == (2,)
-        assert db.execute("SELECT version FROM schema_version ORDER BY version").fetchall() == [(1,), (2,), (3,), (4,)]
+        assert db.execute("SELECT version FROM schema_version ORDER BY version").fetchall() == [(1,), (2,), (3,), (4,), (5,)]
         assert db.execute("SELECT valid_to FROM security_identifier_history ORDER BY available_at").fetchall() == [(None,), (date(2025, 10, 9),)]
         for clause in ["identifier=''", "valid_to=valid_from", "available_at=retrieved_at-INTERVAL '1 second'", "published_at=available_at+INTERVAL '1 second'"]:
             # Direct SQL enforces local constraints; temporal overlaps need the append boundary.

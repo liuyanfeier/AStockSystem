@@ -1,0 +1,54 @@
+spec_version: '1.0'
+dataset: stk_limit
+source_catalog_version: v2
+research_usage: EXECUTION_CONSTRAINT_ONLY
+fields:
+- source_column: trade_date
+  target_column: trade_date
+  logical_type: date32
+  nullable_policy: FORBID
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: ts_code
+  target_column: ts_code
+  logical_type: string
+  nullable_policy: FORBID
+  unit: dimensionless
+  identity_requirement: RESOLVED_AS_OF_EVENT
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: pre_close
+  target_column: pre_close
+  logical_type: float64
+  nullable_policy: PRESERVE_NULL
+  unit: price in security currency
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: up_limit
+  target_column: up_limit
+  logical_type: float64
+  nullable_policy: PRESERVE_NULL
+  unit: price in security currency
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: down_limit
+  target_column: down_limit
+  logical_type: float64
+  nullable_policy: PRESERVE_NULL
+  unit: price in security currency
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: asset_type
+  target_column: asset_type
+  logical_type: float64
+  nullable_policy: PRESERVE_NULL
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY
+- source_column: exchange
+  target_column: exchange
+  logical_type: float64
+  nullable_policy: PRESERVE_NULL
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_CONSTRAINT_ONLY

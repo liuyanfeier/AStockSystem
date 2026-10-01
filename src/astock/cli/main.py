@@ -1,4 +1,4 @@
-"""Read-only foundation diagnostics. No market-data or network operations."""
+"""Offline diagnostics and explicitly bounded, opt-in data audit commands."""
 
 import sys
 
@@ -68,12 +68,12 @@ app.add_typer(data_app, name="data")
 
 
 @data_app.command("contracts")
-def data_contracts() -> None:
-    """Validate and list the twelve versioned contracts without network or files."""
+def data_contracts(catalog: str = typer.Option("v1", "--catalog")) -> None:
+    """Validate the selected pinned catalog without network or file writes."""
     from astock.data.contracts import load_contracts
 
     try:
-        contracts = load_contracts(get_project_root())
+        contracts = load_contracts(get_project_root(), catalog_version=catalog)
     except (ValidationError, ValueError, OSError, RuntimeError, yaml.YAMLError):
         typer.echo("Contracts: FAIL (details suppressed to protect secrets)")
         raise typer.Exit(code=1)
@@ -141,4 +141,42 @@ def probe_status_command() -> None:
             typer.echo('No completed local probes.')
     except Exception:
         typer.echo('Probe status: FAIL (safe details only)')
+        raise typer.Exit(1)
+
+
+identity_app = typer.Typer(help='Phase 1C.0 identity governance only.', add_completion=False)
+data_app.add_typer(identity_app, name='identity')
+
+
+@identity_app.command('specs')
+def identity_specs() -> None:
+    """Validate typed curation specifications offline; no credentials or storage."""
+    from astock.data.curation import load_curation_specs
+    try:
+        specs = load_curation_specs(get_project_root())
+        for spec in specs:
+            typer.echo(f'{spec.dataset}: {spec.research_usage}; {len(spec.fields)} typed columns')
+        typer.echo('Typed curation specs: PASS; no curation or network')
+    except Exception:
+        typer.echo('Typed curation specs: FAIL (safe details only)')
+        raise typer.Exit(1)
+
+
+@identity_app.command('bootstrap')
+def identity_bootstrap(authority: str = typer.Option(..., '--authority'),
+                       live: bool = typer.Option(False, '--live')) -> None:
+    """Reuse accepted raw captures; --live permits one mapping attempt only."""
+    from pathlib import Path
+    from astock.data.bootstrap import run_bootstrap
+    try:
+        root = get_project_root()
+        summary = run_bootstrap(root, load_settings(root), authority_path=Path(authority), live=live)
+        import json
+        typer.echo(json.dumps(summary, sort_keys=True, indent=2))
+        if summary['status'] != 'PASS':
+            raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except Exception:
+        typer.echo('PHASE 1C.0 STATUS: BLOCKED (safe details only; no automatic retry)')
         raise typer.Exit(1)
