@@ -202,3 +202,16 @@ aware timestamp; `published_at` and `available_at` may be absent in raw staging.
 inventing available_at. `time_precision` records DATE/MINUTE/SECOND/MICROSECOND/UNKNOWN.
 These fields are not new market tables. Migration 001 and its sell-delay semantics
 remain unchanged. Migration 002 is repeatable, not a schema-drift repair engine.
+
+## Phase 1B migration 003 addendum
+
+Apply 003 after 001/002. It adds PROBE to ingestion_run.mode and PERMISSION to
+error_category; no columns or market tables are added. Both tables are rebuilt
+transactionally with parent/child rows preserved. Standalone reruns preserve all
+rows; the small migration helper skips recorded versions. Original migrations stay
+unchanged. Counts include actual request attempts (including retries); object/row
+counts include only successfully registered immutable parts. Failed probes retain
+completed objects and safe error numbers, never response msg. Default ignored
+DuckDB holds governance only; observations are not promoted into Phase 0 identity,
+calendar or rule tables. Sidecar metadata records exact current retrieval/availability
+and OBSERVED_CAPTURE, not historical market knowledge.

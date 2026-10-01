@@ -16,12 +16,20 @@ DATASETS = (
 )
 
 
+TUSHARE_HTTPS_ENDPOINT = "https://api.tushare.pro"
+
+
 def require_https(url: str) -> str:
     parts = urlsplit(url)
-    if (parts.scheme != "https" or not parts.hostname or parts.username or parts.password
-            or parts.query or parts.fragment):
-        raise ValueError("Provider endpoint must be HTTPS without credentials, query or fragment")
-    return url
+    try:
+        port = parts.port
+    except ValueError:
+        raise ValueError("Invalid provider endpoint") from None
+    if (parts.scheme != "https" or parts.hostname != "api.tushare.pro" or port not in (None, 443)
+            or parts.path not in ("", "/") or parts.username is not None or parts.password is not None
+            or "?" in url or "#" in url):
+        raise ValueError("Provider endpoint must be the exact pinned Tushare HTTPS origin")
+    return TUSHARE_HTTPS_ENDPOINT
 
 
 class DatasetContract(BaseModel):

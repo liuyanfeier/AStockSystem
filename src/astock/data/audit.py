@@ -20,6 +20,7 @@ class ErrorCategory(StrEnum):
     TRANSPORT = "TRANSPORT"
     REDIRECT = "REDIRECT"
     AUTH = "AUTH"
+    PERMISSION = "PERMISSION"
     PROVIDER = "PROVIDER"
     INVALID_RESPONSE = "INVALID_RESPONSE"
 
@@ -86,7 +87,7 @@ class TransportConfig(SafeModel):
 
     @model_validator(mode="after")
     def check_endpoint(self):
-        require_https(self.endpoint)
+        object.__setattr__(self, "endpoint", require_https(self.endpoint))
         return self
 
 
@@ -122,7 +123,8 @@ class MockProviderTransport:
         except (ValueError, KeyError, TypeError):
             return SafeError(category=ErrorCategory.INVALID_RESPONSE, http_status=200)
         if code != 0:
-            return SafeError(category=ErrorCategory.AUTH if code == 40101 else ErrorCategory.PROVIDER,
+            return SafeError(category=ErrorCategory.AUTH if code == 40101 else
+                             ErrorCategory.PERMISSION if code == 2002 else ErrorCategory.PROVIDER,
                              http_status=200, provider_code=code)
         return None
 

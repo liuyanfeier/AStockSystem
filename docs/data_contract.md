@@ -85,3 +85,37 @@ Never overwrite a capture. Record SHA-256 of exact stored bytes, a schema hash u
 Migration 002 links manifest `(run_id, dataset)` to ingestion runs. Parameters have a narrow typed allowlist; drop credentials, headers, unknown/nested fields and invalid values before serialization. Audit dates use ISO format; future provider-wire conversion to YYYYMMDD remains unimplemented. Errors retain only category and numeric HTTP/provider codes. Never log response bodies/messages, exception text, or Pydantic `.errors()` input values. Existing free-text Phase 0 quality logs also require this discipline; their DDL does not automatically sanitize text.
 
 Public Git must never contain provider tokens, broker credentials, balances, holdings, personal executions, private reports or raw provider datasets. Store private work in ignored `private/` or `data/private/`; raw/curated/warehouse captures and generated reports stay ignored. Commit only lightweight sanitized summaries under `docs/reviews/`. Ignore rules reduce accidents; explicit staging and diff audits remain mandatory.
+
+## Phase 1B probe boundary
+
+The approved versioned plan covers eight endpoints, four fixed historical anchors
+and the latest open SSE date resolved within September 2026. Request fields are
+explicit; stk_limit additionally requests pre_close, asset_type and exchange.
+Exact credential endpoint validation is separate from documentation URL validation:
+HTTPS api.tushare.pro, default/443 port, root path, no userinfo/query/fragment/redirect.
+Code 2002 is official PERMISSION; 40101 AUTH remains an observed classification.
+
+Migration 003 transactionally rebuilds both lineage tables to extend CHECKs while
+preserving parent/child rows. Only PROBE governance rows and raw Parquet are persisted.
+Canonical config hash is SHA-256 of compact sorted-key UTF-8 JSON of plan and the
+ordered eight contract definitions (dates ISO); schema hash is the same encoding
+of ordered Arrow (field name, type string) pairs. Raw SHA hashes exact stored Parquet
+bytes. Logical fingerprint separately hashes sorted columns then canonical JSONL
+rows ordered by natural-key encoding with full-row tie-breakers; values/nulls are
+not replaced. Parquet may promote integral numeric values in mixed numeric columns
+without changing numeric meaning; original provider scalar types appear in audit.
+
+Atomic publication uses a closed/fsynced temporary file and POSIX no-clobber hard
+link, followed by temp unlink and directory fsync. This supplies atomic visibility
+without os.rename's overwrite race. DB registration follows publication; orphan
+completed files survive registration failure and are not marked registered. No part
+is overwritten; new probe batches use new UUID runs. Counters, byte/schema hashes,
+row counts and sidecars are verified after a batch.
+
+For every historical capture, availability_basis=OBSERVED_CAPTURE and
+available_at=retrieved_at. This records observation now, never historical event-day
+knowledge. Phase 1B captures are ineligible for historical backtests. No curated
+market schema is frozen. Exact token bytes are checked in generated raw bytes,
+decoded Parquet values, sidecars and aggregate review drafts before public export.
+Errors/logs never include provider bodies or exception inputs. No runtime logs are
+written by this probe. Public metadata is aggregate-only; private/raw paths remain ignored.

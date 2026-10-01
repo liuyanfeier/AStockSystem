@@ -2,7 +2,7 @@
 
 ## Scope & Structure
 
-AStockSystem is a macOS A-share research project. Phase 0 is approved; Phase 1A adds provider audits, versioned contracts, lineage SQL and offline diagnostics only. No ingestion, selection, signals, backtests, optimization, broker integration or live orders. Preserve the original planning documents; Codex_Phase1A_Provider_Audit_Prompt_v1.0.md controls this phase. Stop after validation, commit, push and CI verification for review; Phase 1B requires approval.
+AStockSystem is a macOS A-share research project. Phase 0/1A are approved. Phase 1B permits only the bounded eight-endpoint real-data probe, raw captures, lineage and aggregate audits. No full backfill, production curated tables, selection, signals, backtests, broker integration or orders. Preserve the original planning documents; Codex_Phase1B_Small_Real_Data_Probe_Prompt_v1.0.md controls this phase. Stop after validation, commit, push and CI verification for review; Phase 1C requires approval.
 
 Use `src/astock/` for Python, `tests/` for pytest, `config/` for versioned configuration, `sql/` for schema, `docs/` for contracts and governance, and `skills/` for workflows. Local data belongs in `data/{raw,curated,warehouse}/`; generated outputs belong in `reports/`.
 
@@ -26,4 +26,4 @@ Name tests `test_*.py`. Test trading rules, time availability, historical rules 
 
 ## Secrets
 
-Keep `.env` local. Never commit or print secrets in logs/reports, request brokerage passwords, or introduce broker credentials in this phase. Commit placeholders only. Public Git must exclude raw datasets, private reports, balances, holdings and personal execution history; use ignored `private/` or `data/private/`. Lightweight sanitized review evidence belongs in `docs/reviews/`.
+Keep `.env` local. Never send token through chat; live requests require `--live` and exact pinned HTTPS. Never commit or print secrets in logs/reports, request brokerage passwords, or introduce broker credentials in this phase. Commit placeholders only. Public Git must exclude raw datasets, private reports, balances, holdings and personal execution history; use ignored `private/` or `data/private/`. Lightweight sanitized review evidence belongs in `docs/reviews/`.

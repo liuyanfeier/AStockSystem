@@ -2,9 +2,9 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前增加 **Phase 1A**：无凭据传输审计、十二份版本化数据集契约、两张来源追溯治理表和合成测试。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；Phase 1A 已通过 REVIEW；当前 **Phase 1B** 仅实现八个接口的小样本探测、raw 存档和质量审计。
 
-没有行情下载、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
+仅允许指定日期的小样本下载，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 
 ## 本机运行
 
@@ -70,7 +70,7 @@ uv sync --locked
 | PyArrow | 预留 Parquet 数据交换 |
 | Pydantic / pydantic-settings | 类型校验、环境配置与秘密包装 |
 | Typer | 诊断 CLI |
-| httpx / tenacity | httpx 仅用于 MockTransport 测试；真实接入与重试未实现 |
+| httpx / tenacity | httpx 用于固定 HTTPS REST probe；限速和至多一次重试 |
 | PyYAML | 配置文件格式校验；后续配置加载 |
 | pytest | 开发测试 |
 | pytz | DuckDB Python 驱动读取 TIMESTAMPTZ 的运行时支持；首轮测试发现必需 |
@@ -91,12 +91,33 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1A Prompt](Codex_Phase1A_Provider_Audit_Prompt_v1.0.md) 控制本轮范围。Phase 1A 通过人工 REVIEW 前不开始 Phase 1B。旧规划不扩大本轮任务。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1B Prompt](Codex_Phase1B_Small_Real_Data_Probe_Prompt_v1.0.md) 控制本轮范围。Phase 1B 通过人工 REVIEW 前不开始 Phase 1C。旧规划不扩大本轮任务。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
 
 ## Phase 1A 安全边界
 
-正式 SDK 默认 HTTP，不能直接用于真实凭据。无凭据探测观察到 HTTPS 证书验证成功并返回鉴权错误；这不是供应商正式 HTTPS 支持声明，也没有验证真实鉴权。详见 [传输审计](docs/reviews/2026-10-01-phase1a-transport-audit.md)。仓库仅提供 MockTransport，拒绝 HTTP 和全部重定向。
+正式 SDK 默认 HTTP，不能直接用于真实凭据。无凭据探测观察到 HTTPS 证书验证成功并返回鉴权错误；这不是供应商正式 HTTPS 支持声明，也没有验证真实鉴权。详见 [传输审计](docs/reviews/2026-10-01-phase1a-transport-audit.md)。Phase 1B 增加独立 REST client，精确固定 api.tushare.pro，拒绝 HTTP 和全部重定向，保持证书验证且不使用环境代理。
 
 本公开仓库禁止包含 provider token、券商凭据、余额、持仓、个人成交历史、私密报告和原始供应商数据。`private/`、`data/private/`、市场数据及运行报告均被忽略；不要 force-add。审核摘要放在 `docs/reviews/`，只使用脱敏的元数据。
+
+## Phase 1B bounded probe
+
+```bash
+uv run --offline --frozen astock data probe plan
+uv run --offline --frozen astock data probe status
+# Only after configuring TUSHARE_TOKEN in local .env outside chat:
+uv run --offline --frozen astock data probe run --live
+```
+
+`--offline` controls uv dependency resolution; only explicit `--live` enables provider
+requests. The fixed plan is 47 logical calls maximum, 1.25 seconds between attempts,
+and at most two attempts for eligible transient errors. Missing token performs no
+request/storage write. First real request is the September 2026 SSE calendar;
+auth/TLS/redirect failure stops. Permissions or unexplained DQ findings prevent PASS.
+
+Raw captures and sidecars stay in ignored `data/raw/`; governance rows alone use
+ignored default `data/warehouse/astock.duckdb`. Local aggregate status lives in
+ignored `data/private/phase1b/`. Public summaries contain aggregates only. No token
+belongs in GitHub Actions. Observed historical records become available at actual
+retrieval time, and cannot be used for historical strategy backtests.

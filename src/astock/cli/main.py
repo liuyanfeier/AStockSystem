@@ -81,3 +81,64 @@ def data_contracts() -> None:
         cap = str(contract.max_rows) if contract.max_rows is not None else "UNKNOWN"
         typer.echo(f"{contract.dataset}: max_rows={cap}, availability={contract.availability_policy}")
     typer.echo(f"Contracts: PASS ({len(contracts)}); offline; no fetching")
+
+
+probe_app = typer.Typer(help="Bounded Phase 1B probe; live requests require --live.",
+                        add_completion=False)
+data_app.add_typer(probe_app, name="probe")
+
+
+@probe_app.command('plan')
+def probe_plan() -> None:
+    """Show the fixed offline plan without reading credentials or storage."""
+    from astock.data.probe import load_plan
+    try:
+        plan = load_plan(get_project_root())
+        typer.echo(plan.model_dump_json(indent=2))
+        typer.echo('47 logical requests maximum; 94 attempts maximum; no full backfill.')
+    except Exception:
+        typer.echo('Probe plan: FAIL (safe details only)')
+        raise typer.Exit(1)
+
+
+@probe_app.command('run')
+def probe_run(live: bool = typer.Option(False, '--live')) -> None:
+    """Run the approved sample only when live access is explicitly selected."""
+    if not live:
+        typer.echo('Live access requires explicit --live; no request sent.')
+        raise typer.Exit(1)
+    from astock.data.probe import run_probe
+    try:
+        root = get_project_root()
+        settings = load_settings(root)
+        if not settings.token_configured:
+            typer.echo('TUSHARE_TOKEN is not configured.')
+            typer.echo('Configure TUSHARE_TOKEN locally in .env outside the chat/model input, then rerun.')
+            raise typer.Exit(1)
+        summary, _ = run_probe(root, settings)
+        typer.echo(f"PHASE 1B STATUS: {summary['status']}")
+        typer.echo(f"Resolved recent date: {summary['resolved_recent_date']}")
+        typer.echo(f"Requests: {sum(r['request_count'] for r in summary['runs'].values())}")
+        typer.echo('SECRET_SCAN: PASS')
+        if summary['status'] != 'PASS':
+            raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except Exception:
+        typer.echo('PHASE 1B STATUS: BLOCKED (safe details only; no error body printed)')
+        raise typer.Exit(1)
+
+
+@probe_app.command('status')
+def probe_status_command() -> None:
+    """Read aggregate local probe statuses offline."""
+    from astock.data.probe import probe_status
+    try:
+        summaries = probe_status(get_project_root())
+        for summary in summaries:
+            typer.echo(f"{summary['batch_id']}: {summary['status']}; SECRET_SCAN: {summary['secret_scan']}")
+        if not summaries:
+            typer.echo('No completed local probes.')
+    except Exception:
+        typer.echo('Probe status: FAIL (safe details only)')
+        raise typer.Exit(1)
