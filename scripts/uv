@@ -1,0 +1,13 @@
+#!/bin/sh
+# Session-local launcher: no global Python, cache or shell-profile changes.
+set -eu
+astock_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+export UV_CACHE_DIR="$astock_root/.tools/cache"
+export UV_PYTHON_INSTALL_DIR="$astock_root/.tools/python"
+export UV_PYTHON_BIN_DIR="$astock_root/.tools/python-bin"
+export UV_PYTHON_PREFERENCE=only-managed
+if [ ! -x "$astock_root/.tools/bin/uv" ]; then
+    printf '%s\n' 'Project-local uv is missing; follow README setup instructions.' >&2
+    exit 1
+fi
+exec "$astock_root/.tools/bin/uv" "$@"

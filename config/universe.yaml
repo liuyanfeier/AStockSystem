@@ -1,0 +1,8 @@
+schema_version: 1
+enabled: false
+# Category names only; no eligibility criteria or filtering is implemented.
+categories:
+  core:
+    criteria: null
+  special_situations:
+    criteria: null

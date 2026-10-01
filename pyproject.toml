@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=75,<83"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astock"
+version = "0.0.1"
+description = "Local A-share research foundation and offline diagnostics"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pandas>=2.2,<4",
+    "numpy>=2,<3",
+    "duckdb>=1.2,<2",
+    "pyarrow>=18,<30",
+    "pydantic>=2.10,<3",
+    "pydantic-settings>=2.7,<3",
+    "typer>=0.15,<1",
+    "httpx>=0.28,<1",
+    "tenacity>=9,<10",
+    "PyYAML>=6,<7",
+    "pytz>=2025.1",
+]
+
+[project.scripts]
+astock = "astock.cli.main:app"
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -1,0 +1,12 @@
+schema_version: 1
+enabled: false
+# Dimensions are planned; their implementations and parameters are not defined.
+dimensions:
+  trend: null
+  breadth: null
+  liquidity: null
+  volatility: null
+  style: null
+  dispersion: null
+weights: null
+thresholds: null

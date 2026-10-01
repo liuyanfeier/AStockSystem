@@ -1,0 +1,10 @@
+schema_version: 1
+enabled: false
+# Roles only; no clients, subscriptions or credentials are configured.
+sources:
+  - name: tushare
+    role: primary_market_and_fundamentals
+  - name: exchange_filings_and_cninfo
+    role: official_filing_verification
+  - name: akshare
+    role: backup_and_cross_check
