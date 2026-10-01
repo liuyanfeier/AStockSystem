@@ -129,8 +129,18 @@ def secret_scan(token: SecretStr, paths: list[Path]) -> bool:
             return False
         if secret in path.read_bytes():
             return False
-        if path.suffix == '.parquet' and secret in canonical_json(pq.ParquetFile(path).read().to_pydict()):
-            return False
+        if path.suffix == '.parquet':
+            table=pq.ParquetFile(path).read()
+            # Scan decoded text/binary recursively; typed dates/timestamps are not JSON scalars.
+            # File bytes alone miss credentials inside compressed data pages.
+            def contains(value):
+                if isinstance(value,str):return secret in value.encode('utf-8')
+                if isinstance(value,bytes):return secret in value
+                if isinstance(value,dict):return any(contains(k) or contains(v) for k,v in value.items())
+                if isinstance(value,(list,tuple)):return any(contains(v) for v in value)
+                return False
+            if secret in table.schema.serialize().to_pybytes() or contains(table.to_pydict()):
+                return False
     return True
 
 

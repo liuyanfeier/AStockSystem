@@ -86,3 +86,19 @@ def test_cross_table_errors_and_unresolved_traded_rows_cannot_pass():
     assert result['errors']['nonpositive_factor']==1
     assert result['errors']['unresolved_traded_identity']==1
     assert result['status']=='BLOCKED'
+
+
+def test_secret_scan_supports_typed_curated_dates_and_compressed_tokens(tmp_path):
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    from pydantic import SecretStr
+    from astock.data.raw_writer import secret_scan
+    secret='synthetic-hidden-credential-test-value'
+    path=tmp_path/'typed.parquet'
+    safe=pa.table({'trade_date':[date(2025,5,6)],'retrieved_at':[NOW],'native':['000001.SZ']})
+    pq.write_table(safe,path,compression='gzip',write_statistics=False)
+    assert secret_scan(SecretStr(secret),[path])
+    unsafe=pa.table({'trade_date':[date(2025,5,6)],'retrieved_at':[NOW],'native':[secret]})
+    pq.write_table(unsafe,path,compression='gzip',write_statistics=False)
+    assert secret.encode() not in path.read_bytes()
+    assert not secret_scan(SecretStr(secret),[path])
