@@ -1,0 +1,36 @@
+contract_version: '1.0'
+dataset: stock_basic
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- symbol
+- name
+- market
+- exchange
+- list_status
+- list_date
+- delist_date
+natural_key:
+- ts_code
+max_rows: 6000
+timezone: Asia/Shanghai
+units: {}
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- exchange
+- list_status
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=25
+documentation_checked_on: '2026-10-01'
+update_schedule: null
+notes:
+- Request all listing statuses explicitly; default L excludes delisted securities.
+- Provider codes identify a snapshot, not permanent internal security identity.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

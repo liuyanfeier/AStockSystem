@@ -1,0 +1,35 @@
+contract_version: '1.0'
+dataset: suspend_d
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- trade_date
+- suspend_timing
+- suspend_type
+natural_key:
+- ts_code
+- trade_date
+- suspend_type
+- suspend_timing
+max_rows: 5000
+timezone: Asia/Shanghai
+units: {}
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- trade_date
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=214
+documentation_checked_on: '2026-10-01'
+update_schedule: Irregular updates
+notes:
+- suspend_timing can be null; future key normalization must preserve full-day versus
+  intraday semantics.
+- Documented history begins 2000-01-03.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

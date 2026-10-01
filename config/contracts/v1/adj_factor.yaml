@@ -1,0 +1,34 @@
+contract_version: '1.0'
+dataset: adj_factor
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- trade_date
+- adj_factor
+natural_key:
+- ts_code
+- trade_date
+max_rows: null
+timezone: Asia/Shanghai
+units:
+  adj_factor: dimensionless
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- trade_date
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=28
+documentation_checked_on: '2026-10-01'
+update_schedule: Trading days 09:15–09:20
+notes:
+- Provider-produced factors; retain retrieval versions rather than rewriting historical
+  captures.
+- No explicit single-request row cap found in cited documentation; null is unknown,
+  not unlimited.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

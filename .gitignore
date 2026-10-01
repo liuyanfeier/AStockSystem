@@ -32,3 +32,7 @@ data/warehouse/**
 !data/warehouse/.gitkeep
 reports/**
 !reports/.gitkeep
+
+# Public repository privacy boundary
+data/private/**
+private/**

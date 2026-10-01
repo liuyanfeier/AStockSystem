@@ -1,0 +1,39 @@
+contract_version: '1.0'
+dataset: index_classify
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- src
+- index_code
+- industry_name
+- parent_code
+- level
+- industry_code
+- is_pub
+natural_key:
+- src
+- index_code
+max_rows: null
+timezone: Asia/Shanghai
+units: {}
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- src
+- level
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=181
+documentation_checked_on: '2026-10-01'
+update_schedule: null
+notes:
+- Select SW2014 or SW2021 explicitly; provider defaults to SW2014.
+- Request src column and preserve requested taxonomy version in metadata; do not retrofit
+  latest taxonomy historically.
+- No explicit single-request row cap found in cited documentation; null is unknown,
+  not unlimited.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

@@ -26,7 +26,7 @@
 - **Effective time**：事实或规则适用的时间范围，例如 `valid_from/valid_to` 或 `effective_from/effective_to`。已公布但尚未生效的规则不能提前执行。
 - **First observed / retrieval time**：本系统首次收到来源版本的时间。未来原始接入元数据必须保存此时间和原始对象定位／校验值。
 
-历史“公开信息可知”研究与“本系统实际捕获”研究必须显式区分：前者仅在有来源证据时重建公开可用时点，后者不得早于系统首次收到数据。不得用今天的下载时间伪称历史公开时间，也不得用历史公告时间假装本系统当时已捕获信息。接入前需在数据集元数据中声明模式、证据与精度；本阶段尚无这些接入元数据表。
+历史“公开信息可知”研究与“本系统实际捕获”研究必须显式区分：前者仅在有来源证据时重建公开可用时点，后者不得早于系统首次收到数据。不得用今天的下载时间伪称历史公开时间，也不得用历史公告时间假装本系统当时已捕获信息。接入前需在数据集元数据中声明模式、证据与精度；Phase 0 未建立这些接入元数据表；Phase 1A 新增的治理表仅存追溯信息，不代表已接入数据。
 
 `published_at` 可以为 NULL，但 `available_at` 不能缺失：未知发布时间不能用事件日猜测可用时点。若无法提供有依据的保守可用时点，该记录不能进入可回测数据。仅有公告日期的记录不能支持盘中研究。
 
@@ -51,3 +51,37 @@ EOD 使用完整收盘后数据，不能模拟同日收盘前决策／成交。P
 未来派生结果记录输入版本／校验值、代码 commit、配置版本、生成时间及 run ID。失败候选也保留。原始数据尽量只追加；错误结果通过新版本及修正说明处理，不改写旧报告。
 
 质量日志的 `observed/expected/details` 禁止包含秘密。文本规则与来源标识提供存储位置，不能替代官方证据审核。基础 DDL 的 CHECK 只保证局部格式／顺序；规则正确性、区间重叠和供应商历史覆盖仍需应用层验证。
+
+## Phase 1A contract catalog and time types
+
+`config/contracts/v1/*.yaml` contains twelve Tier-A `DatasetContract` v1.0 definitions. `required_fields` specifies requested columns, not universal nonnull constraints. Natural keys apply within a provider capture; future stored identity must also include source and retrieval/version. Nullable key components such as `suspend_timing` require explicit normalization before ingestion. Fetch partitions and quality checks are proposed plans, not implemented download/validation jobs.
+
+Each contract cites the official endpoint documentation checked on 2026-10-01. `max_rows: null` means undocumented/unknown, never unlimited. Documented caps are not completeness guarantees: future fetchers must detect truncation and audit partition coverage. Official update windows are descriptive, not publication evidence or availability guarantees. All policies remain `UNKNOWN_UNTIL_EVIDENCE`. No production timestamps are assigned.
+
+`RecordTimes` separates `event_date`/`event_at`, `published_at`, `available_at`, exact `retrieved_at`, `availability_basis` and `time_precision`. Aware datetimes are required; persist UTC, retain local event dates. Precision values are DATE, MINUTE, SECOND, MICROSECOND and UNKNOWN; declare the weakest source precision rather than inventing seconds. Supported evidence bases:
+
+- `MARKET_CLOSE_RECONSTRUCTED`: audited reconstruction from market close, with source-specific release lag.
+- `PROVIDER_DOCUMENTED_SCHEDULE`: documented schedule with independently validated conservative handling.
+- `SOURCE_PUBLICATION`: verified source publication evidence.
+- `CONSERVATIVE_NEXT_SESSION`: explicit conservative calendar-based policy.
+- `OBSERVED_CAPTURE`: actual system observation; available_at cannot precede retrieved_at.
+- `EXECUTION_FACT`: private execution fact with verified event/knowledge evidence.
+- `UNKNOWN`: retain raw metadata, leave available_at null, exclude from decision/backtest inputs.
+
+The nullable staging type does not relax Phase 0 tables' required available_at. Promotion into research tables requires evidence and an eligible timestamp. SQL table changes for market records and automatic reconstruction are deferred.
+
+## Raw objects, lineage and privacy
+
+Future append-only, source-shaped captures use:
+
+```text
+data/raw/<provider>/<dataset>/run_id=<id>/
+    part-000.parquet
+    manifest.json
+```
+
+Never overwrite a capture. Record SHA-256 of exact stored bytes, a schema hash using a future documented canonical field/type encoding, exact retrieval time, row count, event-date bounds and sanitized parameters. `RawObjectManifest` currently validates metadata shape only; there is no writer or checksum computation pipeline. Content/schema hashing, atomic writes, aggregate run-count reconciliation and retry/idempotency rules need Phase 1B design/review. Contract hashes must use a documented canonical encoding before real ingestion.
+
+Migration 002 links manifest `(run_id, dataset)` to ingestion runs. Parameters have a narrow typed allowlist; drop credentials, headers, unknown/nested fields and invalid values before serialization. Audit dates use ISO format; future provider-wire conversion to YYYYMMDD remains unimplemented. Errors retain only category and numeric HTTP/provider codes. Never log response bodies/messages, exception text, or Pydantic `.errors()` input values. Existing free-text Phase 0 quality logs also require this discipline; their DDL does not automatically sanitize text.
+
+Public Git must never contain provider tokens, broker credentials, balances, holdings, personal executions, private reports or raw provider datasets. Store private work in ignored `private/` or `data/private/`; raw/curated/warehouse captures and generated reports stay ignored. Commit only lightweight sanitized summaries under `docs/reviews/`. Ignore rules reduce accidents; explicit staging and diff audits remain mandatory.

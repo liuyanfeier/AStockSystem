@@ -1,0 +1,38 @@
+contract_version: '1.0'
+dataset: index_basic
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- ts_code
+- name
+- market
+- publisher
+- category
+- base_date
+- base_point
+- list_date
+- exp_date
+natural_key:
+- market
+- ts_code
+max_rows: 8000
+timezone: Asia/Shanghai
+units:
+  base_point: index points
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- market
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=94
+documentation_checked_on: '2026-10-01'
+update_schedule: Daily around 18:00
+notes:
+- Provider states history from 1990-01-01; this does not guarantee every index exists
+  throughout.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.

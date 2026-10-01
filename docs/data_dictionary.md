@@ -1,7 +1,8 @@
 # Foundation Data Dictionary
 
-Phase 0 only: six tables, no real market data or trading rules. Schema source:
-`sql/001_foundation_schema.sql`. Dates use exchange-local calendars; timestamps
+Phase 0: six foundation tables; Phase 1A: two additional governance tables.
+No real market data or trading rules. Apply `sql/001_foundation_schema.sql` then
+`sql/002_provider_lineage.sql`; schema versions 1 and 2. Dates use exchange-local calendars; timestamps
 are `TIMESTAMPTZ`. Effective date intervals are [from, to). Nullable fields mean
 unknown/not applicable, never zero. Source must be nonempty. See the data contract
 for availability evidence, null distinctions and revision handling.
@@ -146,3 +147,58 @@ The SQL transaction creates missing tables and inserts version 1 once. Re-runnin
 against the same schema is idempotent and preserves rows. `IF NOT EXISTS` does
 not verify or repair incompatible preexisting tables; this is not a migration
 engine or a schema-drift detector.
+
+## ingestion_run (Phase 1A)
+
+Primary key: UUID `run_id`; unique `(run_id, dataset)` supports manifest linkage.
+No runs are seeded. BACKFILL is a reserved metadata mode, not an implemented operation.
+
+| Column | Type / null | Meaning |
+|---|---|---|
+| run_id | UUID / required | Capture run identity |
+| source, dataset | VARCHAR / required | tushare; one of twelve contracted datasets |
+| mode | VARCHAR / required | AUDIT, SNAPSHOT, INCREMENTAL or BACKFILL |
+| started_at, finished_at | TIMESTAMPTZ / finish nullable | Exact run times; finish cannot precede start |
+| status | VARCHAR / required | RUNNING requires no finish; SUCCEEDED/FAILED/CANCELLED require finish |
+| code_commit | VARCHAR / required | Full lowercase 40-character Git SHA |
+| config_hash | VARCHAR / required | Lowercase 64-character SHA-256; canonical encoding to be designed |
+| provider_client_version | VARCHAR / required | Numeric major.minor.patch of actual client; SDK audit version is separate |
+| requested_start, requested_end | DATE / nullable | Requested inclusive event-date range; ordered when both known |
+| request_count, row_count, raw_object_count | BIGINT / required | Nonnegative totals, default zero; future writer must reconcile with manifests |
+| error_category | VARCHAR / nullable | TRANSPORT, REDIRECT, AUTH, PROVIDER or INVALID_RESPONSE |
+| error_http_status | INTEGER / nullable | Numeric 100–599 only |
+| error_provider_code | BIGINT / nullable | Provider's numeric code; error numbers require a category |
+
+No free-text error/message/body or credential field is provided.
+
+## raw_object_manifest (Phase 1A)
+
+Primary key: UUID `object_id`; unique `relative_path`; foreign key `(run_id, dataset)`
+references ingestion_run. Metadata schema only: no objects are produced.
+
+| Column | Type / null | Meaning |
+|---|---|---|
+| object_id, run_id | UUID / required | Object identity and parent run |
+| dataset | VARCHAR / required | Must match parent run's dataset |
+| relative_path | VARCHAR / required | `data/raw/tushare/<dataset>/run_id=<uuid>/part-NNN.parquet`; no traversal |
+| sha256, schema_hash | VARCHAR / required | Lowercase SHA-256 digests, 64 hex characters |
+| retrieved_at | TIMESTAMPTZ / required | Exact actual retrieval time, independent of availability |
+| row_count | BIGINT / required | Nonnegative object row count |
+| min_event_date, max_event_date | DATE / nullable | Both absent or both present and ordered |
+| request_params | JSON / required | Allowlisted, scalar-string public parameters; no duplicate keys or secrets |
+
+Allowlisted keys: ts_code, trade_date, start_date, end_date, exchange, market,
+list_status, src, level, is_new and l1_code/l2_code/l3_code. Types and patterns
+are checked in SQL and `RequestParams`; absent keys are omitted rather than null.
+No arbitrary parameter metadata, headers or response strings are accepted.
+Checksum format is validated; verifying bytes and aggregate consistency is deferred.
+Do not silently broaden the allowlist to support a future endpoint.
+
+## RecordTimes (type only)
+
+`event_date` (DATE) or `event_at` (aware timestamp) is required. `retrieved_at` is an
+aware timestamp; `published_at` and `available_at` may be absent in raw staging.
+`availability_basis` is the seven-value enum in the data contract; UNKNOWN prohibits
+inventing available_at. `time_precision` records DATE/MINUTE/SECOND/MICROSECOND/UNKNOWN.
+These fields are not new market tables. Migration 001 and its sell-delay semantics
+remain unchanged. Migration 002 is repeatable, not a schema-drift repair engine.

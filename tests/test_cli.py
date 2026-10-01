@@ -102,4 +102,4 @@ def test_help_has_only_diagnostic_command():
     result = runner.invoke(main.app, ["--help"])
     assert result.exit_code == 0
     assert "doctor" in result.output
-    assert set(get_command(main.app).commands) == {"doctor"}
+    assert set(get_command(main.app).commands) == {"doctor", "data"}

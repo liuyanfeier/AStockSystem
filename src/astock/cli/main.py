@@ -1,9 +1,10 @@
-"""Read-only Phase 0 diagnostics. No market-data or network operations."""
+"""Read-only foundation diagnostics. No market-data or network operations."""
 
 import sys
 
 import duckdb
 import typer
+import yaml
 from pydantic import ValidationError
 
 from astock.paths import get_project_root
@@ -60,3 +61,23 @@ def doctor() -> None:
     typer.echo(f"Overall: {'PASS' if passed else 'FAIL'}")
     if not passed:
         raise typer.Exit(code=1)
+
+
+data_app = typer.Typer(help="Offline data-contract audit only.", add_completion=False)
+app.add_typer(data_app, name="data")
+
+
+@data_app.command("contracts")
+def data_contracts() -> None:
+    """Validate and list the twelve versioned contracts without network or files."""
+    from astock.data.contracts import load_contracts
+
+    try:
+        contracts = load_contracts(get_project_root())
+    except (ValidationError, ValueError, OSError, RuntimeError, yaml.YAMLError):
+        typer.echo("Contracts: FAIL (details suppressed to protect secrets)")
+        raise typer.Exit(code=1)
+    for contract in contracts:
+        cap = str(contract.max_rows) if contract.max_rows is not None else "UNKNOWN"
+        typer.echo(f"{contract.dataset}: max_rows={cap}, availability={contract.availability_policy}")
+    typer.echo(f"Contracts: PASS ({len(contracts)}); offline; no fetching")

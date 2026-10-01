@@ -2,7 +2,7 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。当前仅完成 **Phase 0**：项目结构、类型化配置、数据契约、六张基础表、治理模板、离线诊断和测试。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前增加 **Phase 1A**：无凭据传输审计、十二份版本化数据集契约、两张来源追溯治理表和合成测试。
 
 没有行情下载、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 
@@ -22,9 +22,10 @@ uv run astock doctor
 ```bash
 uv run --offline --frozen pytest
 uv run --offline --frozen astock doctor
+uv run --offline --frozen astock data contracts
 ```
 
-`doctor` 只检查 Python、路径、目录、schema 文件和内存 DuckDB；不创建数据目录或磁盘数据库、不调用外部 API。失败退出码为 1。缺少 token 不影响 PASS。
+`doctor` 只检查 Python、路径、目录、schema 文件和内存 DuckDB；不创建数据目录或磁盘数据库、不调用外部 API。失败退出码为 1。缺少 token 不影响 PASS。`data contracts` 仅校验并列出 `config/contracts/v1/`，未知行数上限显示 UNKNOWN，不读取凭据或下载数据。
 
 ## 新机器准备
 
@@ -69,7 +70,7 @@ uv sync --locked
 | PyArrow | 预留 Parquet 数据交换 |
 | Pydantic / pydantic-settings | 类型校验、环境配置与秘密包装 |
 | Typer | 诊断 CLI |
-| httpx / tenacity | 预留未来数据接入及重试；尚未使用 |
+| httpx / tenacity | httpx 仅用于 MockTransport 测试；真实接入与重试未实现 |
 | PyYAML | 配置文件格式校验；后续配置加载 |
 | pytest | 开发测试 |
 | pytz | DuckDB Python 驱动读取 TIMESTAMPTZ 的运行时支持；首轮测试发现必需 |
@@ -90,6 +91,12 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Prompt v2.0](Codex_Phase0_Prompt_v2.0.md) 控制本轮范围。总 REVIEW 中的旧阶段编号或 Phase 0+1 表述不扩大本轮任务。Phase 0 通过人工 REVIEW 前不开始 Phase 1。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1A Prompt](Codex_Phase1A_Provider_Audit_Prompt_v1.0.md) 控制本轮范围。Phase 1A 通过人工 REVIEW 前不开始 Phase 1B。旧规划不扩大本轮任务。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
+
+## Phase 1A 安全边界
+
+正式 SDK 默认 HTTP，不能直接用于真实凭据。无凭据探测观察到 HTTPS 证书验证成功并返回鉴权错误；这不是供应商正式 HTTPS 支持声明，也没有验证真实鉴权。详见 [传输审计](docs/reviews/2026-10-01-phase1a-transport-audit.md)。仓库仅提供 MockTransport，拒绝 HTTP 和全部重定向。
+
+本公开仓库禁止包含 provider token、券商凭据、余额、持仓、个人成交历史、私密报告和原始供应商数据。`private/`、`data/private/`、市场数据及运行报告均被忽略；不要 force-add。审核摘要放在 `docs/reviews/`，只使用脱敏的元数据。

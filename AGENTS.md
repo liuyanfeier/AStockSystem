@@ -2,13 +2,13 @@
 
 ## Scope & Structure
 
-AStockSystem is a macOS A-share research and risk-management project. Phase 0 contains governance, configuration, foundational SQL and offline diagnostics only. No ingestion, selection, signals, backtests, optimization, broker integration or live orders. V0.1 excludes live order placement. Preserve the original planning documents; Phase 0 Prompt v2.0 controls current scope. Stop after validation for review; Phase 1 requires approval.
+AStockSystem is a macOS A-share research project. Phase 0 is approved; Phase 1A adds provider audits, versioned contracts, lineage SQL and offline diagnostics only. No ingestion, selection, signals, backtests, optimization, broker integration or live orders. Preserve the original planning documents; Codex_Phase1A_Provider_Audit_Prompt_v1.0.md controls this phase. Stop after validation, commit, push and CI verification for review; Phase 1B requires approval.
 
 Use `src/astock/` for Python, `tests/` for pytest, `config/` for versioned configuration, `sql/` for schema, `docs/` for contracts and governance, and `skills/` for workflows. Local data belongs in `data/{raw,curated,warehouse}/`; generated outputs belong in `reports/`.
 
 ## Development & Style
 
-Use Python 3.12 and project-local uv. From the repository root, `export PATH="$PWD/scripts:$PATH"`, then `uv sync --locked`, `uv run pytest`, and `uv run astock doctor`. The wrapper keeps tool storage local. Use four-space indentation, type hints, `snake_case` functions/modules, and `PascalCase` classes. No formatter/linter is configured. Explain necessary new dependencies before adding them.
+Use Python 3.12 and project-local uv. From the repository root, `export PATH="$PWD/scripts:$PATH"`, then `uv sync --locked`, `uv run pytest`, `uv run astock doctor`, and `uv run astock data contracts`. The wrapper keeps tool storage local. Use four-space indentation, type hints, `snake_case` functions/modules, and `PascalCase` classes. No formatter/linter is configured. Explain necessary new dependencies before adding them.
 
 ## Data Integrity
 
@@ -26,4 +26,4 @@ Name tests `test_*.py`. Test trading rules, time availability, historical rules 
 
 ## Secrets
 
-Keep `.env` local. Never commit or print secrets in logs/reports, request brokerage passwords, or introduce broker credentials in Phase 0. Commit placeholders only.
+Keep `.env` local. Never commit or print secrets in logs/reports, request brokerage passwords, or introduce broker credentials in this phase. Commit placeholders only. Public Git must exclude raw datasets, private reports, balances, holdings and personal execution history; use ignored `private/` or `data/private/`. Lightweight sanitized review evidence belongs in `docs/reviews/`.

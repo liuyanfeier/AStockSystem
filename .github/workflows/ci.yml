@@ -1,4 +1,4 @@
-name: Phase 0 checks
+name: Foundation checks
 
 on:
   push:
@@ -26,3 +26,5 @@ jobs:
         run: uv run --offline --frozen pytest
       - name: Run offline diagnostics
         run: uv run --offline --frozen astock doctor
+      - name: Validate offline dataset contracts
+        run: uv run --offline --frozen astock data contracts

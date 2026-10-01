@@ -1,0 +1,38 @@
+contract_version: '1.0'
+dataset: index_member_all
+provider: tushare
+endpoint: https://api.tushare.pro
+required_fields:
+- l1_code
+- l2_code
+- l3_code
+- ts_code
+- name
+- in_date
+- out_date
+- is_new
+natural_key:
+- l3_code
+- ts_code
+- in_date
+max_rows: 2000
+timezone: Asia/Shanghai
+units: {}
+availability_policy: UNKNOWN_UNTIL_EVIDENCE
+revision_policy: APPEND_CAPTURE_NEVER_OVERWRITE
+fetch_partition:
+- l3_code
+- is_new
+quality_checks:
+- required_columns
+- natural_key_duplicates
+- provider_row_cap
+- event_date_bounds
+source_url: https://tushare.pro/document/2?doc_id=335
+documentation_checked_on: '2026-10-01'
+update_schedule: null
+notes:
+- Explicitly select is_new; default Y alone is not complete historical membership.
+- out_date can be null. Effective in_date does not establish knowledge availability.
+- Schedule is documentation metadata, not a guaranteed availability timestamp; partitions
+  and quality checks are proposed, not executed.
