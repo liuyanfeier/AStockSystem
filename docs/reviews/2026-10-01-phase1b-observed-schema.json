@@ -1,0 +1,3559 @@
+{
+  "anchors": [
+    "2015-07-08",
+    "2019-06-25",
+    "2020-08-24",
+    "2025-08-13",
+    "2026-09-30"
+  ],
+  "availability_basis": "OBSERVED_CAPTURE",
+  "backtest_eligible": false,
+  "base_commit": "46402ebb789da2e0ee884992cfed84337a30072b",
+  "batch_id": "a3771e7b-3b2c-4fa0-a730-4e296a5268ac",
+  "captures": [
+    {
+      "dataset": "trade_cal",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "5692f1a20b051f50d1fca29ee816bde4868b19f5bbe073a4caa86416795688f7",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "cal_date": 0,
+        "exchange": 0,
+        "is_open": 0,
+        "pretrade_date": 0
+      },
+      "object_id": "bcb5317d-422c-4d69-ba6b-d0140d4b99c9",
+      "observed_fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "observed_types": {
+        "cal_date": [
+          "str"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "is_open": [
+          "int"
+        ],
+        "pretrade_date": [
+          "str"
+        ]
+      },
+      "params": {
+        "end_date": "2026-09-30",
+        "exchange": "SSE",
+        "start_date": "2026-09-01"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "row_count": 30,
+      "run_id": "df912b38-73db-42cd-9dbe-401877123ea7"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 3680,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "121e85d820d014a6ad00de50c7a3eb184fde8201b72a51d84a1b2c437df7f29e",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 2320,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "d6ef2b54-6927-4025-923b-4c24a5e1f921",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "NoneType"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "SSE",
+        "list_status": "L"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 2320,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5853,
+      "documented_cap": 6000,
+      "dq_status": "ERROR",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 1,
+      "logical_sha256": "22d2c34cab0107cd4719d6152adb29c7949b4e416a2308c24997545cffe6271d",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 1,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "5a10ddc0-6203-4886-aab5-909a9b08dbfc",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "str"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "NoneType",
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "SSE",
+        "list_status": "D"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 147,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "d0f26d7a-3c50-452d-9687-4681ae349218",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "SSE",
+        "list_status": "P"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "b6a0b939-9bf8-4d88-9587-208ce6175cdf",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "SSE",
+        "list_status": "G"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "929b87c8-acf2-4f9d-a3e7-f6ec9d4a513a",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "SSE",
+        "list_status": "UN"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 3096,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "02ad8a97d873b5332f5236f3c43c008171d5246e0f21fc761c647bdee2acbee7",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 2904,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "02496875-f13e-4533-b05c-79fee00639a2",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "NoneType"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "SZSE",
+        "list_status": "L"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 2904,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5813,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "c67d5db1d9e69f998cd15c6fa32085ec4593043dca38bab78efb378144a35a12",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "1e9d4e46-e44a-4e39-97d9-3fcda43aadbf",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "str"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "SZSE",
+        "list_status": "D"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 187,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "5f7dd41d-13a1-4082-841c-ed5e7230b4e9",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "SZSE",
+        "list_status": "P"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "ce728ca9-8636-4833-bbe7-763eb77d250d",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "SZSE",
+        "list_status": "G"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5996,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2dd9747e67c0b4675efce6a5de24ebdaf4654fda5360e98f8682e02ae17f4bf1",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 4,
+        "exchange": 0,
+        "list_date": 4,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "f8ad5bbf-8f5c-4d07-a464-f3b5c543dfb5",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "NoneType"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "NoneType"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "SZSE",
+        "list_status": "UN"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 4,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5652,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "3bd47e327ac182eebfdc02eb133801acc1db50ffb382f410f4c3e76326249e75",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 348,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "c0258ff7-9d07-43d8-91cc-113c83ffccf8",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "NoneType"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "BSE",
+        "list_status": "L"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 348,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5995,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "e08af1dab92be1edde0735c54af135b7dcb7814b7f49a8bf4a6613986ae8f66a",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "d86c2389-4e8d-48ee-9f2c-d88198db6170",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "str"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "BSE",
+        "list_status": "D"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 5,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "27529d8f-de67-406c-82bb-f39327d9fb9e",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "BSE",
+        "list_status": "P"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 6000,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "2004346c890fc075c14d7d4597ad0c165a7cef170b318fe74adfa384a6cbe211",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 0,
+        "exchange": 0,
+        "list_date": 0,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "69644c22-a3a7-4a96-9823-f0dff112be20",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [],
+        "exchange": [],
+        "list_date": [],
+        "list_status": [],
+        "market": [],
+        "name": [],
+        "symbol": [],
+        "ts_code": []
+      },
+      "params": {
+        "exchange": "BSE",
+        "list_status": "G"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 0,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "dataset": "stock_basic",
+      "distance_to_cap": 5996,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "871a62d869c4a26e6a9c468037c3715451e994aeb8d0df3f2d0e85660a0e2b45",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "delist_date": 4,
+        "exchange": 0,
+        "list_date": 3,
+        "list_status": 0,
+        "market": 0,
+        "name": 0,
+        "symbol": 0,
+        "ts_code": 0
+      },
+      "object_id": "f572ff79-361a-4268-a8eb-5a472e0cbf8d",
+      "observed_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "observed_types": {
+        "delist_date": [
+          "NoneType"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "list_date": [
+          "NoneType",
+          "str"
+        ],
+        "list_status": [
+          "str"
+        ],
+        "market": [
+          "str"
+        ],
+        "name": [
+          "str"
+        ],
+        "symbol": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "exchange": "BSE",
+        "list_status": "UN"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "symbol",
+        "name",
+        "market",
+        "exchange",
+        "list_status",
+        "list_date",
+        "delist_date"
+      ],
+      "row_count": 4,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2"
+    },
+    {
+      "daily": {
+        "change_max_error": 1.0658141036401503e-14,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 0.0050180505415164944,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 4511,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "61d69ab32cffe95c61587f77d32f2b7a5e11990cd18498f56c79750621bec2f5",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "4c84d7b1-65f7-4eb7-9855-39befbee9685",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 1489,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    },
+    {
+      "dataset": "daily_basic",
+      "distance_to_cap": 4533,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "746ea048ac9fa2e74b9903351aa1af80bc384121c78fd66f1b7077c86a468c0f",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "close": 0,
+        "pb": 7,
+        "pe": 120,
+        "total_mv": 0,
+        "total_share": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "turnover_rate": 0
+      },
+      "object_id": "58a0148e-2a9a-4918-974b-23835d160d49",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "observed_types": {
+        "close": [
+          "float"
+        ],
+        "pb": [
+          "NoneType",
+          "float"
+        ],
+        "pe": [
+          "NoneType",
+          "float"
+        ],
+        "total_mv": [
+          "float"
+        ],
+        "total_share": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "turnover_rate": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "row_count": 1467,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77"
+    },
+    {
+      "dataset": "adj_factor",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "cbdf47459ad9cf9ecf7ee3e0ebe551f3c51bb048fe45359bc6ef70e974bcbb8b",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "adj_factor": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "aa891d22-1216-47b3-8841-dca012c0e5f6",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "observed_types": {
+        "adj_factor": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "row_count": 2821,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f"
+    },
+    {
+      "asset_type_counts": {
+        "STK": 2783
+      },
+      "dataset": "stk_limit",
+      "distance_to_cap": 3017,
+      "documented_cap": 5800,
+      "dq_status": "PASS",
+      "exchange_counts": {
+        "SSE": 1062,
+        "SZSE": 1721
+      },
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "99195d6c30650f2f0bad717782c90cb48173a3e3a4db9c71306ac53c14386c99",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "asset_type": 0,
+        "down_limit": 0,
+        "exchange": 0,
+        "pre_close": 1,
+        "trade_date": 0,
+        "ts_code": 0,
+        "up_limit": 0
+      },
+      "object_id": "823c2fc2-7e4f-4cb6-89dd-9a84ca39355a",
+      "observed_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "observed_types": {
+        "asset_type": [
+          "str"
+        ],
+        "down_limit": [
+          "float"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "pre_close": [
+          "NoneType",
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "up_limit": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "row_count": 2783,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12"
+    },
+    {
+      "dataset": "stock_st",
+      "distance_to_cap": 945,
+      "documented_cap": 1000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "d3c51adff1426614779a637b36d5945da90170df7acf058aaa3a2c55d59b8cfe",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "name": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "type": 0,
+        "type_name": 0
+      },
+      "object_id": "54866db9-6a7b-41bf-b01f-85fe3287e7cd",
+      "observed_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "observed_types": {
+        "name": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "type": [
+          "str"
+        ],
+        "type_name": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "row_count": 55,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8"
+    },
+    {
+      "dataset": "suspend_d",
+      "distance_to_cap": 3652,
+      "documented_cap": 5000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "da77c97d8e0fcaa6a8ac7eb181b8c5744f0ad357e5a9a84b8433aa111db97796",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "suspend_timing": 1317,
+        "suspend_type": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "917e25a6-5d66-41b2-8146-ff9878a8c6f8",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "observed_types": {
+        "suspend_timing": [
+          "NoneType",
+          "str"
+        ],
+        "suspend_type": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2015-07-08"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "row_count": 1348,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e"
+    },
+    {
+      "daily": {
+        "change_max_error": 1.4654943925052066e-14,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 4.999999999999449e-05,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 2356,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "feec422b6211e0d8adf6b56bb77c2e878abfdfcdfc4f7db28f055ada3001bb6b",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "1d86d60b-e0cf-4929-875c-506bdc059fc4",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 3644,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    },
+    {
+      "dataset": "daily_basic",
+      "distance_to_cap": 2393,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "b43df27fd1185f9f955289d38f00212ed974eda8804f46354507947cf0e43cba",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "close": 0,
+        "pb": 27,
+        "pe": 442,
+        "total_mv": 0,
+        "total_share": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "turnover_rate": 0
+      },
+      "object_id": "82259a93-6ad3-4478-8b18-b7f5801aea61",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "observed_types": {
+        "close": [
+          "float"
+        ],
+        "pb": [
+          "NoneType",
+          "float"
+        ],
+        "pe": [
+          "NoneType",
+          "float"
+        ],
+        "total_mv": [
+          "float"
+        ],
+        "total_share": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "turnover_rate": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "row_count": 3607,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77"
+    },
+    {
+      "dataset": "adj_factor",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "f341f8a5e4294af4c06dff8ae6ade3cd3e000470e6a639ca5795d6f86d0a4f0a",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "adj_factor": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "6cffc213-1047-4b6d-942f-3ebd0fa3118c",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "observed_types": {
+        "adj_factor": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "row_count": 3820,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f"
+    },
+    {
+      "asset_type_counts": {
+        "STK": 3621
+      },
+      "dataset": "stk_limit",
+      "distance_to_cap": 2179,
+      "documented_cap": 5800,
+      "dq_status": "PASS",
+      "exchange_counts": {
+        "SSE": 1468,
+        "SZSE": 2153
+      },
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "5e579f314747cd1cf07f158affa363f302ddb2dcb7bf8a7a1463a216d49d5f5e",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "asset_type": 0,
+        "down_limit": 0,
+        "exchange": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "up_limit": 0
+      },
+      "object_id": "92b05675-5001-4876-ae34-1fe147f750ae",
+      "observed_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "observed_types": {
+        "asset_type": [
+          "str"
+        ],
+        "down_limit": [
+          "float"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "up_limit": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "row_count": 3621,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12"
+    },
+    {
+      "dataset": "stock_st",
+      "distance_to_cap": 861,
+      "documented_cap": 1000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "dad32f54df824b5c794d2471e0abd91dae62138b8681c6cec5f3138e883e1352",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "name": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "type": 0,
+        "type_name": 0
+      },
+      "object_id": "475ef80d-5b2f-4f2c-9ce5-1666d7f3daa1",
+      "observed_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "observed_types": {
+        "name": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "type": [
+          "str"
+        ],
+        "type_name": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "row_count": 139,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8"
+    },
+    {
+      "dataset": "suspend_d",
+      "distance_to_cap": 4979,
+      "documented_cap": 5000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "fa72c632897d12f49c26a02e13c0838ab083d476e410dada51227bbe7610e886",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "suspend_timing": 21,
+        "suspend_type": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "6ba0e216-9c6a-4cac-a153-e5788defca21",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "observed_types": {
+        "suspend_timing": [
+          "NoneType"
+        ],
+        "suspend_type": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "row_count": 21,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e"
+    },
+    {
+      "daily": {
+        "change_max_error": 9.237055564881302e-14,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 5.0000000000105516e-05,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 1971,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "0906c54f3e621370c4dfd3c3ded34e036ad62c87a1c416bf34db56c445e64154",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "f9cdba02-875b-42ab-9a17-302d2afe3cf3",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 4029,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    },
+    {
+      "dataset": "daily_basic",
+      "distance_to_cap": 2058,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "285d322d6647a5328c1128f5db057cfb603b716483927b5c1397998351c15071",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "close": 0,
+        "pb": 32,
+        "pe": 452,
+        "total_mv": 0,
+        "total_share": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "turnover_rate": 0
+      },
+      "object_id": "f9138188-f3a6-47ed-b097-90731d12b440",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "observed_types": {
+        "close": [
+          "float"
+        ],
+        "pb": [
+          "NoneType",
+          "float"
+        ],
+        "pe": [
+          "NoneType",
+          "float"
+        ],
+        "total_mv": [
+          "float"
+        ],
+        "total_share": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "turnover_rate": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "row_count": 3942,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77"
+    },
+    {
+      "dataset": "adj_factor",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "b0e4096413686a92ec91addbfd366ade2b71b8d359ea6ba640136adc8ea6fa6c",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "adj_factor": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "9ee9b764-1b0b-4d8b-859d-2f4060a5e016",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "observed_types": {
+        "adj_factor": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "row_count": 4185,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f"
+    },
+    {
+      "asset_type_counts": {
+        "STK": 4004
+      },
+      "dataset": "stk_limit",
+      "distance_to_cap": 1796,
+      "documented_cap": 5800,
+      "dq_status": "PASS",
+      "exchange_counts": {
+        "SSE": 1697,
+        "SZSE": 2307
+      },
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "793b2f416e8290d75714c56cc0dc74ea0f7ef498c9e0ab2cd0ca2a7659fd598f",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "asset_type": 0,
+        "down_limit": 0,
+        "exchange": 0,
+        "pre_close": 63,
+        "trade_date": 0,
+        "ts_code": 0,
+        "up_limit": 0
+      },
+      "object_id": "6eefafc7-5b0f-45aa-849a-3bf101807110",
+      "observed_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "observed_types": {
+        "asset_type": [
+          "str"
+        ],
+        "down_limit": [
+          "float"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "pre_close": [
+          "NoneType",
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "up_limit": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "row_count": 4004,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12"
+    },
+    {
+      "dataset": "stock_st",
+      "distance_to_cap": 788,
+      "documented_cap": 1000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "8714f038244823f408c2d4ea570ce70021917fd8022359237000aee124a8dca7",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "name": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "type": 0,
+        "type_name": 0
+      },
+      "object_id": "aada9e29-a760-4881-86f7-2038be7cbd20",
+      "observed_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "observed_types": {
+        "name": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "type": [
+          "str"
+        ],
+        "type_name": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "row_count": 212,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8"
+    },
+    {
+      "dataset": "suspend_d",
+      "distance_to_cap": 4956,
+      "documented_cap": 5000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "02caed41010877d79097209374da6060bf57e71c0d1e50cd9f0ab48473843bf0",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "suspend_timing": 38,
+        "suspend_type": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "213d9fd1-92eb-46e8-801b-b5ded08cf6ef",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "observed_types": {
+        "suspend_timing": [
+          "NoneType",
+          "str"
+        ],
+        "suspend_type": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2020-08-24"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "row_count": 44,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e"
+    },
+    {
+      "daily": {
+        "change_max_error": 4.3076653355456074e-14,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 5.0000000000105516e-05,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 588,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "282353dcabe38e7bd3c254620d65c80ecf2313f46bfb8fce246f664381094a33",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "b51932fb-9f90-465d-80e0-9ac49b013c7d",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 5412,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    },
+    {
+      "dataset": "daily_basic",
+      "distance_to_cap": 588,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "7caa737984b0acddea86f19f6118c8c987202efb6217dd12aa70a6c54cef37ea",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "close": 0,
+        "pb": 27,
+        "pe": 1364,
+        "total_mv": 0,
+        "total_share": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "turnover_rate": 0
+      },
+      "object_id": "bc7523ad-c148-4d3d-9678-9919e3315b77",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "observed_types": {
+        "close": [
+          "float"
+        ],
+        "pb": [
+          "NoneType",
+          "float"
+        ],
+        "pe": [
+          "NoneType",
+          "float"
+        ],
+        "total_mv": [
+          "float"
+        ],
+        "total_share": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "turnover_rate": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "row_count": 5412,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77"
+    },
+    {
+      "dataset": "adj_factor",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "903dcaf19a8dbacf48e9e011a5b66390dbc32d2ce4425c5fad96a88c941babcb",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "adj_factor": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "f3fed1ef-851b-4c2e-ac45-fef52b0e8b31",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "observed_types": {
+        "adj_factor": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "row_count": 5450,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f"
+    },
+    {
+      "asset_type_counts": {
+        "STK": 5503
+      },
+      "dataset": "stk_limit",
+      "distance_to_cap": 297,
+      "documented_cap": 5800,
+      "dq_status": "PASS",
+      "exchange_counts": {
+        "BSE": 311,
+        "SSE": 2283,
+        "SZSE": 2909
+      },
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "d8ae3b2f079245c5640b6b3ed79c750547a683113e55a27558ebcc28ea9a3174",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "asset_type": 0,
+        "down_limit": 0,
+        "exchange": 0,
+        "pre_close": 91,
+        "trade_date": 0,
+        "ts_code": 0,
+        "up_limit": 0
+      },
+      "object_id": "346d6df4-dd47-420e-ad77-1b63391549a0",
+      "observed_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "observed_types": {
+        "asset_type": [
+          "str"
+        ],
+        "down_limit": [
+          "float"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "pre_close": [
+          "NoneType",
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "up_limit": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "row_count": 5503,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12"
+    },
+    {
+      "dataset": "stock_st",
+      "distance_to_cap": 825,
+      "documented_cap": 1000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "0f2c79e3765994587c6635e84b7b286ad445b3702e9baa64f8cc9f92c6d04ead",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "name": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "type": 0,
+        "type_name": 0
+      },
+      "object_id": "4d882217-6db7-426f-935a-9fd916a9c764",
+      "observed_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "observed_types": {
+        "name": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "type": [
+          "str"
+        ],
+        "type_name": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "row_count": 175,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8"
+    },
+    {
+      "dataset": "suspend_d",
+      "distance_to_cap": 4986,
+      "documented_cap": 5000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "3de4a280db850922caf0cf7e4bac1a8fda2554360a1351ac81534f150a7096b3",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "suspend_timing": 13,
+        "suspend_type": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "3daca7de-75ba-4520-a4f5-6bfeb643de20",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "observed_types": {
+        "suspend_timing": [
+          "NoneType",
+          "str"
+        ],
+        "suspend_type": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2025-08-13"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "row_count": 14,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e"
+    },
+    {
+      "daily": {
+        "change_max_error": 1.0658141036401503e-13,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 4.999999999999449e-05,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 439,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "94f73f449330dfdc314a142f82eef1eba84694d72965e6cd374cd82e733c7e7a",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "e94648e3-5e09-481c-a920-9b26729448db",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 5561,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    },
+    {
+      "dataset": "daily_basic",
+      "distance_to_cap": 439,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "7976572f3e0445abcf53d0061061a5713ff84fdfc4a2d4b4e315d10053f231d7",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "close": 0,
+        "pb": 52,
+        "pe": 1454,
+        "total_mv": 0,
+        "total_share": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "turnover_rate": 0
+      },
+      "object_id": "818f3794-3ca4-4cda-ad22-cdb6dd3ac503",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "observed_types": {
+        "close": [
+          "float"
+        ],
+        "pb": [
+          "NoneType",
+          "float"
+        ],
+        "pe": [
+          "NoneType",
+          "float"
+        ],
+        "total_mv": [
+          "float"
+        ],
+        "total_share": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "turnover_rate": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "close",
+        "turnover_rate",
+        "pe",
+        "pb",
+        "total_share",
+        "total_mv"
+      ],
+      "row_count": 5561,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77"
+    },
+    {
+      "dataset": "adj_factor",
+      "distance_to_cap": null,
+      "documented_cap": null,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "c35d2f6b04178175cc27a600408e4337fb775128a7110c5ab54aab627371a1cd",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "adj_factor": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "d6d44152-376c-4461-9d33-c6c26b87b89f",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "observed_types": {
+        "adj_factor": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "row_count": 5572,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f"
+    },
+    {
+      "asset_type_counts": {
+        "STK": 5651
+      },
+      "dataset": "stk_limit",
+      "distance_to_cap": 149,
+      "documented_cap": 5800,
+      "dq_status": "PASS",
+      "exchange_counts": {
+        "BSE": 348,
+        "SSE": 2361,
+        "SZSE": 2942
+      },
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "ba913b7f27515da237f5de5223f8ba5495e41f6c2115a8b485ec1927634dcfee",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "asset_type": 0,
+        "down_limit": 0,
+        "exchange": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "up_limit": 0
+      },
+      "object_id": "cc784c85-50f6-470b-a9ae-58f76b3653f2",
+      "observed_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "observed_types": {
+        "asset_type": [
+          "str"
+        ],
+        "down_limit": [
+          "float"
+        ],
+        "exchange": [
+          "str"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "up_limit": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "trade_date",
+        "ts_code",
+        "pre_close",
+        "up_limit",
+        "down_limit",
+        "asset_type",
+        "exchange"
+      ],
+      "row_count": 5651,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12"
+    },
+    {
+      "dataset": "stock_st",
+      "distance_to_cap": 799,
+      "documented_cap": 1000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "033fbb278fe4b0896a009a758d03a7f0ad771a21dae8d74d1c401005d4f30f58",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "name": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "type": 0,
+        "type_name": 0
+      },
+      "object_id": "d5edc394-ea38-4446-8fee-f1cb39f4ca10",
+      "observed_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "observed_types": {
+        "name": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "type": [
+          "str"
+        ],
+        "type_name": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "row_count": 201,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8"
+    },
+    {
+      "dataset": "suspend_d",
+      "distance_to_cap": 4983,
+      "documented_cap": 5000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "07d8404aceec2f82fea800451fe62de59364dea15518b81beffb7a46901d3f27",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "suspend_timing": 15,
+        "suspend_type": 0,
+        "trade_date": 0,
+        "ts_code": 0
+      },
+      "object_id": "99a638f7-5425-4abf-ac77-2d5fd6461457",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "observed_types": {
+        "suspend_timing": [
+          "NoneType",
+          "str"
+        ],
+        "suspend_type": [
+          "str"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ]
+      },
+      "params": {
+        "trade_date": "2026-09-30"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "row_count": 17,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e"
+    },
+    {
+      "daily": {
+        "change_max_error": 1.4654943925052066e-14,
+        "change_mismatch": 0,
+        "negative_or_null_volume_amount": 0,
+        "ohlc_invalid": 0,
+        "pct_chg_max_error": 4.999999999999449e-05,
+        "pct_chg_mismatch": 0,
+        "price_nonpositive_or_null": 0
+      },
+      "dataset": "daily",
+      "distance_to_cap": 2356,
+      "documented_cap": 6000,
+      "dq_status": "PASS",
+      "invalid_event_date_count": 0,
+      "invalid_identity_count": 0,
+      "logical_sha256": "feec422b6211e0d8adf6b56bb77c2e878abfdfcdfc4f7db28f055ada3001bb6b",
+      "natural_key_duplicates": 0,
+      "null_counts": {
+        "amount": 0,
+        "change": 0,
+        "close": 0,
+        "high": 0,
+        "low": 0,
+        "open": 0,
+        "pct_chg": 0,
+        "pre_close": 0,
+        "trade_date": 0,
+        "ts_code": 0,
+        "vol": 0
+      },
+      "object_id": "645bec7e-db1e-4785-82ad-1e6414ebd645",
+      "observed_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "observed_types": {
+        "amount": [
+          "float"
+        ],
+        "change": [
+          "float"
+        ],
+        "close": [
+          "float"
+        ],
+        "high": [
+          "float"
+        ],
+        "low": [
+          "float"
+        ],
+        "open": [
+          "float"
+        ],
+        "pct_chg": [
+          "float"
+        ],
+        "pre_close": [
+          "float"
+        ],
+        "trade_date": [
+          "str"
+        ],
+        "ts_code": [
+          "str"
+        ],
+        "vol": [
+          "float"
+        ]
+      },
+      "params": {
+        "trade_date": "2019-06-25"
+      },
+      "potential_truncation": false,
+      "request_scope_mismatch": 0,
+      "requested_fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "change",
+        "pct_chg",
+        "vol",
+        "amount"
+      ],
+      "row_count": 3644,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e"
+    }
+  ],
+  "cross_audits": {
+    "2015-07-08": {
+      "adj_factor": {
+        "intersection": 1489,
+        "null_nonpositive_factor": 0,
+        "only_adj": 1332,
+        "only_daily": 0
+      },
+      "daily_basic": {
+        "close_mismatch": 0,
+        "intersection": 1467,
+        "only_daily": 22,
+        "only_daily_basic": 0
+      },
+      "stk_limit": {
+        "by_exchange": {
+          "SSE": {
+            "intersection": 710,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 352
+          },
+          "SZSE": {
+            "intersection": 756,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 965
+          }
+        },
+        "intersection": 1466,
+        "mismatch": 0,
+        "only_daily": 23,
+        "only_other": 1317
+      },
+      "stock_st": {
+        "type_name_inconsistency": 0,
+        "type_type_name_counts": {
+          "[\"ST\", \"风险警示板\"]": 55
+        },
+        "unresolved_codes": 0
+      },
+      "suspend_d": {
+        "full_day_s_with_daily": 0,
+        "r_count": 5,
+        "s_count": 1343,
+        "timing_nonnull": 31,
+        "timing_null": 1317
+      }
+    },
+    "2019-06-25": {
+      "adj_factor": {
+        "intersection": 3644,
+        "null_nonpositive_factor": 0,
+        "only_adj": 176,
+        "only_daily": 0
+      },
+      "daily_basic": {
+        "close_mismatch": 0,
+        "intersection": 3607,
+        "only_daily": 37,
+        "only_daily_basic": 0
+      },
+      "stk_limit": {
+        "by_exchange": {
+          "SSE": {
+            "intersection": 1461,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 7
+          },
+          "SZSE": {
+            "intersection": 2145,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 8
+          }
+        },
+        "intersection": 3606,
+        "mismatch": 0,
+        "only_daily": 38,
+        "only_other": 15
+      },
+      "stock_st": {
+        "type_name_inconsistency": 0,
+        "type_type_name_counts": {
+          "[\"ST\", \"风险警示板\"]": 139
+        },
+        "unresolved_codes": 0
+      },
+      "suspend_d": {
+        "full_day_s_with_daily": 0,
+        "r_count": 2,
+        "s_count": 19,
+        "timing_nonnull": 0,
+        "timing_null": 21
+      }
+    },
+    "2020-08-24": {
+      "adj_factor": {
+        "intersection": 4029,
+        "null_nonpositive_factor": 0,
+        "only_adj": 156,
+        "only_daily": 0
+      },
+      "daily_basic": {
+        "close_mismatch": 0,
+        "intersection": 3942,
+        "only_daily": 87,
+        "only_daily_basic": 0
+      },
+      "stk_limit": {
+        "by_exchange": {
+          "SSE": {
+            "intersection": 1686,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 11
+          },
+          "SZSE": {
+            "intersection": 2255,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 52
+          }
+        },
+        "intersection": 3941,
+        "mismatch": 0,
+        "only_daily": 88,
+        "only_other": 63
+      },
+      "stock_st": {
+        "type_name_inconsistency": 0,
+        "type_type_name_counts": {
+          "[\"ST\", \"风险警示板\"]": 212
+        },
+        "unresolved_codes": 0
+      },
+      "suspend_d": {
+        "full_day_s_with_daily": 0,
+        "r_count": 3,
+        "s_count": 41,
+        "timing_nonnull": 6,
+        "timing_null": 38
+      }
+    },
+    "2025-08-13": {
+      "adj_factor": {
+        "intersection": 5412,
+        "null_nonpositive_factor": 0,
+        "only_adj": 38,
+        "only_daily": 0
+      },
+      "daily_basic": {
+        "close_mismatch": 0,
+        "intersection": 5412,
+        "only_daily": 0,
+        "only_daily_basic": 0
+      },
+      "stk_limit": {
+        "by_exchange": {
+          "BSE": {
+            "intersection": 270,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 41
+          },
+          "SSE": {
+            "intersection": 2275,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 8
+          },
+          "SZSE": {
+            "intersection": 2867,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 42
+          }
+        },
+        "intersection": 5412,
+        "mismatch": 0,
+        "only_daily": 0,
+        "only_other": 91
+      },
+      "stock_st": {
+        "type_name_inconsistency": 0,
+        "type_type_name_counts": {
+          "[\"ST\", \"风险警示板\"]": 175
+        },
+        "unresolved_codes": 2
+      },
+      "suspend_d": {
+        "full_day_s_with_daily": 0,
+        "r_count": 2,
+        "s_count": 12,
+        "timing_nonnull": 1,
+        "timing_null": 13
+      }
+    },
+    "2026-09-30": {
+      "adj_factor": {
+        "intersection": 5561,
+        "null_nonpositive_factor": 0,
+        "only_adj": 11,
+        "only_daily": 0
+      },
+      "daily_basic": {
+        "close_mismatch": 0,
+        "intersection": 5561,
+        "only_daily": 0,
+        "only_daily_basic": 0
+      },
+      "stk_limit": {
+        "by_exchange": {
+          "BSE": {
+            "intersection": 348,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 0
+          },
+          "SSE": {
+            "intersection": 2315,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 46
+          },
+          "SZSE": {
+            "intersection": 2898,
+            "mismatch": 0,
+            "only_daily": 0,
+            "only_other": 44
+          }
+        },
+        "intersection": 5561,
+        "mismatch": 0,
+        "only_daily": 0,
+        "only_other": 90
+      },
+      "stock_st": {
+        "type_name_inconsistency": 0,
+        "type_type_name_counts": {
+          "[\"ST\", \"风险警示板\"]": 201
+        },
+        "unresolved_codes": 0
+      },
+      "suspend_d": {
+        "full_day_s_with_daily": 0,
+        "r_count": 4,
+        "s_count": 13,
+        "timing_nonnull": 2,
+        "timing_null": 15
+      }
+    }
+  },
+  "errors": [],
+  "implementation_commit": "3f91ecd8e17c24efeb7186be124ff8b385902f70",
+  "lineage_reconciled": true,
+  "phase": "1B",
+  "raw_reconstruction_verified": true,
+  "repeat_consistency": {
+    "fields_match": true,
+    "logical_hash_match": true,
+    "natural_keys_match": true,
+    "row_count_match": true
+  },
+  "resolved_recent_date": "2026-09-30",
+  "runs": {
+    "adj_factor": {
+      "raw_object_count": 5,
+      "request_count": 5,
+      "row_count": 21848,
+      "run_id": "c4a58af5-fb34-4609-b5f7-f6cb1ad7474f",
+      "status": "SUCCEEDED"
+    },
+    "daily": {
+      "raw_object_count": 6,
+      "request_count": 6,
+      "row_count": 23779,
+      "run_id": "922335b3-61cf-4834-9756-b9740c80e19e",
+      "status": "SUCCEEDED"
+    },
+    "daily_basic": {
+      "raw_object_count": 5,
+      "request_count": 5,
+      "row_count": 19989,
+      "run_id": "4c9c54a4-8ce4-4400-a4c2-b6adeea1db77",
+      "status": "SUCCEEDED"
+    },
+    "stk_limit": {
+      "raw_object_count": 5,
+      "request_count": 5,
+      "row_count": 21562,
+      "run_id": "51b5e0fd-d971-4136-a40b-a459f5c37e12",
+      "status": "SUCCEEDED"
+    },
+    "stock_basic": {
+      "raw_object_count": 15,
+      "request_count": 15,
+      "row_count": 5919,
+      "run_id": "310837df-b9da-4b7e-8367-1739b91474a2",
+      "status": "SUCCEEDED"
+    },
+    "stock_st": {
+      "raw_object_count": 5,
+      "request_count": 5,
+      "row_count": 782,
+      "run_id": "7896127f-15e0-41f8-b171-1cfb3c6ef2f8",
+      "status": "SUCCEEDED"
+    },
+    "suspend_d": {
+      "raw_object_count": 5,
+      "request_count": 5,
+      "row_count": 1444,
+      "run_id": "78194cfd-7f8b-4fd0-93fa-80f959bbae9e",
+      "status": "SUCCEEDED"
+    },
+    "trade_cal": {
+      "raw_object_count": 1,
+      "request_count": 1,
+      "row_count": 30,
+      "run_id": "df912b38-73db-42cd-9dbe-401877123ea7",
+      "status": "SUCCEEDED"
+    }
+  },
+  "secret_scan": "PASS",
+  "status": "PARTIAL",
+  "stock_basic": {
+    "bse_patterns": {
+      "6digits.BJ": 357
+    },
+    "bse_unexpected_pattern_count": 0,
+    "cross_partition_code_duplicates": 0,
+    "observed_market_labels": {
+      "None": 1,
+      "主板": 3487,
+      "创业板": 1453,
+      "北交所": 357,
+      "科创板": 621
+    },
+    "partition_counts": {
+      "BSE/D": 5,
+      "BSE/G": 0,
+      "BSE/L": 348,
+      "BSE/P": 0,
+      "BSE/UN": 4,
+      "SSE/D": 147,
+      "SSE/G": 0,
+      "SSE/L": 2320,
+      "SSE/P": 0,
+      "SSE/UN": 0,
+      "SZSE/D": 187,
+      "SZSE/G": 0,
+      "SZSE/L": 2904,
+      "SZSE/P": 0,
+      "SZSE/UN": 4
+    }
+  }
+}
