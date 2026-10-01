@@ -3,12 +3,12 @@
 import hashlib
 import json
 import math
-import re
 from datetime import datetime
 from collections import Counter
 
 from astock.data.contracts import DatasetContract
 from astock.data.tushare_client import ProviderTable
+from astock.data.identity import is_native_identifier, is_normalized_ashare_identifier
 
 
 def canonical_json(value) -> bytes:
@@ -47,9 +47,13 @@ def table_audit(table: ProviderTable, contract: DatasetContract) -> dict:
                   potential_truncation=cap_hit, natural_key_duplicates=duplicates,
                   null_counts={f: sum(r[f] is None for r in rows) for f in table.fields},
                   logical_sha256=logical_fingerprint(table, contract))
-    result['invalid_identity_count'] = sum(
-        not isinstance(r['ts_code'], str) or not re.fullmatch(r'[0-9]{6}\.(SH|SZ|BJ)', r['ts_code'])
-        for r in rows) if 'ts_code' in table.fields else 0
+    result['invalid_source_identifier_count'] = sum(
+        not is_native_identifier(r['ts_code']) for r in rows) if 'ts_code' in table.fields else 0
+    result['non_normalized_identifier_count'] = sum(
+        not is_normalized_ashare_identifier(r['ts_code']) for r in rows) if 'ts_code' in table.fields else 0
+    # Compatibility metric: normalization findings, not raw rejection.
+    result['invalid_identity_count'] = result['non_normalized_identifier_count']
+    result['identity_status'] = 'REVIEW_REQUIRED' if result['non_normalized_identifier_count'] else 'PASS'
     result['invalid_event_date_count'] = 0
     for r in rows:
         for field in ('trade_date', 'cal_date'):
@@ -90,7 +94,7 @@ def table_audit(table: ProviderTable, contract: DatasetContract) -> dict:
                     error = abs(observed-expected)
                     audit[label+'_max_error'] = max(audit[label+'_max_error'], error)
                     audit[label+'_mismatch'] += int(error > 0.011)
-    result['dq_status'] = ('ERROR' if cap_hit or duplicates or result['invalid_identity_count'] or result['invalid_event_date_count']
+    result['dq_status'] = ('ERROR' if cap_hit or duplicates or result['invalid_source_identifier_count'] or result['invalid_event_date_count']
         or (contract.dataset == 'stk_limit' and (result['null_counts']['asset_type'] or result['null_counts']['exchange'])) else 'PASS')
     if 'daily' in result and any(result['daily'][k] for k in (
         'ohlc_invalid', 'price_nonpositive_or_null', 'negative_or_null_volume_amount',

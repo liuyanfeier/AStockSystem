@@ -32,7 +32,7 @@ def root(tmp_path):
     return tmp_path
 
 
-def fake_client(permission=None,auth=False,redirect=False):
+def fake_client(permission=None,auth=False,redirect=False,native_anomaly=False):
     calls=[]
     def handler(request):
         req=json.loads(request.content);calls.append(req)
@@ -48,6 +48,10 @@ def fake_client(permission=None,auth=False,redirect=False):
         elif dataset=='stock_basic' and params=={'exchange':'SSE','list_status':'L'}:
             r=dict(ts_code='600001.SH',symbol='600001',name='Synthetic',market='Main',exchange='SSE',
                    list_status='L',list_date='20000101',delist_date=None)
+            rows=[[r[f] for f in fields]]
+        elif native_anomaly and dataset=='stock_basic' and params=={'exchange':'SSE','list_status':'D'}:
+            r=dict(ts_code='T123456.SH',symbol='T123456',name='Synthetic predecessor',market=None,
+                   exchange='SSE',list_status='D',list_date='20000101',delist_date='20061020')
             rows=[[r[f] for f in fields]]
         elif dataset in ('daily','daily_basic','adj_factor','stk_limit'):
             r=dict(ts_code='600001.SH',trade_date=params['trade_date'],open=10.0,high=11.0,low=9.0,
@@ -102,6 +106,17 @@ def test_handshake_stops_immediately(root,monkeypatch,condition):
     assert summary['status']=='BLOCKED'
     assert len(calls)==1
     assert summary['runs']['trade_cal']['status']=='FAILED'
+
+
+def test_native_capture_passes_source_dq_but_identity_gate_remains_partial(root,monkeypatch):
+    monkeypatch.setattr('astock.data.probe._commit',lambda root:'a'*40)
+    client,_=fake_client(native_anomaly=True)
+    summary,_=run_probe(root,Settings(tushare_token=SecretStr(SECRET)),client=client)
+    assert all(c['dq_status']=='PASS' for c in summary['captures'])
+    findings=[c for c in summary['captures'] if c['identity_status']=='REVIEW_REQUIRED']
+    assert len(findings)==1 and findings[0]['invalid_source_identifier_count']==0
+    assert findings[0]['non_normalized_identifier_count']==1
+    assert summary['status']=='PARTIAL'
 
 
 def test_permission_failure_keeps_other_captures_and_cannot_pass(root,monkeypatch):

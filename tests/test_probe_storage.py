@@ -52,6 +52,12 @@ def test_populated_migration_preserves_parent_child_rows_and_reruns():
             assert db.execute('SELECT * FROM ingestion_run').fetchall()==parents
             assert db.execute('SELECT * FROM raw_object_manifest').fetchall()==children
         db.execute("UPDATE ingestion_run SET mode='PROBE',error_category='PERMISSION' WHERE run_id=?",[str(RUN)])
+        parents=db.execute('SELECT * FROM ingestion_run').fetchall()
+        for _ in range(2):
+            db.execute((root/'sql/004_security_identifier_history.sql').read_text())
+            assert db.execute('SELECT * FROM ingestion_run').fetchall()==parents
+            assert db.execute('SELECT * FROM raw_object_manifest').fetchall()==children
+            assert db.execute('SELECT count(*) FROM security_identifier_history').fetchone()==(0,)
         with pytest.raises(duckdb.Error):
             db.execute('DELETE FROM ingestion_run WHERE run_id=?',[str(RUN)])
 

@@ -119,3 +119,24 @@ market schema is frozen. Exact token bytes are checked in generated raw bytes,
 decoded Parquet values, sidecars and aggregate review drafts before public export.
 Errors/logs never include provider bodies or exception inputs. No runtime logs are
 written by this probe. Public metadata is aggregate-only; private/raw paths remain ignored.
+
+## Phase 1B.1 identity boundary
+
+Provider-native identifier validation (nonblank exact text) and normalized A-share
+validation (six digits plus SH/SZ/BJ) are separate. Keep native values in immutable
+raw captures; normalization findings require explicit classification and evidence,
+never filtering, prefix removal or overwriting. Raw DQ PASS does not imply identity
+PASS: the probe gate also checks `identity_status` and remains PARTIAL for unresolved
+normalization. Existing Phase 1B reports retain their original metrics and status.
+
+`security_identifier_history` uses the eleven fields and append/resolve rules in
+[Security Identifier History](security_identifier_history.md). Mapping admission
+requires authoritative evidence, exact effective intervals, independently allocated
+security IDs and unambiguous source scopes. Select knowledge versions before event
+intervals. OBSERVED_CAPTURE availability cannot precede retrieval; publication dates
+alone cannot establish an intraday timestamp. No real mappings are seeded here.
+
+This bounded audit reads existing captures only and fetches public evidence, never
+market-data API responses. Private full-row findings stay ignored; the public review
+contains only the three anomaly identifiers, classifications, evidenced transitions
+and resolution limits. Historical backfill and Phase 1C require separate approval.

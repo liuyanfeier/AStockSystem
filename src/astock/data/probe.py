@@ -246,6 +246,7 @@ def run_probe(root, settings, *, client=None):
             not failures and len(summary['runs']) == 8 and summary['lineage_reconciled']
             and summary['raw_reconstruction_verified']
             and all(c['dq_status'] == 'PASS' for c in summary['captures'])
+            and all(c['identity_status'] == 'PASS' for c in summary['captures'])
             and not any(cross_has_findings(a) for a in summary['cross_audits'].values())
             and summary['repeat_consistency'] and all(summary['repeat_consistency'].values())
             and not bse_unexpected and not summary['stock_basic']['cross_partition_code_duplicates']) else 'PARTIAL'

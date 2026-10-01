@@ -1,8 +1,11 @@
 # Foundation Data Dictionary
 
 Phase 0: six foundation tables; Phase 1A: two additional governance tables.
-No real market data or trading rules. Apply `sql/001_foundation_schema.sql` then
-`sql/002_provider_lineage.sql`; schema versions 1 and 2. Dates use exchange-local calendars; timestamps
+Phase 1B.1 adds only `security_identifier_history` governance (migration 004,
+after 003); no real identity mappings are seeded.
+No market-data tables or trading rules are seeded. Apply migrations 001 through 004
+in order; schema versions 1–4. Phase 1B raw captures are stored separately.
+Dates use exchange-local calendars; timestamps
 are `TIMESTAMPTZ`. Effective date intervals are [from, to). Nullable fields mean
 unknown/not applicable, never zero. Source must be nonempty. See the data contract
 for availability evidence, null distinctions and revision handling.
@@ -215,3 +218,14 @@ completed objects and safe error numbers, never response msg. Default ignored
 DuckDB holds governance only; observations are not promoted into Phase 0 identity,
 calendar or rule tables. Sidecar metadata records exact current retrieval/availability
 and OBSERVED_CAPTURE, not historical market knowledge.
+
+## security_identifier_history (Phase 1B.1)
+
+Migration 004 adds identity governance only. Its eleven columns, types and knowledge
+semantics are defined in [Security Identifier History](security_identifier_history.md).
+`valid_from/valid_to` are DATE; publication/availability/retrieval use TIMESTAMPTZ;
+other fields use required nonblank VARCHAR. Only `valid_to` and `published_at` are
+nullable. The source-scoped lineage plus `available_at` is the primary key.
+No real mappings are seeded; code reuse must not collapse distinct securities.
+Apply through `astock.data.raw_writer.migrate`, which skips recorded migrations.
+Cross-row conflicts require `IdentityHistory.append`; SQL checks alone are insufficient.

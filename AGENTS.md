@@ -2,7 +2,7 @@
 
 ## Scope & Structure
 
-AStockSystem is a macOS A-share research project. Phase 0/1A are approved. Phase 1B permits only the bounded eight-endpoint real-data probe, raw captures, lineage and aggregate audits. No full backfill, production curated tables, selection, signals, backtests, broker integration or orders. Preserve the original planning documents; Codex_Phase1B_Small_Real_Data_Probe_Prompt_v1.0.md controls this phase. Stop after validation, commit, push and CI verification for review; Phase 1C requires approval.
+AStockSystem is a macOS A-share research project. Phase 1B implementation is accepted; its data gate remains PARTIAL. Phase 1B.1 permits only auditing existing captures, authoritative identity evidence, identity governance and synthetic tests. Do not rerun the 47-request probe or start Phase 1C/backfill, production curated tables, strategies, backtests, broker integration or orders. Preserve planning documents and historical reports. Stop after validation, commit, push and CI verification for review; Phase 1C requires approval.
 
 Use `src/astock/` for Python, `tests/` for pytest, `config/` for versioned configuration, `sql/` for schema, `docs/` for contracts and governance, and `skills/` for workflows. Local data belongs in `data/{raw,curated,warehouse}/`; generated outputs belong in `reports/`.
 
