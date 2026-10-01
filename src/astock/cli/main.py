@@ -195,3 +195,24 @@ def slice_plan_command() -> None:
     except Exception:
         typer.echo('Slice plan: FAIL (safe details only)')
         raise typer.Exit(1)
+
+
+@slice_app.command('capture')
+def slice_capture_command(live: bool=typer.Option(False,'--live'),
+                          batch: str|None=typer.Option(None,'--batch'),
+                          stop_after: int|None=typer.Option(None,'--stop-after')) -> None:
+    from astock.data.slice_capture import capture_slices
+    from uuid import UUID
+    import json
+    try:
+        root=get_project_root()
+        summary=capture_slices(root,load_settings(root),live=live,
+                               batch_id=UUID(batch) if batch else None,stop_after=stop_after)
+        typer.echo(json.dumps(summary,sort_keys=True,indent=2))
+        if summary['status']=='BLOCKED':
+            raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except Exception:
+        typer.echo('Slice capture: BLOCKED (safe details only; no automatic retry)')
+        raise typer.Exit(1)

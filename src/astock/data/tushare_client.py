@@ -94,6 +94,19 @@ class TushareClient:
             raise ValueError('Only one Phase 1C.0 mapping attempt is permitted')
         return self._fetch(contract, RequestParams(), attempts=1)
 
+    def fetch_slice(self, contract: DatasetContract, params: RequestParams) -> ProviderTable:
+        from astock.data.slice_plan import APPROVED, DATASETS
+        allowed_dates = {date for dates in APPROVED.values() for date in dates}
+        calendars = {(min(dates), max(dates)) for dates in APPROVED.values()}
+        scope = params.public_dict()
+        market = (contract.dataset in DATASETS and set(scope) == {'trade_date'}
+                  and scope['trade_date'] in allowed_dates)
+        calendar = (contract.dataset == 'trade_cal' and set(scope) == {'exchange','start_date','end_date'}
+                    and scope['exchange'] == 'SSE' and (scope['start_date'],scope['end_date']) in calendars)
+        if contract.contract_version != '2.0' or not (market or calendar):
+            raise ValueError('Request outside approved Phase 1C.1 slices')
+        return self._fetch(contract, params, attempts=1)
+
     def _fetch(self, contract: DatasetContract, params: RequestParams, *, attempts: int) -> ProviderTable:
         if threading.get_ident() != self._owner_thread:
             raise ValueError('Phase 1B client is single-threaded')
