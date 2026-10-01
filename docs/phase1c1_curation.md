@@ -35,3 +35,33 @@ hashes against generation zero, including schema, units, usage and row provenanc
 Logical hashes exclude new publication time and run IDs; file hashes are separate.
 A partial curation publication fails closed and requires investigation rather than
 silently reusing an incomplete generation. No automatic HTTP recovery is involved.
+
+## DQ acceptance
+
+`astock data slice dq --batch <UUID>` verifies every raw and curated hash, schema,
+identity snapshot, request receipt and row derivation. Cross-table checks use
+resolved intersections; missing/provider-only sets are reported separately.
+Price tolerance is 0.011 currency units; causal percentage tolerance is 0.011
+percentage points. The independent observed-factor return audit allows the
+explicit quoted-pre_close rounding allowance `100 * 0.011 / pre_close` additionally.
+Thresholds are fixed before live capture and never adjusted to obtain a pass.
+
+Expected coverage uses frozen historical venue start dates, not today's active
+stock list. Missing rows require full-day S suspension, a listing boundary or
+explicit provider delist metadata review; unexplained gaps are errors. Provider
+status-only records, pre-BSE legacy rows and out-of-scope limits remain visible.
+Missing early stock_st data cannot prove historical absence of risk warnings.
+Open venue intervals after a provider delist date remain REVIEW, not fabricated
+closed intervals. Sparse selected boundary cases cannot establish a global last
+trading-date convention. Conversion success and DQ acceptance are distinct;
+dataset_date_audit reflects the current generation's conservative batch DQ status.
+
+The causal audit chains only adjacent SSE-calendar sessions for each security:
+`scale_t = scale_previous * previous_close / pre_close_t`, starting at 1 for each
+segment. It checks causal return against pct_chg, and independently checks observed
+factor return. Gaps reset segments; this is an audit, not a strategy or qfq series.
+The SSE-calendar adjacency basis does not independently certify every BSE session.
+Official identity intervals separately verify six pilot changes on 2025-05-06 and
+242 remaining changes on 2025-10-09, plus pre-opening exclusions. Incomplete
+observed transition pairs stay REVIEW. Errors block acceptance; review items stay
+PARTIAL until adjudicated. No DQ finding triggers new provider requests.

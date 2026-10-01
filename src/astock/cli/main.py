@@ -230,3 +230,32 @@ def slice_curate_command(batch: str=typer.Option(...,'--batch'),
     except Exception:
         typer.echo('Slice curation: BLOCKED (safe details only; inspect private evidence)')
         raise typer.Exit(1)
+
+
+@slice_app.command('specs')
+def slice_specs_command() -> None:
+    """Validate the corrected Phase 1C.1 typed catalog offline."""
+    from astock.data.curation import load_curation_specs
+    try:
+        specs=load_curation_specs(get_project_root(),spec_version='v2')
+        typer.echo(f'Slice curation v2: PASS ({len(specs)}); offline')
+    except Exception:
+        typer.echo('Slice specs: FAIL (safe details only)')
+        raise typer.Exit(1)
+
+
+@slice_app.command('dq')
+def slice_dq_command(batch: str=typer.Option(...,'--batch')) -> None:
+    """Audit only the stored bounded generation without contacting providers."""
+    from astock.data.slice_dq import dq_slices
+    from uuid import UUID
+    import json
+    try:
+        summary=dq_slices(get_project_root(),UUID(batch))
+        typer.echo(json.dumps(summary,sort_keys=True,indent=2))
+        if summary['error_count']:raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except Exception:
+        typer.echo('Slice DQ: BLOCKED (safe details only; inspect private evidence)')
+        raise typer.Exit(1)

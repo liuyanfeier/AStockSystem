@@ -34,3 +34,7 @@ jobs:
         run: |
           uv run --offline --frozen astock data contracts --catalog v2
           uv run --offline --frozen astock data identity specs
+      - name: Validate bounded slices and corrected curation specs offline
+        run: |
+          uv run --offline --frozen astock data slice plan
+          uv run --offline --frozen astock data slice specs
