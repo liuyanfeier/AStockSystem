@@ -37,7 +37,7 @@ class CurationField(BaseModel):
 
 class CurationSpec(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True, hide_input_in_errors=True)
-    spec_version: Literal['1.0']
+    spec_version: Literal['1.0', '2.0']
     dataset: str
     source_catalog_version: Literal['v2']
     research_usage: str
@@ -68,14 +68,18 @@ class CurationSpec(BaseModel):
         return pa.Table.from_batches([], schema=self.arrow_schema())
 
 
-def load_curation_specs(root: Path) -> tuple[CurationSpec, ...]:
+def load_curation_specs(root: Path, *, spec_version: str='v1') -> tuple[CurationSpec, ...]:
+    if spec_version not in ('v1','v2'):
+        raise ValueError('Unknown curation version')
     contracts = {c.dataset: c for c in load_contracts(root, catalog_version='v2')}
     specs = tuple(CurationSpec.model_validate(yaml.safe_load(p.read_text()))
-                  for p in sorted((root/'config/curation/v1').glob('*.yaml')))
+                  for p in sorted((root/f'config/curation/{spec_version}').glob('*.yaml')))
     if len(specs) != len(USAGES) or {s.dataset for s in specs} != set(USAGES):
         raise ValueError('Curation specification set differs')
     for s in specs:
-        if not (root/f'config/curation/v1/{s.dataset}.yaml').is_file():
+        if s.spec_version != {'v1':'1.0','v2':'2.0'}[spec_version]:
+            raise ValueError('Specification version differs')
+        if not (root/f'config/curation/{spec_version}/{s.dataset}.yaml').is_file():
             raise ValueError('Curation filename must match dataset')
         if [f.source_column for f in s.fields] != contracts[s.dataset].required_fields:
             raise ValueError('Curation source columns differ from pinned catalog')

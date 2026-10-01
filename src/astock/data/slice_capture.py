@@ -58,6 +58,14 @@ def batch_requests(db, batch_id: UUID) -> list[dict]:
     return [dict(zip(columns,r,strict=True)) for r in result.fetchall()]
 
 
+def validate_requests(requests, manifest):
+    if len(requests)!=len(manifest['requests']):raise SliceStop('LINEAGE')
+    for receipt,planned in zip(requests,manifest['requests'],strict=True):
+        for key in ('ordinal','request_id','slice_name','dataset','contract_catalog','contract_hash'):
+            if receipt[key]!=planned[key]:raise SliceStop('FROZEN_INPUT_CHANGED')
+        if json.loads(receipt['request_params'])!=planned['request_params']:raise SliceStop('FROZEN_INPUT_CHANGED')
+
+
 def validate_capture(table: ProviderTable, contract, params: RequestParams, slice_name: str) -> dict:
     if table.fields != contract.required_fields and set(table.fields) != set(contract.required_fields):
         raise SliceStop('SCHEMA')
@@ -87,10 +95,12 @@ def validate_capture(table: ProviderTable, contract, params: RequestParams, slic
 
 
 def _object_table(root: Path, db, request: dict) -> tuple[ProviderTable, dict]:
-    result = db.execute('SELECT object_id,relative_path,sha256,retrieved_at FROM raw_object_manifest WHERE run_id=?',[str(request['run_id'])]).fetchall()
+    result = db.execute('SELECT object_id,relative_path,sha256,retrieved_at,request_params,dataset FROM raw_object_manifest WHERE run_id=?',[str(request['run_id'])]).fetchall()
     if len(result) != 1:
         raise SliceStop('LINEAGE')
-    oid,relative,checksum,retrieved = result[0]
+    oid,relative,checksum,retrieved,params,dataset = result[0]
+    if json.loads(params)!=json.loads(request['request_params']) or dataset!=request['dataset']:
+        raise SliceStop('LINEAGE')
     path=root/relative
     if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()/'data/raw') or hashlib.sha256(path.read_bytes()).hexdigest()!=checksum:
         raise SliceStop('LINEAGE')
@@ -167,6 +177,7 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
         prior=db.execute('SELECT identity_snapshot_hash,code_commit FROM slice_batch WHERE batch_id=?',[str(batch_id)]).fetchone()
         if prior is None or prior!=(snapshot,commit):
             raise SliceStop('FROZEN_INPUT_CHANGED')
+        validate_requests(batch_requests(db,batch_id),manifest)
         # A stored capture can finish its receipt after a crash, without HTTP replay.
         for req in batch_requests(db,batch_id):
             contract=contracts[req['dataset']]

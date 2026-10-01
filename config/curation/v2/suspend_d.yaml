@@ -1,0 +1,33 @@
+spec_version: '2.0'
+dataset: suspend_d
+source_catalog_version: v2
+research_usage: EXECUTION_FACT_ONLY
+fields:
+- source_column: ts_code
+  target_column: ts_code
+  logical_type: string
+  nullable_policy: FORBID
+  unit: dimensionless
+  identity_requirement: RESOLVED_AS_OF_EVENT
+  research_usage: EXECUTION_FACT_ONLY
+- source_column: trade_date
+  target_column: trade_date
+  logical_type: date32
+  nullable_policy: FORBID
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_FACT_ONLY
+- source_column: suspend_timing
+  target_column: suspend_timing
+  logical_type: string
+  nullable_policy: PRESERVE_NULL
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_FACT_ONLY
+- source_column: suspend_type
+  target_column: suspend_type
+  logical_type: string
+  nullable_policy: PRESERVE_NULL
+  unit: dimensionless
+  identity_requirement: NONE
+  research_usage: EXECUTION_FACT_ONLY

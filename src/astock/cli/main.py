@@ -216,3 +216,17 @@ def slice_capture_command(live: bool=typer.Option(False,'--live'),
     except Exception:
         typer.echo('Slice capture: BLOCKED (safe details only; no automatic retry)')
         raise typer.Exit(1)
+
+
+@slice_app.command('curate')
+def slice_curate_command(batch: str=typer.Option(...,'--batch'),
+                         rebuild: bool=typer.Option(False,'--rebuild')) -> None:
+    """Resolve captured identifiers and curate locally, with no network."""
+    from astock.data.slice_curate import curate_slices
+    from uuid import UUID
+    import json
+    try:
+        typer.echo(json.dumps(curate_slices(get_project_root(),UUID(batch),rebuild=rebuild),sort_keys=True,indent=2))
+    except Exception:
+        typer.echo('Slice curation: BLOCKED (safe details only; inspect private evidence)')
+        raise typer.Exit(1)
