@@ -143,3 +143,18 @@ AStockSystem/
 ## RECOMMENDED NEXT TASK
 
 先由用户和 reviewer 审查本报告、数据契约、六表 schema 与风险空模板。通过后单独下达 Phase 1 规格，先核验数据源覆盖及 PIT 可获得性，再实现接入与数据审计。**本次执行到此停止。**
+
+## Review Remediation Addendum — 2026-10-01
+
+Reviewer 基线：`dba97b381c1b45948e47a4c449b1c5c6810342bb`。本次仅修正审查事项，原验收记录保持不变。
+
+- `.gitignore`、`.env.example`、`.python-version` 已在后续提交 `f1dcbc523f4cbed399d321d75843602e8481e2a2` 中提交并同步 GitHub；本轮核验均存在且已跟踪，不创建重复提交。凭据示例仍为空。
+- `settlement_t_plus_n` 改为 `sell_delay_trading_days`：仅描述买入后变得可卖所需的后续交易日数，买入日为 0，休市日不计。NULL 为未知，不默认为 0。现金交收目前无需求，未增加字段，也不能从可卖延迟推导现金交收。
+- SQL、数据字典、数据契约和 schema 测试同步修正；没有插入任何实际交易规则。四项新增测试检查未知／零／正数保存及无默认值，原负数拒绝测试使用新字段。
+- 当前没有磁盘数据库或真实规则数据，因此最小修正直接更新 Phase 0 建表定义，不引入迁移框架。已用旧定义创建的数据库不会被 `CREATE TABLE IF NOT EXISTS` 自动改名；此类数据库需单独迁移或在确认为可丢弃的空库后重建。
+- 新增 `.github/workflows/ci.yml`：push 与 pull_request 触发，Python 3.12，uv 0.12.21，`uv sync --locked --dev`，然后离线执行 pytest 和 doctor。无 TUSHARE_TOKEN 要求或市场数据 API 调用。软件依赖安装需要网络。
+- 审查摘要／清单采用 [docs/reviews/ 政策](reviews/README.md)；大体积运行报告仍忽略。仅定义存储政策，没有构建报告基础设施。
+- 本地 `uv sync --locked --offline` 成功；完整测试 **62 passed（1.23 秒）**；`uv run --offline --frozen astock doctor` 为 **PASS**，token configured 为 NO。Workflow YAML 结构检查通过；GitHub hosted CI 尚未实际运行，需推送后验证。
+- 暂存前索引为空，并明确确认不提交真实 `.env`、token／凭据、数据库、行情数据、`.tools` 或 `.venv`。仅按七个修正文件的明确清单暂存，提交前再次检查实际索引内容和秘密模式。
+
+未改变依赖或 lock 文件，未开始 Phase 1，未实现数据接入、行情表、策略、回测、券商或下单代码。待 reviewer 审查后再决定下一步。

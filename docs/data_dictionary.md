@@ -71,13 +71,20 @@ effective regimes receive distinct IDs; corrections append knowledge versions.
 | effective_to | DATE / nullable | Exclusive effective end, strictly after start |
 | price_limit_rule | VARCHAR / required | Rule description including applicability; not executable code |
 | price_limit_fraction | DECIMAL(9,6) / nullable | Fraction 0–1; NULL is not unlimited trading |
-| settlement_t_plus_n | INTEGER / nullable | Nonnegative settlement/resale restriction descriptor; full applicability in notes |
+| sell_delay_trading_days | INTEGER / nullable | Minimum subsequent trading days before a purchased position becomes eligible for sale; purchase day is day 0; NULL means unknown |
 | lot_size | INTEGER / nullable | Positive share count where one scalar suffices |
 | lot_size_rule | VARCHAR / nullable | Minimum/increment/sell-odd-lot exceptions |
 | special_ipo_rule | VARCHAR / nullable | IPO/new-listing exceptions, including duration |
 | notes | VARCHAR / nullable | Additional scope and official-document references |
 
-No current rules are seeded. Complex limits, T+N exceptions and lot rules require
+This field describes resale eligibility only, not cash clearing, settlement,
+cash withdrawal or other execution constraints. Count subsequent open dates in
+the applicable exchange calendar; weekends/holidays do not increment the delay.
+Zero means no trading-day delay from this restriction alone. There is no default;
+NULL must not be treated as zero. Cash settlement is not currently needed and has
+no column; if introduced, it needs a separate field with its own calendar/unit.
+
+No current rules are seeded. Complex limits, resale exceptions and lot rules require
 structured contracts before an execution engine can consume them. No default
 matching priority is implied; overlapping/conflicting applicability must be audited.
 

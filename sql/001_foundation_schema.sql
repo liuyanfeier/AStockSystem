@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS market_rule_history (
     effective_to DATE,
     price_limit_rule VARCHAR NOT NULL,
     price_limit_fraction DECIMAL(9, 6),
-    settlement_t_plus_n INTEGER,
+    -- Resale eligibility only: purchase day is day 0; count later open days.
+    -- NULL is unknown, not immediate eligibility. Cash settlement is not modeled.
+    sell_delay_trading_days INTEGER,
     lot_size INTEGER,
     lot_size_rule VARCHAR,
     special_ipo_rule VARCHAR,
@@ -56,7 +58,7 @@ CREATE TABLE IF NOT EXISTS market_rule_history (
     PRIMARY KEY (rule_id, source, available_at),
     CHECK (effective_to IS NULL OR effective_to > effective_from),
     CHECK (price_limit_fraction IS NULL OR price_limit_fraction BETWEEN 0 AND 1),
-    CHECK (settlement_t_plus_n IS NULL OR settlement_t_plus_n >= 0),
+    CHECK (sell_delay_trading_days IS NULL OR sell_delay_trading_days >= 0),
     CHECK (lot_size IS NULL OR lot_size > 0),
     CHECK (published_at IS NULL OR available_at >= published_at)
 );

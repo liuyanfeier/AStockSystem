@@ -38,7 +38,7 @@ def insert_rule(database, **overrides):
         "rule_id": "synthetic-rule", "exchange": "TEST_EXCHANGE", "board": "TEST_BOARD",
         "security_status": "TEST_STATUS", "effective_from": "2020-01-01",
         "effective_to": None, "price_limit_rule": "synthetic, not an actual trading rule",
-        "price_limit_fraction": None, "settlement_t_plus_n": None, "lot_size": None,
+        "price_limit_fraction": None, "sell_delay_trading_days": None, "lot_size": None,
         "source": "synthetic-fixture", "published_at": "2019-12-01 08:00:00+00",
         "available_at": "2019-12-01 09:00:00+00",
     }
@@ -113,12 +113,35 @@ def test_security_revisions_and_delisted_records_are_retained(database):
 @pytest.mark.parametrize("overrides", [
     {"effective_to": "2019-12-31"}, {"effective_to": "2020-01-01"},
     {"price_limit_fraction": -0.1}, {"price_limit_fraction": 1.1},
-    {"settlement_t_plus_n": -1}, {"lot_size": 0},
+    {"sell_delay_trading_days": -1}, {"lot_size": 0},
     {"available_at": "2019-12-01 07:59:59+00"}, {"source": ""},
 ])
 def test_rules_reject_invalid_contract_values(database, overrides):
     with pytest.raises(duckdb.ConstraintException):
         insert_rule(database, **overrides)
+
+
+@pytest.mark.parametrize("delay", [None, 0, 2])
+def test_rule_resale_delay_preserves_unknown_zero_and_positive_values(database, delay):
+    # Synthetic storage cases only; no actual exchange rule is being asserted.
+    insert_rule(database, sell_delay_trading_days=delay)
+    assert database.execute(
+        "SELECT sell_delay_trading_days FROM market_rule_history"
+    ).fetchone() == (delay,)
+
+
+def test_rule_delay_has_explicit_semantics_and_no_default(database):
+    columns = {
+        row[0]: row[1]
+        for row in database.execute("""
+            SELECT column_name, column_default FROM information_schema.columns
+            WHERE table_name = 'market_rule_history'
+        """).fetchall()
+    }
+    assert "sell_delay_trading_days" in columns
+    assert columns["sell_delay_trading_days"] is None
+    assert "settlement_t_plus_n" not in columns
+    assert "cash_settlement_days" not in columns
 
 
 def test_future_effective_rule_can_be_known_earlier(database):
