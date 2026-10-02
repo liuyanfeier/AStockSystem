@@ -6,7 +6,8 @@ from pathlib import Path
 from uuid import uuid4
 
 from astock.data.raw_validation import require, rows_dict
-from astock.data.receipt_integrity import (VALIDATOR_VERSION, batch_requests, binding_schema_exists,
+from astock.data.receipt_schema import require_integrity_schema
+from astock.data.receipt_integrity import (VALIDATOR_VERSION, batch_requests,
                                          check_binding, frozen_context, validate_slice_batch,
                                          validate_slice_receipt)
 
@@ -15,7 +16,7 @@ def register_completion(root: Path, db, request: dict, *, verification_sha: str,
                         context=None, purpose: str = 'FINALIZE'):
     """Run inside the owner's transaction; never trust a caller-supplied proof."""
     require(bool(re.fullmatch('[0-9a-f]{40}', verification_sha)), 'VERIFICATION_COMMIT_REQUIRED')
-    require(binding_schema_exists(db), 'BINDING_SCHEMA_REQUIRED')
+    require_integrity_schema(db, published=purpose != 'UPGRADE')
     proof = validate_slice_receipt(root, db, request, context=context, require_binding=False)
     existing = db.execute('SELECT count(*) FROM slice_receipt_completion_binding WHERE batch_id=? AND ordinal=?',
                           [str(request['batch_id']), request['ordinal']]).fetchone()[0]
@@ -47,6 +48,8 @@ def apply_receipt_integrity_upgrade(root: Path, db, *, verification_sha: str) ->
         version = db.execute('SELECT max(version) FROM schema_version').fetchone()[0]
         tables = db.execute("SELECT count(*) FROM information_schema.tables WHERE table_name IN ('slice_receipt_completion_binding','slice_receipt_validation_audit')").fetchone()[0]
         require((version == 7 and tables == 2) or (version == 6 and tables == 0), 'UPGRADE_SCHEMA_CONFLICT')
+        if version == 7:
+            require_integrity_schema(db)
         batches = rows_dict(db, 'SELECT batch_id FROM slice_batch ORDER BY batch_id', [])
         contexts = {}
         # Validate historical evidence before any DDL/DML; no guessed repair.
@@ -58,6 +61,7 @@ def apply_receipt_integrity_upgrade(root: Path, db, *, verification_sha: str) ->
                                  require_binding=version == 7)
         if version == 6:
             db.execute((root / 'sql/007_slice_receipt_integrity.sql').read_text())
+            require_integrity_schema(db, published=False)
             for batch in batches:
                 batch_id = batch['batch_id']
                 for request in batch_requests(db, batch_id):
@@ -71,6 +75,7 @@ def apply_receipt_integrity_upgrade(root: Path, db, *, verification_sha: str) ->
                 for proof in proofs:
                     check_binding(db, proof)
             db.execute("INSERT INTO schema_version(version,migration_id,description) VALUES (7,'007_slice_receipt_integrity','Exact receipt binding and append-only validation history')")
+            require_integrity_schema(db)
         db.execute('COMMIT')
         return dict(schema_version=7, result='ALREADY_VALID' if version == 7 else 'UPGRADED',
                     batches_checked=len(batches))

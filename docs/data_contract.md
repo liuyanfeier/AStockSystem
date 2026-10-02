@@ -194,3 +194,24 @@ requires no token and never captures, claims or migrates. Explicit
 review approval. Verification commit/time are separate from capture provenance.
 R1-G1 implements and tests these guarantees on synthetic isolated storage only;
 DB process locking/atomic claim remain R1-G2, real deployment/validation R1-G3.
+
+
+## R1-G1 independent review corrections
+
+PENDING must describe an unexecuted request: zero attempts, no object/failure,
+pre-created RUNNING run with no finish/error and zero request/raw/row counters,
+no registered raw manifest and no accepted binding. Batch preflight and claim
+reject contradictory execution evidence with `PENDING_EXECUTION_CONFLICT`;
+upgrade/client construction/fetch cannot precede this check. Preserve all old
+facts. Pre-created `started_at` alone is not execution evidence. IN_FLIGHT local
+recovery and FAILED/UNCERTAIN blocking retain their existing semantics.
+
+Normal007 admission and repeat upgrade require the exact migration ID, persistent
+main tables, required columns/types/nullability and PK/UNIQUE/FK/CHECK guarantees.
+The locked DuckDB engine compares normalized catalog structures against an isolated
+in-memory reference built from versioned SQL; CHECK expressions are parsed catalog
+values, not SQL source-string comparisons. Invalid/shadow schemas fail closed with
+`BINDING_SCHEMA_REQUIRED` (upgrade name conflicts: `UPGRADE_SCHEMA_CONFLICT`).
+No source database is repaired. Before publishing version7, the explicit upgrade
+checks the same structure within its transaction; only that internal path can
+omit the not-yet-published version record. See the [G1 correction report](reviews/2026-10-02-phase1c1-r1-g1-fix-review.md).

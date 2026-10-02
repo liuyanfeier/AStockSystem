@@ -111,6 +111,14 @@ def create_batch(root: Path, db, *, commit: str, identity_hash: str,
 
 def claim_request(db, batch_id: UUID, ordinal: int) -> None:
     """Durably consume one attempt before any network call; never replay IN_FLIGHT."""
+    from astock.data.raw_validation import rows_dict
+    from astock.data.receipt_integrity import validate_pending_request
+
+    pending = rows_dict(db, 'SELECT * FROM slice_request WHERE batch_id=? AND ordinal=?',
+                       [str(batch_id), ordinal])
+    if len(pending) != 1 or pending[0]['status'] != 'PENDING':
+        raise ValueError('Request is not pending; never duplicate a capture')
+    validate_pending_request(db, pending[0])
     result = db.execute("UPDATE slice_request SET status='IN_FLIGHT',attempts=1 WHERE batch_id=? AND ordinal=? AND status='PENDING' AND attempts=0 RETURNING run_id",[str(batch_id),ordinal]).fetchall()
     if len(result) != 1:
         raise ValueError('Request is not pending; never duplicate a capture')

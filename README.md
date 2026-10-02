@@ -2,7 +2,7 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，正在按 Gate 修复审查发现。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)；[R1-G0 库存与设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md) 已由用户转达 REVIEW 通过；当前交付为 [R1-G1 回执完整性修复](docs/reviews/2026-10-02-phase1c1-r1-g1-review.md)，等待独立 REVIEW。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，正在按 Gate 修复审查发现。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)；[R1-G0 库存与设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md) 已由用户转达 REVIEW 通过；[R1-G1 初次交付](docs/reviews/2026-10-02-phase1c1-r1-g1-review.md) 经[独立审查](docs/reviews/2026-10-02-phase1c1-r1-g1-independent-review.md)判定 CHANGES_REQUIRED；当前交付为 [G1 两项补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)，等待新 SHA 的独立 REVIEW。
 
 本轮已执行固定 21 个交易日和 7 个小窗口日历检查，共 133 次请求；后续仅审查已有本地证据。已生成带身份隔离和谱系的 Parquet 审查输出，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 

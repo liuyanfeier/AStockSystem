@@ -17,6 +17,7 @@ from astock.data.probe_audit import canonical_json
 from astock.data.raw_validation import (instant, require, rows_dict, safe_file, same_json,
                                        sha256, strict_json, typed_params, validate_raw_run)
 from astock.data.slice_errors import ReceiptIntegrityError
+from astock.data.receipt_schema import require_integrity_schema
 from astock.data.slice_plan import request_manifest
 from astock.data.tushare_client import ProviderTable
 
@@ -111,10 +112,29 @@ def binding_schema_exists(db) -> bool:
     return bool(db.execute("SELECT count(*) FROM information_schema.tables WHERE table_name='slice_receipt_completion_binding'").fetchone()[0])
 
 
-def require_integrity_schema(db) -> None:
-    tables = db.execute("SELECT count(*) FROM information_schema.tables WHERE table_name IN ('slice_receipt_completion_binding','slice_receipt_validation_audit')").fetchone()[0]
-    version = db.execute('SELECT migration_id FROM schema_version WHERE version=7').fetchall()
-    require(tables == 2 and version == [('007_slice_receipt_integrity',)], 'BINDING_SCHEMA_REQUIRED')
+def validate_pending_request(db, request: dict, *, binding_present: bool | None = None) -> None:
+    """PENDING means unexecuted, despite the legacy pre-created RUNNING run."""
+    require(request['status'] == 'PENDING' and request['attempts'] == 0
+            and request['object_id'] is None and request['failure_code'] is None,
+            'PENDING_EXECUTION_CONFLICT')
+    runs = rows_dict(db, 'SELECT * FROM ingestion_run WHERE run_id=?', [str(request['run_id'])])
+    require(len(runs) == 1, 'PENDING_EXECUTION_CONFLICT')
+    run = runs[0]
+    require(run['status'] == 'RUNNING' and run['finished_at'] is None
+            and all(run[k] == 0 for k in ('request_count', 'raw_object_count', 'row_count'))
+            and all(run[k] is None for k in ('error_category', 'error_http_status', 'error_provider_code')),
+            'PENDING_EXECUTION_CONFLICT')
+    require(db.execute('SELECT count(*) FROM raw_object_manifest WHERE run_id=?',
+                       [str(request['run_id'])]).fetchone()[0] == 0, 'PENDING_EXECUTION_CONFLICT')
+    if binding_present is None:
+        binding_present = binding_schema_exists(db)
+        if binding_present:
+            require_integrity_schema(db)
+    if binding_present:
+        require(db.execute('''SELECT count(*) FROM slice_receipt_completion_binding
+            WHERE (batch_id=? AND (ordinal=? OR request_id=?)) OR run_id=?''',
+            [str(request['batch_id']), request['ordinal'], request['request_id'],
+             str(request['run_id'])]).fetchone()[0] == 0, 'PENDING_EXECUTION_CONFLICT')
 
 
 def check_binding(db, proof: ReceiptProof) -> None:
@@ -221,6 +241,12 @@ def validate_slice_batch(root: Path, db, batch_id: UUID, *, complete: bool = Tru
     context = context or frozen_context(root, db, batch_id)
     requests = batch_requests(db, batch_id)
     validate_requests(requests, context.plan)
+    binding_present = binding_schema_exists(db)
+    if binding_present:
+        require_integrity_schema(db, published=require_binding)
+    for request in requests:
+        if request['status'] == 'PENDING':
+            validate_pending_request(db, request, binding_present=binding_present)
     if complete:
         require(all(r['status'] == 'COMPLETE' for r in requests), 'BATCH_INCOMPLETE')
     proofs = [validate_slice_receipt(root, db, r, context=context, require_binding=require_binding)
