@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import pytest
 from typer.testing import CliRunner
@@ -235,7 +236,7 @@ def test_bad_complete_blocks_pending_before_client_and_preserves_history(slice_r
     first = capture_slices(slice_root, settings(), live=True, stop_after=1,
                            client=SyntheticCaptureClient(), commit=SHA)
     batch = UUID(first['batch_id']); path = slice_root / 'data/warehouse/astock.duckdb'
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         # Synthetic legacy-invalid row: FK already protects accepted bindings.
         db.execute('DELETE FROM slice_receipt_completion_binding WHERE ordinal=0')
         db.execute('UPDATE slice_request SET object_id=? WHERE ordinal=0', [str(uuid4())])
@@ -249,7 +250,7 @@ def test_bad_complete_blocks_pending_before_client_and_preserves_history(slice_r
     # Also verify the default constructor path is never reached.
     capture_slices(slice_root, settings(), live=True, batch_id=batch, commit=SHA)
     assert not constructed
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         assert db.execute('SELECT * FROM slice_request').fetchall() == before
         assert db.execute('SELECT * FROM ingestion_run').fetchall() == ingestion
     assert list((slice_root / f'data/private/phase1c1/{batch}').glob('operation-block-*.json'))
@@ -257,7 +258,7 @@ def test_bad_complete_blocks_pending_before_client_and_preserves_history(slice_r
 
 def test_registered_raw_without_metadata_is_not_reconstructed(slice_root):
     path = slice_root / 'data/warehouse/astock.duckdb'
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         identity, _, _ = identity_state(db)
         batch = create_batch(slice_root, db, commit=SHA, identity_hash=identity,
                              knowledge_as_of=datetime.now(timezone.utc))
@@ -278,7 +279,7 @@ def test_finalization_is_idempotent_and_rejects_other_object(slice_root):
     result = capture_slices(slice_root, settings(), live=True, stop_after=2,
                             client=SyntheticCaptureClient(), commit=SHA)
     batch = UUID(result['batch_id'])
-    with duckdb.connect(str(slice_root / 'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root / 'data/warehouse/astock.duckdb')) as db:
         req = batch_requests(db, batch)[1]
         c = next(c for c in load_contracts(slice_root, catalog_version='v2') if c.dataset == 'daily')
         before = db.execute('SELECT * FROM ingestion_run').fetchall()
@@ -295,7 +296,7 @@ def test_finalization_is_idempotent_and_rejects_other_object(slice_root):
 
 def test_pending_only_legacy_batch_cannot_reach_client_without007(slice_root, monkeypatch):
     path = slice_root / 'data/warehouse/astock.duckdb'
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         db.execute('DROP TABLE slice_receipt_completion_binding')
         db.execute('DROP TABLE slice_receipt_validation_audit')
         db.execute('DELETE FROM schema_version WHERE version=7')
@@ -306,7 +307,7 @@ def test_pending_only_legacy_batch_cannot_reach_client_without007(slice_root, mo
     monkeypatch.setattr(TushareClient, '__init__', lambda *a, **k: constructors.append(True))
     result = capture_slices(slice_root, settings(), live=True, batch_id=batch, commit=SHA)
     assert result['failure'] == 'BINDING_SCHEMA_REQUIRED' and not constructors
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         assert db.execute('SELECT sum(attempts) FROM slice_request').fetchone() == (0,)
         assert db.execute('SELECT max(version) FROM schema_version').fetchone() == (6,)
 

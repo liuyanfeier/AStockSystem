@@ -3,6 +3,7 @@
 import shutil
 from datetime import datetime, timezone
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import pytest
 
@@ -61,7 +62,7 @@ def test_pending_binding_conflict_is_independent_of_run_counters_and_manifest(le
                                   'binding', 'finished', 'error'])
 def test_pending_execution_conflict_blocks_resume_claim_and_provider_before_mutation(slice_root, monkeypatch, fault):
     path = slice_root / 'data/warehouse/astock.duckdb'
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         identity, _, _ = identity_state(db)
         batch = create_batch(slice_root, db, commit=SHA, identity_hash=identity,
                              knowledge_as_of=datetime.now(timezone.utc))
@@ -113,7 +114,7 @@ def test_pending_execution_conflict_blocks_resume_claim_and_provider_before_muta
     result = capture_slices(slice_root, settings(), live=True, batch_id=batch, commit=SHA)
     assert result['status'] == 'BLOCKED' and result['failure'] == 'PENDING_EXECUTION_CONFLICT'
     assert calls == []
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         assert old_rows(db) == before
         assert db.execute('SELECT * FROM slice_receipt_completion_binding ORDER BY ALL').fetchall() == binding_before
         assert db.execute('SELECT * FROM slice_receipt_validation_audit ORDER BY ALL').fetchall() == audit_before
@@ -176,7 +177,7 @@ def test_empty_repeat_and_normal_admission_reject_wrong_schema_without_repair(em
 
 def test_full_complete_batch_does_not_hide_wrong_audit_table(captured):
     root, batch = captured
-    with duckdb.connect(str(root / 'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(root / 'data/warehouse/astock.duckdb')) as db:
         db.execute('DROP TABLE slice_receipt_validation_audit; CREATE TABLE slice_receipt_validation_audit(dummy INTEGER)')
         before, inventory = old_rows(db), files(root)
         binding_before = db.execute('SELECT * FROM slice_receipt_completion_binding ORDER BY ALL').fetchall()

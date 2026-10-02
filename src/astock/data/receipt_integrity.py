@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import UUID
 
-import duckdb
+from astock.data.warehouse_lock import warehouse_connection
 
 from astock.data.audit import RequestParams
 from astock.data.contracts import load_contracts
@@ -147,6 +147,20 @@ def check_binding(db, proof: ReceiptProof) -> None:
             'BINDING_MISMATCH')
 
 
+def validate_slice_directory(root: Path, request: dict, expected: set[str]) -> None:
+    """Unregistered/extra local evidence cannot be ignored or guessed into a receipt."""
+    directory = root.resolve() / 'data/raw/tushare' / request['dataset'] / f"run_id={request['run_id']}"
+    current = root.resolve()
+    for part in directory.relative_to(current).parts:
+        current /= part
+        require(not current.is_symlink(), 'UNSAFE_PATH')
+    if not directory.exists():
+        require(not expected, 'EVIDENCE_MISSING')
+        return
+    require(directory.is_dir(), 'UNSAFE_PATH')
+    require({p.name for p in directory.iterdir()} == expected, 'ORPHAN_LOCAL_EVIDENCE')
+
+
 def validate_slice_receipt(root: Path, db, request: dict, *, context: FrozenContext | None = None,
                            require_binding: bool = True, candidate: bool = False) -> ReceiptProof:
     """candidate is only for internal IN_FLIGHT local finalization, never admission."""
@@ -212,6 +226,9 @@ def validate_slice_receipt(root: Path, db, request: dict, *, context: FrozenCont
                         contract_hash=receipt['contract_hash'], request_id=receipt['request_id'],
                         request_params=params, **obj)
         require(same_json(metadata, expected), 'CAPTURE_CONTRACT_MISMATCH')
+        require(manifest['relative_path'] == f"data/raw/tushare/{receipt['dataset']}/run_id={receipt['run_id']}/part-000.parquet",
+                'RAW_REQUEST_MISMATCH')
+        validate_slice_directory(root, receipt, {'part-000.parquet', 'manifest.json', 'capture-contract.json'})
         # Freeze only capture facts. Later curation/batch status is not receipt identity.
         capture_batch = {k: context.batch[k] for k in ('batch_id', 'phase', 'plan_hash', 'identity_snapshot_hash',
                                                       'code_commit', 'knowledge_as_of', 'request_budget')}
@@ -247,6 +264,11 @@ def validate_slice_batch(root: Path, db, batch_id: UUID, *, complete: bool = Tru
     for request in requests:
         if request['status'] == 'PENDING':
             validate_pending_request(db, request, binding_present=binding_present)
+            validate_slice_directory(root, request, set())
+        elif request['status'] == 'IN_FLIGHT' and db.execute(
+                'SELECT count(*) FROM raw_object_manifest WHERE run_id=?',
+                [str(request['run_id'])]).fetchone()[0] == 0:
+            validate_slice_directory(root, request, set())
     if complete:
         require(all(r['status'] == 'COMPLETE' for r in requests), 'BATCH_INCOMPLETE')
     proofs = [validate_slice_receipt(root, db, r, context=context, require_binding=require_binding)
@@ -271,7 +293,7 @@ def verification_commit(root: Path) -> str:
 
 def audit_slice_batch(root: Path, batch_id: UUID, *, legacy_preflight: bool = False,
                       verification_sha: str | None = None) -> dict:
-    """No migration, token/client construction, claim, source writes or artifact repair."""
+    """Shared-lock read-only snapshot; no token/client, claim, DB/data writes or repair."""
     commit = verification_sha or verification_commit(root)
     require(bool(re.fullmatch('[0-9a-f]{40}', commit)), 'VERIFICATION_COMMIT_REQUIRED')
     result = dict(batch_id=str(batch_id), validator_version=VALIDATOR_VERSION,
@@ -281,7 +303,7 @@ def audit_slice_batch(root: Path, batch_id: UUID, *, legacy_preflight: bool = Fa
                   checked_count=0, failure_count=0, reasons={})
     try:
         path = safe_file(root, 'data/warehouse/astock.duckdb', under='data/warehouse')
-        with duckdb.connect(str(path), read_only=True) as db:
+        with warehouse_connection(path, read_only=True) as db:
             db.execute('BEGIN TRANSACTION')
             context = frozen_context(root, db, batch_id)
             requests = batch_requests(db, batch_id)

@@ -1,6 +1,7 @@
 from datetime import date, datetime, timezone
 from uuid import UUID
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import pyarrow.parquet as pq
 import pytest
@@ -81,7 +82,7 @@ def test_rebuild_after_deleted_outputs_and_lineage_reconstruction(slice_root):
     batch=UUID(result['batch_id'])
     first=curate_slices(slice_root,batch,commit='a'*40)
     assert first['curated_objects']==126 and first['resolved_rows']==126
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         rows=db.execute('''SELECT c.relative_path,r.relative_path FROM slice_curated_binding b
             JOIN curated_object_manifest c ON c.object_id=b.curated_object_id
             JOIN raw_object_manifest r ON r.object_id=b.raw_object_id''').fetchall()
@@ -92,6 +93,6 @@ def test_rebuild_after_deleted_outputs_and_lineage_reconstruction(slice_root):
             (slice_root/curated).unlink()
     rebuilt=curate_slices(slice_root,batch,rebuild=True,commit='a'*40)
     assert rebuilt['generation']==1 and rebuilt['rebuild_hash_match']
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         assert db.execute('SELECT count(*) FROM raw_object_manifest').fetchone()==(133,)
         assert db.execute('SELECT count(DISTINCT logical_hash) FROM slice_curated_binding GROUP BY request_id HAVING count(DISTINCT logical_hash)>1').fetchall()==[]

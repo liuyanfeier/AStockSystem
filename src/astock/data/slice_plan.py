@@ -78,6 +78,8 @@ def request_manifest(root: Path) -> dict:
 def create_batch(root: Path, db, *, commit: str, identity_hash: str,
                  knowledge_as_of: datetime) -> UUID:
     """Publish a private immutable plan before creating execution receipts."""
+    from astock.data.warehouse_lock import require_writer
+    require_writer(db)
     manifest = request_manifest(root)
     batch_id = uuid4()
     path = root/f'data/private/phase1c1/{batch_id}/request-manifest.json'
@@ -113,16 +115,29 @@ def claim_request(db, batch_id: UUID, ordinal: int) -> None:
     """Durably consume one attempt before any network call; never replay IN_FLIGHT."""
     from astock.data.raw_validation import rows_dict
     from astock.data.receipt_integrity import validate_pending_request
+    from astock.data.slice_errors import ReceiptIntegrityError
+    from astock.data.warehouse_lock import require_writer
 
-    pending = rows_dict(db, 'SELECT * FROM slice_request WHERE batch_id=? AND ordinal=?',
-                       [str(batch_id), ordinal])
-    if len(pending) != 1 or pending[0]['status'] != 'PENDING':
-        raise ValueError('Request is not pending; never duplicate a capture')
-    validate_pending_request(db, pending[0])
-    result = db.execute("UPDATE slice_request SET status='IN_FLIGHT',attempts=1 WHERE batch_id=? AND ordinal=? AND status='PENDING' AND attempts=0 RETURNING run_id",[str(batch_id),ordinal]).fetchall()
-    if len(result) != 1:
-        raise ValueError('Request is not pending; never duplicate a capture')
-    db.execute('UPDATE ingestion_run SET request_count=1 WHERE run_id=?',[str(result[0][0])])
+    require_writer(db)
+    db.execute('BEGIN TRANSACTION')
+    try:
+        pending = rows_dict(db, 'SELECT * FROM slice_request WHERE batch_id=? AND ordinal=?',
+                           [str(batch_id), ordinal])
+        if len(pending) != 1 or pending[0]['status'] != 'PENDING':
+            raise ValueError('Request is not pending; never duplicate a capture')
+        validate_pending_request(db, pending[0])
+        result = db.execute("UPDATE slice_request SET status='IN_FLIGHT',attempts=1 WHERE batch_id=? AND ordinal=? AND status='PENDING' AND attempts=0 RETURNING run_id",[str(batch_id),ordinal]).fetchall()
+        if len(result) != 1:
+            raise ReceiptIntegrityError('CLAIM_STATE')
+        # UPDATE's count result avoids DuckDB's FK limitation for RETURNING on
+        # a referenced parent; the conditional update still proves one changed row.
+        count = db.execute("UPDATE ingestion_run SET request_count=1 WHERE run_id=? AND status='RUNNING' AND request_count=0 AND raw_object_count=0 AND row_count=0 AND finished_at IS NULL",[str(result[0][0])]).fetchone()[0]
+        if count != 1:
+            raise ReceiptIntegrityError('CLAIM_STATE')
+        db.execute('COMMIT')  # The caller may fetch only after this returns successfully.
+    except Exception:
+        db.execute('ROLLBACK')
+        raise
 
 
 def resume_batch(db, batch_id: UUID, *, root: Path, expected_plan_hash: str) -> list[dict]:

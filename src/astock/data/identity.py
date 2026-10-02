@@ -5,6 +5,7 @@ from collections import defaultdict
 from datetime import date, datetime
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, field_validator, model_validator
+from astock.data.warehouse_lock import require_writer
 
 
 def is_native_identifier(value: object) -> bool:
@@ -116,6 +117,7 @@ class IdentityHistory:
         DuckDB CHECKs cannot enforce cross-row temporal overlap. Use this boundary
         for writes; direct SQL is only a schema constraint, not an identity audit.
         """
+        require_writer(db)
         db.execute("BEGIN TRANSACTION")
         try:
             result = db.execute("SELECT * FROM security_identifier_history")

@@ -2,7 +2,7 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，正在按 Gate 修复审查发现。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)；[R1-G0 库存与设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md) 已由用户转达 REVIEW 通过；[R1-G1 初次交付](docs/reviews/2026-10-02-phase1c1-r1-g1-review.md) 经[独立审查](docs/reviews/2026-10-02-phase1c1-r1-g1-independent-review.md)判定 CHANGES_REQUIRED；当前交付为 [G1 两项补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)，等待新 SHA 的独立 REVIEW。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，正在按 Gate 修复审查发现。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)；[R1-G0 库存与设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md) 已由用户转达 REVIEW 通过；[R1-G1 初次交付](docs/reviews/2026-10-02-phase1c1-r1-g1-review.md) 经[独立审查](docs/reviews/2026-10-02-phase1c1-r1-g1-independent-review.md)判定 CHANGES_REQUIRED；[G1 两项补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md) 已由用户转达 REVIEW 通过；当前交付为 [G2 锁、原子 claim 与生命周期](docs/reviews/2026-10-02-phase1c1-r1-g2-review.md)，等待独立 REVIEW。
 
 本轮已执行固定 21 个交易日和 7 个小窗口日历检查，共 133 次请求；后续仅审查已有本地证据。已生成带身份隔离和谱系的 Parquet 审查输出，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 
@@ -91,7 +91,7 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 记录已完成演练的范围。当前修复由 [R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 控制：R1-G1 只在隔离库实现与测试回执完整性，真实迁移留至获准 G3；G2 需新 REVIEW 与授权，R2 锁定。数据门 BLOCKED，新增市场请求预算为零，不开始 Phase 1C.2。旧规划不扩大本轮任务。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 记录已完成演练的范围。当前修复由 [R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 控制：R1-G2 只在合成隔离库验证进程锁、原子 claim 和崩溃窗口，真实迁移留至获准 G3；G3 需新 REVIEW 与授权，R2 锁定。数据门 BLOCKED，新增市场请求预算为零，不开始 Phase 1C.2。旧规划不扩大本轮任务。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
 
@@ -133,3 +133,6 @@ uv run --offline --frozen astock data slice specs
 真实请求、主动中断和恢复已执行完毕，禁止重跑或扩展预算。整理与重建不调用 API。
 配置、空表类型、单位、身份区间、隔离、逐行谱系、因果审计及恢复限制见
 [整理说明](docs/phase1c1_curation.md)。当前整理输出不能作为已验收研究输入。
+
+
+G2 的[仓库锁与生命周期政策](docs/phase1c1_writer_lifecycle.md)要求在磁盘连接前取得系统锁，覆盖全部写入入口和文件发布。竞争写入立即 BUSY；只读审计使用共享锁和一致快照。锁不证明历史数据、部分 generation 或大规模执行已经就绪。

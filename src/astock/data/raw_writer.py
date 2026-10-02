@@ -16,9 +16,11 @@ from pydantic import SecretStr
 from astock.data.audit import RawObjectManifest, RequestParams
 from astock.data.probe_audit import canonical_json
 from astock.data.tushare_client import ProviderTable
+from astock.data.warehouse_lock import require_writer
 
 
 def migrate(db, root: Path):
+    require_writer(db)
     for name in ('001_foundation_schema', '002_provider_lineage', '003_probe_mode',
                  '004_security_identifier_history', '005_identity_bootstrap_governance', '006_bounded_slice_lifecycle'):
         number = int(name[:3])
@@ -60,10 +62,12 @@ def schema_digest(table: pa.Table) -> str:
 
 class RawWriter:
     def __init__(self, root: Path, db: duckdb.DuckDBPyConnection):
+        require_writer(db)
         self.root, self.db = root.resolve(), db
 
     def write(self, run_id: UUID, dataset: str, part: int, table: ProviderTable,
               params: RequestParams) -> RawObjectManifest:
+        require_writer(self.db)
         if not 0 <= part <= 999:
             raise ValueError('Invalid part number')
         relative = f'data/raw/tushare/{dataset}/run_id={run_id}/part-{part:03d}.parquet'
@@ -105,6 +109,7 @@ class RawWriter:
         return manifest
 
     def sidecar(self, run_id, dataset):
+        require_writer(self.db)
         rows = self.db.execute('''SELECT object_id, relative_path, sha256, retrieved_at, row_count,
             schema_hash, min_event_date, max_event_date, request_params FROM raw_object_manifest
             WHERE run_id=? ORDER BY relative_path''', [str(run_id)]).fetchall()

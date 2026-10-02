@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from uuid import UUID
 
-import duckdb
+from astock.data.warehouse_lock import warehouse_connection
 import pyarrow.parquet as pq
 
 from astock.data.audit import RequestParams
@@ -182,7 +182,7 @@ def audit_tables(tables, quarantine, resolver, previous_sessions):
 
 
 def dq_slices(root: Path,batch_id: UUID):
-    with duckdb.connect(str(root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(root/'data/warehouse/astock.duckdb') as db:
         batch=db.execute('SELECT status,identity_snapshot_hash,knowledge_as_of FROM slice_batch WHERE batch_id=?',[str(batch_id)]).fetchone()
         if not batch or batch[0] not in ('CURATED','REVIEWED'):raise SliceStop('CURATION_NOT_COMPLETE')
         snapshot,history,venues=identity_state(db)

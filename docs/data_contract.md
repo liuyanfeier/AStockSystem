@@ -215,3 +215,18 @@ values, not SQL source-string comparisons. Invalid/shadow schemas fail closed wi
 No source database is repaired. Before publishing version7, the explicit upgrade
 checks the same structure within its transaction; only that internal path can
 omit the not-yet-published version record. See the [G1 correction report](reviews/2026-10-02-phase1c1-r1-g1-fix-review.md).
+
+
+## R1-G2 writer ownership and crash policy
+
+Disk mutation requires an exclusive OS guard acquired before connecting/preflight,
+held through local publication and finalization. Read-only audit uses a shared guard
+and BEGIN snapshot; never upgrade reader ownership. Stable lock files remain ignored.
+Claim atomically reserves the attempt and ingestion request counter before any fetch.
+Uncertain committed claims are never retried; orphan/extra/incomplete local evidence
+blocks rather than being registered, overwritten or reconstructed. Slice directories
+must contain exactly the registered part and both complete metadata files; generic
+multipart raw rules remain unchanged. Preserve historical pre-created RUNNING/start
+times. See the [writer/lifecycle policy](phase1c1_writer_lifecycle.md) for coverage,
+crash outcomes and the unimplemented R2 generation/quarantine/append-only audit
+requirements. G2 validates synthetic storage only; it grants no real-data acceptance.

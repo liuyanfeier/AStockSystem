@@ -8,7 +8,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
 
-import duckdb
+from astock.data.warehouse_lock import warehouse_connection
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -116,12 +116,12 @@ def convert(table, obj, spec, resolver):
 
 
 def curate_slices(root: Path, batch_id: UUID, *, rebuild=False, commit=None):
-    manifest=request_manifest(root)
-    specs={s.dataset:s for s in load_curation_specs(root,spec_version='v2')}
-    contracts={c.dataset:c for c in load_contracts(root,catalog_version='v2')}
-    config_hash=digest(dict(plan=manifest['plan_hash'],specs=[s.model_dump(mode='json') for s in specs.values()]))
-    code=commit or implementation_commit(root)
-    with duckdb.connect(str(root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(root/'data/warehouse/astock.duckdb') as db:
+        manifest=request_manifest(root)
+        specs={s.dataset:s for s in load_curation_specs(root,spec_version='v2')}
+        contracts={c.dataset:c for c in load_contracts(root,catalog_version='v2')}
+        config_hash=digest(dict(plan=manifest['plan_hash'],specs=[s.model_dump(mode='json') for s in specs.values()]))
+        code=commit or implementation_commit(root)
         batch=db.execute('SELECT status,identity_snapshot_hash,knowledge_as_of,plan_hash FROM slice_batch WHERE batch_id=?',[str(batch_id)]).fetchone()
         if not batch or batch[0] not in ('CAPTURED','CURATED','REVIEWED') or batch[3]!=manifest['plan_hash']:raise SliceStop('CAPTURE_NOT_COMPLETE')
         snapshot,history,venues=identity_state(db)

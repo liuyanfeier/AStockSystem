@@ -4,6 +4,7 @@ import hashlib
 import json
 from uuid import UUID, uuid4
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import pytest
 from typer.testing import CliRunner
@@ -56,7 +57,7 @@ def test_token_free_readonly_cli_and_legacy_mode_are_separate(captured, monkeypa
     assert summary['verification_code_commit'] == 'c' * 40
     assert before == hashlib.sha256(path.read_bytes()).hexdigest()
     assert files_before == {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in (root / 'data').rglob('*') if p.is_file()}
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         db.execute('DROP TABLE slice_receipt_completion_binding')
         db.execute('DROP TABLE slice_receipt_validation_audit')
         db.execute('DELETE FROM schema_version WHERE version=7')
@@ -81,7 +82,7 @@ def test_audit_missing_evidence_fails_without_creating_database(slice_root):
 
 def test_corrupt_complete_blocks_curate_and_dq_before_any_publication(captured):
     root, batch = captured; path = root / 'data/warehouse/astock.duckdb'
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         db.execute("UPDATE slice_batch SET status='CURATED'")
         # Synthetic legacy-invalid row: FK already protects accepted bindings.
         db.execute('DELETE FROM slice_receipt_completion_binding WHERE ordinal=1')
@@ -91,7 +92,7 @@ def test_corrupt_complete_blocks_curate_and_dq_before_any_publication(captured):
     for run in (lambda: curate_slices(root, batch, commit=SHA), lambda: dq_slices(root, batch)):
         with pytest.raises(ReceiptIntegrityError, match='RECEIPT_OBJECT_MISMATCH'): run()
     assert not list((root / 'data/curated').rglob('*.parquet'))
-    with duckdb.connect(str(path)) as db:
+    with warehouse_connection(str(path)) as db:
         assert all(db.execute(f'SELECT * FROM {t} ORDER BY ALL').fetchall() == rows for t, rows in before.items())
     result = audit_slice_batch(root, batch, verification_sha=SHA)
     assert result['checked_count'] == 132 and result['failure_count'] == 1
@@ -114,6 +115,6 @@ def test_counts_alone_cannot_promote_captured_batch(slice_root, monkeypatch):
     result = capture_slices(slice_root, settings(), live=True, client=client, commit=SHA)
     assert len(client.calls) == 133 and result['status'] == 'BLOCKED'
     assert result['failure'] == 'CAPTURE_CONTRACT_MISMATCH'
-    with duckdb.connect(str(slice_root / 'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root / 'data/warehouse/astock.duckdb')) as db:
         assert db.execute('SELECT status FROM slice_batch').fetchone() == ('RUNNING',)
         assert db.execute("SELECT count(*) FROM slice_request WHERE status='COMPLETE'").fetchone() == (133,)

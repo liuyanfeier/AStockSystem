@@ -3,6 +3,7 @@ from pathlib import Path
 from uuid import UUID
 import shutil
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import httpx
 import pytest
@@ -25,7 +26,7 @@ ROOT=get_project_root()
 def slice_root(tmp_path):
     shutil.copytree(ROOT/'config',tmp_path/'config');shutil.copytree(ROOT/'sql',tmp_path/'sql')
     (tmp_path/'data/warehouse').mkdir(parents=True)
-    with duckdb.connect(str(tmp_path/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(tmp_path/'data/warehouse/astock.duckdb')) as db:
         migrate(db,tmp_path)
         apply_receipt_integrity_upgrade(tmp_path,db,verification_sha='a'*40)
         now=datetime(2026,1,1,tzinfo=timezone.utc)
@@ -78,14 +79,14 @@ def test_intentional_interrupt_resume_and_no_duplicate_raw(slice_root):
     assert result['status']=='CAPTURED' and len(client.calls)==133
     again=capture_slices(slice_root,settings(),live=True,batch_id=batch,client=client,commit='a'*40)
     assert again['status']=='CAPTURED' and len(client.calls)==133
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         assert db.execute('SELECT count(*),count(DISTINCT object_id) FROM raw_object_manifest').fetchone()==(133,133)
         assert verify_batch(slice_root,db,[r[0] for r in db.execute('SELECT run_id FROM ingestion_run').fetchall()])
     with pytest.raises(SliceStop):capture_slices(slice_root,settings(),live=True,client=client,commit='a'*40)
 
 
 def test_crash_after_registered_raw_recovers_without_refetch(slice_root):
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         identity,_,_=identity_state(db)
         batch=create_batch(slice_root,db,commit='a'*40,identity_hash=identity,knowledge_as_of=datetime.now(timezone.utc))
         claim_request(db,batch,0)
@@ -99,12 +100,12 @@ def test_crash_after_registered_raw_recovers_without_refetch(slice_root):
     client=SyntheticCaptureClient()
     result=capture_slices(slice_root,settings(),live=True,batch_id=batch,stop_after=1,client=client,commit='a'*40)
     assert result['status']=='INTERRUPTED' and client.calls[0][0]=='daily'
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         assert db.execute("SELECT count(*) FROM slice_request WHERE status='COMPLETE'").fetchone()==(2,)
 
 
 def test_uncertain_network_receipt_never_replayed(slice_root):
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         identity,_,_=identity_state(db)
         batch=create_batch(slice_root,db,commit='a'*40,identity_hash=identity,knowledge_as_of=datetime.now(timezone.utc))
         claim_request(db,batch,0)
@@ -116,7 +117,7 @@ def test_uncertain_network_receipt_never_replayed(slice_root):
 
 def test_lineage_corruption_stops_resume(slice_root):
     first=capture_slices(slice_root,settings(),live=True,stop_after=1,client=SyntheticCaptureClient(),commit='a'*40)
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         relative=db.execute('SELECT relative_path FROM raw_object_manifest').fetchone()[0]
     (slice_root/relative).write_bytes(b'synthetic corruption')
     client=SyntheticCaptureClient()

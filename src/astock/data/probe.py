@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-import duckdb
+from astock.data.warehouse_lock import warehouse_connection
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -76,27 +76,25 @@ def run_probe(root, settings, *, client=None):
     # Missing credentials cause no HTTP, directories or database changes.
     if not settings.token_configured:
         raise ValueError('TUSHARE_TOKEN is not configured. Configure it locally outside chat/model input.')
-    plan = load_plan(root)
-    contracts = {c.dataset: c for c in load_contracts(root, catalog_version="v1")}
-    client = client or TushareClient(settings.tushare_token)
-    commit = _commit(root)
-    config_hash = hashlib.sha256(canonical_json({
-        'plan': plan.model_dump(mode='json'),
-        'contracts': [contracts[d].model_dump(mode='json') for d in plan.endpoints],
-    })).hexdigest()
-    # Public probe uses only the default ignored warehouse, never a user-configured external DB.
-    db_path = root/'data/warehouse/astock.duckdb'
-    db_path.parent.mkdir(parents=True, exist_ok=True)
-    summary = dict(phase='1B', status='PARTIAL', code_commit=commit, batch_id=str(uuid4()),
-                   resolved_recent_date=None, anchors=[d.isoformat() for d in plan.fixed_anchors],
-                   runs={}, captures=[], errors=[], cross_audits={}, repeat_consistency=None,
-                   secret_scan='NOT_RUN', availability_basis='OBSERVED_CAPTURE',
-                   backtest_eligible=False)
-    run_ids, parts, failures = {}, Counter(), {}
-    stopped = False
-    with duckdb.connect(str(db_path)) as db:
+    with warehouse_connection(root/'data/warehouse/astock.duckdb') as db:
+        plan = load_plan(root)
+        contracts = {c.dataset: c for c in load_contracts(root, catalog_version="v1")}
+        commit = _commit(root)
+        config_hash = hashlib.sha256(canonical_json({
+            'plan': plan.model_dump(mode='json'),
+            'contracts': [contracts[d].model_dump(mode='json') for d in plan.endpoints],
+        })).hexdigest()
+        # Public probe uses only the default ignored warehouse, never a user-configured external DB.
+        summary = dict(phase='1B', status='PARTIAL', code_commit=commit, batch_id=str(uuid4()),
+                       resolved_recent_date=None, anchors=[d.isoformat() for d in plan.fixed_anchors],
+                       runs={}, captures=[], errors=[], cross_audits={}, repeat_consistency=None,
+                       secret_scan='NOT_RUN', availability_basis='OBSERVED_CAPTURE',
+                       backtest_eligible=False)
+        run_ids, parts, failures = {}, Counter(), {}
+        stopped = False
         db.execute("SET TimeZone='UTC'")
         migrate(db, root)
+        client = client or TushareClient(settings.tushare_token)
         writer = RawWriter(root, db)
 
         def capture(dataset, params):
@@ -241,27 +239,27 @@ def run_probe(root, settings, *, client=None):
             summary['lineage_reconciled'] = (total_rows == sum(r['row_count'] for r in summary['runs'].values())
                 and total_objects == sum(r['raw_object_count'] for r in summary['runs'].values()))
             summary['raw_reconstruction_verified'] = verify_batch(root, db, run_ids.values())
-    if summary['status'] != 'BLOCKED':
-        summary['status'] = 'PASS' if (
-            not failures and len(summary['runs']) == 8 and summary['lineage_reconciled']
-            and summary['raw_reconstruction_verified']
-            and all(c['dq_status'] == 'PASS' for c in summary['captures'])
-            and all(c['identity_status'] == 'PASS' for c in summary['captures'])
-            and not any(cross_has_findings(a) for a in summary['cross_audits'].values())
-            and summary['repeat_consistency'] and all(summary['repeat_consistency'].values())
-            and not bse_unexpected and not summary['stock_basic']['cross_partition_code_duplicates']) else 'PARTIAL'
-    summary_path = root/f'data/private/phase1b/{summary["batch_id"]}.json'
-    summary['secret_scan'] = 'PASS'  # Only publish this value after a successful scan below.
-    atomic_new_file(summary_path, lambda path: path.write_bytes(canonical_json(summary)))
-    paths = [summary_path]
-    for dataset, run_id in run_ids.items():
-        paths.extend((root/f'data/raw/tushare/{dataset}/run_id={run_id}').glob('*'))
-    if not secret_scan(settings.tushare_token, paths):
-        # Mark this isolated batch as quarantined; never generate public review evidence.
-        quarantine = summary_path.with_suffix('.quarantined')
-        summary_path.rename(quarantine)
-        raise ValueError('SECRET_SCAN: FAIL')
-    return summary, summary_path
+        if summary['status'] != 'BLOCKED':
+            summary['status'] = 'PASS' if (
+                not failures and len(summary['runs']) == 8 and summary['lineage_reconciled']
+                and summary['raw_reconstruction_verified']
+                and all(c['dq_status'] == 'PASS' for c in summary['captures'])
+                and all(c['identity_status'] == 'PASS' for c in summary['captures'])
+                and not any(cross_has_findings(a) for a in summary['cross_audits'].values())
+                and summary['repeat_consistency'] and all(summary['repeat_consistency'].values())
+                and not bse_unexpected and not summary['stock_basic']['cross_partition_code_duplicates']) else 'PARTIAL'
+        summary_path = root/f'data/private/phase1b/{summary["batch_id"]}.json'
+        summary['secret_scan'] = 'PASS'  # Only publish this value after a successful scan below.
+        atomic_new_file(summary_path, lambda path: path.write_bytes(canonical_json(summary)))
+        paths = [summary_path]
+        for dataset, run_id in run_ids.items():
+            paths.extend((root/f'data/raw/tushare/{dataset}/run_id={run_id}').glob('*'))
+        if not secret_scan(settings.tushare_token, paths):
+            # Mark this isolated batch as quarantined; never generate public review evidence.
+            quarantine = summary_path.with_suffix('.quarantined')
+            summary_path.rename(quarantine)
+            raise ValueError('SECRET_SCAN: FAIL')
+        return summary, summary_path
 
 
 def probe_status(root):

@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import httpx
 import pytest
@@ -81,7 +82,7 @@ def test_full_synthetic_probe_bounded_and_reconstructable(root,monkeypatch):
     assert summary['runs']['stock_basic']['raw_object_count']==15
     assert SECRET not in path.read_text()
     assert all(r['status']=='SUCCEEDED' for r in summary['runs'].values())
-    with duckdb.connect(str(root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(root/'data/warehouse/astock.duckdb')) as db:
         assert db.execute('SELECT count(*) FROM raw_object_manifest').fetchone()==(47,)
         assert db.execute("SELECT count(*) FROM ingestion_run WHERE mode='PROBE'").fetchone()==(8,)
         assert not db.execute("SELECT table_name FROM information_schema.tables WHERE table_name='daily_bar'").fetchall()

@@ -7,8 +7,6 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from uuid import UUID
 
-import duckdb
-
 from astock.data.audit import RequestParams
 from astock.data.bootstrap import identity_snapshot_hash
 from astock.data.contracts import load_contracts
@@ -21,6 +19,7 @@ from astock.data.slice_errors import SliceStop, ReceiptIntegrityError
 from astock.data.receipt_integrity import (batch_requests, frozen_context, validate_requests,
                                          validate_slice_receipt, validate_slice_batch)
 from astock.data.receipt_migration import apply_receipt_integrity_upgrade, register_completion
+from astock.data.warehouse_lock import warehouse_connection, warehouse_lock, require_writer
 
 
 def identity_state(db) -> tuple[str, IdentityHistory, list[dict]]:
@@ -84,6 +83,7 @@ def _object_table(root: Path, db, request: dict) -> tuple[ProviderTable, dict]:
 
 def publish_capture_metadata(root: Path, db, request: dict, contract, obj: dict) -> None:
     """Active capture publication only; recovery/audit never create missing proof."""
+    require_writer(db)
     RawWriter(root, db).sidecar(request['run_id'], request['dataset'])
     metadata = (root / obj['relative_path']).with_name('capture-contract.json')
     body = dict(contract_catalog='v2', contract_version=contract.contract_version,
@@ -94,6 +94,7 @@ def publish_capture_metadata(root: Path, db, request: dict, contract, obj: dict)
 
 def finalize_receipt(root: Path, db, request: dict, contract, *, verification_sha: str) -> None:
     """Conditional, exact and idempotent completion; no metadata repair."""
+    require_writer(db)
     db.execute('BEGIN TRANSACTION')
     try:
         context = frozen_context(root, db, request['batch_id'])
@@ -131,14 +132,16 @@ def finalize_receipt(root: Path, db, request: dict, contract, *, verification_sh
 def operation_block(root: Path, batch_id: UUID, code: str) -> dict:
     """Append new failure evidence without modifying contradictory old receipts."""
     from uuid import uuid4
-    path = root / f'data/private/phase1c1/{batch_id}/operation-block-{uuid4()}.json'
-    atomic_new_file(path, lambda p: p.write_bytes(canonical_json(dict(
-        batch_id=str(batch_id), verdict='BLOCKED', reason_code=code,
-        observed_at=datetime.now(timezone.utc).isoformat()))))
+    with warehouse_lock(root / 'data/warehouse/astock.duckdb'):
+        path = root / f'data/private/phase1c1/{batch_id}/operation-block-{uuid4()}.json'
+        atomic_new_file(path, lambda p: p.write_bytes(canonical_json(dict(
+            batch_id=str(batch_id), verdict='BLOCKED', reason_code=code,
+            observed_at=datetime.now(timezone.utc).isoformat()))))
     return dict(batch_id=str(batch_id), status='BLOCKED', failure=code)
 
 
 def fail_batch(root: Path, db, batch_id: UUID, request: dict, code: str, error=None) -> None:
+    require_writer(db)
     current=db.execute('SELECT status FROM slice_request WHERE batch_id=? AND ordinal=?',[str(batch_id),request['ordinal']]).fetchone()
     if current and current[0]=='COMPLETE':
         return operation_block(root,batch_id,code)
@@ -165,13 +168,11 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
         raise SliceStop('LIVE_CONFIGURATION_REQUIRED')
     if stop_after is not None and not 1<=stop_after<=133:
         raise SliceStop('INVALID_INTERRUPTION_BOUND')
-    manifest=request_manifest(root)
-    commit=commit or implementation_commit(root)
-    contracts={c.dataset:c for c in load_contracts(root,catalog_version='v2')}
-    # Use only this checkout's ignored storage, never an external path.
     db_path=root/'data/warehouse/astock.duckdb'
-    db_path.parent.mkdir(parents=True,exist_ok=True)
-    with duckdb.connect(str(db_path)) as db:
+    with warehouse_connection(db_path) as db:
+        manifest=request_manifest(root)
+        commit=commit or implementation_commit(root)
+        contracts={c.dataset:c for c in load_contracts(root,catalog_version='v2')}
         migrate(db,root)
         snapshot,_,_=identity_state(db)
         if batch_id is None:
@@ -190,6 +191,8 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
                 if req['status'] == 'IN_FLIGHT':
                     try:
                         finalize_receipt(root, db, req, contracts[req['dataset']], verification_sha=commit)
+                    except ReceiptIntegrityError as error:
+                        return operation_block(root, batch_id, error.code if error.code == 'ORPHAN_LOCAL_EVIDENCE' else 'UNCERTAIN_CAPTURE')
                     except (SliceStop, OSError):
                         return operation_block(root, batch_id, 'UNCERTAIN_CAPTURE')
             pending = resume_batch(db, batch_id, root=root, expected_plan_hash=manifest['plan_hash'])

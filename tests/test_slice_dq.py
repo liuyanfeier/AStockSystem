@@ -1,6 +1,7 @@
 from datetime import date
 from uuid import UUID
 
+from astock.data.warehouse_lock import warehouse_connection
 import duckdb
 import pytest
 
@@ -67,7 +68,7 @@ def test_offline_dq_reconstructs_every_row_and_detects_curated_corruption(slice_
     assert summary['lineage']=='PASS' and summary['schema']=='PASS' and summary['error_count']==0
     assert summary['raw_objects']==133 and summary['curated_objects']==126
     assert summary['causal']['adjacent_pairs']==14
-    with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
+    with warehouse_connection(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         relative=db.execute('SELECT relative_path FROM curated_object_manifest LIMIT 1').fetchone()[0]
     (slice_root/relative).write_bytes(b'synthetic corruption')
     with pytest.raises(SliceStop):dq_slices(slice_root,batch)

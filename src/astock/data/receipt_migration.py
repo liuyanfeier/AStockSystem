@@ -6,6 +6,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from astock.data.raw_validation import require, rows_dict
+from astock.data.warehouse_lock import require_writer
 from astock.data.receipt_schema import require_integrity_schema
 from astock.data.receipt_integrity import (VALIDATOR_VERSION, batch_requests,
                                          check_binding, frozen_context, validate_slice_batch,
@@ -15,6 +16,7 @@ from astock.data.receipt_integrity import (VALIDATOR_VERSION, batch_requests,
 def register_completion(root: Path, db, request: dict, *, verification_sha: str,
                         context=None, purpose: str = 'FINALIZE'):
     """Run inside the owner's transaction; never trust a caller-supplied proof."""
+    require_writer(db)
     require(bool(re.fullmatch('[0-9a-f]{40}', verification_sha)), 'VERIFICATION_COMMIT_REQUIRED')
     require_integrity_schema(db, published=purpose != 'UPGRADE')
     proof = validate_slice_receipt(root, db, request, context=context, require_binding=False)
@@ -40,6 +42,7 @@ def apply_receipt_integrity_upgrade(root: Path, db, *, verification_sha: str) ->
     Not called by generic migrate(), CLI audit, or existing-batch capture. G1 uses
     only synthetic/isolated databases; G3 requires approved backup/copy deployment.
     """
+    require_writer(db)
     require(bool(re.fullmatch('[0-9a-f]{40}', verification_sha)), 'VERIFICATION_COMMIT_REQUIRED')
     require(db.execute('SELECT max(version) FROM schema_version').fetchone()[0] in (6, 7),
             'UPGRADE_BASE_VERSION')

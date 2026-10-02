@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import UUID, uuid4, uuid5
 
-import duckdb
+from astock.data.warehouse_lock import warehouse_connection
 import pyarrow.parquet as pq
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
@@ -232,6 +232,8 @@ def admit_bootstrap(db, plan: dict, *, commit: str, config_hash: str, input_hash
     A changed provider episode/metadata or evidence requires review, never a new UUID
     silently replacing an admitted identity. Phase 1C.0 does not implement corrections.
     """
+    from astock.data.warehouse_lock import require_writer
+    require_writer(db)
     snapshot = identity_snapshot_hash(plan)
     prior = db.execute("SELECT curation_run_id,config_hash,input_manifest_hash,identity_snapshot_hash FROM curation_run WHERE dataset='stock_basic' AND partition_key='PHASE1C0_BOOTSTRAP'").fetchall()
     if prior:
@@ -282,6 +284,8 @@ def admit_bootstrap(db, plan: dict, *, commit: str, config_hash: str, input_hash
 
 def capture_mapping(root: Path, db, settings, *, live: bool, commit: str) -> tuple[list[dict], list[dict]]:
     """Consume a durable one-attempt budget before POST, including failed attempts."""
+    from astock.data.warehouse_lock import require_writer
+    require_writer(db)
     runs = db.execute("SELECT run_id,status FROM ingestion_run WHERE dataset='bse_mapping'").fetchall()
     if runs:
         if len(runs) != 1 or runs[0][1] != 'SUCCEEDED' or not verify_batch(root, db, [runs[0][0]]):
@@ -320,13 +324,13 @@ def capture_mapping(root: Path, db, settings, *, live: bool, commit: str) -> tup
 
 
 def run_bootstrap(root: Path, settings, *, authority_path: Path, live: bool=False) -> dict:
-    load_curation_specs(root)
-    evidence = BSEEvidence.model_validate_json(authority_path.read_bytes())
-    validate_local_authority_files(authority_path, evidence)
-    commit = subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
-    if subprocess.check_output(['git','status','--porcelain','--','src/astock','config','sql'],cwd=root,text=True).strip():
-        raise ValueError('Commit reviewed implementation before recording runtime code_commit')
-    with duckdb.connect(str(settings.paths(root).db_path)) as db:
+    with warehouse_connection(settings.paths(root).db_path) as db:
+        load_curation_specs(root)
+        evidence = BSEEvidence.model_validate_json(authority_path.read_bytes())
+        validate_local_authority_files(authority_path, evidence)
+        commit = subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+        if subprocess.check_output(['git','status','--porcelain','--','src/astock','config','sql'],cwd=root,text=True).strip():
+            raise ValueError('Commit reviewed implementation before recording runtime code_commit')
         migrate(db,root)
         rows, objects = read_captured_universe(root,db)
         # Private anomaly audit precedes any mapping HTTP request or identity admission.
