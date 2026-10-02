@@ -230,3 +230,22 @@ multipart raw rules remain unchanged. Preserve historical pre-created RUNNING/st
 times. See the [writer/lifecycle policy](phase1c1_writer_lifecycle.md) for coverage,
 crash outcomes and the unimplemented R2 generation/quarantine/append-only audit
 requirements. G2 validates synthetic storage only; it grants no real-data acceptance.
+
+## Batched R1 managed connections and copy acceptance
+
+The 2026-10-02 human batch authorization supersedes intermediate pauses only.
+Disk helper admission now proves the creating connection scope, active original
+guard, process/thread and context; a later path lock cannot admit a native disk
+connection. Scoped results/cursors and explicit fault adapters preserve that proof.
+Fork cleanup covers all process lock descriptors, including other threads/contexts;
+it closes child copies without unlocking the parent. Stale contexts and exceptional
+context exits cannot revive or strand ownership. See the
+[lifecycle policy](phase1c1_writer_lifecycle.md).
+
+Author G3 acceptance of a verified isolated copy established 133 exact receipts,
+181 raw and 252 old curated/lineage proofs, unchanged frozen identity/history and
+an additive 007 transaction with 133 bindings/audits. This validates copy evidence,
+not historical data semantics or original deployment. Original DB remains at 006
+with no binding/audit tables; independent review and separately authorized original
+deployment are pending. See the [batch candidate](reviews/2026-10-02-phase1c1-r1-g3-copy-review.md).
+R1 FINAL PASS is not asserted; real data BLOCKED, R2 LOCKED, Phase1C.2 CLOSED.

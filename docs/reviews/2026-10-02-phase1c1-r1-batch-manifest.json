@@ -1,0 +1,70 @@
+{
+  "kind": "R1_BATCH_REVIEW_CANDIDATE",
+  "date": "2026-10-02",
+  "reviewed_g2_sha": "26004ac573d6f66fe14cc63bb87b37543109cf22",
+  "tested_implementation_sha": "4da3267667dc238497a555f0e30e931408d3e55e",
+  "author_self_check": "COMPLETE",
+  "independent_review": "PENDING",
+  "isolated_acceptance": "ACCEPTED",
+  "original_deployment": "NOT_PERFORMED",
+  "tests": {
+    "passed": 480,
+    "warnings": 1,
+    "duration_seconds": 239.23,
+    "boundary_passed": 116,
+    "boundary_duration_seconds": 43.08
+  },
+  "acceptance": {
+    "receipts": 133,
+    "distinct_requests": 133,
+    "distinct_runs": 133,
+    "distinct_objects": 133,
+    "attempt_sum": 133,
+    "batch_raw": 133,
+    "all_raw": 181,
+    "old_curated": 252,
+    "generation0": 126,
+    "generation1": 126,
+    "copy_bindings": 133,
+    "copy_upgrade_audits": 133,
+    "old_tables_preserved": 17,
+    "protected_files": 1102,
+    "protected_differences": 0,
+    "issues": 0
+  },
+  "network": {
+    "client_construction": 0,
+    "provider_fetch": 0,
+    "http_request": 0,
+    "socket_connect": 0,
+    "settings_access_during_audit": 0
+  },
+  "digests": {
+    "original_db_and_backup": "924bf429b25c4ac2fafc557bdbc67667b39de902b3175a7d7828461207fd4617",
+    "frozen_identity": "83d8f02609b2e763dc9241738e37d4cd79d401c82902be54f7da5e2d97361b3c",
+    "g0_inventory": "f5c30de4f0e0ccb7f526914f047fcccfe65e52d3100784744039dbc158848e9c",
+    "private_acceptance": "50a9bb4d552ac2f705904d48b20d84f2b65835ab371078e047cc310c5e1d84b7",
+    "acceptance_script": "c4360a71ccb43dab19ef17fe3ff139e0e9145d2b44b12f005b33766fbfbd8bb9",
+    "isolated_db": "656e270cb43c84eaee9959e41f427b5df406cd675d4818fcd203c583229364a6"
+  },
+  "original": {
+    "schema_versions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "binding_audit_tables": false,
+    "bytes_unchanged": true,
+    "coordination_lock_created": true
+  },
+  "gates": {
+    "R1_FINAL": "NOT_PASS",
+    "REAL_DATA": "BLOCKED",
+    "R2": "LOCKED",
+    "Phase1C2": "CLOSED"
+  },
+  "final_sha_ci_location": "Final user handoff and ignored private handoff; verify final artifact SHA, not prior CI"
+}
