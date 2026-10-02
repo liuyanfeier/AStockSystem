@@ -276,3 +276,23 @@ helper still stops at 006; 007 uses the explicit transaction-owned
 `apply_receipt_integrity_upgrade`, validating legacy COMPLETE rows before creating
 bindings and recording schema_version7 last. No historical warehouse has been
 upgraded in G1. Original deployment requires approved R1-G3 preflight/backup.
+
+## R2-A proposed additive schema (not deployed)
+
+Migrations008–010 are explicit opt-in reconstruction governance. Original versions
+001–007 stay unchanged. See the frozen design and its appended publication
+addendum in `docs/remediation/phase1c1/`.
+
+| Table group | Purpose and keys |
+|---|---|
+| `listing_episode`, `official_exchange_code` | Stable security, venue/asset episode and independently evidenced half-open official-code intervals; actual knowledge times |
+| `provider_native_binding`, `provider_binding_observation` | Versioned native strings, representation and approval; exact dataset/capture/event/raw-row scope with raw FK |
+| `derivation_context`, `derivation_input` | Immutable approved input/policy/spec/identity/evidence digests;133 requests/126 outputs; fixture contexts cannot enter production |
+| `derivation_generation`, `derivation_generation_event`, `derivation_complete_manifest` | Explicit generation with append-only state history and verified complete membership |
+| `derivation_output`, `derivation_row_quarantine` | No-clobber physical/logical/schema/lineage proof; every raw row resolved or quarantined once with a zero-based ordinal |
+| `reconstruction_quality_audit`, `reconstruction_finding_observation`, `reconstruction_output_quality` | Append-only evidence/disposition observations and local quality versus batch admission; superseded audits stay intact |
+
+A COMPLETE generation is a publication integrity fact, not research admission.
+Application APIs prohibit historical rewrites; SQL constraints alone cannot
+prevent arbitrary direct SQL UPDATE. Real deployment and case application require
+separate R2-B authorization and independent approvals.

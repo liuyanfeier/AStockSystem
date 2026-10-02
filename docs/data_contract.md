@@ -268,3 +268,28 @@ for provenance and private evidence digests. Original deployment is complete;
 R1 FINAL_REVIEW_READY is author handoff status, not independent FINAL PASS or
 approval of historical market-data semantics. R2 LOCKED, real data BLOCKED and
 Phase1C.2 CLOSED remain in force.
+
+## Authorized R2-A reconstruction engineering addendum
+
+R1 FINAL independently passed at `cc458ce2e8229dcc914e9a45ae2ac6186f48c45c`.
+R2-A follows the retained batched prompt v1.1 and freezes design, DQ policy and
+publication addendum before use. Original data and contexts remain immutable.
+New provider-native representations are exact dataset/capture/event/source-row
+bindings; they neither rewrite native codes nor extend official-code intervals.
+Proposals are inactive until an independently approved case set and actual
+knowledge times are supplied. Observation-bounded episode drafts do not establish
+historical coverage universe or termination; missing authority stays blocking.
+
+New outputs retain NULL/native values, units and source row ordinals. Source
+availability remains OBSERVED_CAPTURE; identity decisions are separately timed
+CURRENT_RECONSTRUCTION. Only explicit COMPLETE generations may enter DQ, with
+all133 frozen inputs/126 outputs revalidated. Frozen DQ evidence separately pins
+venue sessions, exact exceptions and BSE transitions. Unknown sessions remain
+NOT_CERTIFIED; no SSE calendar inheritance for other venues. Coverage observations
+precede disposition. Provider delist metadata does not erase a bar, and neither
+NULL exceptions nor tolerances may be changed to eliminate findings.
+
+R2-A supplies tested engineering and private candidate evidence only; it does not
+apply real migrations/bindings or publish a real generation. R2-B remains
+NOT_AUTHORIZED, the real-data gate BLOCKED and Phase1C.2 CLOSED. See
+[the R2-A handoff](reviews/r2-a-review.md) for the final evidence index and limits.
