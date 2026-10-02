@@ -1,0 +1,135 @@
+{
+  "anomalies": {
+    "bse_matrix_rows": 16996,
+    "code_start_failures": 4515,
+    "coverage_flags": 1226,
+    "diagnostic_coverage_quarantine_intersection": 1117,
+    "error_flags": 2512,
+    "inactive_draft_cases": 251,
+    "interval_failures": 5008,
+    "legacy_resolved_rows": 394580,
+    "no_mapping": 1284,
+    "pilot_pairs": 6,
+    "pre_bse_legacy": 1374,
+    "proposal_cases": 346,
+    "quarantine_error_source_intersection": 1285,
+    "quarantine_rows": 7666,
+    "remaining_pairs": 242,
+    "review_flags": 13244,
+    "scoped_carry_forward_rows": 386309,
+    "scoped_carry_forward_security_cases": 5584,
+    "source_rows": 402246,
+    "unique_finding_keys": 15756,
+    "venue_start_failures": 493
+  },
+  "approved_baseline_sha": "cc458ce2e8229dcc914e9a45ae2ac6186f48c45c",
+  "approved_case_set": null,
+  "approved_case_set_hash": null,
+  "author_status": "R2_A_REVIEW_READY",
+  "candidate_artifacts": {
+    "case-proposals-v2.json": "f949a0feca73ed07bf2a8906abb22427aeeea2f4bf969bc9c5695726c52b88de",
+    "derivation-context-draft-v2.json": "e77489bdd6f2d9c9a64602633b1c34b11d3fb27ae5cab73724eee2d6aa51691b",
+    "documentary-evidence.json": "11793c7c94627539f791189f255fb7808fc35d35daf384d9a579ab74c804d392",
+    "frozen-carry-forward-proposals.json": "cd3175f72222b7292d23ed349ba86691ecb530ac0e7f04a24bcc4eef4d47079c"
+  },
+  "design_freeze_commit": "1f4d983d460c5dbf6c1f388397b33ad316bd60a7",
+  "diagnostics": {
+    "contracts_v1": "PASS",
+    "contracts_v2": "PASS",
+    "doctor": "PASS",
+    "identity_specs": "PASS",
+    "market_api_calls": 0,
+    "probe_plan": "PASS",
+    "slice_plan": "PASS",
+    "slice_specs": "PASS"
+  },
+  "final_ci": "EXACT_DELIVERY_SHA_CI_VERIFIED_IN_FINAL_HANDOFF",
+  "final_delivery_sha": "GIT_COMMIT_CONTAINING_THIS_MANIFEST",
+  "frozen_hashes": {
+    "config/dq/r2-v1.json": "f2c3267ddbd8eecc55d29c3ebac4eae971442e77d78181b5757676e37e9bfe03",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md": "2e5cfeb6bd8cfc793eaa29e999cf0d733d8ac87d9683d96e0c94c2fe23871553",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-2.md": "1566336f7f6f15efa0b22e45e14a88b1b7da7c830672dd35780ab4f3fa7f34a3",
+    "docs/remediation/phase1c1/r2-a-design-v1.md": "2093b9511f263bd128f0f9c396916b8c69960202eed8a604186a41374b37b3d5"
+  },
+  "gates": {
+    "Phase1C2": "CLOSED",
+    "R2_A": "PENDING_INDEPENDENT_REVIEW",
+    "R2_B": "NOT_AUTHORIZED",
+    "REAL_DATA": "BLOCKED"
+  },
+  "implementation_files": {
+    "config/dq/r2-v1.json": "f2c3267ddbd8eecc55d29c3ebac4eae971442e77d78181b5757676e37e9bfe03",
+    "sql/008_r2_provider_identity.sql": "fee17e6091646abc86fb0e3b5314b49f61b47a790709b6b8f90b56b6fc46d242",
+    "sql/009_r2_derivation_publication.sql": "b19518d7a928867ae2c761f2f56a565ccc0741032f8bd3c9f1f3e84ca519e851",
+    "sql/010_r2_append_only_quality.sql": "70f7859f44d18fc5a54795e044629d7f700a287cfb2857edc9d2ef0188394ef1",
+    "src/astock/data/provider_identity.py": "4bffb794e0bb108b8e70d998cb4414c1d760c3995966fc3d8c888aa6e2068275",
+    "src/astock/data/reconstruction.py": "19047b3b5a8cadab22a91c4fa3df761660151fd0f7a77bc0a92b233df8a5f44f",
+    "src/astock/data/reconstruction_dq.py": "ab064ebab026ecdc8d1960b8ed2b35701111c555bbc1d3429fb047b4e7c3e687",
+    "tests/test_provider_identity.py": "c453a00d9b51e1ab203153f0bab7e5d0808952cf81bd364bcd78e6342fcfb99d",
+    "tests/test_reconstruction.py": "d217bc5d1880fd227d4863c21e8f9f9eac7410113230f3263617c6e4f2144c2e",
+    "tests/test_reconstruction_dq.py": "3a1419e60e795b47f14c83e1d5a70705857278cebaff4cc13bb7546cef16e14a"
+  },
+  "independent_review": "PENDING",
+  "limitations": [
+    "No actual R2 schema/binding/generation/DQ applied",
+    "Historical universe/venue sessions incomplete",
+    "Unknown limit assets, NULL/CDR conflict, delist semantics require evidence",
+    "Current stock_basic old-code omission cause unknown",
+    "No historical PIT/full-history admission"
+  ],
+  "local_tests": {
+    "command": "uv run --offline --frozen pytest",
+    "new_regressions": 83,
+    "passed": 563,
+    "seconds": 347.08,
+    "warnings": 1
+  },
+  "market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "socket": 0
+  },
+  "preservation": {
+    "contract_dictionary_append_only": true,
+    "db_after": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "db_before": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "frozen_identity_hash": "83d8f02609b2e763dc9241738e37d4cd79d401c82902be54f7da5e2d97361b3c",
+    "old_curated_lineage_preserved": 252,
+    "old_sql_specs_reviews_and_legacy_source_unchanged": true,
+    "original_tables_unchanged": 19,
+    "original_writes": 0,
+    "protected_differences": 0,
+    "protected_files": 1102,
+    "raw_validated": 181,
+    "real_bindings": 0,
+    "real_generations": 0,
+    "schema_versions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "strict_receipts": {
+      "binding": "EXACT",
+      "checked": 133,
+      "failure": 0,
+      "verdict": "VALID"
+    }
+  },
+  "private_evidence_index": {
+    "relative_path": "data/private/phase1c1-r2-a/evidence-index.json",
+    "sha256": "6f81f7ae1cae4c2352a3d5aff9c85ef599495694e5a226721608bb97da33a5e0"
+  },
+  "proposal_set_hash": "7fe36cd415ed147bb1eb5ce49ebc410c9df95de1d72933093c198f9df80a0125",
+  "secrets": {
+    "credential_pattern_scan": "PASS",
+    "decoded_parquet_scan": "PASS",
+    "forbidden_staged_runtime": "NONE",
+    "literal_scan": "PASS"
+  },
+  "tested_implementation_sha": "39be745e4aa62a7d07102b8d4e82fbbf4e4f30b4"
+}
