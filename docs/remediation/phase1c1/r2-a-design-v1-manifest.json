@@ -1,0 +1,11 @@
+{
+  "design_version": "R2_A_DESIGN_V1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_REVIEW_PENDING",
+  "approved_baseline_sha": "cc458ce2e8229dcc914e9a45ae2ac6186f48c45c",
+  "digests": {
+    "docs/remediation/phase1c1/r2-a-design-v1.md": "2093b9511f263bd128f0f9c396916b8c69960202eed8a604186a41374b37b3d5",
+    "config/dq/r2-v1.json": "f2c3267ddbd8eecc55d29c3ebac4eae971442e77d78181b5757676e37e9bfe03",
+    "docs/remediation/phase1c1/Codex_Phase1C1_R2_Batched_Prompts_v1.1.md": "4489b1f6acfd969be70ac1ff5070aaef62956ca8ca74978ee4fe320c69cc6c7f",
+    "docs/reviews/2026-10-02-phase1c1-r1-final-independent-review.md": "e3a385ca61b3af2761dc679054e163597d0037beed49e4c190129fc3f87d21ba"
+  }
+}

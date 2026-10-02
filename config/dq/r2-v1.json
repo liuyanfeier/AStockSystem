@@ -1,0 +1,23 @@
+{
+  "policy_version": "R2_DQ_V1",
+  "identity_basis": "CURRENT_RECONSTRUCTION",
+  "availability_basis": "OBSERVED_CAPTURE",
+  "coverage_basis": "HISTORICAL_EPISODE",
+  "observation_precedes_disposition": true,
+  "provider_delist_date_semantics": "UNCLASSIFIED",
+  "missing_session": "NOT_CERTIFIED_BLOCKING",
+  "unknown_asset": "QUARANTINE_BLOCKING",
+  "missing_reference": "ERROR_BLOCKING",
+  "exceptions_require": "APPROVED_EXACT_CASE_SCOPE",
+  "native_rewrite": false,
+  "null_imputation": false,
+  "full_day_suspension": "EXPLICIT_ALL_DAY_S_ONLY",
+  "bse_transition": "OFFICIAL_PROVIDER_EPISODE_SEPARATE",
+  "causal_method": "FORWARD_PRIOR_CLOSE_OVER_CURRENT_PRE_CLOSE",
+  "factor_method": "INDEPENDENT_AUDIT_ONLY",
+  "price_tolerance": 0.011,
+  "causal_tolerance_percentage_points": 0.011,
+  "factor_tolerance": "0.011 + 100 * 0.011 / pre_close",
+  "research_admission": "INDEPENDENT_APPROVED_BLOCKERS_ONLY",
+  "phase1c2": "CLOSED"
+}
