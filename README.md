@@ -2,7 +2,7 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**，正在按 Gate 修复审查发现。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)；[R1-G0 库存与设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md) 已由用户转达 REVIEW 通过；[R1-G1 初次交付](docs/reviews/2026-10-02-phase1c1-r1-g1-review.md) 经[独立审查](docs/reviews/2026-10-02-phase1c1-r1-g1-independent-review.md)判定 CHANGES_REQUIRED；[G1 两项补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md) 已由用户转达 REVIEW 通过；G2 的[独立审查](docs/reviews/2026-10-02-phase1c1-r1-g2-independent-review.md)发现两项 P2，已补修。用户授权本轮批量交付，当前为 [G2 修复与 G3 隔离副本候选](docs/reviews/2026-10-02-phase1c1-r1-g3-copy-review.md)：作者自检及副本验收完成，等待统一独立 REVIEW；原库未部署 007。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)、[R1-G0 设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md)、[G1 独立审查与补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)、[G2 独立审查](docs/reviews/2026-10-02-phase1c1-r1-g2-independent-review.md)及 [G2 修复/G3 副本交付](docs/reviews/2026-10-02-phase1c1-r1-g3-copy-review.md)。用户转达 exact SHA `ac622718d978b85f90680694ec1cc8e0a3bd8b1a` 的独立 REVIEW PASS 并[授权原库部署](docs/reviews/2026-10-02-phase1c1-r1-g3-deployment-authorization.md)。现已完成原库 007、133 binding/133 upgrade audit 及离线验收，见 [R1 最终审查包](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)。状态为 **R1 FINAL_REVIEW_READY**，等待独立 R1 FINAL REVIEW；作者不宣称 FINAL PASS。
 
 本轮已执行固定 21 个交易日和 7 个小窗口日历检查，共 133 次请求；后续仅审查已有本地证据。已生成带身份隔离和谱系的 Parquet 审查输出，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
 
@@ -91,7 +91,7 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 记录已完成演练的范围。当前修复由 [R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 提供工程不变量；本轮[人工流程修订](docs/reviews/2026-10-02-phase1c1-r1-batch-authorization.md)授权 G2 补修及 G3 备份/隔离副本验收后统一审查。副本已验证 133 回执、181 raw、252 旧 curated，原库只读且未部署 007/binding/audit；原库部署仍需另行授权，R2 锁定。数据门 BLOCKED，新增市场请求预算为零，不开始 Phase 1C.2。旧规划不扩大本轮任务。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 记录已完成演练的范围。[R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 和[旧批次授权](docs/reviews/2026-10-02-phase1c1-r1-batch-authorization.md)保留。本次[原库授权与执行](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)完成已审查 007 部署，验证 133 回执、181 raw、252 旧 curated、17 张历史表和 1,102 个受保护文件。等待独立 R1 FINAL REVIEW；R2 LOCKED、数据门 BLOCKED、Phase1C.2 CLOSED，新增市场请求预算仍为零。旧规划不扩大任务。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
 
@@ -129,7 +129,7 @@ uv run --offline --frozen astock data slice plan
 uv run --offline --frozen astock data slice specs
 ```
 
-以上两条只验证固定配置。现有 DQ 会写入治理状态，本轮不运行。新增 `astock data slice audit --batch UUID` 是无 token 的只读回执审计；`--legacy-preflight` 检查旧证据而不迁移或放行。真实库尚未部署 007，普通验收仍受阻；本轮仅在合成测试库使用新入口。
+以上两条只验证固定配置。现有 DQ 会写入治理状态，本轮不运行。`astock data slice audit --batch UUID` 是无 token 的只读回执审计；`--legacy-preflight` 检查旧证据而不迁移或放行。原库已授权部署 007，严格回执审计返回 VALID / EXACT；该结果仅证明回执完整性，历史行情的数据语义门继续 BLOCKED。
 真实请求、主动中断和恢复已执行完毕，禁止重跑或扩展预算。整理与重建不调用 API。
 配置、空表类型、单位、身份区间、隔离、逐行谱系、因果审计及恢复限制见
 [整理说明](docs/phase1c1_curation.md)。当前整理输出不能作为已验收研究输入。

@@ -249,3 +249,22 @@ not historical data semantics or original deployment. Original DB remains at 006
 with no binding/audit tables; independent review and separately authorized original
 deployment are pending. See the [batch candidate](reviews/2026-10-02-phase1c1-r1-g3-copy-review.md).
 R1 FINAL PASS is not asserted; real data BLOCKED, R2 LOCKED, Phase1C.2 CLOSED.
+
+## Authorized G3 original deployment addendum
+
+The preceding copy-only account is retained as historical evidence. The user
+relayed independent PASS at `ac622718d978b85f90680694ec1cc8e0a3bd8b1a` and explicitly
+authorized original deployment. The unchanged reviewed upgrade entry point added
+007, 133 exact completion bindings and 133 VALID UPGRADE audits in one transaction
+after an exclusive guard, verified readable backup and fresh legacy preflight.
+Original versions001–006 and all 17 old table contents, 1,102 protected files and
+frozen identity were preserved. Repeat upgrade returned ALREADY_VALID without
+changing binding/audit rows or timestamps. Read-only audit returned VALID / EXACT,
+checked133/failure0 with equal DB hashes immediately before/after audit; deployment
+itself changes the overall DB hash. No market/client/transport call occurred.
+
+See the [final review package](reviews/2026-10-02-phase1c1-r1-g3-final-review.md)
+for provenance and private evidence digests. Original deployment is complete;
+R1 FINAL_REVIEW_READY is author handoff status, not independent FINAL PASS or
+approval of historical market-data semantics. R2 LOCKED, real data BLOCKED and
+Phase1C.2 CLOSED remain in force.

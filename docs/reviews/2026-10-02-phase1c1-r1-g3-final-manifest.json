@@ -1,0 +1,131 @@
+{
+  "kind": "R1_FINAL_REVIEW_PACKAGE",
+  "date": "2026-10-02",
+  "status": "R1 FINAL_REVIEW_READY",
+  "approved_baseline_sha": "ac622718d978b85f90680694ec1cc8e0a3bd8b1a",
+  "execution_implementation_sha": "ac622718d978b85f90680694ec1cc8e0a3bd8b1a",
+  "final_delivery_sha_location": "Commit containing this manifest; exact SHA/CI URL/result in final user handoff and ignored private handoff.json",
+  "approvals": {
+    "g2_copy_review": "USER_RELAYED_INDEPENDENT_PASS",
+    "original_deployment": "EXPLICIT_USER_AUTHORIZATION",
+    "r1_final_review": "PENDING"
+  },
+  "author_self_check": "COMPLETE_BEFORE_HANDOFF",
+  "isolated_acceptance": "PREVIOUSLY_ACCEPTED_AND_APPROVED",
+  "original_deployment": "PERFORMED",
+  "original_acceptance": "ORIGINAL_DEPLOYMENT_ACCEPTED",
+  "receipt_counts": {
+    "attempt_sum": 133,
+    "complete": 133,
+    "distinct_object_ids": 133,
+    "distinct_request_ids": 133,
+    "distinct_run_ids": 133,
+    "total": 133
+  },
+  "acceptance": {
+    "batch_raw": 133,
+    "all_raw": 181,
+    "old_curated": 252,
+    "curated_generations": {
+      "0": 126,
+      "1": 126
+    },
+    "completion_bindings": 133,
+    "upgrade_audits": 133,
+    "historical_tables_preserved": 17,
+    "protected_files": 1102,
+    "protected_differences": 0,
+    "frozen_identity_unchanged": true,
+    "pre_post_receipt_proofs_unchanged": true,
+    "issues": 0
+  },
+  "migration": {
+    "batches_checked": 1,
+    "result": "UPGRADED",
+    "schema_version": 7
+  },
+  "repeat_upgrade": {
+    "batches_checked": 1,
+    "result": "ALREADY_VALID",
+    "schema_version": 7
+  },
+  "repeat_rows_timestamps_unchanged": true,
+  "strict_readonly_audit": {
+    "verdict": "VALID",
+    "binding": "EXACT",
+    "checked_count": 133,
+    "failure_count": 0,
+    "evidence_hash": "0992ccac745f6e5299615caaf7a68e4aabf9fb4d90c49e1d1c742716bf4e3597"
+  },
+  "readonly_audit_bytes_unchanged": true,
+  "versions_retained": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "version_added": 7,
+  "digests": {
+    "pre_deployment_db_and_backup": "924bf429b25c4ac2fafc557bdbc67667b39de902b3175a7d7828461207fd4617",
+    "post_deployment_db": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "readonly_audit_before": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "readonly_audit_after": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "frozen_identity": "83d8f02609b2e763dc9241738e37d4cd79d401c82902be54f7da5e2d97361b3c",
+    "g0_inventory": "f5c30de4f0e0ccb7f526914f047fcccfe65e52d3100784744039dbc158848e9c",
+    "old_table_inventory": "2cab1a31061bca5cb57359e3777ace939bd49884d196f48fc8fbca0366b57069",
+    "private_preflight": "dc5655f5a1295b36a344e04c4826767c4a4b43872e3fdd6ef3631f2ebf2af972",
+    "private_acceptance": "eee0f5ca6462ecfcc6a93422c7ef18eb7a23a3a183fa57a8121b0bfd7ef92083",
+    "deployment_script": "af9d6dfc5496c8d7957d2c964f865bc8723450c0587cf6f8da057fab78091468",
+    "completion_bindings": "6fbbafe218c3a203eb0bcde6c5af9118f1773251e877392d7f624d4a17360940",
+    "upgrade_audits": "3a1292eb17a4c9eec24d0e90303dafc0b4ac76c3d024034089a4cfdccbe8a02c",
+    "pytest_log": "a200829e384d40fda53deaf70f64743a3402f78041e0ada864ce8220f3db15bb"
+  },
+  "network": {
+    "real_market_requests": 0,
+    "denied_entry_spy_counts": {
+      "client_construction": 0,
+      "http_request": 0,
+      "provider_fetch": 0,
+      "settings_access_during_audit": 0,
+      "socket_connect": 0
+    }
+  },
+  "private_decoded_secret_scan": "PASS",
+  "tests": {
+    "passed": 480,
+    "warnings": 1,
+    "duration_seconds": 244.63,
+    "python": "3.12.14",
+    "duckdb": "1.5.6"
+  },
+  "offline_checks": {
+    "locked_sync": "PASS",
+    "doctor": "PASS_TOKEN_NO",
+    "contracts_v1": 12,
+    "contracts_v2": 9,
+    "probe_plan": "PASS",
+    "identity_specs": "PASS",
+    "slice_plan": 133,
+    "slice_specs": 6
+  },
+  "baseline_ci": {
+    "sha": "ac622718d978b85f90680694ec1cc8e0a3bd8b1a",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/36980388069",
+    "conclusion": "success",
+    "passed": 480,
+    "warnings": 4
+  },
+  "final_ci": "EXACT_DELIVERY_SHA_CI_REQUIRED_BEFORE_HANDOFF",
+  "rollback": "NOT_NEEDED_NO_FAILURE_NO_RESTORE",
+  "immutable_history": "Approved tracked files preserved except current AGENTS/README and append-only contract addendum; prior private approval/copy evidence retained",
+  "pending_deployment": "NONE_WITHIN_AUTHORIZATION",
+  "unresolved_g3_evidence": [],
+  "gates": {
+    "R1_FINAL": "PENDING_INDEPENDENT_REVIEW",
+    "REAL_DATA": "BLOCKED",
+    "R2": "LOCKED",
+    "Phase1C2": "CLOSED"
+  }
+}
