@@ -12,6 +12,7 @@ from astock.data.receipt_integrity import batch_requests, validate_slice_receipt
 from astock.data.receipt_migration import apply_receipt_integrity_upgrade
 from astock.data.slice_capture import finalize_receipt
 from astock.data.slice_errors import ReceiptIntegrityError
+from astock.data.warehouse_lock import WarehouseConnectionProxy
 from test_receipt_integrity import legacy, SHA
 
 
@@ -30,8 +31,9 @@ def files(root):
             for p in (root / 'data').rglob('*') if p.is_file()}
 
 
-class FaultDB:
+class FaultDB(WarehouseConnectionProxy):
     def __init__(self, db, pattern):
+        super().__init__(db)
         self.db = db
         self.pattern = pattern
 

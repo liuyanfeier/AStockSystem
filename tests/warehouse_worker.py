@@ -7,7 +7,7 @@ from uuid import UUID
 
 import duckdb
 
-from astock.data.warehouse_lock import warehouse_lock, warehouse_connection
+from astock.data.warehouse_lock import warehouse_lock, warehouse_connection, WarehouseConnectionProxy
 
 
 def deny_network():
@@ -97,8 +97,9 @@ def contender(pipe, root, batch, action):
         pipe.close()
 
 
-class CrashDB:
+class CrashDB(WarehouseConnectionProxy):
     def __init__(self, db, pattern, after=False):
+        super().__init__(db)
         self.db, self.pattern, self.after = db, pattern, after
 
     def execute(self, sql, *args):

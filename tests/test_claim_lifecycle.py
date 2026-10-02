@@ -16,7 +16,8 @@ from astock.data.slice_capture import (capture_slices, finalize_receipt, publish
                                       fail_batch, identity_state)
 from astock.data.slice_errors import ReceiptIntegrityError
 from astock.data.slice_plan import claim_request, create_batch
-from astock.data.warehouse_lock import warehouse_connection, WarehouseLockError
+from astock.data.warehouse_lock import (warehouse_connection, warehouse_lock, WarehouseLockError,
+                                        WarehouseConnectionProxy)
 from test_receipt_migration import old_rows, files
 from test_slice_capture import slice_root, settings, SyntheticCaptureClient
 from warehouse_worker import crash_worker
@@ -54,8 +55,10 @@ def crashed(root, batch, action, pattern='', after=False):
         process.join(10)
 
 
-class ClaimFault:
-    def __init__(self, db, fault): self.db, self.fault = db, fault
+class ClaimFault(WarehouseConnectionProxy):
+    def __init__(self, db, fault):
+        super().__init__(db)
+        self.db, self.fault = db, fault
     def execute(self, sql, *args):
         if "UPDATE slice_request SET status='IN_FLIGHT'" in sql and self.fault == 'zero_claim':
             class NoRows:
@@ -230,13 +233,16 @@ def test_finalize_process_death_rolls_back_or_leaves_one_exact_committed_binding
 
 @pytest.mark.parametrize('helper', ['migrate', 'raw', 'claim', 'create', 'finalize', 'register', 'upgrade',
                                   'identity', 'admission', 'mapping', 'failure'])
-def test_disk_helpers_reject_unmanaged_connections_before_any_write(slice_root, helper):
+@pytest.mark.parametrize('late_lock', [False, True])
+def test_disk_helpers_reject_unmanaged_connections_before_any_write(slice_root, helper, late_lock):
+    from contextlib import nullcontext
     from astock.data.identity import IdentityHistory
     from astock.data.bootstrap import admit_bootstrap, capture_mapping
-    # Deliberate native connection demonstrates that late advisory acquisition is rejected.
+    # Open the unmanaged connection FIRST, then actually take the same-path guard.
     with duckdb.connect(str(slice_root/'data/warehouse/astock.duckdb')) as db:
         before = old_rows(db)
-        with pytest.raises(WarehouseLockError, match='WAREHOUSE_LOCK_REQUIRED'):
+        owner = warehouse_lock(slice_root/'data/warehouse/astock.duckdb') if late_lock else nullcontext()
+        with owner, pytest.raises(WarehouseLockError, match='WAREHOUSE_LOCK_REQUIRED'):
             if helper == 'migrate': migrate(db, slice_root)
             elif helper == 'raw': RawWriter(slice_root, db)
             elif helper == 'claim': claim_request(db, None, 0)

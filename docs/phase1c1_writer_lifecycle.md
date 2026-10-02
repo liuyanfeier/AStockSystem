@@ -1,6 +1,36 @@
 # Phase 1C.1 writer ownership and lifecycle
 
-2026-10-02 · R1-G2 implementation/policy · G3 not authorized · R2 locked.
+2026-10-02 · R1-G2 implementation/policy · G3 isolated-copy batch authorized · R2 locked.
+
+The [human batch revision](reviews/2026-10-02-phase1c1-r1-batch-authorization.md)
+authorizes G2 review fixes and isolated-copy G3 acceptance before one final review.
+Original 007/binding/audit deployment remains prohibited in this batch.
+
+## Managed handle lifetime and fork addendum
+
+Disk helpers require a `warehouse_connection` handle whose creating guard is still
+active in its creating process, thread and context. A path lock alone does not
+admit an earlier native connection. `execute`/`executemany` return the scoped handle;
+explicit cursors share its lifetime and close before the owner's lock releases.
+Root close invalidates all child cursors; cursor close leaves the root valid.
+Escaped handles, copied stale contexts, foreign threads and fork children fail
+before native execution. Reacquiring the path cannot revive an ended scope.
+
+Only native memory databases without attached disk databases may bypass ownership.
+Arbitrary proxies/empty simulated PRAGMA results cannot grant this exception.
+Explicit `WarehouseConnectionProxy` fault adapters delegate ownership to their
+checked base handle; existing transactional fault tests retain their assertions.
+Additional attached disk databases are outside the owner's path and are rejected
+by mutation helpers. Native SQL/private internals are trusted application code,
+not a security sandbox for hostile SQL or reflection.
+
+A process-wide descriptor registry synchronizes open/register and unregister/close
+with fork. Child cleanup closes every inherited lock descriptor, including those
+owned/acquiring in another thread/context, without LOCK_UN on the parent's shared
+open-file description. The registry is cleanup machinery, not authority to reuse
+another thread's guard. A copied ContextVar cannot revive an inactive guard.
+An invalid cross-context exit reports `WAREHOUSE_LOCK_CONTEXT` while still closing
+the descriptor; token-reset errors cannot skip cleanup and strand ownership.
 
 ## One cooperating owner per warehouse
 
