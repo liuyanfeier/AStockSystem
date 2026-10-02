@@ -174,3 +174,23 @@ or historical download/curation runners. Future writers must register validated
 immutable objects against curation runs and verify quarantine raw-object references.
 The private authority file is a human-reviewed evidence boundary, not an automatic
 web scraper or an assertion that arbitrary JSON is official evidence.
+
+## R1-G1 exact completion proof
+
+A slice COMPLETE is admitted only with exactly one raw manifest for its run,
+matching receipt object UUID, dataset, typed params, immutable request plan and
+contract. Actual file hash/schema/count/event bounds, exact sidecar object set and
+capture-contract identity must all match. Reject missing evidence, duplicate JSON
+keys, type coercion and symlinks (including directory/metadata components).
+Generic raw runs may have multiple valid parts; empty run sets and zero-manifest
+runs never pass. A valid zero-row object follows its existing endpoint policy.
+
+Resume, completion, promotion, curation and DQ share this proof. Invalid historical
+receipts remain unchanged; new operation failure evidence is separate. Recovery
+never creates absent sidecars/contracts. Normal admission requires a unique exact
+007 binding. `astock data slice audit --batch UUID` opens the warehouse read-only,
+requires no token and never captures, claims or migrates. Explicit
+`--legacy-preflight` checks unbound old evidence but grants no normal admission or
+review approval. Verification commit/time are separate from capture provenance.
+R1-G1 implements and tests these guarantees on synthetic isolated storage only;
+DB process locking/atomic claim remain R1-G2, real deployment/validation R1-G3.

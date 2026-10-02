@@ -259,3 +259,27 @@ def slice_dq_command(batch: str=typer.Option(...,'--batch')) -> None:
     except Exception:
         typer.echo('Slice DQ: BLOCKED (safe details only; inspect private evidence)')
         raise typer.Exit(1)
+
+
+@slice_app.command('audit')
+def slice_receipt_audit(batch: str = typer.Option(..., '--batch'),
+                        legacy_preflight: bool = typer.Option(False, '--legacy-preflight')) -> None:
+    """Token-free, read-only exact receipt audit; never captures or migrates."""
+    import json
+    from uuid import UUID
+    from astock.data.receipt_integrity import audit_slice_batch
+    from astock.data.slice_errors import ReceiptIntegrityError
+
+    try:
+        summary = audit_slice_batch(get_project_root(), UUID(batch), legacy_preflight=legacy_preflight)
+        typer.echo(json.dumps(summary, sort_keys=True, indent=2))
+        if summary['failure_count']:
+            raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except ReceiptIntegrityError as error:
+        typer.echo(json.dumps(error.summary(), sort_keys=True))
+        raise typer.Exit(1)
+    except Exception:
+        typer.echo('Receipt audit: BLOCKED (safe details only)')
+        raise typer.Exit(1)

@@ -145,23 +145,15 @@ def secret_scan(token: SecretStr, paths: list[Path]) -> bool:
 
 
 def verify_batch(root: Path, db, run_ids) -> bool:
+    """Generic all-parts proof; empty/missing runs never constitute completion."""
+    from astock.data.raw_validation import validate_raw_run
+
     try:
-        for run_id in run_ids:
-            rows = db.execute("SELECT relative_path,sha256,row_count,schema_hash FROM raw_object_manifest WHERE run_id=?", [str(run_id)]).fetchall()
-            for relative, checksum, count, schema_hash in rows:
-                path = root/relative
-                if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()/'data/raw'):
-                    return False
-                with path.open('rb') as stream:
-                    if hashlib.file_digest(stream, 'sha256').hexdigest() != checksum:
-                        return False
-                arrow = pq.ParquetFile(path).read()
-                if arrow.num_rows != count or schema_digest(arrow) != schema_hash:
-                    return False
-                sidecar = json.loads((path.parent/'manifest.json').read_bytes())
-                if not any(item['relative_path']==relative and item['sha256']==checksum and
-                           item['row_count']==count for item in sidecar['objects']):
-                    return False
+        requested = list(run_ids)
+        if not requested or len({str(run) for run in requested}) != len(requested):
+            return False
+        for run_id in requested:
+            validate_raw_run(root, db, run_id)
         return True
     except Exception:
         return False

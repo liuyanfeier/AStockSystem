@@ -65,3 +65,18 @@ Official identity intervals separately verify six pilot changes on 2025-05-06 an
 242 remaining changes on 2025-10-09, plus pre-opening exclusions. Incomplete
 observed transition pairs stay REVIEW. Errors block acceptance; review items stay
 PARTIAL until adjudicated. No DQ finding triggers new provider requests.
+
+## R1-G1 remediation admission boundary
+
+The workflow above describes the historical rehearsal, not permission to execute
+it again. Current market request budget is zero. Exact receipt proof and migration
+007 bindings now precede resume, CAPTURED promotion, curation and DQ. Local crash
+reconciliation additionally requires already published sidecar and capture-contract;
+registered raw alone is insufficient. Old real receipts remain unbound until the
+approved R1-G3 copy/backup deployment; no real curation or DQ is authorized in G1.
+
+The new token-free `astock data slice audit --batch UUID` performs read-only receipt
+verification; `--legacy-preflight` explicitly reports unregistered legacy evidence
+without migration or acceptance. G1 uses synthetic fixtures only. Follow the
+[R1 specification](remediation/phase1c1/Phase1C1_R1_Engineering_Integrity_Spec_v1.0.md)
+and wait for independent review before R1-G2. R2 and Phase1C.2 remain closed.

@@ -254,3 +254,25 @@ Typed specs in `config/curation/v1/` define future column names and units:
 `total_mv_10k_cny`, plus explicit turnover/dividend `_pct` values.
 Numeric values remain unrounded; nullable values are preserved. These specs are
 schema definitions, not populated market-data tables.
+
+## R1-G1 receipt integrity — explicit migration 007
+
+`slice_receipt_completion_binding` records one accepted completion per
+`(batch_id, ordinal)`. Composite FKs reference the existing request ordinal and
+request ID; unique run/object UUIDs reference ingestion/raw manifests. Its
+`plan_hash`, `contract_hash`, `receipt_hash`, `evidence_hash`, validator version,
+`verification_code_commit` and `validated_at` record newly verified proof.
+Capture commit and capture/availability timestamps remain unchanged.
+
+`slice_receipt_validation_audit` has UUID `audit_id`, parent batch FK, nullable
+ordinal, purpose, verdict, safe reason code, validator version, verification SHA,
+validation timestamp, nullable evidence hash and checked count. Application paths
+append history separately from the unique accepted binding; ordinary read-only
+CLI audits do not write this table.
+
+FKs prove existence/uniqueness, not cross-reference coherence or file truth.
+Shared application validation establishes those guarantees. The generic migration
+helper still stops at 006; 007 uses the explicit transaction-owned
+`apply_receipt_integrity_upgrade`, validating legacy COMPLETE rows before creating
+bindings and recording schema_version7 last. No historical warehouse has been
+upgraded in G1. Original deployment requires approved R1-G3 preflight/backup.

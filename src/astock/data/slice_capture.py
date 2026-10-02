@@ -8,22 +8,19 @@ from pathlib import Path
 from uuid import UUID
 
 import duckdb
-import pyarrow.parquet as pq
 
 from astock.data.audit import RequestParams
 from astock.data.bootstrap import identity_snapshot_hash
 from astock.data.contracts import load_contracts
 from astock.data.identity import IdentifierHistory, IdentityHistory
 from astock.data.probe_audit import canonical_json, records, table_audit
-from astock.data.raw_writer import RawWriter, atomic_new_file, migrate, secret_scan, verify_batch
+from astock.data.raw_writer import RawWriter, atomic_new_file, migrate, secret_scan
 from astock.data.slice_plan import create_batch, claim_request, resume_batch, request_manifest, APPROVED
 from astock.data.tushare_client import ProviderTable, ProviderFailure, TushareClient
-
-
-class SliceStop(Exception):
-    def __init__(self, code: str):
-        self.code = code
-        super().__init__(code)
+from astock.data.slice_errors import SliceStop, ReceiptIntegrityError
+from astock.data.receipt_integrity import (batch_requests, frozen_context, validate_requests,
+                                         validate_slice_receipt, validate_slice_batch)
+from astock.data.receipt_migration import apply_receipt_integrity_upgrade, register_completion
 
 
 def identity_state(db) -> tuple[str, IdentityHistory, list[dict]]:
@@ -50,20 +47,6 @@ def implementation_commit(root: Path) -> str:
     if subprocess.check_output(['git','status','--porcelain','--','src/astock','sql','config'],cwd=root,text=True).strip():
         raise SliceStop('UNCOMMITTED_IMPLEMENTATION')
     return subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
-
-
-def batch_requests(db, batch_id: UUID) -> list[dict]:
-    result = db.execute('SELECT * FROM slice_request WHERE batch_id=? ORDER BY ordinal',[str(batch_id)])
-    columns = [c[0] for c in result.description]
-    return [dict(zip(columns,r,strict=True)) for r in result.fetchall()]
-
-
-def validate_requests(requests, manifest):
-    if len(requests)!=len(manifest['requests']):raise SliceStop('LINEAGE')
-    for receipt,planned in zip(requests,manifest['requests'],strict=True):
-        for key in ('ordinal','request_id','slice_name','dataset','contract_catalog','contract_hash'):
-            if receipt[key]!=planned[key]:raise SliceStop('FROZEN_INPUT_CHANGED')
-        if json.loads(receipt['request_params'])!=planned['request_params']:raise SliceStop('FROZEN_INPUT_CHANGED')
 
 
 def validate_capture(table: ProviderTable, contract, params: RequestParams, slice_name: str) -> dict:
@@ -95,58 +78,80 @@ def validate_capture(table: ProviderTable, contract, params: RequestParams, slic
 
 
 def _object_table(root: Path, db, request: dict) -> tuple[ProviderTable, dict]:
-    result = db.execute('SELECT object_id,relative_path,sha256,retrieved_at,request_params,dataset FROM raw_object_manifest WHERE run_id=?',[str(request['run_id'])]).fetchall()
-    if len(result) != 1:
-        raise SliceStop('LINEAGE')
-    oid,relative,checksum,retrieved,params,dataset = result[0]
-    if json.loads(params)!=json.loads(request['request_params']) or dataset!=request['dataset']:
-        raise SliceStop('LINEAGE')
-    path=root/relative
-    if path.is_symlink() or not path.resolve().is_relative_to(root.resolve()/'data/raw') or hashlib.sha256(path.read_bytes()).hexdigest()!=checksum:
-        raise SliceStop('LINEAGE')
-    arrow=pq.ParquetFile(path).read()
-    table=ProviderTable(fields=arrow.column_names,items=[list(r.values()) for r in arrow.to_pylist()],retrieved_at=retrieved)
-    return table,dict(object_id=str(oid),relative_path=relative,sha256=checksum)
+    proof = validate_slice_receipt(root, db, request)
+    return proof.table, proof.object
 
 
-def finalize_receipt(root: Path, db, request: dict, contract) -> None:
-    table,obj=_object_table(root,db,request)
-    # Validate again for recovery before changing any receipt to COMPLETE.
-    validate_capture(table,contract,RequestParams.model_validate_json(request['request_params']),request['slice_name'])
-    writer=RawWriter(root,db)
-    sidecar=root/f'data/raw/tushare/{request["dataset"]}/run_id={request["run_id"]}/manifest.json'
-    if not sidecar.exists():
-        writer.sidecar(request['run_id'],request['dataset'])
-    if not verify_batch(root,db,[request['run_id']]):
-        raise SliceStop('LINEAGE')
-    metadata=sidecar.parent/'capture-contract.json'
-    body=dict(contract_catalog='v2',contract_version=contract.contract_version,contract_hash=request['contract_hash'],
-              request_id=request['request_id'],request_params=json.loads(request['request_params']),**obj)
-    if not metadata.exists():
-        atomic_new_file(metadata,lambda p:p.write_bytes(canonical_json(body)))
-    elif json.loads(metadata.read_bytes())!=body:
-        raise SliceStop('LINEAGE')
-    db.execute('BEGIN')
+def publish_capture_metadata(root: Path, db, request: dict, contract, obj: dict) -> None:
+    """Active capture publication only; recovery/audit never create missing proof."""
+    RawWriter(root, db).sidecar(request['run_id'], request['dataset'])
+    metadata = (root / obj['relative_path']).with_name('capture-contract.json')
+    body = dict(contract_catalog='v2', contract_version=contract.contract_version,
+                contract_hash=request['contract_hash'], request_id=request['request_id'],
+                request_params=json.loads(request['request_params']), **obj)
+    atomic_new_file(metadata, lambda path: path.write_bytes(canonical_json(body)))
+
+
+def finalize_receipt(root: Path, db, request: dict, contract, *, verification_sha: str) -> None:
+    """Conditional, exact and idempotent completion; no metadata repair."""
+    db.execute('BEGIN TRANSACTION')
     try:
-        db.execute("UPDATE ingestion_run SET status='SUCCEEDED',finished_at=? WHERE run_id=?",[datetime.now(timezone.utc),str(request['run_id'])])
-        db.execute("UPDATE slice_request SET status='COMPLETE',object_id=? WHERE batch_id=? AND ordinal=?",[obj['object_id'],str(request['batch_id']),request['ordinal']])
+        context = frozen_context(root, db, request['batch_id'])
+        current = next(r for r in batch_requests(db, request['batch_id']) if r['ordinal'] == request['ordinal'])
+        if contract.model_dump(mode='json') != context.contracts[current['dataset']].model_dump(mode='json'):
+            raise ReceiptIntegrityError('CONTRACT_HASH')
+        if current['status'] == 'COMPLETE':
+            proof = validate_slice_receipt(root, db, current, context=context)
+            if request['object_id'] is not None and str(request['object_id']) != proof.object['object_id']:
+                raise ReceiptIntegrityError('RECEIPT_OBJECT_MISMATCH')
+            if current != request:
+                raise ReceiptIntegrityError('RECEIPT_CHANGED')
+            db.execute('COMMIT')
+            return
+        if current != request:
+            raise ReceiptIntegrityError('RECEIPT_CHANGED')
+        proof = validate_slice_receipt(root, db, current, context=context, require_binding=False, candidate=True)
+        now = datetime.now(timezone.utc)
+        updated = db.execute("UPDATE ingestion_run SET status='SUCCEEDED',finished_at=? WHERE run_id=? AND status='RUNNING' AND request_count=1 AND raw_object_count=1",
+                             [now, str(current['run_id'])]).fetchone()[0]
+        if updated != 1:
+            raise ReceiptIntegrityError('FINALIZE_STATE')
+        updated = db.execute("UPDATE slice_request SET status='COMPLETE',object_id=? WHERE batch_id=? AND ordinal=? AND status='IN_FLIGHT' AND attempts=1 AND object_id IS NULL",
+                             [proof.object['object_id'], str(current['batch_id']), current['ordinal']]).fetchone()[0]
+        if updated != 1:
+            raise ReceiptIntegrityError('FINALIZE_STATE')
+        completed = next(r for r in batch_requests(db, request['batch_id']) if r['ordinal'] == request['ordinal'])
+        register_completion(root, db, completed, verification_sha=verification_sha, context=context)
         db.execute('COMMIT')
     except Exception:
         db.execute('ROLLBACK')
         raise
 
 
+def operation_block(root: Path, batch_id: UUID, code: str) -> dict:
+    """Append new failure evidence without modifying contradictory old receipts."""
+    from uuid import uuid4
+    path = root / f'data/private/phase1c1/{batch_id}/operation-block-{uuid4()}.json'
+    atomic_new_file(path, lambda p: p.write_bytes(canonical_json(dict(
+        batch_id=str(batch_id), verdict='BLOCKED', reason_code=code,
+        observed_at=datetime.now(timezone.utc).isoformat()))))
+    return dict(batch_id=str(batch_id), status='BLOCKED', failure=code)
+
+
 def fail_batch(root: Path, db, batch_id: UUID, request: dict, code: str, error=None) -> None:
+    current=db.execute('SELECT status FROM slice_request WHERE batch_id=? AND ordinal=?',[str(batch_id),request['ordinal']]).fetchone()
+    if current and current[0]=='COMPLETE':
+        return operation_block(root,batch_id,code)
     now=datetime.now(timezone.utc)
     artifact=root/f'data/private/phase1c1/{batch_id}/failure-{request["ordinal"]:03}.json'
     body=dict(request_id=request['request_id'],dataset=request['dataset'],request_params=json.loads(request['request_params']),
               failure_code=code,observed_at=now.isoformat(),error=error.model_dump(mode='json') if error else None)
     if not artifact.exists():
         atomic_new_file(artifact,lambda p:p.write_bytes(canonical_json(body)))
-    sidecar=root/f'data/raw/tushare/{request["dataset"]}/run_id={request["run_id"]}/manifest.json'
-    if not sidecar.exists() and db.execute('SELECT count(*) FROM raw_object_manifest WHERE run_id=?',[str(request['run_id'])]).fetchone()[0]:
-        RawWriter(root,db).sidecar(request['run_id'],request['dataset'])
-    db.execute("UPDATE slice_request SET status='FAILED',failure_code=? WHERE batch_id=? AND ordinal=?",[code,str(batch_id),request['ordinal']])
+    # 006 retains its frozen reason enum; new diagnostics remain in private evidence.
+    stored_code = code if code in ('TRANSPORT','REDIRECT','AUTH','PERMISSION','PROVIDER','INVALID_RESPONSE',
+                                  'ROW_CAP','SCHEMA','LINEAGE','UNCERTAIN_CAPTURE','CALENDAR') else 'LINEAGE'
+    db.execute("UPDATE slice_request SET status='FAILED',failure_code=? WHERE batch_id=? AND ordinal=?",[stored_code,str(batch_id),request['ordinal']])
     db.execute("UPDATE ingestion_run SET status='FAILED',finished_at=?,error_category=?,error_http_status=?,error_provider_code=? WHERE run_id=?",[
         now,error.category.value if error else None,error.http_status if error else None,error.provider_code if error else None,str(request['run_id'])])
     db.execute("UPDATE slice_batch SET status='BLOCKED',finished_at=? WHERE batch_id=?",[now,str(batch_id)])
@@ -163,7 +168,6 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
     manifest=request_manifest(root)
     commit=commit or implementation_commit(root)
     contracts={c.dataset:c for c in load_contracts(root,catalog_version='v2')}
-    client=client or TushareClient(settings.tushare_token)
     # Use only this checkout's ignored storage, never an external path.
     db_path=root/'data/warehouse/astock.duckdb'
     db_path.parent.mkdir(parents=True,exist_ok=True)
@@ -173,27 +177,25 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
         if batch_id is None:
             if db.execute('SELECT count(*) FROM slice_batch').fetchone()[0]:
                 raise SliceStop('EXISTING_BATCH_REQUIRES_EXPLICIT_RESUME')
+            apply_receipt_integrity_upgrade(root,db,verification_sha=commit)
             batch_id=create_batch(root,db,commit=commit,identity_hash=snapshot,knowledge_as_of=datetime.now(timezone.utc))
         prior=db.execute('SELECT identity_snapshot_hash,code_commit FROM slice_batch WHERE batch_id=?',[str(batch_id)]).fetchone()
         if prior is None or prior!=(snapshot,commit):
             raise SliceStop('FROZEN_INPUT_CHANGED')
-        validate_requests(batch_requests(db,batch_id),manifest)
-        # A stored capture can finish its receipt after a crash, without HTTP replay.
-        for req in batch_requests(db,batch_id):
-            contract=contracts[req['dataset']]
-            if req['contract_hash']!=hashlib.sha256(canonical_json(contract.model_dump(mode='json'))).hexdigest():
-                raise SliceStop('FROZEN_INPUT_CHANGED')
-            if req['status']=='IN_FLIGHT':
-                try:
-                    finalize_receipt(root,db,req,contract)
-                except (SliceStop,OSError):
-                    fail_batch(root,db,batch_id,req,'UNCERTAIN_CAPTURE')
-                    return dict(batch_id=str(batch_id),status='BLOCKED',failure='UNCERTAIN_CAPTURE')
-            if req['status']=='COMPLETE':
-                if not verify_batch(root,db,[req['run_id']]):
-                    fail_batch(root,db,batch_id,req,'LINEAGE')
-                    return dict(batch_id=str(batch_id),status='BLOCKED',failure='LINEAGE')
-        pending=resume_batch(db,batch_id,expected_plan_hash=manifest['plan_hash'])
+        try:
+            context = frozen_context(root, db, batch_id)
+            # Prove every existing COMPLETE before any reconciliation or pending HTTP.
+            validate_slice_batch(root, db, batch_id, complete=False, context=context)
+            for req in batch_requests(db, batch_id):
+                if req['status'] == 'IN_FLIGHT':
+                    try:
+                        finalize_receipt(root, db, req, contracts[req['dataset']], verification_sha=commit)
+                    except (SliceStop, OSError):
+                        return operation_block(root, batch_id, 'UNCERTAIN_CAPTURE')
+            pending = resume_batch(db, batch_id, root=root, expected_plan_hash=manifest['plan_hash'])
+        except ReceiptIntegrityError as error:
+            return operation_block(root, batch_id, error.code)
+        client = client or (TushareClient(settings.tushare_token) if pending else None)
         db.execute("UPDATE slice_batch SET status='RUNNING',finished_at=NULL WHERE batch_id=?",[str(batch_id)])
         completed_now=0
         for req in pending:
@@ -204,10 +206,13 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
                 table=client.fetch_slice(contract,params)
                 # Keep even rejected cap/schema responses as immutable local evidence.
                 raw=RawWriter(root,db).write(req['run_id'],req['dataset'],0,table,params)
-                finalize_receipt(root,db,req,contract)
+                current = next(r for r in batch_requests(db,batch_id) if r['ordinal']==req['ordinal'])
+                obj = dict(object_id=str(raw.object_id), relative_path=raw.relative_path, sha256=raw.sha256)
+                publish_capture_metadata(root,db,current,contract,obj)
                 files=[p for p in (root/raw.relative_path).parent.iterdir() if p.is_file()]
                 if not secret_scan(settings.tushare_token,files):
                     raise SliceStop('INVALID_RESPONSE')
+                finalize_receipt(root,db,current,contract,verification_sha=commit)
             except ProviderFailure as exc:
                 fail_batch(root,db,batch_id,req,exc.error.category.value,exc.error)
                 return dict(batch_id=str(batch_id),status='BLOCKED',failure=exc.error.category.value)
@@ -221,8 +226,9 @@ def capture_slices(root: Path, settings, *, live: bool=False, batch_id: UUID|Non
             if stop_after is not None and completed_now>=stop_after:
                 db.execute("UPDATE slice_batch SET status='INTERRUPTED' WHERE batch_id=?",[str(batch_id)])
                 return dict(batch_id=str(batch_id),status='INTERRUPTED',completed_this_invocation=completed_now)
-        counts=db.execute("SELECT count(*),sum(attempts),count(object_id) FROM slice_request WHERE batch_id=?",[str(batch_id)]).fetchone()
-        if counts!=(133,133,133):
-            raise SliceStop('LINEAGE')
+        try:
+            validate_slice_batch(root, db, batch_id)
+        except ReceiptIntegrityError as error:
+            return operation_block(root, batch_id, error.code)
         db.execute("UPDATE slice_batch SET status='CAPTURED',finished_at=? WHERE batch_id=?",[datetime.now(timezone.utc),str(batch_id)])
         return dict(batch_id=str(batch_id),status='CAPTURED',logical_requests=133,http_attempts=133,raw_objects=133)

@@ -11,7 +11,8 @@ from pydantic import SecretStr
 from astock.data.audit import RequestParams
 from astock.data.contracts import load_contracts
 from astock.data.raw_writer import migrate,RawWriter,verify_batch
-from astock.data.slice_capture import capture_slices,identity_state,SliceStop
+from astock.data.slice_capture import capture_slices,identity_state,SliceStop,publish_capture_metadata,batch_requests
+from astock.data.receipt_migration import apply_receipt_integrity_upgrade
 from astock.data.slice_plan import APPROVED,create_batch,claim_request
 from astock.data.tushare_client import TushareClient,ProviderFailure,ProviderTable
 from astock.settings import Settings
@@ -26,6 +27,7 @@ def slice_root(tmp_path):
     (tmp_path/'data/warehouse').mkdir(parents=True)
     with duckdb.connect(str(tmp_path/'data/warehouse/astock.duckdb')) as db:
         migrate(db,tmp_path)
+        apply_receipt_integrity_upgrade(tmp_path,db,verification_sha='a'*40)
         now=datetime(2026,1,1,tzinfo=timezone.utc)
         db.execute('INSERT INTO security_identifier_history VALUES (?,?,?,?,?,?,?,?,?,?,?)',[
             'synthetic-security','tushare','ts_code','000001.SZ','SZSE',date(1990,1,1),None,None,now,now,'synthetic-evidence'])
@@ -91,7 +93,9 @@ def test_crash_after_registered_raw_recovers_without_refetch(slice_root):
         c=next(c for c in load_contracts(slice_root,catalog_version='v2') if c.dataset=='trade_cal')
         p=RequestParams(exchange='SSE',start_date=date(2013,1,4),end_date=date(2013,1,8))
         table=SyntheticCaptureClient().fetch_slice(c,p)
-        RawWriter(slice_root,db).write(run,'trade_cal',0,table,p)
+        raw=RawWriter(slice_root,db).write(run,'trade_cal',0,table,p)
+        req=batch_requests(db,batch)[0]
+        publish_capture_metadata(slice_root,db,req,c,dict(object_id=str(raw.object_id),relative_path=raw.relative_path,sha256=raw.sha256))
     client=SyntheticCaptureClient()
     result=capture_slices(slice_root,settings(),live=True,batch_id=batch,stop_after=1,client=client,commit='a'*40)
     assert result['status']=='INTERRUPTED' and client.calls[0][0]=='daily'
@@ -107,7 +111,7 @@ def test_uncertain_network_receipt_never_replayed(slice_root):
     client=SyntheticCaptureClient()
     result=capture_slices(slice_root,settings(),live=True,batch_id=batch,client=client,commit='a'*40)
     assert result['status']=='BLOCKED' and result['failure']=='UNCERTAIN_CAPTURE' and not client.calls
-    assert (slice_root/f'data/private/phase1c1/{batch}/failure-000.json').is_file()
+    assert list((slice_root/f'data/private/phase1c1/{batch}').glob('operation-block-*.json'))
 
 
 def test_lineage_corruption_stops_resume(slice_root):
@@ -117,4 +121,4 @@ def test_lineage_corruption_stops_resume(slice_root):
     (slice_root/relative).write_bytes(b'synthetic corruption')
     client=SyntheticCaptureClient()
     result=capture_slices(slice_root,settings(),live=True,batch_id=UUID(first['batch_id']),client=client,commit='a'*40)
-    assert result['failure']=='LINEAGE' and not client.calls
+    assert result['failure']=='FILE_CHECKSUM' and not client.calls

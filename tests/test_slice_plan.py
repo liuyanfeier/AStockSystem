@@ -39,28 +39,34 @@ def test_planner_offline_no_token_or_storage():
 def test_durable_attempt_claim_and_uncertain_resume_fails_closed(tmp_path):
     with duckdb.connect(':memory:') as db:
         migrate(db,ROOT)
+        from astock.data.receipt_migration import apply_receipt_integrity_upgrade
+        apply_receipt_integrity_upgrade(ROOT,db,verification_sha='a'*40)
         import shutil
         shutil.copytree(ROOT/'config',tmp_path/'config')
         batch=create_batch(tmp_path,db,commit='a'*40,identity_hash='b'*64,knowledge_as_of=datetime.now(timezone.utc))
         manifest=request_manifest(ROOT)
-        assert len(resume_batch(db,batch,expected_plan_hash=manifest['plan_hash']))==133
+        assert len(resume_batch(db,batch,root=tmp_path,expected_plan_hash=manifest['plan_hash']))==133
         claim_request(db,batch,0)
         assert db.execute('SELECT sum(request_count) FROM ingestion_run').fetchone()==(1,)
         with pytest.raises(ValueError):claim_request(db,batch,0)
-        with pytest.raises(ValueError,match='Uncertain'):resume_batch(db,batch,expected_plan_hash=manifest['plan_hash'])
-        assert db.execute('SELECT status FROM slice_batch').fetchone()==('BLOCKED',)
+        with pytest.raises(ValueError,match='UNCERTAIN_CAPTURE'):resume_batch(db,batch,root=tmp_path,expected_plan_hash=manifest['plan_hash'])
+        assert db.execute('SELECT status FROM slice_batch').fetchone()==('PLANNED',)
         assert (tmp_path/f'data/private/phase1c1/{batch}/request-manifest.json').is_file()
 
 
-def test_completed_receipt_is_skipped_on_interruption(tmp_path):
+def test_fake_completed_receipt_blocks_pending_on_interruption(tmp_path):
     import shutil
     shutil.copytree(ROOT/'config',tmp_path/'config')
     with duckdb.connect(':memory:') as db:
         migrate(db,ROOT)
+        from astock.data.receipt_migration import apply_receipt_integrity_upgrade
+        apply_receipt_integrity_upgrade(ROOT,db,verification_sha='a'*40)
         batch=create_batch(tmp_path,db,commit='a'*40,identity_hash='b'*64,knowledge_as_of=datetime.now(timezone.utc))
         claim_request(db,batch,0)
         db.execute("UPDATE slice_request SET status='COMPLETE',object_id=? WHERE ordinal=0",[str(uuid4())])
         db.execute("UPDATE slice_batch SET status='INTERRUPTED'")
-        pending=resume_batch(db,batch,expected_plan_hash=request_manifest(ROOT)['plan_hash'])
-        assert len(pending)==132 and pending[0]['ordinal']==1
-        with pytest.raises(ValueError):resume_batch(db,batch,expected_plan_hash='c'*64)
+        from astock.data.slice_errors import ReceiptIntegrityError
+        with pytest.raises(ReceiptIntegrityError):
+            resume_batch(db,batch,root=tmp_path,expected_plan_hash=request_manifest(ROOT)['plan_hash'])
+        assert db.execute("SELECT count(*) FROM slice_request WHERE status='PENDING'").fetchone()==(132,)
+        with pytest.raises(ValueError):resume_batch(db,batch,root=tmp_path,expected_plan_hash='c'*64)

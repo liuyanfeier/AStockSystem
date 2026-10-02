@@ -17,9 +17,12 @@ from astock.data.contracts import load_contracts
 from astock.data.curation import load_curation_specs, digest, publish_curated_bytes, input_manifest_hash
 from astock.data.identity import _known_versions, is_normalized_ashare_identifier
 from astock.data.probe_audit import canonical_json, records
-from astock.data.raw_writer import atomic_new_file, verify_batch
+from astock.data.raw_writer import atomic_new_file
 from astock.data.slice_capture import (SliceStop, identity_state, implementation_commit,
                                       batch_requests, _object_table, validate_capture, validate_requests)
+from astock.data.receipt_integrity import validate_slice_batch
+from astock.data.slice_errors import ReceiptIntegrityError
+from astock.data.slice_capture import operation_block
 from astock.data.slice_plan import request_manifest
 
 OUTPUTS = dict(daily='daily_bar', daily_basic='daily_basic_snapshot',
@@ -124,9 +127,11 @@ def curate_slices(root: Path, batch_id: UUID, *, rebuild=False, commit=None):
         snapshot,history,venues=identity_state(db)
         if snapshot!=batch[1]:raise SliceStop('FROZEN_INPUT_CHANGED')
         resolver=FrozenResolver(history,venues,batch[2]);requests=batch_requests(db,batch_id)
-        validate_requests(requests,manifest)
-        if len(requests)!=133 or any(r['status']!='COMPLETE' for r in requests):raise SliceStop('LINEAGE')
-        if not verify_batch(root,db,[r['run_id'] for r in requests]):raise SliceStop('LINEAGE')
+        try:
+            validate_slice_batch(root,db,batch_id)
+        except ReceiptIntegrityError as error:
+            operation_block(root,batch_id,error.code)
+            raise
         generation=db.execute('SELECT max(generation) FROM slice_curated_binding WHERE batch_id=?',[str(batch_id)]).fetchone()[0]
         if generation is not None and not rebuild:raise SliceStop('EXISTING_CURATION_REQUIRES_REBUILD')
         generation=0 if generation is None else generation+1

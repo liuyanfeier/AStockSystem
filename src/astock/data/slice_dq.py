@@ -13,10 +13,13 @@ import pyarrow.parquet as pq
 from astock.data.audit import RequestParams
 from astock.data.curation import load_curation_specs, digest
 from astock.data.probe_audit import canonical_json
-from astock.data.raw_writer import atomic_new_file, verify_batch
+from astock.data.raw_writer import atomic_new_file
 from astock.data.slice_capture import (SliceStop, identity_state, batch_requests, _object_table,
                                       validate_requests)
 from astock.data.slice_curate import FrozenResolver, output_schema, logical_hash, convert
+from astock.data.receipt_integrity import validate_slice_batch
+from astock.data.slice_errors import ReceiptIntegrityError
+from astock.data.slice_capture import operation_block
 from astock.data.slice_plan import request_manifest, APPROVED
 
 PRICE_TOLERANCE=0.011
@@ -185,8 +188,11 @@ def dq_slices(root: Path,batch_id: UUID):
         snapshot,history,venues=identity_state(db)
         if snapshot!=batch[1]:raise SliceStop('FROZEN_INPUT_CHANGED')
         resolver=FrozenResolver(history,venues,batch[2]);requests=batch_requests(db,batch_id)
-        validate_requests(requests,request_manifest(root))
-        if any(r['status']!='COMPLETE' for r in requests) or not verify_batch(root,db,[r['run_id'] for r in requests]):raise SliceStop('LINEAGE')
+        try:
+            validate_slice_batch(root,db,batch_id)
+        except ReceiptIntegrityError as error:
+            operation_block(root,batch_id,error.code)
+            raise
         generation=db.execute('SELECT max(generation) FROM slice_curated_binding WHERE batch_id=?',[str(batch_id)]).fetchone()[0]
         specs={s.dataset:s for s in load_curation_specs(root,spec_version='v2')}
         tables={};quarantine=[];previous={};objects=0

@@ -117,14 +117,17 @@ def claim_request(db, batch_id: UUID, ordinal: int) -> None:
     db.execute('UPDATE ingestion_run SET request_count=1 WHERE run_id=?',[str(result[0][0])])
 
 
-def resume_batch(db, batch_id: UUID, *, expected_plan_hash: str) -> list[dict]:
+def resume_batch(db, batch_id: UUID, *, root: Path, expected_plan_hash: str) -> list[dict]:
     """Interrupted completed receipts resume; uncertain HTTP receipts stop for review."""
+    from astock.data.receipt_integrity import validate_slice_batch
+    from astock.data.slice_errors import ReceiptIntegrityError
+
+    validate_slice_batch(root, db, batch_id, complete=False)
     batch = db.execute('SELECT plan_hash,status FROM slice_batch WHERE batch_id=?',[str(batch_id)]).fetchone()
     if batch is None or batch[0] != expected_plan_hash or batch[1] == 'BLOCKED':
-        raise ValueError('Batch scope changed or blocked')
+        raise ReceiptIntegrityError('BATCH_SCOPE_BLOCKED')
     if db.execute("SELECT count(*) FROM slice_request WHERE batch_id=? AND status IN ('IN_FLIGHT','FAILED','UNCERTAIN')",[str(batch_id)]).fetchone()[0]:
-        db.execute("UPDATE slice_batch SET status='BLOCKED',finished_at=? WHERE batch_id=?",[datetime.now(timezone.utc),str(batch_id)])
-        raise ValueError('Uncertain or failed capture requires review, not refetch')
+        raise ReceiptIntegrityError('UNCERTAIN_CAPTURE')
     result = db.execute("SELECT * FROM slice_request WHERE batch_id=? AND status='PENDING' ORDER BY ordinal",[str(batch_id)])
     columns = [c[0] for c in result.description]
     return [dict(zip(columns, values, strict=True)) for values in result.fetchall()]
