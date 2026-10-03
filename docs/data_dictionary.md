@@ -296,3 +296,14 @@ A COMPLETE generation is a publication integrity fact, not research admission.
 Application APIs prohibit historical rewrites; SQL constraints alone cannot
 prevent arbitrary direct SQL UPDATE. Real deployment and case application require
 separate R2-B authorization and independent approvals.
+# R2-A consolidated repair addendum (2026-10-03)
+
+- `derivation_resolver_snapshot.context_id`: unique FK to derivation context.
+- `resolver_hash`: canonical immutable resolver-content hash, equal to the context pin.
+- `payload`: exact episodes, official codes, provider bindings and source observations;
+  future membership is excluded from existing snapshots.
+- `correction_addendum_hash`: approval/context pin for frozen design addendum 3.
+- `MISSING_DAILY_FACTOR`, `INVALID_DAILY_FACTOR`, `AMBIGUOUS_DAILY_FACTOR`: blocking
+  daily source-row observations at exact security/episode/event scope.
+- Pair finding `previous_source`: previous event, raw object, zero-based row and
+  episode included in the stable key; current event/source remains the primary scope.

@@ -62,7 +62,7 @@ def transaction(db, action):
 
 
 R2_TABLES = ('listing_episode','official_exchange_code','provider_native_binding','provider_binding_observation',
-    'derivation_context','derivation_input','derivation_generation','derivation_generation_event','derivation_output',
+    'derivation_context','derivation_input','derivation_resolver_snapshot','derivation_generation','derivation_generation_event','derivation_output',
     'derivation_row_quarantine','derivation_complete_manifest','reconstruction_quality_audit',
     'reconstruction_finding_observation','reconstruction_output_quality')
 
@@ -114,12 +114,13 @@ class Approval(ImmutableModel):
     dq_evidence_hash: str
     publication_addendum_hash: str
     disposition_addendum_hash: str
+    correction_addendum_hash: str
     approved_at: AwareDatetime
 
     @model_validator(mode='after')
     def hashes(self):
         if not SHA.fullmatch(self.reviewed_sha) or any(not HASH.fullmatch(h) for h in
-                (self.design_hash, self.policy_hash, self.approved_case_set_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash)):
+                (self.design_hash, self.policy_hash, self.approved_case_set_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash)):
             raise ValueError('Approval requires exact reviewed SHA and artifact hashes')
         return self
 
@@ -133,6 +134,8 @@ def apply_reconstruction_schema(root, db, approval: Approval):
         raise ValueError('Schema approval differs from reviewed policy/design')
     if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-2.md')!=approval.disposition_addendum_hash:
         raise ValueError('Disposition design differs from approval')
+    if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md')!=approval.correction_addendum_hash:
+        raise ValueError('Correction design differs from approval')
     from astock.data.receipt_schema import require_integrity_schema
     require_integrity_schema(db)
     versions = db.execute('SELECT version FROM schema_version ORDER BY version').fetchall()
@@ -164,6 +167,41 @@ def load_resolver(db):
         b['observations'] = rows_dict(db, '''SELECT raw_object_id,raw_row_number,event_date
             FROM provider_binding_observation WHERE binding_id=? ORDER BY ALL''', [b['binding_id']])
     return ProviderResolver(episodes, codes, bindings)
+
+
+def resolver_payload(resolver):
+    """Same canonical membership and serialization as ProviderResolver.snapshot_hash."""
+    return dict(episodes=sorted((e.model_dump(mode='json') for e in resolver.episodes),key=lambda e:e['episode_id']),
+                official_codes=sorted((c.model_dump(mode='json') for c in resolver.codes),key=lambda c:c['code_id']),
+                provider_bindings=sorted((b.model_dump(mode='json') for b in resolver.bindings),key=lambda b:b['binding_id']))
+
+
+def load_context_resolver(db, context):
+    """Validate pinned members without admitting any records added after registration."""
+    row=db.execute('''SELECT s.resolver_hash,s.payload FROM derivation_context c
+        LEFT JOIN derivation_resolver_snapshot s ON s.context_id=c.context_id
+        WHERE c.context_hash=?''',[context.context_hash]).fetchone()
+    current=load_resolver(db)
+    if row is None:
+        # Registration only: a new context must pin the entire current membership.
+        if current.snapshot_hash!=context.resolver_hash:raise ValueError('Resolver snapshot changed')
+        return current
+    if row[0]!=context.resolver_hash or row[1] is None:
+        raise ValueError('Missing/changed context resolver snapshot')
+    payload=json.loads(row[1])
+    if set(payload)!={'episodes','official_codes','provider_bindings'} or checksum(payload)!=context.resolver_hash:
+        raise ValueError('Context resolver snapshot hash/membership changed')
+    pinned=ProviderResolver(payload['episodes'],payload['official_codes'],payload['provider_bindings'])
+    if pinned.snapshot_hash!=context.resolver_hash:
+        raise ValueError('Noncanonical context resolver snapshot')
+    for frozen,live,id_field in ((pinned.episodes,current.episodes,'episode_id'),
+                                (pinned.codes,current.codes,'code_id'),
+                                (pinned.bindings,current.bindings,'binding_id')):
+        members={getattr(m,id_field):m.model_dump(mode='json') for m in live}
+        for member in frozen:
+            if members.get(getattr(member,id_field))!=member.model_dump(mode='json'):
+                raise ValueError('Pinned resolver member changed/missing')
+    return pinned
 
 
 def raw_capture(root, db, object_id, cache=None):
@@ -263,6 +301,7 @@ class Context(ImmutableModel):
     dq_evidence_hash: str
     publication_addendum_hash: str
     disposition_addendum_hash: str
+    correction_addendum_hash: str
     knowledge_as_of: AwareDatetime
     implementation_sha: str
     approval: Approval
@@ -274,13 +313,15 @@ class Context(ImmutableModel):
     @model_validator(mode='after')
     def validate_pins(self):
         hashes = [self.parent_identity_hash, self.parent_plan_hash, self.resolver_hash, self.specs_hash,
-                  self.policy_hash, self.design_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, *[h for i in self.inputs for h in (i.raw_hash, i.raw_schema_hash)]]
+                  self.policy_hash, self.design_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash, *[h for i in self.inputs for h in (i.raw_hash, i.raw_schema_hash)]]
         if any(not HASH.fullmatch(h) for h in hashes) or not SHA.fullmatch(self.implementation_sha):
             raise ValueError('Invalid context digest')
         if self.implementation_sha != self.approval.reviewed_sha or self.design_hash != self.approval.design_hash or self.policy_hash != self.approval.policy_hash:
             raise ValueError('Context differs from independent approval')
         if self.dq_evidence_hash != self.approval.dq_evidence_hash or self.publication_addendum_hash != self.approval.publication_addendum_hash or self.disposition_addendum_hash != self.approval.disposition_addendum_hash:
             raise ValueError('Context DQ evidence/addendum differs from approval')
+        if self.correction_addendum_hash!=self.approval.correction_addendum_hash:
+            raise ValueError('Context correction addendum differs from approval')
         if self.knowledge_as_of < self.approval.approved_at:
             raise ValueError('Context knowledge precedes approval')
         if self.identity_basis != 'CURRENT_RECONSTRUCTION' or self.availability_basis != 'OBSERVED_CAPTURE':
@@ -317,8 +358,11 @@ def validate_context(root, db, context: Context):
     design = root / 'docs/remediation/phase1c1/r2-a-design-v1.md'
     if sha256(root / 'docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md') != context.publication_addendum_hash:
         raise ValueError('Publication addendum changed')
-    if sha256(design) != context.design_hash or load_resolver(db).snapshot_hash != context.resolver_hash:
-        raise ValueError('Design/resolver snapshot changed')
+    if sha256(design) != context.design_hash:
+        raise ValueError('Design snapshot changed')
+    if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md')!=context.correction_addendum_hash:
+        raise ValueError('Correction addendum changed')
+    load_context_resolver(db,context)
     cache = {}
     for i in context.inputs:
         obj = raw_capture(root, db, i.raw_object_id, cache)['manifest']
@@ -352,9 +396,12 @@ def register_context(root, db, context, *, allow_fixture=False):
         if Context.model_validate_json(existing[1]).context_hash != context.context_hash: raise ValueError('Corrupt context')
         return existing[0]
     context_id = uuid4()
+    snapshot=resolver_payload(load_context_resolver(db,context))
     def register():
         db.execute('INSERT INTO derivation_context VALUES (?,?,?,?,?)',
                    [context_id, context.context_hash, json_text(context.model_dump()), context.fixture_only, now()])
+        db.execute('INSERT INTO derivation_resolver_snapshot VALUES (?,?,?)',
+                   [context_id,context.resolver_hash,json_text(snapshot)])
         for i in context.inputs:
             db.execute('INSERT INTO derivation_input VALUES (?,?,?,?,?,?,?,?)',
                        [context_id, i.request_id, i.raw_object_id, i.dataset, i.raw_hash, i.raw_schema_hash, i.row_count, i.is_output])
@@ -370,6 +417,7 @@ def get_context(db, context_id):
     actual = rows_dict(db, 'SELECT request_id,raw_object_id,dataset,raw_hash,raw_schema_hash,row_count,is_output FROM derivation_input WHERE context_id=? ORDER BY request_id', [context_id])
     if checksum(actual) != checksum(sorted([i.model_dump() for i in context.inputs], key=lambda i: str(i['request_id']))):
         raise ValueError('Context input registration changed')
+    load_context_resolver(db,context)
     return context
 
 
@@ -412,7 +460,7 @@ def converted(root, db, context, input):
     schema = pa.schema(fields, metadata={'output_name': OUTPUTS[input.dataset], 'spec_version': spec.spec_version,
         'identity_basis': 'CURRENT_RECONSTRUCTION', 'availability_basis': 'OBSERVED_CAPTURE',
         'research_usage': spec.research_usage, 'context_hash': context.context_hash})
-    resolver = load_resolver(db); resolved = []; quarantined = []
+    resolver = load_context_resolver(db,context); resolved = []; quarantined = []
     for ordinal, source in enumerate(raw.to_pylist()):
         typed = {f.target_column: cast_field(source[f.source_column], f) for f in spec.fields}
         hit = resolver.resolve(provider='tushare', dataset=input.dataset, native_identifier=typed['ts_code'],

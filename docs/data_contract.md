@@ -293,3 +293,16 @@ R2-A supplies tested engineering and private candidate evidence only; it does no
 apply real migrations/bindings or publish a real generation. R2-B remains
 NOT_AUTHORIZED, the real-data gate BLOCKED and Phase1C.2 CLOSED. See
 [the R2-A handoff](reviews/r2-a-review.md) for the final evidence index and limits.
+# R2-A consolidated repair addendum (2026-10-03)
+
+Frozen design addendum 3 requires a finite positive factor for each resolved daily
+row at the exact security/episode/event scope, independently of adjacency. Pair
+findings pin current and previous raw rows/events; later clean bars cannot move
+their stable keys. Mathematical formulas and frozen tolerances are unchanged.
+
+Each derivation context persists its resolver membership and content hash in
+`derivation_resolver_snapshot`. Conversion, publication, selection, DQ and rebuild
+validate that snapshot and every referenced live member, while ignoring legitimate
+later additions. Missing/altered referenced records fail closed. Approval/context
+pin `correction_addendum_hash`. These changes apply only to undeployed R2 schema
+and synthetic validation; R2-B and real-data admission remain unauthorized.

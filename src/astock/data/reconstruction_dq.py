@@ -2,7 +2,6 @@
 
 import hashlib
 import json
-import json
 import math
 from collections import defaultdict
 from datetime import date
@@ -26,13 +25,14 @@ def load_policy(root: Path):
 
 def finding(rule,*,dataset,event_date,raw_object_id=None,raw_row_number=None,
             episode_id=None,security_id=None,venue=None,severity='ERROR',blocking=True,
-            decision='EVIDENCE_REQUIRED',evidence_ids=(),approval_ref=None,details=None):
+            decision='EVIDENCE_REQUIRED',evidence_ids=(),approval_ref=None,details=None,previous_source=None):
     if (raw_object_id is None)!=(raw_row_number is None) or (raw_row_number is not None and (type(raw_row_number)is not int or raw_row_number<0)):
         raise ValueError('Finding source must be an exact zero-based raw row')
     if raw_object_id is None and episode_id is None:
         raise ValueError('Finding needs source row or episode key')
     key=dict(rule=rule,dataset=dataset,event_date=event_date,raw_object_id=raw_object_id,
              raw_row_number=raw_row_number,episode_id=episode_id,security_id=security_id,venue=venue)
+    if previous_source is not None:key['previous_source']=previous_source
     return dict(finding_key=digest(serial(key)),**key,severity=severity,blocking=blocking,decision=decision,
                 evidence_ids=list(evidence_ids),approval_ref=approval_ref,details=details or {})
 
@@ -134,12 +134,16 @@ def bse_transition(left,right,*,old_code,new_code,switch_date,episode_id,session
                 continuity='VALID' if continuity else 'CONFLICT',session='CERTIFIED' if sessions_certified else 'NOT_CERTIFIED',findings=findings)
 
 
-def venue_causal_audit(bars,factors,sessions):
+def valid_factor(value):
+    return type(value) in (int,float) and math.isfinite(value) and value>0
+
+
+def venue_causal_audit(bars,factors,sessions,*,include_findings=False):
     groups=defaultdict(list)
     for b in bars:groups[(b['security_id'],str(b['episode_id']),b['venue'])].append(b)
     totals=dict(certified_pairs=0,provisional_sse_pairs=0,excluded_unknown_pairs=0,
                 causal_mismatch=0,factor_mismatch=0,missing_factor_pairs=0)
-    all_series=[]
+    all_series=[];pair_findings=[]
     for (sid,episode,venue),rows in groups.items():
         ordered=sorted(rows,key=lambda r:r['trade_date']);previous={};provisional={}
         for i,row in enumerate(ordered):
@@ -147,13 +151,37 @@ def venue_causal_audit(bars,factors,sessions):
             if basis=='CERTIFIED':previous[row['trade_date']]=prior
             elif basis=='PROVISIONAL_SSE_BASIS':provisional[row['trade_date']]=prior
             if i and basis=='NOT_CERTIFIED':totals['excluded_unknown_pairs']+=1
-        stats,series=causal_audit(ordered,factors,previous)
-        diagnostic,_=causal_audit(ordered,factors,provisional)
+        scoped={(sid,day):value for (security,scope,day),value in factors.items()
+                if security==sid and str(scope)==episode and valid_factor(value)}
+        stats,series=causal_audit(ordered,scoped,previous)
+        diagnostic,_=causal_audit(ordered,scoped,provisional)
         totals['certified_pairs']+=stats['adjacent_pairs'];totals['provisional_sse_pairs']+=diagnostic['adjacent_pairs']
         for k in ('causal_mismatch','factor_mismatch','missing_factor_pairs'):totals[k]+=stats[k]
         for s in series:s.update(episode_id=episode,venue=venue)
         all_series.extend(series)
-    return totals,all_series
+        if include_findings:
+            for i,row in enumerate(ordered):
+                if not i or previous.get(row['trade_date'])!=ordered[i-1]['trade_date']:continue
+                prior=ordered[i-1]
+                source=dict(event_date=prior['trade_date'],raw_object_id=prior['raw_object_id'],
+                            raw_row_number=prior['raw_row_number'],episode_id=episode)
+                base=dict(dataset='daily',event_date=row['trade_date'],raw_object_id=row['raw_object_id'],
+                          raw_row_number=row['raw_row_number'],episode_id=episode,security_id=sid,venue=venue,
+                          previous_source=source)
+                causal_error=abs(100*(series[i]['causal_close']/series[i-1]['causal_close']-1)-row['pct_chg'])
+                if causal_error>0.011:
+                    pair_findings.append(finding('CAUSAL_RETURN_MISMATCH',**base,
+                        details={'error_percentage_points':causal_error,'tolerance_percentage_points':0.011}))
+                left=scoped.get((sid,prior['trade_date']));right=scoped.get((sid,row['trade_date']))
+                if left is None or right is None:
+                    pair_findings.append(finding('MISSING_FACTOR_PAIR',**base))
+                else:
+                    error=abs(100*(row['close']*right/(prior['close']*left)-1)-row['pct_chg'])
+                    tolerance=0.011+100*0.011/row['pre_close']
+                    if error>tolerance:
+                        pair_findings.append(finding('FACTOR_RETURN_MISMATCH',**base,
+                            details={'error_percentage_points':error,'tolerance_percentage_points':tolerance}))
+    return (totals,all_series,pair_findings) if include_findings else (totals,all_series)
 
 
 def evidence_hash(evidence):
@@ -167,7 +195,7 @@ def audit_complete_generation(root,db,context_id,generation_id,*,evidence,allow_
     """Select exactly one complete generation; calculate and append one immutable audit."""
     from uuid import uuid4,UUID
     from datetime import datetime,timezone
-    from astock.data.reconstruction import (select_complete,load_resolver,transaction,json_text,raw_capture)
+    from astock.data.reconstruction import (select_complete,load_context_resolver,transaction,json_text,raw_capture)
     from astock.data.provider_identity import Resolution
     from astock.data.warehouse_lock import require_writer
     require_writer(db)
@@ -220,18 +248,29 @@ def audit_complete_generation(root,db,context_id,generation_id,*,evidence,allow_
                 findings.append(finding('DUPLICATE_OUTPUT_KEY',dataset=input.dataset,event_date=row['trade_date'],
                     raw_object_id=row['raw_object_id'],raw_row_number=row['raw_row_number'],episode_id=row['episode_id']))
             seen.add(key)
-            if input.dataset=='adj_factor' and (row['adj_factor'] is None or row['adj_factor']<=0):
+            if input.dataset=='adj_factor' and not valid_factor(row['adj_factor']):
                 findings.append(finding('NONPOSITIVE_FACTOR',dataset=input.dataset,event_date=row['trade_date'],
                     raw_object_id=row['raw_object_id'],raw_row_number=row['raw_row_number'],episode_id=row['episode_id']))
     if set(dispositions)!=used_dispositions:raise ValueError('Approved disposition does not match exact quarantined source')
-    resolver=load_resolver(db)
+    resolver=load_context_resolver(db,context)
     visible=[e for e in resolver.episodes if e.available_at<=context.knowledge_as_of]
     daily_days=sorted(day for dataset,day in tables if dataset=='daily')
-    factors={};bars=[]
+    factors={};factor_rows=defaultdict(list);bars=[]
     for (dataset,day),rows in tables.items():
         if dataset=='daily':bars.extend(rows)
         if dataset=='adj_factor':
-            for r in rows:factors[(r['security_id'],day)]=r['adj_factor']
+            for r in rows:factor_rows[(r['security_id'],r['episode_id'],r['trade_date'])].append(r)
+    for key,rows in factor_rows.items():
+        if len(rows)==1 and valid_factor(rows[0]['adj_factor']):factors[key]=rows[0]['adj_factor']
+    for row in bars:
+        matches=factor_rows.get((row['security_id'],row['episode_id'],row['trade_date']),[])
+        rule=('MISSING_DAILY_FACTOR' if not matches else 'AMBIGUOUS_DAILY_FACTOR' if len(matches)>1
+              else 'INVALID_DAILY_FACTOR' if not valid_factor(matches[0]['adj_factor']) else None)
+        if rule:
+            findings.append(finding(rule,dataset='daily',event_date=row['trade_date'],
+                raw_object_id=row['raw_object_id'],raw_row_number=row['raw_row_number'],
+                episode_id=row['episode_id'],security_id=row['security_id'],venue=row['venue'],
+                details={'factor_sources':[dict(raw_object_id=r['raw_object_id'],raw_row_number=r['raw_row_number']) for r in matches]}))
     for day in daily_days:
         daily={(r['security_id'],r['episode_id']):r for r in tables[('daily',day)]}
         suspend=tables.get(('suspend_d',day),[])
@@ -265,15 +304,8 @@ def audit_complete_generation(root,db,context_id,generation_id,*,evidence,allow_
             findings.append(finding('CAUSAL_INPUT_INVALID',dataset='daily',event_date=r['trade_date'],
                 raw_object_id=r['raw_object_id'],raw_row_number=r['raw_row_number'],episode_id=r['episode_id']))
         else:valid_bars.append(r)
-    stats,series=venue_causal_audit(valid_bars,factors,sessions)
-    # Pin aggregate mathematical failures to an explicit episode/date, never an arbitrary missing raw row.
-    for (sid,episode,venue),group in _group_bars(valid_bars).items():
-        group_stats,_=venue_causal_audit(group,factors,sessions)
-        for metric,rule in (('causal_mismatch','CAUSAL_RETURN_MISMATCH'),('factor_mismatch','FACTOR_RETURN_MISMATCH'),
-                            ('missing_factor_pairs','MISSING_FACTOR_PAIR')):
-            if group_stats[metric]:
-                findings.append(finding(rule,dataset='daily',event_date=max(r['trade_date'] for r in group),
-                    episode_id=episode,security_id=sid,venue=venue,details={'count':group_stats[metric]}))
+    stats,series,pairs=venue_causal_audit(valid_bars,factors,sessions,include_findings=True)
+    findings.extend(pairs)
     for case in evidence['bse_transitions']:
         episode=str(case['episode_id']);before=case['before_date'];after=case['after_date']
         hits=[[r for r in tables.get(('daily',day),[]) if r['episode_id']==episode] for day in (before,after)]

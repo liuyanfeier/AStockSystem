@@ -59,3 +59,17 @@ not accept full-history coverage or historical-PIT claims.
 Explicit approved source dispositions in DQ evidence keep an out-of-scope raw row
 quarantined while retaining the exact case/review/evidence decision in its finding.
 This does not create an identity or silently discard the source.
+# Consolidated repair contract (2026-10-03)
+
+Design addendum 3 is an additional required approval hash. Migration 009 now adds
+`derivation_resolver_snapshot`; it is not deployed to the original warehouse.
+Context registration atomically freezes resolver payload/membership with inputs.
+Old contexts use their snapshot, validate every pinned member against source
+records, and remain usable after legitimate later approvals. New contexts explicitly
+pin new membership. A missing/tampered snapshot cannot fall back to the latest store.
+
+DQ checks each resolved daily row for exactly one finite positive factor at its
+security/episode/event. Pair abnormalities attach to actual current/previous raw
+events; aggregate counts do not determine finding dates. See the consolidated
+F1–F3 review package for synthetic negative/positive evidence. Real case approval
+remains null and R2-B remains NOT_AUTHORIZED.

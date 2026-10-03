@@ -36,6 +36,7 @@ def environment(tmp_path):
         policy_hash=policy,approved_case_set_hash=checksum(dict(episodes=[],codes=[],bindings=[])),approved_at=NOW,
         dq_evidence_hash=evidence_hash(dict(sessions=[],reference_exceptions=[],bse_transitions=[],source_dispositions=[])),
         publication_addendum_hash=hashlib.sha256((tmp_path/'docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md').read_bytes()).hexdigest(),
+        correction_addendum_hash=hashlib.sha256((tmp_path/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md').read_bytes()).hexdigest(),
         disposition_addendum_hash=hashlib.sha256((tmp_path/'docs/remediation/phase1c1/r2-a-design-v1-addendum-2.md').read_bytes()).hexdigest())
     apply_reconstruction_schema(tmp_path,db,approval)
     specs=__import__('astock.data.curation',fromlist=['load_curation_specs']).load_curation_specs(tmp_path,spec_version='v2')
@@ -70,7 +71,7 @@ def environment(tmp_path):
     evidence=dict(sessions=[],reference_exceptions=[],bse_transitions=[],source_dispositions=[])
     context=Context(parent_batch_id=uuid4(),parent_generation=0,parent_identity_hash='b'*64,parent_plan_hash='c'*64,
         resolver_hash=load_resolver(db).snapshot_hash,specs_hash=specs_hash(tmp_path),policy_hash=policy,
-        design_hash=approval.design_hash,dq_evidence_hash=approval.dq_evidence_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,
+        design_hash=approval.design_hash,dq_evidence_hash=approval.dq_evidence_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,correction_addendum_hash=approval.correction_addendum_hash,
         knowledge_as_of=NOW,implementation_sha='a'*40,approval=approval,inputs=tuple(inputs),fixture_only=True)
     context_id=register_context(tmp_path,db,context,allow_fixture=True)
     yield dict(root=tmp_path,db=db,approval=approval,cases=cases,context=context,context_id=context_id,
@@ -262,7 +263,7 @@ def test_two_process_publishers_serialize_and_resume_exact_once(environment):
         migrate(db,e['root']);apply_receipt_integrity_upgrade(e['root'],db,verification_sha='a'*40)
         apply_reconstruction_schema(e['root'],db,e['approval'])
         for table in ('ingestion_run','raw_object_manifest','listing_episode','official_exchange_code',
-                      'provider_native_binding','provider_binding_observation','derivation_context','derivation_input',
+                      'provider_native_binding','provider_binding_observation','derivation_context','derivation_input','derivation_resolver_snapshot',
                       'derivation_generation','derivation_generation_event'):
             result=e['db'].execute(f'SELECT * FROM {table} ORDER BY ALL');rows=result.fetchall()
             placeholders=','.join('?' for _ in result.description)
@@ -326,6 +327,7 @@ def test_production_shape_requires_r1_exact133_and_parent126(slice_root,tamper):
             design_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1.md').read_bytes()).hexdigest(),
             policy_hash=load_policy(slice_root)[1],approved_case_set_hash=checksum(dict(episodes=[],codes=[],bindings=[])),
             dq_evidence_hash=evidence_hash(evidence),publication_addendum_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md').read_bytes()).hexdigest(),
+            correction_addendum_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md').read_bytes()).hexdigest(),
             disposition_addendum_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-2.md').read_bytes()).hexdigest(),approved_at=at)
         apply_reconstruction_schema(slice_root,db,approval)
         old={k:v for k,v in snapshot(db).items() if not k.startswith(('derivation_','reconstruction_'))}
@@ -335,7 +337,7 @@ def test_production_shape_requires_r1_exact133_and_parent126(slice_root,tamper):
         frozen=db.execute('SELECT identity_snapshot_hash,plan_hash FROM slice_batch WHERE batch_id=?',[batch]).fetchone()
         context=Context(parent_batch_id=batch,parent_generation=0,parent_identity_hash=frozen[0],parent_plan_hash=frozen[1],
             resolver_hash=load_resolver(db).snapshot_hash,specs_hash=specs_hash(slice_root),policy_hash=approval.policy_hash,
-            design_hash=approval.design_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,
+            design_hash=approval.design_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,correction_addendum_hash=approval.correction_addendum_hash,
             dq_evidence_hash=approval.dq_evidence_hash,knowledge_as_of=at,implementation_sha='a'*40,approval=approval,inputs=tuple(inputs))
         if tamper=='request_pair':
             inputs[0]=inputs[0].model_copy(update={'request_id':'f'*64});context=context.model_copy(update={'inputs':tuple(inputs)})

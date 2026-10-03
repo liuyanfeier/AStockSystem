@@ -87,11 +87,11 @@ def test_causal_prefix_keeps_method_and_resets_cross_episode_unknown_sessions():
     ep=str(uuid4());d2=date(2025,5,6);d3=date(2025,5,7)
     rows=[dict(**bar(DAY,10,10,0),episode_id=ep,venue='SSE'),dict(**bar(d2,5.5,5,10),episode_id=ep,venue='SSE')]
     sessions={('SSE',ep,d2):dict(previous_session=DAY,certified=True,evidence_venue='SSE',evidence_ref='synthetic-capture')}
-    factors={('synthetic',DAY):1,('synthetic',d2):2}
+    factors={('synthetic',ep,DAY):1,('synthetic',ep,d2):2}
     stats,prefix=venue_causal_audit(rows,factors,sessions)
     assert stats['certified_pairs']==1 and stats['causal_mismatch']==stats['factor_mismatch']==0
     extra=dict(**bar(d3,2.2,2.2,0),episode_id=ep,venue='SSE')
-    stats,extended=venue_causal_audit([*rows,extra],{**factors,('synthetic',d3):99},sessions)
+    stats,extended=venue_causal_audit([*rows,extra],{**factors,('synthetic',ep,d3):99},sessions)
     assert extended[:2]==prefix and stats['excluded_unknown_pairs']==1
     other=rows[1].copy();other['episode_id']=str(uuid4())
     assert venue_causal_audit([rows[0],other],factors,sessions)[0]['certified_pairs']==0

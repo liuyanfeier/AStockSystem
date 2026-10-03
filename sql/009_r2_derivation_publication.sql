@@ -18,6 +18,11 @@ CREATE TABLE derivation_input (
     PRIMARY KEY(context_id,request_id),
     UNIQUE(context_id,raw_object_id)
 );
+CREATE TABLE derivation_resolver_snapshot (
+    context_id UUID PRIMARY KEY REFERENCES derivation_context(context_id),
+    resolver_hash VARCHAR NOT NULL,
+    payload JSON NOT NULL
+);
 CREATE TABLE derivation_generation (
     generation_id UUID PRIMARY KEY,
     context_id UUID NOT NULL REFERENCES derivation_context(context_id),
