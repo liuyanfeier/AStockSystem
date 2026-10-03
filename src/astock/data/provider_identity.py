@@ -1,15 +1,16 @@
 """Scoped provider representations; official codes and legacy identities stay separate."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Literal
 from uuid import UUID
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
 from astock.data.identity import _aware, is_native_identifier, is_normalized_ashare_identifier
-from astock.data.receipt_integrity import digest, serial
+from astock.data.receipt_integrity import digest
 
 DATASETS = ('daily', 'daily_basic', 'adj_factor', 'stk_limit', 'stock_st', 'suspend_d')
+RESOLVER_PROTOCOL = 'R2_RESOLVER_UTC_INSTANT_V2'
 
 
 class ImmutableModel(BaseModel):
@@ -114,6 +115,34 @@ class Resolution(ImmutableModel):
     basis: Literal['CURRENT_RECONSTRUCTION'] = 'CURRENT_RECONSTRUCTION'
 
 
+def canonical_resolver_member(member: ListingEpisode | ExchangeCode | ProviderBinding) -> dict:
+    """V2: explicit resolver instants only; retain dates and all other semantics."""
+    fields = {
+        ListingEpisode: ('published_at', 'retrieved_at', 'available_at'),
+        ExchangeCode: ('available_at',),
+        ProviderBinding: ('first_observed_at', 'decision_at', 'available_at'),
+    }
+    payload = member.model_dump(mode='json')
+    for field in fields[type(member)]:
+        value = getattr(member, field)
+        if value is not None:
+            _aware(value)
+            payload[field] = value.astimezone(timezone.utc).isoformat(timespec='microseconds').removesuffix('+00:00') + 'Z'
+    return payload
+
+
+def canonical_resolver_payload(resolver) -> dict:
+    """One membership/serialization rule for hashing, storage and validation."""
+    return {
+        key: sorted((canonical_resolver_member(member) for member in members), key=lambda row: row[id_field])
+        for key, members, id_field in (
+            ('episodes', resolver.episodes, 'episode_id'),
+            ('official_codes', resolver.codes, 'code_id'),
+            ('provider_bindings', resolver.bindings, 'binding_id'),
+        )
+    }
+
+
 class ProviderResolver:
     def __init__(self, episodes, codes, bindings):
         self.episodes = tuple(ListingEpisode.model_validate(e) for e in episodes)
@@ -184,9 +213,7 @@ class ProviderResolver:
 
     @property
     def snapshot_hash(self):
-        return digest(serial(dict(episodes=sorted((e.model_dump(mode='json') for e in self.episodes), key=lambda e:e['episode_id']),
-                                  official_codes=sorted((c.model_dump(mode='json') for c in self.codes), key=lambda c:c['code_id']),
-                                  provider_bindings=sorted((b.model_dump(mode='json') for b in self.bindings), key=lambda b:b['binding_id']))))
+        return digest(canonical_resolver_payload(self))
 
     def resolve(self, *, provider, dataset, native_identifier, event_date: date,
                 raw_object_id: UUID, raw_row_number: int, knowledge_as_of: datetime,

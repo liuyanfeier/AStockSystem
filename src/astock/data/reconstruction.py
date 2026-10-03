@@ -12,6 +12,7 @@ from functools import lru_cache
 import duckdb
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Literal
 from uuid import UUID, uuid4
 
 import pyarrow as pa
@@ -19,7 +20,8 @@ import pyarrow.parquet as pq
 from pydantic import AwareDatetime, Field, model_validator
 
 from astock.data.provider_identity import (ImmutableModel, ListingEpisode, ExchangeCode,
-                                          ProviderBinding, ProviderResolver)
+                                          ProviderBinding, ProviderResolver, RESOLVER_PROTOCOL,
+                                          canonical_resolver_member, canonical_resolver_payload)
 from astock.data.raw_validation import rows_dict, safe_file, sha256, validate_raw_run
 from astock.data.raw_writer import atomic_new_file
 from astock.data.receipt_integrity import digest, serial, validate_slice_batch, frozen_context
@@ -115,12 +117,14 @@ class Approval(ImmutableModel):
     publication_addendum_hash: str
     disposition_addendum_hash: str
     correction_addendum_hash: str
+    resolver_protocol: Literal['R2_RESOLVER_UTC_INSTANT_V2']
+    time_integrity_addendum_hash: str
     approved_at: AwareDatetime
 
     @model_validator(mode='after')
     def hashes(self):
         if not SHA.fullmatch(self.reviewed_sha) or any(not HASH.fullmatch(h) for h in
-                (self.design_hash, self.policy_hash, self.approved_case_set_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash)):
+                (self.design_hash, self.policy_hash, self.approved_case_set_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash, self.time_integrity_addendum_hash)):
             raise ValueError('Approval requires exact reviewed SHA and artifact hashes')
         return self
 
@@ -136,6 +140,8 @@ def apply_reconstruction_schema(root, db, approval: Approval):
         raise ValueError('Disposition design differs from approval')
     if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md')!=approval.correction_addendum_hash:
         raise ValueError('Correction design differs from approval')
+    if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md')!=approval.time_integrity_addendum_hash:
+        raise ValueError('Time integrity design differs from approval')
     from astock.data.receipt_schema import require_integrity_schema
     require_integrity_schema(db)
     versions = db.execute('SELECT version FROM schema_version ORDER BY version').fetchall()
@@ -171,13 +177,13 @@ def load_resolver(db):
 
 def resolver_payload(resolver):
     """Same canonical membership and serialization as ProviderResolver.snapshot_hash."""
-    return dict(episodes=sorted((e.model_dump(mode='json') for e in resolver.episodes),key=lambda e:e['episode_id']),
-                official_codes=sorted((c.model_dump(mode='json') for c in resolver.codes),key=lambda c:c['code_id']),
-                provider_bindings=sorted((b.model_dump(mode='json') for b in resolver.bindings),key=lambda b:b['binding_id']))
+    return canonical_resolver_payload(resolver)
 
 
 def load_context_resolver(db, context):
     """Validate pinned members without admitting any records added after registration."""
+    if context.resolver_protocol != RESOLVER_PROTOCOL:
+        raise ValueError('Unsupported resolver protocol')
     row=db.execute('''SELECT s.resolver_hash,s.payload FROM derivation_context c
         LEFT JOIN derivation_resolver_snapshot s ON s.context_id=c.context_id
         WHERE c.context_hash=?''',[context.context_hash]).fetchone()
@@ -192,14 +198,14 @@ def load_context_resolver(db, context):
     if set(payload)!={'episodes','official_codes','provider_bindings'} or checksum(payload)!=context.resolver_hash:
         raise ValueError('Context resolver snapshot hash/membership changed')
     pinned=ProviderResolver(payload['episodes'],payload['official_codes'],payload['provider_bindings'])
-    if pinned.snapshot_hash!=context.resolver_hash:
+    if pinned.snapshot_hash!=context.resolver_hash or resolver_payload(pinned)!=payload:
         raise ValueError('Noncanonical context resolver snapshot')
     for frozen,live,id_field in ((pinned.episodes,current.episodes,'episode_id'),
                                 (pinned.codes,current.codes,'code_id'),
                                 (pinned.bindings,current.bindings,'binding_id')):
-        members={getattr(m,id_field):m.model_dump(mode='json') for m in live}
+        members={getattr(m,id_field):canonical_resolver_member(m) for m in live}
         for member in frozen:
-            if members.get(getattr(member,id_field))!=member.model_dump(mode='json'):
+            if members.get(getattr(member,id_field))!=canonical_resolver_member(member):
                 raise ValueError('Pinned resolver member changed/missing')
     return pinned
 
@@ -223,6 +229,8 @@ def import_approved_cases(root, db, case_set, approval: Approval):
     """Only exact reviewed payload; no proposal auto-admission or wildcard joins."""
     approval = Approval.model_validate(approval)
     require_writer(db)
+    if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md')!=approval.time_integrity_addendum_hash:
+        raise ValueError('Time integrity design differs from approval')
     if checksum(case_set) != approval.approved_case_set_hash:
         raise ValueError('Case set differs from independent approval')
     if set(case_set) != {'episodes', 'codes', 'bindings'}:
@@ -302,6 +310,8 @@ class Context(ImmutableModel):
     publication_addendum_hash: str
     disposition_addendum_hash: str
     correction_addendum_hash: str
+    resolver_protocol: Literal['R2_RESOLVER_UTC_INSTANT_V2']
+    time_integrity_addendum_hash: str
     knowledge_as_of: AwareDatetime
     implementation_sha: str
     approval: Approval
@@ -313,7 +323,7 @@ class Context(ImmutableModel):
     @model_validator(mode='after')
     def validate_pins(self):
         hashes = [self.parent_identity_hash, self.parent_plan_hash, self.resolver_hash, self.specs_hash,
-                  self.policy_hash, self.design_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash, *[h for i in self.inputs for h in (i.raw_hash, i.raw_schema_hash)]]
+                  self.policy_hash, self.design_hash, self.dq_evidence_hash, self.publication_addendum_hash, self.disposition_addendum_hash, self.correction_addendum_hash, self.time_integrity_addendum_hash, *[h for i in self.inputs for h in (i.raw_hash, i.raw_schema_hash)]]
         if any(not HASH.fullmatch(h) for h in hashes) or not SHA.fullmatch(self.implementation_sha):
             raise ValueError('Invalid context digest')
         if self.implementation_sha != self.approval.reviewed_sha or self.design_hash != self.approval.design_hash or self.policy_hash != self.approval.policy_hash:
@@ -322,6 +332,8 @@ class Context(ImmutableModel):
             raise ValueError('Context DQ evidence/addendum differs from approval')
         if self.correction_addendum_hash!=self.approval.correction_addendum_hash:
             raise ValueError('Context correction addendum differs from approval')
+        if self.resolver_protocol!=self.approval.resolver_protocol or self.time_integrity_addendum_hash!=self.approval.time_integrity_addendum_hash:
+            raise ValueError('Context time integrity protocol/design differs from approval')
         if self.knowledge_as_of < self.approval.approved_at:
             raise ValueError('Context knowledge precedes approval')
         if self.identity_basis != 'CURRENT_RECONSTRUCTION' or self.availability_basis != 'OBSERVED_CAPTURE':
@@ -362,6 +374,8 @@ def validate_context(root, db, context: Context):
         raise ValueError('Design snapshot changed')
     if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md')!=context.correction_addendum_hash:
         raise ValueError('Correction addendum changed')
+    if sha256(root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md')!=context.time_integrity_addendum_hash:
+        raise ValueError('Time integrity addendum changed')
     load_context_resolver(db,context)
     cache = {}
     for i in context.inputs:

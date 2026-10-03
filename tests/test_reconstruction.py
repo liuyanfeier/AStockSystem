@@ -31,7 +31,7 @@ def environment(tmp_path):
     db=duckdb.connect(':memory:');migrate(db,tmp_path)
     apply_receipt_integrity_upgrade(tmp_path,db,verification_sha='a'*40)
     policy=load_policy(tmp_path)[1]
-    approval=Approval(review_ref='synthetic-independent-review',reviewed_sha='a'*40,
+    approval=Approval(resolver_protocol="R2_RESOLVER_UTC_INSTANT_V2", time_integrity_addendum_hash=hashlib.sha256((ROOT / "docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md").read_bytes()).hexdigest(), review_ref='synthetic-independent-review',reviewed_sha='a'*40,
         design_hash=hashlib.sha256((tmp_path/'docs/remediation/phase1c1/r2-a-design-v1.md').read_bytes()).hexdigest(),
         policy_hash=policy,approved_case_set_hash=checksum(dict(episodes=[],codes=[],bindings=[])),approved_at=NOW,
         dq_evidence_hash=evidence_hash(dict(sessions=[],reference_exceptions=[],bse_transitions=[],source_dispositions=[])),
@@ -69,7 +69,7 @@ def environment(tmp_path):
     approval=approval.model_copy(update=dict(approved_case_set_hash=checksum(cases)))
     import_approved_cases(tmp_path,db,cases,approval)
     evidence=dict(sessions=[],reference_exceptions=[],bse_transitions=[],source_dispositions=[])
-    context=Context(parent_batch_id=uuid4(),parent_generation=0,parent_identity_hash='b'*64,parent_plan_hash='c'*64,
+    context=Context(resolver_protocol=approval.resolver_protocol, time_integrity_addendum_hash=approval.time_integrity_addendum_hash, parent_batch_id=uuid4(),parent_generation=0,parent_identity_hash='b'*64,parent_plan_hash='c'*64,
         resolver_hash=load_resolver(db).snapshot_hash,specs_hash=specs_hash(tmp_path),policy_hash=policy,
         design_hash=approval.design_hash,dq_evidence_hash=approval.dq_evidence_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,correction_addendum_hash=approval.correction_addendum_hash,
         knowledge_as_of=NOW,implementation_sha='a'*40,approval=approval,inputs=tuple(inputs),fixture_only=True)
@@ -323,7 +323,7 @@ def test_production_shape_requires_r1_exact133_and_parent126(slice_root,tamper):
     batch=__import__('uuid').UUID(capture['batch_id']);curate_slices(slice_root,batch,commit='a'*40)
     with warehouse_connection(slice_root/'data/warehouse/astock.duckdb') as db:
         at=datetime.now(timezone.utc);evidence=dict(sessions=[],reference_exceptions=[],bse_transitions=[],source_dispositions=[])
-        approval=Approval(review_ref='synthetic-full-plan-review',reviewed_sha='a'*40,
+        approval=Approval(resolver_protocol="R2_RESOLVER_UTC_INSTANT_V2", time_integrity_addendum_hash=hashlib.sha256((ROOT / "docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md").read_bytes()).hexdigest(), review_ref='synthetic-full-plan-review',reviewed_sha='a'*40,
             design_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1.md').read_bytes()).hexdigest(),
             policy_hash=load_policy(slice_root)[1],approved_case_set_hash=checksum(dict(episodes=[],codes=[],bindings=[])),
             dq_evidence_hash=evidence_hash(evidence),publication_addendum_hash=hashlib.sha256((slice_root/'docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md').read_bytes()).hexdigest(),
@@ -335,7 +335,7 @@ def test_production_shape_requires_r1_exact133_and_parent126(slice_root,tamper):
         inputs=[Input(request_id=r['request_id'],raw_object_id=r['object_id'],dataset=r['dataset'],raw_hash=r['sha256'],
             raw_schema_hash=r['schema_hash'],row_count=r['row_count'],is_output=r['dataset']!='trade_cal') for r in requests]
         frozen=db.execute('SELECT identity_snapshot_hash,plan_hash FROM slice_batch WHERE batch_id=?',[batch]).fetchone()
-        context=Context(parent_batch_id=batch,parent_generation=0,parent_identity_hash=frozen[0],parent_plan_hash=frozen[1],
+        context=Context(resolver_protocol=approval.resolver_protocol, time_integrity_addendum_hash=approval.time_integrity_addendum_hash, parent_batch_id=batch,parent_generation=0,parent_identity_hash=frozen[0],parent_plan_hash=frozen[1],
             resolver_hash=load_resolver(db).snapshot_hash,specs_hash=specs_hash(slice_root),policy_hash=approval.policy_hash,
             design_hash=approval.design_hash,publication_addendum_hash=approval.publication_addendum_hash,disposition_addendum_hash=approval.disposition_addendum_hash,correction_addendum_hash=approval.correction_addendum_hash,
             dq_evidence_hash=approval.dq_evidence_hash,knowledge_as_of=at,implementation_sha='a'*40,approval=approval,inputs=tuple(inputs))
