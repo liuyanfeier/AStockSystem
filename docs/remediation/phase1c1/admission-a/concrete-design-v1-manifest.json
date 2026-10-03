@@ -1,0 +1,7 @@
+{
+  "design": "docs/remediation/phase1c1/admission-a/concrete-design-v1.md",
+  "sha256": "3dd7159f6e9c6554ba4326e09127306cfec363acbaac6024c42427e464b1677e",
+  "baseline": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45",
+  "approval": "PENDING_INDEPENDENT_REVIEW",
+  "execution_license": false
+}

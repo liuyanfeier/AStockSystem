@@ -33,3 +33,7 @@ Name tests `test_*.py`. Test trading rules, time availability, historical rules 
 ## Secrets
 
 Keep `.env` local. Never send token through chat; live requests require `--live` and exact pinned HTTPS. Never commit or print secrets in logs/reports, request brokerage passwords, or introduce broker credentials in this phase. Commit placeholders only. Public Git must exclude raw datasets, private reports, balances, holdings and personal execution history; use ignored `private/` or `data/private/`. Lightweight sanitized review evidence belongs in `docs/reviews/`.
+
+## Current Admission Batch A
+
+The latest user authorization supersedes the prior completed R2 execution scopes: see `docs/reviews/phase1c1-admission-a/2026-10-03/authorization.md` and retained prompts in `docs/remediation/phase1c1/admission-a/`. Complete Admission A investigation, finite evidence proposals, minimum new-version offline capabilities, synthetic regressions and approval package together. Original schema 001–010 and every existing warehouse table, raw/curated/private evidence file and review remain immutable. Zero market/provider requests; official document lookup only. Preserve existing approved192 bindings; never manufacture reviewer metadata or production approval. Separate incremental case delta from merged resolver snapshot. Keep legacy bounded133/126 guards unchanged. Use managed read-only original connections and isolated synthetic stores. Final full offline checks, secret scan and exact-SHA CI; stop ADMISSION_A_REVIEW_READY. Admission B NOT_AUTHORIZED; Phase1C.2 CLOSED.

@@ -1,0 +1,149 @@
+{
+  "actual_approval_at": "2026-10-03T07:21:19.165122Z",
+  "actual_context_hash": "d060739f01a2d7d22bad3a6b0599600efe4263c507069addbda6dd017c62f6cd",
+  "actual_resolver_hash": "e88a8d9b6f38cd4629a67905124a811e980a374368b31667121f5ad918c8dffb",
+  "approval_files_verbatim": true,
+  "approved_implementation_sha": "0251e485396fb9e1a4214f71a298ad2777ebde90",
+  "augmented_byte_files_preserved": 2572,
+  "author_package": {
+    "bytes_sha256": "84cde8f884b3f9c7fc51818685acfa0197ff13829a78247712bebea061978fb9",
+    "members": 61,
+    "path": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-r2-b-v2-execution/2026-10-03-matched-v2/r2-final-review-package-with-ci.zip"
+  },
+  "backup_readable": true,
+  "backup_sha256": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45",
+    "job_id": 111177356193,
+    "remote_run_jobs_logs_independently_checked": true,
+    "run_id": 37114073292,
+    "status": "completed",
+    "tests": "2026-10-03T10:00:48.5220814Z ================= 622 passed, 4 warnings in 960.18s (0:16:00) ==================",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/37114073292"
+  },
+  "dq": {
+    "batch": "BLOCKED",
+    "blocking": 400758,
+    "causal": {
+      "causal_mismatch": 0,
+      "certified_pairs": 0,
+      "excluded_unknown_pairs": 45,
+      "factor_mismatch": 0,
+      "missing_factor_pairs": 0,
+      "provisional_sse_pairs": 0
+    },
+    "coverage_records": 63,
+    "findings_per_generation": 402132,
+    "local": "BLOCKED",
+    "rules": {
+      "IDENTITY_NO_SCOPED_PROVIDER_BINDING": 402054,
+      "SESSION_NOT_CERTIFIED": 63,
+      "UNEXPLAINED_MISSING_BAR": 15
+    },
+    "severity": {
+      "ERROR": 400758,
+      "REVIEW": 1374
+    }
+  },
+  "exact_source_ledger_rows_checked": 402246,
+  "execution_authorization": "This review closes the existing limited engineering batch. No expanded case/data acquisition, new Context, Phase1C.2, strategy, backtest or trading authorization.",
+  "execution_sha": "ea4f08db7b834718c545672dfcb33ef10ecf141f",
+  "final_secret_and_preservation_validation": {
+    "actual_original_db_unchanged_during_review": true,
+    "credential_pattern_scan": "PASS",
+    "current_credential_literal_scan": "PASS",
+    "decoded_parquet_paths": 1929,
+    "decoded_parquet_scan": "PASS",
+    "repository_clean": true,
+    "reviewed_at": "2026-10-03T10:32:28.829618+00:00",
+    "reviewer_new_audits": 0,
+    "reviewer_writes": 0,
+    "scanned_paths": 4700,
+    "status": "PASS"
+  },
+  "findings": [],
+  "gates": {
+    "BOUNDED_DATA_ADMISSION": "BLOCKED",
+    "EVIDENCE_COMPLETENESS": "INCOMPLETE_BLOCKED",
+    "Phase1C2": "CLOSED",
+    "R1_FINAL": "PASS_RETAINED",
+    "R2_B_APPROVED_LIMITED_EXECUTION": "PASS",
+    "R2_ENGINEERING_MODEL": "PASS",
+    "R2_OVERALL": "PARTIAL_ENGINEERING_COMPLETE_DATA_BLOCKED"
+  },
+  "historical_tables_preserved": 19,
+  "independent_actual_generations_rebuilt": 4,
+  "independent_finding_observations_checked": 1608528,
+  "legacy_findings_closed": 0,
+  "old_context_independent_rebuilds": 126,
+  "old_curated_preserved": 252,
+  "old_finding_full_payloads_preserved": 15756,
+  "old_private_protected_byte_files_preserved": 2538,
+  "original_context_id": "0b1906ee-52af-485b-98eb-a4f4b3e54706",
+  "original_db_sha256": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+  "original_generations": [
+    "5347e862-2505-4272-8c3a-f43d8c169809",
+    "90d90069-776a-458c-a06b-c408ace1045d"
+  ],
+  "outputs_each": 126,
+  "private_review_directory": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-final-v2-independent-review",
+  "protected_files_preserved_per_root": 1102,
+  "quarantine_each": 402054,
+  "resolved_each": 192,
+  "review_artifacts": {
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/2026-10-03_Phase1C1_R2_Final_V2_Independent_Review.md": {
+      "bytes": 9132,
+      "bytes_sha256": "6e27a1340f6d6583fad779f366523657bbb4e93f263a02297878f8d413ff621e"
+    },
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-final-v2-independent-review/final-validation.json": {
+      "bytes": 384,
+      "bytes_sha256": "ae0e5e3a886d9e4e458cd1bf4fef7250543d883089a070a9045bc03545ff8a9f"
+    },
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-final-v2-independent-review/independent-exact-sha-ci.json": {
+      "bytes": 423,
+      "bytes_sha256": "3de31429c2ef1b8f98aacb2b8ad8f4ff7d65f225f7a902274b3e3153d96aa30c"
+    },
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-final-v2-independent-review/independent-execution-validation.json": {
+      "bytes": 9861,
+      "bytes_sha256": "4fb8b6a338a8c40380bcaf8476c6589d1a398b875981a44db69197c84ea18ac3"
+    },
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-final-v2-independent-review/independent-temporal-output-quality-validation.json": {
+      "bytes": 863,
+      "bytes_sha256": "35075252aae65094ad3bca22c025093a4842ccee72be946c2fe03eddd0020328"
+    }
+  },
+  "reviewed_at": "2026-10-03T10:31:24.570653+00:00",
+  "reviewed_final_sha": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45",
+  "reviewer_market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "settings": 0,
+    "socket": 0
+  },
+  "reviewer_new_audits": 0,
+  "reviewer_new_generations": 0,
+  "reviewer_original_writes": 0,
+  "source_rows_each": 402246,
+  "source_transitions": {
+    "QUARANTINE_TO_QUARANTINE": 7666,
+    "RESOLVED_TO_QUARANTINE": 394388,
+    "RESOLVED_TO_RESOLVED": 192
+  },
+  "status": "INDEPENDENT_R2_FINAL_REVIEW_COMPLETE_ENGINEERING_PASS_DATA_BLOCKED",
+  "strict_receipts": {
+    "batch_id": "1d34d71f-c711-4893-9729-0b719bbba6dd",
+    "binding": "EXACT",
+    "checked_count": 133,
+    "evidence_hash": "0992ccac745f6e5299615caaf7a68e4aabf9fb4d90c49e1d1c742716bf4e3597",
+    "failure_count": 0,
+    "purpose": "VERIFY",
+    "reasons": {},
+    "validated_at": "2026-10-03T10:23:31.846314+00:00",
+    "validator_version": "R1_EXACT_RECEIPT_V1",
+    "verdict": "VALID",
+    "verification_code_commit": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45"
+  },
+  "validated_raw": 181
+}
