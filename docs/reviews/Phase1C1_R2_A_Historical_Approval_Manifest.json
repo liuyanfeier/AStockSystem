@@ -1,0 +1,95 @@
+{
+  "approval_scope": "LIMITED_INTEGRITY_ONLY_NOT_DATA_ADMISSION",
+  "approved_at": "2026-10-03T03:52:23.856708+00:00",
+  "approved_case_set_hash": "5f263b228917e2076984e8a71bcc9c6c4368ab415fab698e771ced9b0dd2c26c",
+  "approved_dq_evidence_hash": "4f7ad76a9d9613cc3b654c08994b583dc952b45c33051bad8539a32a231aaa19",
+  "artifacts": {
+    "approved-case-set.json": {
+      "bytes": 44593,
+      "bytes_sha256": "ada7ac65820d8596d05a4afb158016759e29f4c0bb89a022026ac7d662dbc4d1"
+    },
+    "approved-context.json": {
+      "bytes": 58187,
+      "bytes_sha256": "c10b8f6661b031a28aecdb0327543cbfd8cf088e63374b4307ecfaf945bef3ff"
+    },
+    "approved-dq-evidence.json": {
+      "bytes": 1185465,
+      "bytes_sha256": "6f751fe566a06a3dc7bb66ae88f5e5044df87fcdb5159de6db51f98ceba1b5b6"
+    },
+    "approved-resolver-snapshot.json": {
+      "bytes": 44611,
+      "bytes_sha256": "026bacec9e9baa654100224cea1c39b3cdc5f012171e7f01288501b6268036b7"
+    },
+    "case-decisions.json": {
+      "bytes": 9584536,
+      "bytes_sha256": "b86ffafc52d5f3b2386bd5cb866390685a211223363053b33dfaffa9ded12f89"
+    },
+    "documentary-review.json": {
+      "bytes": 10048,
+      "bytes_sha256": "0f8059111d2a8e3cd0599ff5f9abe0505ec3b0265bf2a2eba5573ba0c1061376"
+    },
+    "independent-approved-payload-validation.json": {
+      "bytes": 1851,
+      "bytes_sha256": "de861c955443d3084006ea956b39fbec1c15dec5956ffbad93a39b5ba795615d"
+    },
+    "independent-package-validation.json": {
+      "bytes": 2581,
+      "bytes_sha256": "c833616b13ecf4367b33acc570aef02b5700956b8a6e21604fc9246de2a4ff8d"
+    },
+    "independent-parent-validation.json": {
+      "bytes": 538,
+      "bytes_sha256": "94cbf046511b81171b94ba1868ed943e03a1d1e9b9601f93745029fa949c1b6b"
+    }
+  },
+  "ci": {
+    "conclusion": "success",
+    "independent_remote_logs_checked": true,
+    "job_id": 111115740558,
+    "materials_sha": "f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1",
+    "passed": 589,
+    "run_id": 37092541651,
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/37092541651",
+    "warnings": 4
+  },
+  "context_hash": "0fd34edc7eb0d19c0cf1b9f39de1a6d3aa378da171e9f68f048890de2f2afda2",
+  "counts": {
+    "binding_source_rows": 192,
+    "bindings": 12,
+    "certified_sessions": 0,
+    "episodes": 3,
+    "exact_out_of_scope_pre_bse_rows": 1374,
+    "official_codes": 3,
+    "old_findings_retained": 15756,
+    "pending_bse_transitions": 248,
+    "pending_carry_forward_cases": 5584,
+    "unchanged_quarantine_rows": 7666
+  },
+  "execution_authorization": "User must explicitly authorize R2-B after reviewing the limited scope and 192/402054 consequence; this review does not execute or authorize B.",
+  "gates": {
+    "ACTUAL_CONTEXT": "APPROVED_LIMITED_INTEGRITY_ONLY",
+    "DQ_EVIDENCE": "APPROVED_FOR_BLOCKED_OFFLINE_AUDIT",
+    "ENGINEERING": "PASS",
+    "HISTORICAL_CASES": "APPROVED_LIMITED_SCOPE",
+    "Phase1C2": "CLOSED",
+    "R2_B": "NOT_AUTHORIZED",
+    "REAL_DATA": "BLOCKED"
+  },
+  "implementation_commit_sha": "5108731af43bc0738144b6e835c5b65f5f5fc37f",
+  "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+  "limitations": [
+    "Limited offline integrity experiment; not full historical remediation or data/backtest admission.",
+    "All scopes are dataset/raw-object/zero-based-row/event exact; no wildcard aliases, stock_st or suspend_d identity bindings.",
+    "CURRENT_RECONSTRUCTION/OBSERVED_CAPTURE; no historical PIT and no backdated availability.",
+    "Unknown episode ends are not indefinite full-history/future certification; all other observations remain unapproved.",
+    "Most former resolved rows lack independent historical evidence and are quarantined only in the new context; old contexts/files remain intact.",
+    "No certified SZSE/BSE calendar, no factor/NULL exception, no retrospective representation, no BSE transition admission.",
+    "Actual COMPLETE-generation DQ, rebuild/publication and schema deployment are deferred to separately authorized R2-B."
+  ],
+  "manifest_version": 1,
+  "materials_sha": "f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1",
+  "private_manifest_path": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-a-independent-approval/approval-manifest.json",
+  "private_manifest_sha256": "2cb3e31a3ad3200b848bd8c7b01c8481d523db24c91aa2d1ca14a99f184f4965",
+  "resolver_hash": "5ed2a9d8831ca37efd4f50f754812903b5e52ea54bd34c56c5241ae720c92772",
+  "review_ref": "2026-10-03_Phase1C1_R2_A_Historical_Approval_Review@f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1#LIMITED_V1",
+  "reviewed_engineering_sha": "2f2592968a7f8e2500ee5e0bd3772a15a5c621f5"
+}
