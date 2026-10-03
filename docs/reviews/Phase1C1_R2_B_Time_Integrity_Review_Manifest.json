@@ -1,0 +1,92 @@
+{
+  "Phase1C2": "CLOSED",
+  "R2_FINAL": "AWAITING_LIMITED_B_EXECUTION_REVIEW",
+  "REAL_DATA": "BLOCKED",
+  "approval_manifest": {
+    "bytes_sha256": "ce71362d9330649b6b595fbe4ce1cf7bceb45732a2d8f5ea81618ec12dc39d6d",
+    "path": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/private/phase1c1-r2-b-time-integrity-v2-independent-approval/approval-manifest.json"
+  },
+  "approved_at": "2026-10-03T07:21:19.165122Z",
+  "approved_case_set_hash": "b4b598d0b55e51c94271bf857fe5ea7504d5e664dc17e52393177b13a6002100",
+  "approved_dq_evidence_hash": "42f37df8ccaab7744344914f3b8484133cfd0ae99ddfc4aada3d0dd6c9b6395a",
+  "artifacts": {
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/2026-10-03_Phase1C1_R2_B_Time_Integrity_Independent_Review.md": {
+      "bytes": 7066,
+      "bytes_sha256": "8a8ad248b4d4801d8fa02106dcf6c14d41ca3552f3867c63281e381c53657fc9"
+    },
+    "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/Codex_Phase1C1_R2_B_Matched_V2_Resume_Prompt.md": {
+      "bytes": 6239,
+      "bytes_sha256": "ca888a60a9393c612b87ee91c0edb53fa3a5ea0ccefe977bfdf6774ea4e1bde7"
+    }
+  },
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "0251e485396fb9e1a4214f71a298ad2777ebde90",
+    "job_id": 111149633530,
+    "remote_run_jobs_logs_independently_checked": true,
+    "run_id": 37104268298,
+    "status": "completed",
+    "tests": "2026-10-03T07:04:21.9591439Z ================= 622 passed, 4 warnings in 927.55s (0:15:27) ==================",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/37104268298"
+  },
+  "closed_findings": [
+    "R2_B_TIME_SERIALIZATION_P1_HASH_AND_PINNED_COMPARISON"
+  ],
+  "context_hash": "d060739f01a2d7d22bad3a6b0599600efe4263c507069addbda6dd017c62f6cd",
+  "counts": {
+    "binding_source_rows": 192,
+    "bindings": 12,
+    "certified_sessions": 0,
+    "episodes": 3,
+    "exact_out_of_scope_pre_bse_rows": 1374,
+    "official_codes": 3,
+    "old_findings_retained": 15756,
+    "pending_bse_transitions": 248,
+    "pending_carry_forward_cases": 5584,
+    "unchanged_quarantine_rows": 7666
+  },
+  "execution_authorization": "Matched v2 approval replaces suspended v1 execution pins within existing user-authorized limited R2-B. No additional historical scope or Phase1C.2 authorization.",
+  "final_delivery_validation": {
+    "actual_sql_registration_reopen": "PASS",
+    "all_approval_pins_models_and_artifacts": "PASS",
+    "completed_at": "2026-10-03T07:28:14.597876+00:00",
+    "credential_patterns": "PASS",
+    "current_token_literal_scan": "PASS",
+    "decoded_parquet_paths": 1118,
+    "market_requests": 0,
+    "old_19_tables_in_review_copy_preserved": true,
+    "old_approvals_preserved": true,
+    "original_db_unchanged": true,
+    "original_writes": 0,
+    "repository_clean": true,
+    "scanned_paths": 2581,
+    "status": "PASS"
+  },
+  "findings": [],
+  "gates": {
+    "ACTUAL_CONTEXT": "APPROVED_MATCHED_LIMITED_V2",
+    "DQ_EVIDENCE": "APPROVED_FOR_BLOCKED_OFFLINE_AUDIT",
+    "ENGINEERING": "PASS",
+    "HISTORICAL_CASES": "APPROVED_LIMITED_SCOPE",
+    "Phase1C2": "CLOSED",
+    "R2_B": "MATCHED_APPROVAL_READY_UNDER_EXISTING_LIMITED_AUTHORIZATION",
+    "REAL_DATA": "BLOCKED"
+  },
+  "implementation_commit_sha": "20d2c23bea98d091407f973f491cf89082647e20",
+  "independent_actual_readback_zones": 4,
+  "independent_related_tests": 100,
+  "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+  "isolated_actual_context_registration": 1,
+  "isolated_actual_generations": 0,
+  "manifest_version": 2,
+  "materials_sha": "0251e485396fb9e1a4214f71a298ad2777ebde90",
+  "original_writes": 0,
+  "preserved_preexisting_private_protected_files": 2539,
+  "preserved_protected_files": 1102,
+  "resolver_hash": "e88a8d9b6f38cd4629a67905124a811e980a374368b31667121f5ad918c8dffb",
+  "resolver_protocol": "R2_RESOLVER_UTC_INSTANT_V2",
+  "review_ref": "2026-10-03_Phase1C1_R2_B_Time_Integrity_Independent_Review@0251e485396fb9e1a4214f71a298ad2777ebde90#MATCHED_LIMITED_V2",
+  "reviewed_engineering_sha": "0251e485396fb9e1a4214f71a298ad2777ebde90",
+  "status": "ENGINEERING_PASS_MATCHED_LIMITED_V2_APPROVAL_READY",
+  "time_integrity_addendum_hash": "068054fc25ac0e40eab0e33682f8c5be14debdcf7765e8d842bbb39666dd3e6b"
+}
