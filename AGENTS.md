@@ -6,6 +6,8 @@ AStockSystem is a macOS A-share research project. R1 FINAL independently passed 
 
 Current repair batch: F1–F3 from the retained 2026-10-03 independent review and consolidated fix prompt; see `docs/reviews/2026-10-03-r2-a-fixes-authorization.md` and frozen design addendum 3. Complete together with synthetic regressions, offline preservation/secret checks and final exact-SHA CI; retain previous review packages. No original deployment or real R2 approvals.
 
+Latest authorized batch supersedes that historical repair scope: R2-B time-integrity P1 engineering fix per `docs/reviews/2026-10-03-r2-b-time-integrity-fix-authorization.md` and new frozen addendum 4. Repair both resolver digest and pinned-member time comparison, require explicit v2 protocol/design pins, run managed synthetic SQL/reopen/rebuild/tamper regressions and actual-material read-only checks. Preserve all v1 approvals and failed isolation; no original writes or author production approval. Deliver once as R2_B_TIME_INTEGRITY_FIX_REVIEW_READY with final exact-SHA CI; real B execution awaits matched reviewer reapproval. Zero market requests; Phase1C.2 CLOSED.
+
 Use `src/astock/` for Python, `tests/` for pytest, `config/` for versioned configuration, `sql/` for schema, `docs/` for contracts and governance, and `skills/` for workflows. Local data belongs in `data/{raw,curated,warehouse}/`; generated outputs belong in `reports/`.
 
 ## Development & Style

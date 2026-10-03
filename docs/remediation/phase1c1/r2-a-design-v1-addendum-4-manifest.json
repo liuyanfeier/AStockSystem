@@ -1,0 +1,8 @@
+{
+  "frozen_before_implementation": true,
+  "reviewed_baseline_sha": "63a166b89f44850dd9fa2efa8ab06c0e49a8bfd5",
+  "resolver_protocol": "R2_RESOLVER_UTC_INSTANT_V2",
+  "digests": {
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-4.md": "068054fc25ac0e40eab0e33682f8c5be14debdcf7765e8d842bbb39666dd3e6b"
+  }
+}
