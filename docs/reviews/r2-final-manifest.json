@@ -1,0 +1,235 @@
+{
+  "R2_FINAL_REVIEW_READY": "NOT_REACHED",
+  "approved_3_episodes_3_codes_12_bindings_192_observations": "IMPORTED_ON_ISOLATED_COPY_ONLY",
+  "approved_at": "2026-10-03T03:52:23.856708+00:00",
+  "approved_engineering_sha": "2f2592968a7f8e2500ee5e0bd3772a15a5c621f5",
+  "approved_hashes": {
+    "approved_case_set_hash": "5f263b228917e2076984e8a71bcc9c6c4368ab415fab698e771ced9b0dd2c26c",
+    "approved_dq_evidence_hash": "4f7ad76a9d9613cc3b654c08994b583dc952b45c33051bad8539a32a231aaa19",
+    "context_hash": "0fd34edc7eb0d19c0cf1b9f39de1a6d3aa378da171e9f68f048890de2f2afda2",
+    "resolver_hash": "5ed2a9d8831ca37efd4f50f754812903b5e52ea54bd34c56c5241ae720c92772"
+  },
+  "approved_materials_sha": "f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1",
+  "approved_source_schema_policy_and_previous_tracked_bytes_unchanged": true,
+  "author_status": "R2_B_BLOCKED_BEFORE_ORIGINAL_DEPLOYMENT",
+  "backup": {
+    "bytes": 22032384,
+    "bytes_sha256": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "in_transfer_zip": false,
+    "readable": true,
+    "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/verified-predeployment-backup.duckdb"
+  },
+  "blocker": {
+    "code": "APPROVED_RESOLVER_DATABASE_ROUNDTRIP_MISMATCH",
+    "context_registered_on_original": false,
+    "details": {
+      "approved_hash": "5ed2a9d8831ca37efd4f50f754812903b5e52ea54bd34c56c5241ae720c92772",
+      "context_registered": false,
+      "default_readback_hash": "df9325a0875c6e64c7354762be1b716dcae91e96522795b7c9d210227eeaa222",
+      "default_time_representation_differences": 33,
+      "default_timezone": "Asia/Shanghai",
+      "generations": 0,
+      "semantic_models_equal": true,
+      "utc_readback_hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+      "utc_time_representation_differences": 12
+    },
+    "priority": "P1",
+    "registration_error": "Resolver snapshot changed"
+  },
+  "contracts": "PASS",
+  "decoded_secret_scan": "PASS",
+  "doctor": "PASS",
+  "execution_sha": "f597671fd553e2240b3793ac342bd3b7201096cc",
+  "expected_only_quarantine": 402054,
+  "expected_only_resolved": 192,
+  "final_ci": "Actual final-SHA CI and delivery SHA retained in ignored final-handoff.json",
+  "gates": {
+    "Phase1C2": "CLOSED",
+    "R2_B": "BLOCKED",
+    "R2_FINAL_REVIEW_READY": "NOT_REACHED",
+    "REAL_DATA": "BLOCKED"
+  },
+  "implementation_commit_sha": "5108731af43bc0738144b6e835c5b65f5f5fc37f",
+  "isolated_contexts": 0,
+  "isolated_generations": 0,
+  "isolated_migrations": "008\u2013010 UPGRADED; repeat ALREADY_VALID",
+  "legacy_quarantine": 7666,
+  "legacy_resolved": 394580,
+  "market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "socket": 0
+  },
+  "new_findings": "NOT_EXECUTED",
+  "new_original_contexts": 0,
+  "new_original_generations": 0,
+  "old_26_evidence_and_17_repairs_preserved": true,
+  "old_context_rebuild": 126,
+  "old_curated": 252,
+  "old_findings_preserved": 15756,
+  "original_bindings": 0,
+  "original_db_after": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+  "original_db_before": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+  "original_deployment": "NOT_PERFORMED",
+  "original_migrations": 0,
+  "original_schema": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "original_tables_preserved": 19,
+  "original_writes": 0,
+  "pending_execution": [
+    "Reviewed implementation correction and matched reviewer-approved resolver/Context hashes",
+    "Successful isolated registration before original008\u2013010 deployment",
+    "Two complete generations, exact approved DQ, new finding/source ledger and126/126same-context comparison"
+  ],
+  "private_artifacts": [
+    {
+      "bytes": 33537,
+      "bytes_sha256": "6913058cc1bc1b24baf88a8c80e4404be2f10813e4b87d39276d68f59f11972c",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/predeployment-preflight.json"
+    },
+    {
+      "bytes": 522,
+      "bytes_sha256": "c36dec6eb36c0d1aedd207ce51e4adc43cc31c03eefdfb6ffab6059cbb401007",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/recovery-record.json"
+    },
+    {
+      "bytes": 1459,
+      "bytes_sha256": "956934c5edf52f82ffd436b11b4b3c50bf299af9f6e9ae796785345c5467ee90",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/execution-status.json"
+    },
+    {
+      "bytes": 8774,
+      "bytes_sha256": "6c10a1c38cd6bc1340b05a0088c0ef6c6fa1cc6f7726b187e2d3b3707821a1cc",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/isolated-default-timezone-roundtrip.json"
+    },
+    {
+      "bytes": 3329,
+      "bytes_sha256": "c9a985a11717446709943e65b01ebc84f291a6335aa7770517612f4839851f14",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/isolated-utc-timezone-roundtrip.json"
+    },
+    {
+      "bytes": 563,
+      "bytes_sha256": "753d83ae73c08ba538745cc1bc33c1738585090a5c1442178aa1262bb3e3da96",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/synthetic-timezone-repro.json"
+    },
+    {
+      "bytes": 2907,
+      "bytes_sha256": "06aea332fa8375b684feb43219b7a30d84c7e6e1160f2623688afb2a624bdad1",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/final-acceptance.json"
+    },
+    {
+      "bytes": 3346,
+      "bytes_sha256": "9453197b4b82fb4d2160e2ffc5d43d675a639c32be2a66fd95008f8f7e6b84e5",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/full-pytest.log"
+    },
+    {
+      "bytes": 1087,
+      "bytes_sha256": "f246654a61df32f7f042ffa1949133a471befc524c5068b08ad0e6f982d9c3bf",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/doctor.json"
+    },
+    {
+      "bytes": 815,
+      "bytes_sha256": "8ad1fc1df14d4e277d589d5ce2fa1776f5f3b5015858b18ec0f369cf3082f44f",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/contracts.json"
+    },
+    {
+      "bytes": 15861,
+      "bytes_sha256": "336d9d868121f5a0b44f445bb7bb38e9ef2357f6358c6c960984e370ce7f8981",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/rehearse.py"
+    },
+    {
+      "bytes": 6538,
+      "bytes_sha256": "a052add0a0888b06850f671fd3f18980a0eb523eb9914fb353a7d0417ca197d8",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/final_acceptance.py"
+    },
+    {
+      "bytes": 5057,
+      "bytes_sha256": "0186993f7bbdba5e81b9f5cff59b730f80ec382b1429c818d72293b7d267266c",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/package_blocker.py"
+    },
+    {
+      "bytes": 8782,
+      "bytes_sha256": "2cb3e31a3ad3200b848bd8c7b01c8481d523db24c91aa2d1ca14a99f184f4965",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/approval-manifest.json"
+    },
+    {
+      "bytes": 44593,
+      "bytes_sha256": "ada7ac65820d8596d05a4afb158016759e29f4c0bb89a022026ac7d662dbc4d1",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/approved-case-set.json"
+    },
+    {
+      "bytes": 58187,
+      "bytes_sha256": "c10b8f6661b031a28aecdb0327543cbfd8cf088e63374b4307ecfaf945bef3ff",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/approved-context.json"
+    },
+    {
+      "bytes": 1185465,
+      "bytes_sha256": "6f751fe566a06a3dc7bb66ae88f5e5044df87fcdb5159de6db51f98ceba1b5b6",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/approved-dq-evidence.json"
+    },
+    {
+      "bytes": 44611,
+      "bytes_sha256": "026bacec9e9baa654100224cea1c39b3cdc5f012171e7f01288501b6268036b7",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/approved-resolver-snapshot.json"
+    },
+    {
+      "bytes": 9584536,
+      "bytes_sha256": "b86ffafc52d5f3b2386bd5cb866390685a211223363053b33dfaffa9ded12f89",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/case-decisions.json"
+    },
+    {
+      "bytes": 10048,
+      "bytes_sha256": "0f8059111d2a8e3cd0599ff5f9abe0505ec3b0265bf2a2eba5573ba0c1061376",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/documentary-review.json"
+    },
+    {
+      "bytes": 639,
+      "bytes_sha256": "8f601f774b1974f0b5dc70eef647213f11789ada91ac75e063603e5a35cf23c9",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/final-delivery-validation.json"
+    },
+    {
+      "bytes": 1851,
+      "bytes_sha256": "de861c955443d3084006ea956b39fbec1c15dec5956ffbad93a39b5ba795615d",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/independent-approved-payload-validation.json"
+    },
+    {
+      "bytes": 2581,
+      "bytes_sha256": "c833616b13ecf4367b33acc570aef02b5700956b8a6e21604fc9246de2a4ff8d",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/independent-package-validation.json"
+    },
+    {
+      "bytes": 538,
+      "bytes_sha256": "94cbf046511b81171b94ba1868ed943e03a1d1e9b9601f93745029fa949c1b6b",
+      "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/independent-approval/independent-parent-validation.json"
+    }
+  ],
+  "private_evidence_index": {
+    "bytes_sha256": "aa5ac8767396072576522ae234bc6228fed8aba0cd71dd8a4a1c188667b1ba54",
+    "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/evidence-index.json"
+  },
+  "private_transfer_zip": {
+    "bytes": 1197107,
+    "bytes_sha256": "0487e5c35219bc1507098f2569858d900695921201db093feaa5ff53b17ec657",
+    "crc": "PASS",
+    "excludes_databases_and_full_captures": true,
+    "members": 29,
+    "relative_path": "data/private/phase1c1-r2-b/2026-10-03-limited-v1/r2-b-blocker-review-package.zip"
+  },
+  "protected_changes": 0,
+  "protected_files": 1102,
+  "raw": 181,
+  "secret_scan": "PASS",
+  "tests": {
+    "passed": 589,
+    "seconds": 395.83,
+    "warnings": 1
+  }
+}
