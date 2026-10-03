@@ -1,0 +1,133 @@
+{
+  "Phase1C2": "CLOSED",
+  "R2_FINAL": "BLOCKED",
+  "REAL_DATA": "BLOCKED",
+  "SQL001_010_unchanged": true,
+  "actual_counts": {
+    "approved_out_of_scope": 1374,
+    "bindings": 12,
+    "codes": 3,
+    "episodes": 3,
+    "observations": 192,
+    "operational_bse_transitions": 0,
+    "reference_exceptions": 0,
+    "sessions_not_certified": 63
+  },
+  "author_status": "R2_B_TIME_INTEGRITY_FIX_REVIEW_READY",
+  "candidate_context_hash": null,
+  "candidate_not_approved": true,
+  "contracts": "PASS",
+  "decoded_parquet_paths": 1118,
+  "doctor": "PASS",
+  "final_ci": "Actual final-SHA run/jobs/logs and clean Git evidence in ignored final-handoff.json",
+  "four_timezones": [
+    {
+      "canonical_payload_equal": true,
+      "earliest_exact_capture_checks": 12,
+      "hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+      "semantic_models_equal": true,
+      "timezone": "Asia/Shanghai"
+    },
+    {
+      "canonical_payload_equal": true,
+      "earliest_exact_capture_checks": 12,
+      "hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+      "semantic_models_equal": true,
+      "timezone": "UTC"
+    },
+    {
+      "canonical_payload_equal": true,
+      "earliest_exact_capture_checks": 12,
+      "hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+      "semantic_models_equal": true,
+      "timezone": "America/New_York"
+    },
+    {
+      "canonical_payload_equal": true,
+      "earliest_exact_capture_checks": 12,
+      "hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+      "semantic_models_equal": true,
+      "timezone": "Asia/Kathmandu"
+    }
+  ],
+  "frozen_private_protected_files": 2539,
+  "implementation_sha": "20d2c23bea98d091407f973f491cf89082647e20",
+  "independent_review": "PENDING",
+  "market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "socket": 0
+  },
+  "old_approval_pins": {
+    "approved_at": "2026-10-03T03:52:23.856708+00:00",
+    "case_set_hash": "5f263b228917e2076984e8a71bcc9c6c4368ab415fab698e771ced9b0dd2c26c",
+    "context_hash": "0fd34edc7eb0d19c0cf1b9f39de1a6d3aa378da171e9f68f048890de2f2afda2",
+    "dq_evidence_hash": "4f7ad76a9d9613cc3b654c08994b583dc952b45c33051bad8539a32a231aaa19",
+    "engineering_sha": "2f2592968a7f8e2500ee5e0bd3772a15a5c621f5",
+    "implementation_sha": "5108731af43bc0738144b6e835c5b65f5f5fc37f",
+    "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+    "materials_sha": "f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1",
+    "resolver_hash": "5ed2a9d8831ca37efd4f50f754812903b5e52ea54bd34c56c5241ae720c92772",
+    "review_ref": "2026-10-03_Phase1C1_R2_A_Historical_Approval_Review@f2df32b5d722fb3b73bf0e3a9294d5517c6fdfa1#LIMITED_V1"
+  },
+  "old_approvals_and_failed_isolate_unchanged": true,
+  "old_curated": 252,
+  "original_B_publication": "NOT_EXECUTED",
+  "original_db_after": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+  "original_db_before": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+  "original_schema": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "original_tables": 19,
+  "original_writes": 0,
+  "private_index": {
+    "bytes_sha256": "97858ee28f6f80a49e784ad14752bcca9260132e2b4bf10b5d6f0d2f4d977d7b",
+    "relative_path": "data/private/phase1c1-r2-b-time-integrity-fix/2026-10-03-v2/evidence-index.json"
+  },
+  "private_transfer_zip": {
+    "bytes": 198035,
+    "bytes_sha256": "3d1e2bcc997f2c4a0dcbf2e6bd84a0f8ae6578e15aa3c28501fc6419c5f78b81",
+    "crc": "PASS",
+    "excludes_databases_and_full_captures": true,
+    "expanded_secret_scan": "PASS",
+    "members": 26,
+    "relative_path": "data/private/phase1c1-r2-b-time-integrity-fix/2026-10-03-v2/r2-b-time-integrity-fix-review-package.zip"
+  },
+  "protected_files": 1102,
+  "raw": 181,
+  "required_reviewer_fields": [
+    "New review_ref and actual approved_at for the reviewed v2 engineering/protocol; never reuse a historical time as the new review time.",
+    "Explicitly version episode/code approval_ref and available_at; import requires matching review_ref and available_at >= new approved_at.",
+    "Explicitly version binding approval_ref, decision_at and available_at; import requires decision_at >= new approved_at, model requires decision_at <= available_at.",
+    "Preserve first_observed_at, retrieved_at, published_at, event dates, exact 192 source scopes, all IDs/identity/interval/native/evidence semantics unless separately reviewed.",
+    "Version the 1374 exact DQ disposition approval_ref if the review_ref changes; the existing runner requires each equals Context approval.review_ref. Keep session certification/exception/BSE facts unchanged.",
+    "Finalize case-set, DQ evidence, resolver snapshot and Context canonical/byte hashes after those explicit metadata decisions.",
+    "Set knowledge_as_of >= the new actual approved_at and case/binding availability; preserve previous knowledge instants in old files.",
+    "Bind reviewed implementation SHA and frozen addendum4 hash; use separate new approval/payload files, not edits to v1 files."
+  ],
+  "resolver_protocol": "R2_RESOLVER_UTC_INSTANT_V2",
+  "reviewed_blocker_sha": "63a166b89f44850dd9fa2efa8ab06c0e49a8bfd5",
+  "secrets": "PASS",
+  "serialization_only_candidate_resolver_hash": "408a3a328da5858a2e400c09675bedb2623f8afb6ff00d2a501854608454dbe3",
+  "strict_receipts": {
+    "binding": "EXACT",
+    "checked": 133,
+    "evidence_hash": "0992ccac745f6e5299615caaf7a68e4aabf9fb4d90c49e1d1c742716bf4e3597",
+    "failures": 0,
+    "verdict": "VALID"
+  },
+  "synthetic_persistent_SQL_time_tests": 33,
+  "tests": {
+    "passed": 622,
+    "seconds": 418.71,
+    "warnings": 1
+  },
+  "time_integrity_addendum_hash": "068054fc25ac0e40eab0e33682f8c5be14debdcf7765e8d842bbb39666dd3e6b"
+}
