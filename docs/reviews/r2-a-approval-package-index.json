@@ -1,0 +1,191 @@
+{
+  "approved_case_set": null,
+  "approved_case_set_hash": null,
+  "approved_context_hash": null,
+  "approved_dq_evidence_hash": null,
+  "approved_engineering_sha": "2f2592968a7f8e2500ee5e0bd3772a15a5c621f5",
+  "artifacts": {
+    "application-validation.json": {
+      "bytes_sha256": "03e3a024bc054278080ff79f13d30063985a5d138dc91e1b72f3d715ebec62be",
+      "relative_path": "data/private/phase1c1-r2-a-approval/application-validation.json",
+      "size": 675
+    },
+    "case-impact-and-scope-precheck.json": {
+      "bytes_sha256": "a0780801dcf94c6f26c81302c2ade85758a4e15d3494ebb15951d05becc41e9a",
+      "relative_path": "data/private/phase1c1-r2-a-approval/case-impact-and-scope-precheck.json",
+      "size": 3161481
+    },
+    "case_set": {
+      "bytes_sha256": "b265969463a9412881ccba0e470810fd92dd5c6c50e3bf3303d0cd872a5783db",
+      "relative_path": "data/private/phase1c1-r2-a-approval/case-set-proposal.json",
+      "size": 29727
+    },
+    "context": {
+      "bytes_sha256": "493af9ac602c86e172950108b4ca6704f85a60f589dd191e5f6d06bd626a05cf",
+      "relative_path": "data/private/phase1c1-r2-a-approval/context-proposal-v3.json",
+      "size": 50260
+    },
+    "decisions": {
+      "bytes_sha256": "6a25fd2bbf33c2514419d81290c90556c03b49ace65dc034b934c65f5b09719f",
+      "relative_path": "data/private/phase1c1-r2-a-approval/case-decision-requests.json",
+      "size": 13300251
+    },
+    "dq": {
+      "bytes_sha256": "7910e1cfe4c29717ae8257fe3410e0c94fdaf77601674b75675590585cca73ed",
+      "relative_path": "data/private/phase1c1-r2-a-approval/dq-evidence-proposal.json",
+      "size": 725383
+    },
+    "dq_requests": {
+      "bytes_sha256": "c648c5a417c3d2c994c27b8c4888cb2c1be980c3bf599c39647ca35b867931bc",
+      "relative_path": "data/private/phase1c1-r2-a-approval/dq-evidence-decision-requests.json",
+      "size": 408128
+    },
+    "final-preservation-and-secret-audit.json": {
+      "bytes_sha256": "7522311046242029bf6d099514d522d32e7f4c7938e9110b70e831060f21f970",
+      "relative_path": "data/private/phase1c1-r2-a-approval/final-preservation-and-secret-audit.json",
+      "size": 4620
+    },
+    "final_verify.py": {
+      "bytes_sha256": "86915f566c0806a7bc9cdb3280ba623e6ed6c7386d1649f81997154fae6f855d",
+      "relative_path": "data/private/phase1c1-r2-a-approval/final_verify.py",
+      "size": 8534
+    },
+    "finding_dispositions": {
+      "bytes_sha256": "7448a78f3dc647eda07048127db2a65b2e951e6eb9b4f15f94034e8b2e7eb139",
+      "relative_path": "data/private/phase1c1-r2-a-approval/legacy-finding-disposition-requests.json",
+      "size": 10463063
+    },
+    "prepare_package.py": {
+      "bytes_sha256": "1ad996d9cc442ee2cf301a789595a2cea23c43c7719b3619ba21b358b1990308",
+      "relative_path": "data/private/phase1c1-r2-a-approval/prepare_package.py",
+      "size": 28857
+    },
+    "resolver": {
+      "bytes_sha256": "736ecacc623881afaddf2fc10c1c1f2a18d812f7f52da55b26c3588c2a23fd98",
+      "relative_path": "data/private/phase1c1-r2-a-approval/resolver-snapshot-proposal.json",
+      "size": 29745
+    },
+    "source_dispositions": {
+      "bytes_sha256": "835a1a8b6e3de5dd7c9e4e0105d126262310a6e37c0df8d5ea90ef91250ced5a",
+      "relative_path": "data/private/phase1c1-r2-a-approval/source-resolution-dispositions.json",
+      "size": 152339149
+    },
+    "validate_application.py": {
+      "bytes_sha256": "077dc10cc784d729786d050d644ad5eb7244661c1015aa136568df3817eb6be3",
+      "relative_path": "data/private/phase1c1-r2-a-approval/validate_application.py",
+      "size": 8902
+    }
+  },
+  "author_status": "APPROVAL_PACKAGE_READY",
+  "blockers": [
+    "Reviewer decisions, final active payload/hashes and actual approval/knowledge times not supplied",
+    "Unproven BSE episode bounds and full historical universe",
+    "All SZSE/BSE venue sessions remain NOT_CERTIFIED",
+    "689009 CDR/provider STK/NULL conflict retained; no reference exception",
+    "Unknown limit assets and unclassified delist metadata retained",
+    "Old-code earliest start not independently proven; pre-switch source rows excluded from finite payload",
+    "Bounded exact scopes are not full-history identity/coverage certification"
+  ],
+  "bse_pending_requests": 248,
+  "candidate_codes": 3,
+  "candidate_episodes": 3,
+  "candidate_hashes": {
+    "candidate_resolver_hash": "d9ffade4aaeb02cbb8f1bad2b3639f8d35e0526d381f5ca10de3da723e65a5b7",
+    "case_set_proposal_hash": "9e5077c88c66d4bfd8024f063cd3c5f3a0492e066d9a3c1565c36dd1969799cc",
+    "context_proposal_hash": "6ee3303dc775d2a6bd1669e3d5831cbf6e472804612b87617623b58e0a753150",
+    "dq_evidence_proposal_hash": "a563bc0215838eaf2cdd9252ee58d4a32935c3c646554b3f8286172e3c0f7236",
+    "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+    "parent_plan_hash": "99975249e0b33fe21b99f295a950be8fd94accf89a2444fb5f535b6ee9cd7451"
+  },
+  "candidate_inactive_bindings": 12,
+  "candidate_parent_source_rows": 192,
+  "carry_forward_security_scopes": 5584,
+  "case_review_items": 346,
+  "documentary_additions": {
+    "bytes_sha256": "3e0ec72d086757771f371b21c5f862614b9a6731112dee25afd9dfe5506abd09",
+    "relative_path": "data/private/phase1c1-r2-a-approval/documentary-additions.json"
+  },
+  "dq_sections": {
+    "bse_transitions": 0,
+    "reference_exceptions": 0,
+    "sessions": 63,
+    "source_dispositions": 1374
+  },
+  "explicit_retained_quarantine_requests": 402054,
+  "gates": {
+    "HISTORICAL_APPROVAL": "PENDING",
+    "Phase1C2": "CLOSED",
+    "R2_A_ENGINEERING": "PASS",
+    "R2_B": "NOT_AUTHORIZED",
+    "REAL_DATA": "BLOCKED"
+  },
+  "implementation_commit_sha": "5108731af43bc0738144b6e835c5b65f5f5fc37f",
+  "inactive_old_drafts_preserved": 251,
+  "legacy_findings_retained": 15756,
+  "market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "socket": 0
+  },
+  "materials_sha": "Git commit containing this index; actual SHA and CI in ignored final-handoff.json",
+  "old_resolved_retained_quarantine_requests": 394388,
+  "original_writes": 0,
+  "preservation": {
+    "old_curated": 252,
+    "old_indexed_artifacts": 26,
+    "original_db_sha256": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "original_tables": 19,
+    "protected_changes": 0,
+    "protected_files": 1102,
+    "raw": 181,
+    "repair_indexed_artifacts": 17,
+    "schema_versions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "strict_binding": "EXACT",
+    "strict_failure_count": 0,
+    "strict_receipts": 133,
+    "strict_verdict": "VALID"
+  },
+  "preserved_evidence_indexes": [
+    {
+      "bytes_sha256": "6f81f7ae1cae4c2352a3d5aff9c85ef599495694e5a226721608bb97da33a5e0",
+      "relative_path": "data/private/phase1c1-r2-a/evidence-index.json"
+    },
+    {
+      "bytes_sha256": "beaebd9004c3c88c8d5ca9b021ce3210198bf20e78c510c87bd565bf58c85232",
+      "relative_path": "data/private/phase1c1-r2-a-fixes/evidence-index.json"
+    }
+  ],
+  "private_manifest": {
+    "bytes_sha256": "6411305f3f41e102a91c562303f649ddbb64f219eaaa51a41b6b6236b3322cc0",
+    "relative_path": "data/private/phase1c1-r2-a-approval/approval-package-manifest.json"
+  },
+  "private_transfer_bundle": {
+    "bytes": 49623550,
+    "bytes_sha256": "fda8ecf5e945673d34a484b411226740551396408f130c6e61cc6937aee81a17",
+    "contains_no_database_or_full_raw_capture_files": true,
+    "integrity": "CRC_PASS",
+    "members": 66,
+    "relative_path": "data/private/phase1c1-r2-a-approval/r2-a-approval-package.zip"
+  },
+  "real_bindings": 0,
+  "real_generations": 0,
+  "real_new_dq": 0,
+  "source_schema_policy_changed": false,
+  "totals": {
+    "eligible_old_resolved": 192,
+    "old_quarantine": 7666,
+    "old_resolved": 394580,
+    "proposed_binding_rows": 192,
+    "source_rows": 402246
+  },
+  "validation": "AUTHOR_PREPARATION_CHECKS_PASS_NOT_HISTORICAL_REVIEW_APPROVAL"
+}
