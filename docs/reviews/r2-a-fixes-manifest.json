@@ -1,0 +1,146 @@
+{
+  "approved_case_set": null,
+  "approved_case_set_hash": null,
+  "approved_r1_baseline_sha": "cc458ce2e8229dcc914e9a45ae2ac6186f48c45c",
+  "author_status": "R2_A_REVIEW_READY",
+  "diagnostics": {
+    "contracts_v1": "PASS",
+    "contracts_v2": "PASS",
+    "doctor": "PASS",
+    "identity_specs": "PASS",
+    "market_api_calls": 0,
+    "probe_plan": "PASS",
+    "slice_plan": "PASS",
+    "slice_specs": "PASS"
+  },
+  "existing_candidate_artifacts": {
+    "case-proposals-v2.json": "f949a0feca73ed07bf2a8906abb22427aeeea2f4bf969bc9c5695726c52b88de",
+    "derivation-context-draft-v2.json": "e77489bdd6f2d9c9a64602633b1c34b11d3fb27ae5cab73724eee2d6aa51691b",
+    "documentary-evidence.json": "11793c7c94627539f791189f255fb7808fc35d35daf384d9a579ab74c804d392",
+    "frozen-carry-forward-proposals.json": "cd3175f72222b7292d23ed349ba86691ecb530ac0e7f04a24bcc4eef4d47079c"
+  },
+  "existing_private_artifacts_unchanged": 26,
+  "existing_private_evidence_index": {
+    "relative_path": "data/private/phase1c1-r2-a/evidence-index.json",
+    "sha256": "6f81f7ae1cae4c2352a3d5aff9c85ef599495694e5a226721608bb97da33a5e0"
+  },
+  "existing_proposal_set_hash": "7fe36cd415ed147bb1eb5ce49ebc410c9df95de1d72933093c198f9df80a0125",
+  "final_ci": "EXACT_FINAL_SHA_SUCCESS_REQUIRED_AND_RECORDED_IN_PRIVATE_FINAL_HANDOFF",
+  "final_delivery_sha": "GIT_COMMIT_CONTAINING_THIS_MANIFEST",
+  "final_handoff_path": "data/private/phase1c1-r2-a-fixes/final-handoff.json",
+  "fixes": {
+    "F1": "Per daily security/episode/event finite positive unique factor; exact blocking daily source row",
+    "F2": "Per actual causal/factor pair current and previous raw event; stable keys and correct per-output quality",
+    "F3": "Persistent immutable context resolver snapshot/membership; validate pinned live members, ignore legitimate additions"
+  },
+  "frozen_hashes": {
+    "config/dq/r2-v1.json": "f2c3267ddbd8eecc55d29c3ebac4eae971442e77d78181b5757676e37e9bfe03",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-1.md": "2e5cfeb6bd8cfc793eaa29e999cf0d733d8ac87d9683d96e0c94c2fe23871553",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-2.md": "1566336f7f6f15efa0b22e45e14a88b1b7da7c830672dd35780ab4f3fa7f34a3",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md": "8d4e77c29c8a56e70fc3a4cb2ac8746a049c8cfc3a6e7d992defe9af7062f069",
+    "docs/remediation/phase1c1/r2-a-design-v1.md": "2093b9511f263bd128f0f9c396916b8c69960202eed8a604186a41374b37b3d5"
+  },
+  "gates": {
+    "Phase1C2": "CLOSED",
+    "R2_A": "PENDING_INDEPENDENT_REVIEW",
+    "R2_B": "NOT_AUTHORIZED",
+    "REAL_DATA": "BLOCKED"
+  },
+  "historical_review_packages_unchanged": true,
+  "implementation_files": {
+    "AGENTS.md": "cb0cf65ff21663fedb1fb8551c976ee868c19013e365ae6e9f90f2da492f9d09",
+    "docs/data_contract.md": "dab6592bc9a371d0e87e0180d3d0aae657e146eae821dc7db8ff720383d466b7",
+    "docs/data_dictionary.md": "fd8de24a39c3addff005903c48dd3b6681fd86012d1516a0f18d2f7a9d01a77f",
+    "docs/phase1c1_reconstruction.md": "c4dedfc2ae7beba0466ed8d093ffbe71d2e01ada1d4a7fc339a03ddb5b32690b",
+    "docs/remediation/phase1c1/Codex_Phase1C1_R2_A_Consolidated_Fix_Prompt.md": "527f28dbd1975cd5e07b9131bb6027ebe84ecf4f6026bd9affaa63b2a2b8eb53",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-3-manifest.json": "a4a4e71015ceac0f25134859e1ad28c52ad6a77bf6bd082bda7b11e7140f4834",
+    "docs/remediation/phase1c1/r2-a-design-v1-addendum-3.md": "8d4e77c29c8a56e70fc3a4cb2ac8746a049c8cfc3a6e7d992defe9af7062f069",
+    "docs/reviews/2026-10-03-phase1c1-r2-a-independent-review.md": "8785e3972e4b9a828585f576d83989378bc975f164f308c6447fb33a376477df",
+    "docs/reviews/2026-10-03-r2-a-fixes-authorization.md": "825c5f17d33aff021aa0ab791178117633a353144bbf95db5c3b39f8c02060d3",
+    "docs/reviews/2026-10-03-r2-a-independent-repros.py": "339ba49c0f27e2e9e33dfc955fc3d168a1da072b1f45887aa35ed981d9e26961",
+    "sql/009_r2_derivation_publication.sql": "d8fc4ae38d86239e14939d8beabc132d2aa790affe3b849651310d1d8f604fd0",
+    "src/astock/data/reconstruction.py": "9b072b924658763c910a41b843a4cf4c9c122bc1334db696124b86c66a887c7a",
+    "src/astock/data/reconstruction_dq.py": "fa9f15a8dfb921b0e03d39399d72d6b2ac817260d630101c052ecb00acc22e31",
+    "tests/test_reconstruction.py": "1b828540c5d82a53f642b2108e07240941bd3aed53bc0e006d6e5c6cf0fe3f33",
+    "tests/test_reconstruction_dq.py": "82a8e4a4dbd513f473405581e8ac053234419eed97cd24e5ce0eaff73ab8a74c",
+    "tests/test_reconstruction_regressions.py": "a7bc8a917c758830ed60f472482e220b89bff8e7f333e502387ed35435ef2c32"
+  },
+  "independent_review": "PENDING",
+  "limitations": [
+    "No actual R2 schema/binding/generation/DQ applied",
+    "Historical universe/venue sessions incomplete",
+    "Unknown limit assets, NULL/CDR conflict, delist semantics require evidence",
+    "Current stock_basic old-code omission cause unknown",
+    "No historical PIT/full-history admission"
+  ],
+  "local_tests": {
+    "affected_tests_deselected_production_shape": 3,
+    "affected_tests_passed": 78,
+    "all_production_shape_tests_passed_in_full_suite": true,
+    "new_regressions": 26,
+    "passed": 589,
+    "seconds": 406.25,
+    "warnings": 1
+  },
+  "market_calls": {
+    "http": 0,
+    "provider_constructor": 0,
+    "provider_fetch": 0,
+    "socket": 0
+  },
+  "original_quarantine_rows": 7666,
+  "original_resolved_rows": 394580,
+  "original_source_rows": 402246,
+  "original_writes": 0,
+  "preservation": {
+    "contract_dictionary_append_only": true,
+    "db_after": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "db_before": "2942773e732b3fc60ba32be1a04c359aed16bcfc9c1a0b416a0dc56103993fba",
+    "frozen_identity_hash": "83d8f02609b2e763dc9241738e37d4cd79d401c82902be54f7da5e2d97361b3c",
+    "old_curated_lineage_preserved": 252,
+    "old_sql_specs_reviews_and_legacy_source_unchanged": true,
+    "original_tables_unchanged": 19,
+    "original_writes": 0,
+    "protected_differences": 0,
+    "protected_files": 1102,
+    "raw_validated": 181,
+    "real_bindings": 0,
+    "real_generations": 0,
+    "schema_versions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "strict_receipts": {
+      "binding": "EXACT",
+      "checked": 133,
+      "failure": 0,
+      "verdict": "VALID"
+    }
+  },
+  "real_bindings": 0,
+  "real_generations": 0,
+  "repair_design_freeze_sha": "e59d012e65a2d12301dd0ce76ed80bff60df906e",
+  "repair_private_evidence_index": {
+    "relative_path": "data/private/phase1c1-r2-a-fixes/evidence-index.json",
+    "sha256": "beaebd9004c3c88c8d5ca9b021ce3210198bf20e78c510c87bd565bf58c85232"
+  },
+  "reviewed_r2_a_baseline_sha": "68b62ca6fb65e28b4ea059ca8c197c244b5a2253",
+  "schema_hashes": {
+    "sql/008_r2_provider_identity.sql": "fee17e6091646abc86fb0e3b5314b49f61b47a790709b6b8f90b56b6fc46d242",
+    "sql/009_r2_derivation_publication.sql": "d8fc4ae38d86239e14939d8beabc132d2aa790affe3b849651310d1d8f604fd0",
+    "sql/010_r2_append_only_quality.sql": "70f7859f44d18fc5a54795e044629d7f700a287cfb2857edc9d2ef0188394ef1"
+  },
+  "secrets": {
+    "credential_pattern_scan": "PASS",
+    "decoded_parquet_scan": "PASS",
+    "forbidden_staged_runtime": "NONE",
+    "literal_scan": "PASS",
+    "scanned_paths": 1753
+  },
+  "tested_implementation_sha": "5108731af43bc0738144b6e835c5b65f5f5fc37f"
+}
