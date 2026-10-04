@@ -1,0 +1,228 @@
+{
+  "schema": "ASTOCK_INDEPENDENT_REVIEW_SCOPE_MANIFEST_V1",
+  "review_ref": "ASTOCK_PHASE1C1_ADMISSION_A_INDEPENDENT_REVIEW_2026_10_04",
+  "reviewed_at": "2026-10-04T02:39:05.281098+00:00",
+  "reviewed_sha": "90ced0bac3e305c0e994878645f455ceba4e8f5e",
+  "implementation_sha": "fc23bcf2c5ef11764d619e3bf377f97c8dfc3e12",
+  "authorization_design_sha": "c1ec834244e2c1b49ca1aa4b07ce1b4e38446404",
+  "accepted_r2_baseline_sha": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45",
+  "overall": "PARTIAL_ACCEPTANCE",
+  "scope_decisions": {
+    "isolated_offline_engineering": "PASS",
+    "investigation_inventory_fidelity": "PASS",
+    "immutable_baseline_preservation": "PASS",
+    "approval_packet_and_nonexecutable_budget": "CORRECTIONS_REQUIRED",
+    "identity_calendar_evidence_completeness": "BLOCKED",
+    "bounded_data_admission": "BLOCKED",
+    "production_transport_integration": "NOT_PROVEN",
+    "real_full_history_io": "NOT_PROVEN",
+    "full_history_admission": "BLOCKED"
+  },
+  "engineering_acceptance": {
+    "design_hash": "3dd7159f6e9c6554ba4326e09127306cfec363acbaac6024c42427e464b1677e",
+    "exact_files_sha256": {
+      "src/astock/data/admission_offline.py": "3d85aae3e0b3d661127e2a306311200fe5f1fd4723e75d6387bf875265fc6f0f",
+      "src/astock/data/admission_delta.py": "c00e3b1c79b75bacff6006328109c72d4987033e4df603be4f40f64eb87ceed7",
+      "sql/offline/admission_v1.sql": "128153868f49dbc55065b7f59b94126208da0d4b9bda622eaf50cdf4511178a5",
+      "tests/test_admission_offline.py": "caa08af000d14b3f16692011acb4934fd8e45b35d8e78ce0fd135e0c713c5600",
+      "tests/test_admission_delta.py": "38a8a332a1dcee510c10a4ccef2070d9b383b3465663051e65f13ba7861ee639",
+      "docs/remediation/phase1c1/admission-a/concrete-design-v1.md": "3dd7159f6e9c6554ba4326e09127306cfec363acbaac6024c42427e464b1677e"
+    },
+    "limits": [
+      "Closed fake transport and isolated synthetic SQL only.",
+      "30126 members establish exact membership/publication/recovery;30042 outputs are typed empty.",
+      "No original deployment, production transport, account permissions, new case or DQ approval."
+    ]
+  },
+  "production_case_approval": null,
+  "production_dq_approval": null,
+  "approved_case_set": null,
+  "approved_context": null,
+  "new_executable_identity_delta_count": 0,
+  "new_approved_bindings": 0,
+  "approval_metadata_instruction": "This review ref/time cannot populate production case-set/DQ/Context approvals. Existing approvals retain original refs and instants.",
+  "retained_original": {
+    "resolver_hash": "e88a8d9b6f38cd4629a67905124a811e980a374368b31667121f5ad918c8dffb",
+    "context_id": "0b1906ee-52af-485b-98eb-a4f4b3e54706",
+    "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+    "inputs": 133,
+    "outputs_per_generation": 126,
+    "resolved_rows_per_generation": 192,
+    "quarantine_rows_per_generation": 402054,
+    "database_sha256": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+    "strict_receipt_evidence_hash": "0992ccac745f6e5299615caaf7a68e4aabf9fb4d90c49e1d1c742716bf4e3597",
+    "complete_generation_ids": [
+      "5347e862-2505-4272-8c3a-f43d8c169809",
+      "90d90069-776a-458c-a06b-c408ace1045d"
+    ]
+  },
+  "investigation_dispositions": {
+    "EVIDENCE_REQUIRED": 400679,
+    "EXISTING_APPROVED_OUT_OF_SCOPE": 1374,
+    "EXISTING_APPROVED_UNCHANGED": 192,
+    "CONFLICT": 1
+  },
+  "execution_licenses": {
+    "admission_b": false,
+    "new_market_or_metadata_api": false,
+    "production_lifecycle_deployment": false,
+    "phase1c2": false
+  },
+  "phase1c2": "CLOSED",
+  "reviewer_market_requests": 0,
+  "reviewer_original_writes": 0,
+  "official_document_lookup_scope": "Existing Admission A read-only document authorization retained; new security/mapping/calendar datasets remain unauthorized.",
+  "ci": {
+    "status": "PASS",
+    "reviewed_sha": "90ced0bac3e305c0e994878645f455ceba4e8f5e",
+    "repository": "liuyanfeier/AStockSystem",
+    "run_id": 37168881442,
+    "job_id": 111337553448,
+    "jobs": [
+      {
+        "id": 111337553448,
+        "name": "foundation",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 37168881442,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Install locked dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run offline diagnostics",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Validate offline dataset contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Validate bounded probe plan offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Validate v2 and typed curation specs offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Validate bounded slices and corrected curation specs offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          }
+        ]
+      }
+    ],
+    "log_characters": 133683,
+    "exact_sha_observed": true,
+    "test_summary": "2026-10-04T01:59:31.2250631Z ================= 642 passed, 4 warnings in 947.02s (0:15:47) ==================",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/37168881442",
+    "remote_read_method": "GitHub connector job list and full job log read independently"
+  },
+  "targeted_tests": {
+    "passed": 20,
+    "seconds": 3.39,
+    "scope": [
+      "tests/test_admission_offline.py",
+      "tests/test_admission_delta.py"
+    ],
+    "independently_run": true
+  },
+  "author_package": {
+    "path": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a/2026-10-03/admission-a-review-package-with-ci.zip",
+    "sha256": "5b461f00378d22b10f2a33295653602e7b4424a7f8beec23276c0cb6f6544967",
+    "members": 93,
+    "indexed_artifacts": 76,
+    "index_path": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a/2026-10-03/package-manifest.json",
+    "index_sha256": "39b3296e52776527e715524a87843b203835b53e1e861ce4dd510a2bffbfdc94"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "P2",
+      "scope": "NON_EXECUTABLE_BUDGET_PROPOSAL",
+      "file": "/Users/yanliu/Documents/AStockSystem/docs/reviews/phase1c1-admission-a/2026-10-03/capability-and-budget-proposal.md",
+      "line": 29,
+      "actual": {
+        "gross": 30126,
+        "maximum_reusable_candidates": 126,
+        "claimed_new_base_ceiling": 30100
+      },
+      "formula_net_if_all_reusable": 30000,
+      "gross_before_reuse_proven": 30126,
+      "required": "Separate gross/verified reuse/net/reserve and spacing estimates; reconcile all final materials."
+    },
+    {
+      "id": "F2",
+      "priority": "P2",
+      "scope": "FINAL_APPROVAL_PACKET_CONSISTENCY",
+      "file": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a/2026-10-03/approval-request-complete.json",
+      "line": 11,
+      "actual_context_pointer": "context-proposal.json",
+      "actual_early_implementation_pin": null,
+      "final_context_pointer": "context-proposal-final.json",
+      "final_implementation_pin": "fc23bcf2c5ef11764d619e3bf377f97c8dfc3e12",
+      "checklist_file": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a/2026-10-03/admission-checklist-final.json",
+      "checklist_line": 60,
+      "required": "Single final candidate pointer/hash/pin and final preservation proof; leave production approval metadata unapproved."
+    }
+  ],
+  "review_report_path": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/2026-10-04_Phase1C1_Admission_A_Independent_Review.md",
+  "next_prompt_path": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/Codex_Phase1C1_Admission_A_Evidence_Closure_Prompt_v1.0.md",
+  "next_action": "Consolidate F1/F2 corrections, positive finite documentary evidence and executable acquisition proposals; independently review once before any new API or B execution."
+}
