@@ -1,0 +1,183 @@
+{
+  "schema": "ASTOCK_METADATA_PLAN_SCOPE_REVIEW_V1",
+  "scope_status": "PLAN_SCOPE_APPROVED_PENDING_LIVE_IMPLEMENTATION_AND_USER_AUTHORIZATION",
+  "review_ref": "ASTOCK_PHASE1C1_ADMISSION_A_EVIDENCE_INDEPENDENT_REVIEW_2026_10_04",
+  "scope_reviewed_at": "2026-10-04T04:02:32.834401+00:00",
+  "reviewed_material_sha": "088b02febccd07f68ddcf2dc6d42613ba69e9d35",
+  "accepted_offline_implementation_sha": "b8c2bd81debebc6f7dce3804b08fe602f3b6a3fe",
+  "accepted_offline_design_hash": "b849469d6091718187ff6f0b09a35d952b60e4701874dc61c7dff17967952df5",
+  "plan_path": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a-evidence/2026-10-04/szse-metadata-plan-v1.json",
+  "plan_bytes_sha256": "bf8280a25a1f0456b30f79b2da5c5115e0c2bb6a09c3589bcf24911616fd0ec2",
+  "plan_canonical_hash": "fb2c0792fdb6548c5849df398a56206e52802ca4bfab78da6f4ca3cdf5553a35",
+  "membership_hash": "1825fff72f718d90f2beb82e96d8a58936cabdf52217aae454e854670cb885c8",
+  "canonical_protocol": "ADMISSION_SZSE_METADATA_PROPOSAL_V1",
+  "contract_version": "2.0",
+  "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+  "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+  "requests": [
+    {
+      "expected_civil_rows": 5,
+      "max_attempts": 1,
+      "request_id": "fdef308d98cde31a99c2aadbb19c014b1c209961eec34a2457e7ef7b49b9a9c5",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20130108",
+          "exchange": "SZSE",
+          "start_date": "20130104"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 5,
+      "max_attempts": 1,
+      "request_id": "653af22d509ac938701f47ad54e40b97f6e79c233ba95eeaf2b76dfaf5161d70",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20200825",
+          "exchange": "SZSE",
+          "start_date": "20200821"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 5,
+      "max_attempts": 1,
+      "request_id": "ffa1f259584af431d7d327b6514c23d0df7ae4df57990d582b3487740cb0b17f",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20211116",
+          "exchange": "SZSE",
+          "start_date": "20211112"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 8,
+      "max_attempts": 1,
+      "request_id": "1898c9e6fcd3b6ab1ba00308f497e97dac682b0929bc924883e4850f47286dff",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20250507",
+          "exchange": "SZSE",
+          "start_date": "20250430"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 11,
+      "max_attempts": 1,
+      "request_id": "b1b7cfbaa57698fff1c871fef7b537f45792ac1d6146c56788ba085230b73889",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20251010",
+          "exchange": "SZSE",
+          "start_date": "20250930"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 5,
+      "max_attempts": 1,
+      "request_id": "3848f762c822c4dfb944ce61e24e71f67903299b8d4c3e873b479ce538bcc5e9",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20260707",
+          "exchange": "SZSE",
+          "start_date": "20260703"
+        }
+      }
+    },
+    {
+      "expected_civil_rows": 3,
+      "max_attempts": 1,
+      "request_id": "a00c7c86c3007b3d8fbe40c90c5b8fab51f2876fe88e3841ae741910afde3c14",
+      "wire": {
+        "api_name": "trade_cal",
+        "contract_bytes_sha256": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+        "contract_canonical_hash": "3b16d755069106c61a79045cae79c1105b3a49e38e1732bc8bb60b85422b94a6",
+        "contract_version": "2.0",
+        "endpoint": "https://api.tushare.pro",
+        "fields": "exchange,cal_date,is_open,pretrade_date",
+        "method": "POST",
+        "params": {
+          "end_date": "20260930",
+          "exchange": "SZSE",
+          "start_date": "20260928"
+        }
+      }
+    }
+  ],
+  "max_total_attempts": 7,
+  "max_attempts_per_request": 1,
+  "min_start_interval_seconds": 1.25,
+  "unknown_call": "STOP_NO_AUTOMATIC_RETRY",
+  "provider_cap": "UNKNOWN",
+  "expected_returned_civil_rows": 42,
+  "session_fact_certification": false,
+  "execution_license": false,
+  "reviewed_live_implementation_sha": null,
+  "approved_live_execution_manifest": null,
+  "explicit_user_execution_authorization": null,
+  "activation_conditions": [
+    "Independently review exact new live implementation/design SHA and retained plan/hash.",
+    "Explicit human authorization for these seven metadata requests.",
+    "Managed dedicated isolated evidence store, original warehouse readonly.",
+    "Durable one-attempt and pacing, uncertainty stop, exact immutable raw/manifest/sidecar verified.",
+    "No old133 replay, original deployment, identity/DQ/Context or Phase1C2 execution."
+  ],
+  "other_request_budgets": {
+    "market_bars": 0,
+    "stock_basic": 0,
+    "bak_basic": 0,
+    "mapping": 0,
+    "BSE_calendar_API": 0,
+    "permission_probe": 0
+  },
+  "production_case_approval": null,
+  "production_DQ_approval": null,
+  "admission_B_license": false,
+  "phase1c2": "CLOSED",
+  "not_a_live_license": "Accepts finite wire/contract/member/budget proposal and closed fake offline proof only; author must not flip plan license or approve future code."
+}

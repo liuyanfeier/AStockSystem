@@ -1,0 +1,230 @@
+{
+  "schema": "ASTOCK_INDEPENDENT_REVIEW_SCOPE_MANIFEST_V1",
+  "review_ref": "ASTOCK_PHASE1C1_ADMISSION_A_EVIDENCE_INDEPENDENT_REVIEW_2026_10_04",
+  "reviewed_at": "2026-10-04T04:02:32.834401+00:00",
+  "reviewed_sha": "088b02febccd07f68ddcf2dc6d42613ba69e9d35",
+  "accepted_baseline_sha": "90ced0bac3e305c0e994878645f455ceba4e8f5e",
+  "implementation_sha": "b8c2bd81debebc6f7dce3804b08fe602f3b6a3fe",
+  "design_hash": "b849469d6091718187ff6f0b09a35d952b60e4701874dc61c7dff17967952df5",
+  "overall": "LIMITED_ENGINEERING_AND_MATERIAL_ACCEPTANCE_EVIDENCE_BLOCKED",
+  "decisions": {
+    "F1": "CLOSED",
+    "F2": "CLOSED",
+    "isolated_metadata_implementation": "PASS",
+    "final_packet_consistency": "PASS",
+    "baseline_preservation": "PASS",
+    "documentary_facts": "ACCEPTED_WITH_D1_SOURCE_VERSION_METADATA_CORRECTION",
+    "finite_metadata_plan": "PLAN_SCOPE_APPROVED_NO_EXECUTION_LICENSE",
+    "production_live_transport": "NOT_IMPLEMENTED_NOT_PROVEN",
+    "new_identity_delta": "EMPTY_NOT_APPROVED",
+    "DQ_new_envelope": "EMPTY_NOT_APPROVED",
+    "evidence_completeness": "BLOCKED",
+    "bounded_data_admission": "BLOCKED",
+    "full_history_admission": "BLOCKED"
+  },
+  "exact_accepted_file_hashes": {
+    "src/astock/data/admission_metadata.py": "21b533519b1f1c95aca996f6d5ca257b1c0dd31b69246f6bd1f8b0469bc175a7",
+    "tests/test_admission_metadata.py": "df79e1f688fe9025d0506d5713da1d061c26f4062e0fc9d9ea759f4a83ba67ab",
+    "docs/remediation/phase1c1/admission-a-evidence/concrete-design-v1.md": "b849469d6091718187ff6f0b09a35d952b60e4701874dc61c7dff17967952df5",
+    "docs/remediation/phase1c1/admission-a-evidence/concrete-design-v1-manifest.json": "f042931cd419923030d029cf679c8cf92fd6a74812435392d4c9519d69312fd7"
+  },
+  "source_note": {
+    "id": "D1",
+    "priority": "P2",
+    "kind": "SOURCE_VERSION_METADATA",
+    "evidence_id": "szse:rules:2023",
+    "source_sha256": "1ac73deb4c5267cab422dee6769edc007f0e6dfaaef795e808a98da577f6c6bc",
+    "actual_title": "深圳证券交易所交易规则（2013年11月修订）及修改第3.1.4条的决定",
+    "notice_signed_date": "2013-11-30",
+    "base_rule_effective_date_stated": "2013-08-05",
+    "website_original_publication_date": "UNKNOWN",
+    "upload_path_year_is_not_rule_version": true,
+    "action": "Append corrected source identity/version/notice-date metadata; retain original bytes and old index; do not treat as2023/current applicable rules without actual effective/supersession proof.",
+    "blocks_current_offline_plan_acceptance": false,
+    "must_correct_before_session_use": true
+  },
+  "new_approved_bindings": 0,
+  "new_approved_sessions": 0,
+  "production_case_approval": null,
+  "approved_case_set": null,
+  "production_DQ_approval": null,
+  "approved_context": null,
+  "retained_original": {
+    "database_sha256": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+    "tables": 34,
+    "raw_objects": 181,
+    "exact_receipts": 133,
+    "receipt_failure_count": 0,
+    "resolver_hash": "e88a8d9b6f38cd4629a67905124a811e980a374368b31667121f5ad918c8dffb",
+    "context_id": "0b1906ee-52af-485b-98eb-a4f4b3e54706",
+    "input_set_hash": "b471998495a4a4f6d2d55796b3fa084c383b32c53f3af91eb37da9afba245a08",
+    "inputs": 133,
+    "outputs_per_generation": 126,
+    "resolved_rows_per_generation": 192,
+    "quarantine_rows_per_generation": 402054,
+    "complete_generation_ids": [
+      "5347e862-2505-4272-8c3a-f43d8c169809",
+      "90d90069-776a-458c-a06b-c408ace1045d"
+    ]
+  },
+  "evidence_counts": {
+    "official_original_documents": 10,
+    "PDFs": 7,
+    "HTMLs": 3,
+    "missing_findings": 15,
+    "bounded_native_observations": 30,
+    "supplementary_prior_probe_observations": 2,
+    "total_dossier_observations_actually_verified": 32,
+    "reused_source_rows": 402246,
+    "reused_old_findings": 15756,
+    "reused_BSE_cases": 248,
+    "reused_BSE_cells": 31248,
+    "old_findings_closed": 0,
+    "baseline_files_actually_verified": 127193,
+    "baseline_tracked_actually_verified": 244
+  },
+  "targeted_tests": {
+    "status": "PASS",
+    "reviewed_sha": "088b02febccd07f68ddcf2dc6d42613ba69e9d35",
+    "passed": 46,
+    "seconds": 3.77,
+    "test_files": [
+      "tests/test_admission_metadata.py",
+      "tests/test_admission_offline.py",
+      "tests/test_admission_delta.py"
+    ],
+    "command_options": [
+      "-B",
+      "-p no:cacheprovider",
+      "--basetemp in review cwd"
+    ],
+    "network": "Rejected by autouse no_network fixture; no actual market request.",
+    "repository_writes": "NONE"
+  },
+  "CI": {
+    "status": "PASS",
+    "reviewed_sha": "088b02febccd07f68ddcf2dc6d42613ba69e9d35",
+    "repository": "liuyanfeier/AStockSystem",
+    "run_id": 37173553085,
+    "job_id": 111351341568,
+    "jobs": [
+      {
+        "id": 111351341568,
+        "name": "foundation",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 37173553085,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Install locked dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run offline diagnostics",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Validate offline dataset contracts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Validate bounded probe plan offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Validate v2 and typed curation specs offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Validate bounded slices and corrected curation specs offline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Post Run astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19
+          },
+          {
+            "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21
+          }
+        ]
+      }
+    ],
+    "log_characters": 133713,
+    "exact_sha_observed": true,
+    "test_summary": "2026-10-04T03:31:37.1839375Z ================= 668 passed, 4 warnings in 953.57s (0:15:53) ==================",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/37173553085",
+    "read_method": "Independent GitHub connector full job list/log"
+  },
+  "metadata_scope_approval": {
+    "path": "/Users/yanliu/Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an/outputs/Phase1C1_SZSE_Metadata_Plan_Scope_Approval.json",
+    "bytes_sha256": "abea338061f6656880768f4dd68ecb1c8bcaf8282653ff23d0ffc9a3db96e3a3",
+    "canonical_hash": "e688a341aeb8be8f83a0054a27d8eb25abfaea9d53704803a78b7b782702983d"
+  },
+  "author_package": {
+    "path": "/Users/yanliu/Documents/AStockSystem/data/private/phase1c1-admission-a-evidence/2026-10-04/review-package-with-ci.zip",
+    "bytes_sha256": "b6b94ab207f1a87b167b1dc2f89beba6fb2cace8e79cc7e49612cf073f9457de",
+    "members": 78,
+    "artifacts": 145,
+    "canonical_artifacts": 80,
+    "manifest_sha256": "8b19fd425d3f277a3e0cde3c25318bcbf25b0286437aeb03d44687b151528f91"
+  },
+  "execution_licenses": {
+    "new_market_or_metadata_API": false,
+    "production_transport_or_original_deployment": false,
+    "admission_B": false,
+    "Phase1C2": false
+  },
+  "reviewer_market_requests": 0,
+  "reviewer_original_writes": 0,
+  "phase1c2": "CLOSED",
+  "approval_metadata_boundary": "This review accepts offline engineering, documentary facts and a finite proposal only; cannot populate case-set/DQ/Context production approved_at/ref/hash or activate live transport.",
+  "next_action": "One bounded live preparation batch plus D1 source correction and finite EVENT_NATIVE proposals; exact-SHA review and explicit seven-request user authorization precede actual acquisition."
+}
