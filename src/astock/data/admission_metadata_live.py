@@ -441,14 +441,22 @@ def capture(root: Path, db, store: Path, plan_path: Path, license: dict, request
         with httpx.Client(transport=transport if fixture else httpx.HTTPTransport(retries=0, trust_env=False),
                           timeout=httpx.Timeout(20.0, connect=10.0), trust_env=False,
                           follow_redirects=False) as client:
-            response = client.post('https://api.tushare.pro',
-                headers={'Accept-Encoding': 'identity'}, json=dict(api_name=wire['api_name'],
-                token=secret, params=wire['params'], fields=wire['fields']))
-            body = response.content
+            with client.stream('POST', 'https://api.tushare.pro',
+                    headers={'Accept-Encoding': 'identity'}, json=dict(api_name=wire['api_name'],
+                    token=secret, params=wire['params'], fields=wire['fields'])) as response:
+                # iter_raw preserves entity bytes; response.content may decode gzip.
+                # Preloaded MockTransport responses contain closed synthetic bytes.
+                body = response.content if fixture and response.is_stream_consumed else b''.join(response.iter_raw())
         finished, retrieved, available = stamp(clock), stamp(clock), stamp(clock)
     except Exception:
         transaction(db, lambda: _event(db, request_id, 'FAILED', clock, dict(reason='TRANSPORT_UNKNOWN_NO_RESEND')))
         raise MetadataError('TRANSPORT_UNKNOWN_NO_RESEND') from None
+    if response.headers.get('content-encoding', '') not in ('', 'identity'):
+        # An unexpected encoding cannot prove safe plaintext; retain exact wire
+        # digest/length only, never decoded bytes mislabeled as original response.
+        transaction(db, lambda: _event(db, request_id, 'FAILED', clock,
+            dict(reason='ENCODED_BODY_SUPPRESSED', body_sha256=hashlib.sha256(body).hexdigest(), body_bytes=len(body))))
+        raise MetadataError('ENCODED_BODY_SUPPRESSED')
     if _secret(body, secret):
         transaction(db, lambda: _event(db, request_id, 'FAILED', clock,
             dict(reason='SECRET_RESPONSE_SUPPRESSED', body_sha256=hashlib.sha256(body).hexdigest(), body_bytes=len(body))))

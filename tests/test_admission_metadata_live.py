@@ -289,7 +289,8 @@ def test_production_http_constructor_explicitly_disables_environment_and_retries
     def http_transport(**kwargs):
         constructors.append(kwargs)
         assert kwargs==dict(retries=0,trust_env=False)
-        return httpx.MockTransport(lambda req:httpx.Response(200,json=body(state[0]['requests'][0])))
+        return httpx.MockTransport(lambda req:httpx.Response(200,stream=httpx.ByteStream(
+            json.dumps(body(state[0]['requests'][0])).encode()),headers={'content-type':'application/json'}))
     # Isolate only constructor/wire behavior; exact approval rejection has separate tests.
     monkeypatch.setattr(live,'validate_license',lambda *a,**k:state[0])
     monkeypatch.setattr(httpx,'HTTPTransport',http_transport)
@@ -297,3 +298,37 @@ def test_production_http_constructor_explicitly_disables_environment_and_retries
         result=live.capture(root,db,store,state[1],license,state[0]['requests'][0]['request_id'],TOKEN,live=True,clock=state[3])
         assert result['status']=='COMPLETE'
     assert constructors==[dict(retries=0,trust_env=False)]
+
+
+def test_streamed_identity_response_preserves_original_entity_bytes(tmp_path):
+    state=setup(tmp_path);store=tmp_path/'store';store.mkdir()
+    original=(json.dumps(body(state[0]['requests'][0]),indent=3)+'\n').encode()
+    class Chunks(httpx.SyncByteStream):
+        def __iter__(self):
+            yield original[:20];yield original[20:]
+    with warehouse_connection(store/'metadata.duckdb') as db:
+        assert send(db,store,state,handler=lambda req:httpx.Response(200,stream=Chunks(),headers={
+            'content-type':'application/json','content-length':str(len(original))}))['status']=='COMPLETE'
+    assert (store/state[0]['requests'][0]['request_id']/'response.body').read_bytes()==original
+
+
+def test_encoded_wire_digest_and_partial_stream_stop_without_resend(tmp_path):
+    import gzip
+    state=setup(tmp_path);store=tmp_path/'store';store.mkdir();calls=[]
+    compressed=gzip.compress(json.dumps(body(state[0]['requests'][0])).encode())
+    def encoded(req):calls.append(req);return httpx.Response(200,stream=httpx.ByteStream(compressed),headers={'content-encoding':'gzip'})
+    with warehouse_connection(store/'metadata.duckdb') as db:
+        with pytest.raises(ValueError,match='ENCODED_BODY_SUPPRESSED'):send(db,store,state,handler=encoded)
+        event=json.loads(db.execute("SELECT payload FROM metadata_event WHERE state='FAILED'").fetchone()[0])
+        assert event['body_sha256']==__import__('hashlib').sha256(compressed).hexdigest()
+        with pytest.raises(ValueError):send(db,store,state,handler=encoded)
+    assert len(calls)==1 and not list(store.glob('*/response.body'))
+    other=tmp_path/'partial';other.mkdir()
+    class Partial(httpx.SyncByteStream):
+        def __iter__(self):
+            yield b'{"data":'
+            raise httpx.ReadTimeout('synthetic incomplete stream')
+    with warehouse_connection(other/'metadata.duckdb') as db:
+        with pytest.raises(ValueError,match='TRANSPORT_UNKNOWN'):send(db,other,state,handler=lambda req:httpx.Response(200,stream=Partial()))
+        assert not db.execute('SELECT * FROM metadata_receipt').fetchall()
+        with pytest.raises(ValueError):send(db,other,state,handler=lambda req:pytest.fail('resend'))
