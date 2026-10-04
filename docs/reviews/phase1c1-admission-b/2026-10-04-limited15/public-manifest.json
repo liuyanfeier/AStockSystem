@@ -1,0 +1,73 @@
+{
+  "CI": "Exact final-SHA verified postcommit in private final-handoff",
+  "Phase1C2": "CLOSED",
+  "approval_ref": "2026-10-04_Phase1C1_Combined_Independent_Review@45554a142a8e8d3e1b6cb0147db537bc88d1b55e#ADMISSION_B_LIMITED15",
+  "approved_DQ_hash": "8a910a43ef415f7463d825668b576df237152c69d17921a59eb7e1a446f73d2d",
+  "approved_delta_hash": "39211d73b8308db26130e7ae3ea21c2e81479e4a0620924a1820857ac5a59609",
+  "approved_resolver_hash": "837d06d825d6852b1a9125ef6f1656876fa535339d84a2dfd3626bba33df36d6",
+  "approved_sha": "45554a142a8e8d3e1b6cb0147db537bc88d1b55e",
+  "audits": [
+    {
+      "audit_id": "c04d767a-d48d-484b-8cba-9d8e285650aa",
+      "batch_gate_status": "BLOCKED",
+      "causal": {
+        "causal_mismatch": 0,
+        "certified_pairs": 0,
+        "excluded_unknown_pairs": 60,
+        "factor_mismatch": 0,
+        "missing_factor_pairs": 0,
+        "provisional_sse_pairs": 0
+      },
+      "context_hash": "470017335c3e7fd9f69480b35e2ac3012ceea2892a3f94706fdfcfb5af262475",
+      "finding_set_hash": "52c3c891a623a7dad6ced0ee958b962a0df3ee26358298aa11b24252a077df25",
+      "findings": 402147,
+      "local_status": "BLOCKED"
+    },
+    {
+      "audit_id": "f6e4be79-67ac-41c0-9102-1b92a0a0f571",
+      "batch_gate_status": "BLOCKED",
+      "causal": {
+        "causal_mismatch": 0,
+        "certified_pairs": 0,
+        "excluded_unknown_pairs": 60,
+        "factor_mismatch": 0,
+        "missing_factor_pairs": 0,
+        "provisional_sse_pairs": 0
+      },
+      "context_hash": "470017335c3e7fd9f69480b35e2ac3012ceea2892a3f94706fdfcfb5af262475",
+      "finding_set_hash": "52c3c891a623a7dad6ced0ee958b962a0df3ee26358298aa11b24252a077df25",
+      "findings": 402147,
+      "local_status": "BLOCKED"
+    }
+  ],
+  "context_hash": "470017335c3e7fd9f69480b35e2ac3012ceea2892a3f94706fdfcfb5af262475",
+  "context_id": "c7aee09e-7b22-4485-8cdd-2f9781f42de9",
+  "execution_sha": "045117792370c864a11a3d423b80d24b6d949fd1",
+  "full_tests": 736,
+  "generations": [
+    "e164eab1-d2a9-4c99-8ac2-f80f7e01b2c1",
+    "270b4f3b-e2d4-4c2f-9d25-260347477276"
+  ],
+  "global_DQ": "BLOCKED",
+  "history34_preserved": true,
+  "independent_final_PASS": false,
+  "new_bindings": 3,
+  "new_codes": 15,
+  "new_episodes": 0,
+  "new_exact_observations": 15,
+  "old192_unchanged": true,
+  "oldcurated252_preserved": true,
+  "original_after": "27aabd6143d977decefefb8eb1f1b2b9e66ee29c14045d9df284871bcecf065f",
+  "original_before": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+  "outputs_each": 126,
+  "protected1102_preserved": true,
+  "quarantine": 402039,
+  "raw181_preserved": true,
+  "real_market_calls": 0,
+  "replay133": false,
+  "resolved": 207,
+  "source402246": true,
+  "status": "ADMISSION_B_LIMITED15_FINAL_REVIEW_READY",
+  "strict133": "VALID_EXACT_FAILURE0",
+  "unchanged_old_files": 133706
+}
