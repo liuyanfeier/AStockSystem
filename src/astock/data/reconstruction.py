@@ -244,6 +244,11 @@ def import_approved_cases(root, db, case_set, approval: Approval):
         raise ValueError('Official code is not approved at its actual knowledge time')
     cache = {}
     for b in bindings:
+        persistent_order = sorted(b.observations, key=lambda o:
+            (o.raw_object_id.int, o.raw_row_number, o.event_date))
+        if list(b.observations) != persistent_order:
+            raise ValueError('Binding observations must use persistent SQL order '
+                             '(raw_object_id, raw_row_number, event_date)')
         observed_at=[]
         if b.decision_status != 'APPROVED' or b.approval_ref != approval.review_ref or b.decision_at < approval.approved_at:
             raise ValueError('Unapproved binding')
@@ -263,7 +268,9 @@ def import_approved_cases(root, db, case_set, approval: Approval):
             raise ValueError('First observation must match earliest exact scoped capture')
     require_reconstruction_schema(db)
     old = load_resolver(db)
-    ProviderResolver([*old.episodes, *episodes], [*old.codes, *codes], [*old.bindings, *bindings])
+    expected = ProviderResolver([*old.episodes, *episodes], [*old.codes, *codes], [*old.bindings, *bindings])
+    expected_payload = resolver_payload(expected)
+    expected_hash = expected.snapshot_hash
     def insert(table, model, exclude=()):
         row = model.model_dump(exclude=set(exclude))
         fields = list(row)
@@ -283,8 +290,12 @@ def import_approved_cases(root, db, case_set, approval: Approval):
                     db.execute('INSERT INTO provider_binding_observation VALUES (?,?,?,?)',
                                [b.binding_id, obs.raw_object_id, obs.raw_row_number, obs.event_date])
                 remaining.remove(b); inserted.add(b.binding_id)
-    transaction(db, apply)
-    return load_resolver(db).snapshot_hash
+        actual = load_resolver(db)
+        actual_hash = actual.snapshot_hash
+        if resolver_payload(actual) != expected_payload or actual_hash != expected_hash:
+            raise ValueError('Imported merged snapshot differs')
+        return actual_hash
+    return transaction(db, apply)
 
 
 class Input(ImmutableModel):

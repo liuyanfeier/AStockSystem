@@ -49,3 +49,22 @@ Latest human authorization supersedes the evidence-closure pause only within `do
 ## Current Admission B Limited15 Execution
 
 Latest human authorization supersedes the combined-rehearsal waiting boundary only within `docs/reviews/phase1c1-admission-b/2026-10-04-limited15/authorization.md` and the retained limited15 prompt. Use the supplied actual independent approval bytes, approved implementation SHA45554a142a8e8d3e1b6cb0147db537bc88d1b55e and Context470017335c3e7fd9f69480b35e2ac3012ceea2892a3f94706fdfcfb5af262475; no author re-signing or payload changes. After managed exclusive current backup and fresh matched production-shaped isolated rehearsal, append only3 daily bindings/15 single-day official codes/15 exact observations,0 episodes; register exact fixture_only=false Context and produce two126 COMPLETE generations/DQ/rebuild/four-timezone acceptance. Preserve all old34-table rowsets, old192 approvals,133 receipts/181raw/252curated/frozen identity and historical files/Contexts/generations. No repeated migration, allow_fixture, source/test/schema/policy/config/dependency/frozen-design changes or silent restore. Zero market/provider/metadata/calendar/mapping requests; no capture/resume/replay. Real metadata license remainsfalse. Final offline/decoded-secret/exact-SHA CI delivery once as ADMISSION_B_LIMITED15_FINAL_REVIEW_READY; stop for independent final Review. Global data admission BLOCKED; Phase1C.2 CLOSED.
+
+## Current Import Atomicity and Finite45 Preview
+
+The latest human authorization supersedes prior fixed-source restrictions only for
+the retained importer P1 repair and candidate preview; see
+`docs/reviews/phase1c1-import-atomicity-finite45/2026-10-04/authorization.md` and
+`docs/remediation/phase1c1/import-atomicity-finite45/design.md`. Validate persistent
+observation order without sorting signed payloads, and verify the complete merged
+resolver before the core import transaction commits. Cover direct/delta rollback,
+reopen, idempotence, real approved material read-only compatibility and four zones.
+New finite45 proposals may reorder only their unapproved observation lists with
+explicit old/new hashes and identical facts; preview once on a fresh managed
+fixture copy with126 outputs and full row-set evidence. Original DB, fixed metadata
+FAILED store and prior failed isolate remain immutable. All provider/document
+requests and original writes are zero; no capture/resume/reset or133 replay.
+Preserve old v2/time/schema/DQ/identity semantics. Commit focused source/tests/docs,
+verify full offline tests, preservation/secrets and final exact-SHA CI, then stop
+`IMPORT_ATOMICITY_AND_FINITE45_PREVIEW_REVIEW_READY`. Limited15 remains accepted;
+finite45 production approval pending, global DQ/calendar BLOCKED, Phase1C.2 CLOSED.

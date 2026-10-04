@@ -67,7 +67,5 @@ def import_delta(root, db, delta, approval: Approval) -> dict:
             if binding.first_observed_at != min(observed):
                 raise ValueError('Repeated delta first capture differs')
         return dict(status='ALREADY_VALID', resolver_hash=candidate.snapshot_hash)
-    result = import_approved_cases(root, db, delta, approval)
-    if result != candidate.snapshot_hash:
-        raise ValueError('Imported merged snapshot differs')
-    return dict(status='IMPORTED', resolver_hash=result)
+    # The core verifies complete SQL readback before COMMIT, including direct callers.
+    return dict(status='IMPORTED', resolver_hash=import_approved_cases(root, db, delta, approval))
