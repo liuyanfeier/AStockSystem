@@ -1,0 +1,97 @@
+{
+  "BatchB": "NOT_AUTHORIZED",
+  "Phase1C2": "CLOSED",
+  "approved_baseline": "45e474ef3e6f49b56ea3b1b6f9c4fa7177470f45",
+  "author_status": "ADMISSION_A_REVIEW_READY_PENDING_CI_CLOSE",
+  "conflict_rows": 1,
+  "data_admission": "BLOCKED",
+  "engineering": "AUTHOR_SELF_CHECK_PASS",
+  "evidence": "BLOCKED",
+  "evidence_required_rows": 400679,
+  "existing_approved_out_of_scope_rows": 1374,
+  "existing_approved_rows": 192,
+  "files_preserved": 6590,
+  "final_commit_and_ci": "Recorded after push in ignored final-handoff.json; report commit is the final delivery commit.",
+  "implementation_sha": "fc23bcf2c5ef11764d619e3bf377f97c8dfc3e12",
+  "market_requests": 0,
+  "original_db_sha256": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+  "original_writes": 0,
+  "primary_artifacts": {
+    "acquisition": {
+      "bytes_sha256": "d1483e822eacd11000c4bd649cc735868359a27f77bafea5b1a37c3a1862443f",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/evidence-acquisition-request-final.json"
+    },
+    "approval": {
+      "bytes_sha256": "664580208a812f041f774d11beb32a06127650a9827aae3c3889f7879cf61d5d",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/approval-request-complete.json"
+    },
+    "backfill": {
+      "bytes_sha256": "ff3344ce1213b106a6900d35426b9be039e70d34af25af2149879547421beb62",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/full-backfill-plan-proposal.json"
+    },
+    "baseline": {
+      "bytes_sha256": "5928629cb4e9a213cd0227553b16d86854b8638a57fdb8e80b024f082b78442d",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/baseline-manifest.json"
+    },
+    "capability": {
+      "bytes_sha256": "82dbd9b81d2097799930a776c94557b2eed3be5c41bf2473afc879f236ea54c6",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/capability-validation-final.json"
+    },
+    "cases": {
+      "bytes_sha256": "0559646e57d8aebd6dbc7bf35b2e3ca2513eb4b171933b2a8fedfb6dc0ac107a",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/case-set-proposal.json"
+    },
+    "checklist": {
+      "bytes_sha256": "fe7126154c0ea0ceb938f5e6e4ce196395518d78884457c0bc168bdca2a16354",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/admission-checklist-final.json"
+    },
+    "context": {
+      "bytes_sha256": "35e9697c33590e7a44752e489ed3a30baa22bf8263656f4e9342ed2e2dac2066",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/context-proposal-final.json"
+    },
+    "dq": {
+      "bytes_sha256": "e400e1f98b0149e85965a65b70ccddc1437982a78387ab5f0b0bd36480c4d2f8",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/dq-evidence-proposal.json"
+    },
+    "findings": {
+      "bytes_sha256": "c1d62a9eb35d40597a495be8852521e4847256362f30a969536e3b94f27cebb9",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/legacy-finding-ledger-v2.json"
+    },
+    "groups": {
+      "bytes_sha256": "c8373a2d1f5edb8c3c352baa28aa1b1be18fc15540fd08752b825a6ddd7d3b01",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/identity-evidence-groups-v2.json"
+    },
+    "missing_bars": {
+      "bytes_sha256": "3a74339c5e56c1af9b420ddeafcb11b56f2fedd7311ab4d9d629f429af127cf7",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/missing-15-bar-investigation-v2.json"
+    },
+    "preservation": {
+      "bytes_sha256": "3d80f090ff183721977dee9c7efae3efef76e79603134c91154219031e886bc9",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/preservation-after.json"
+    },
+    "provenance": {
+      "bytes_sha256": "7e9e6fc3368e888c4e8acb71c11721bbaf004bd084c93aff1fe04c760181c61d",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/baseline-provenance-final.json"
+    },
+    "source_ledger": {
+      "bytes_sha256": "e1030749f3fa975982178370fa0187cdb583b425fdf39aa3411bf07441dfdc48",
+      "relative_path": "data/private/phase1c1-admission-a/2026-10-03/source-scope-ledger-index.json"
+    }
+  },
+  "private_manifest_bytes_sha256": "39b3296e52776527e715524a87843b203835b53e1e861ce4dd510a2bffbfdc94",
+  "private_manifest_path": "data/private/phase1c1-admission-a/2026-10-03/package-manifest.json",
+  "protected_files": 1102,
+  "source_rows": 402246,
+  "strict": {
+    "binding": "EXACT",
+    "checked": 133,
+    "failure": 0,
+    "status": "VALID"
+  },
+  "tables_preserved": 34,
+  "tests": {
+    "passed": 642,
+    "seconds": 407.44,
+    "warnings": 1
+  }
+}
