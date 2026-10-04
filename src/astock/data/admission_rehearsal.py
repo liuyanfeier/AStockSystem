@@ -54,15 +54,12 @@ def copy_snapshot(root: Path, destination: Path, db_path: Path) -> dict:
             raise ValueError('Original schema changed')
         destination.mkdir(parents=True, exist_ok=False)
         copy(original)
-        for relative in ('config', 'data/raw', 'data/curated', 'data/private/phase1c1'):
+        for relative in ('config', 'docs', 'sql', 'data/raw', 'data/curated', 'data/private/phase1c1'):
             for source in sorted((root/relative).rglob('*')):
                 if source.is_symlink():
                     raise ValueError('Linked snapshot source')
                 if source.is_file() and not source.name.endswith('.lock'):
                     copy(source)
-        for source in sorted((root/'docs/remediation/phase1c1').glob('r2-a-design*.md')):
-            copy(source)
-        copy(root/'docs/remediation/phase1c1/combined-remediation-b-rehearsal/concrete-design-v1.md')
         if original.with_suffix('.duckdb.wal').exists():
             raise ValueError('Original WAL appeared')
     return dict(status='CONSISTENT_READ_ONLY_SNAPSHOT', original_writes=0,

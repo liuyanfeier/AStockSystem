@@ -66,3 +66,12 @@ def test_preexisting_readonly_legacy_backup_links_copy_to_independent_files(tmp_
     assert (dest/'data/private/phase1c1/legacy-backup.txt').stat().st_nlink==1
     linked=[f for f in result['files'] if f['existing_source_links']==2]
     assert len(linked)==2 and all(f['destination_links']==1 for f in linked)
+
+
+def test_snapshot_includes_contract_design_manifests_and_sql_guard_inputs(tmp_path):
+    root,db,dest=original(tmp_path)
+    pin=root/'docs/remediation/phase1c1/r2-a-design-v1-manifest.json';pin.write_text('{"fixture":"design-pin"}')
+    sql=root/'sql';sql.mkdir();(sql/'010_fixture.sql').write_text('-- fixture source')
+    copy_snapshot(root,dest,db)
+    assert (dest/pin.relative_to(root)).read_bytes()==pin.read_bytes()
+    assert (dest/'sql/010_fixture.sql').read_text()=='-- fixture source'
