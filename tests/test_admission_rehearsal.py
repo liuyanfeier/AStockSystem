@@ -53,3 +53,16 @@ def test_existing_isolated_link_refused(tmp_path):
     root,db,dest=original(tmp_path);dest.mkdir(parents=True)
     (dest/'escape').symlink_to(db)
     with pytest.raises(ValueError,match='Linked'):safe_isolation(root,dest)
+
+
+def test_preexisting_readonly_legacy_backup_links_copy_to_independent_files(tmp_path):
+    root,db,dest=original(tmp_path)
+    source=root/'data/curated/fixture.txt';old_backup=root/'data/private/phase1c1/legacy-backup.txt'
+    __import__('os').link(source,old_backup)
+    inode=source.stat().st_ino;assert source.stat().st_nlink==2
+    result=copy_snapshot(root,dest,db)
+    assert source.stat().st_ino==inode and source.stat().st_nlink==2
+    assert (dest/'data/curated/fixture.txt').stat().st_nlink==1
+    assert (dest/'data/private/phase1c1/legacy-backup.txt').stat().st_nlink==1
+    linked=[f for f in result['files'] if f['existing_source_links']==2]
+    assert len(linked)==2 and all(f['destination_links']==1 for f in linked)

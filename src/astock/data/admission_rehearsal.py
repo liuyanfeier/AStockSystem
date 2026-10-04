@@ -37,7 +37,7 @@ def copy_snapshot(root: Path, destination: Path, db_path: Path) -> dict:
         raise ValueError('Original WAL blocks snapshot')
     inventory = []
     def copy(source):
-        if source.is_symlink() or not source.is_file() or source.stat().st_nlink != 1:
+        if source.is_symlink() or not source.is_file():
             raise ValueError('Nonregular snapshot source')
         relative = source.relative_to(root)
         output = destination / relative
@@ -46,7 +46,8 @@ def copy_snapshot(root: Path, destination: Path, db_path: Path) -> dict:
         shutil.copyfile(source, output)
         if before != sha256(output) or before != sha256(source) or output.stat().st_nlink != 1:
             raise ValueError('Snapshot bytes changed')
-        inventory.append(dict(path=str(relative), sha256=before, bytes=source.stat().st_size))
+        inventory.append(dict(path=str(relative), sha256=before, bytes=source.stat().st_size,
+                              existing_source_links=source.stat().st_nlink, destination_links=output.stat().st_nlink))
     with warehouse_connection(original, read_only=True) as db:
         versions = db.execute('SELECT version FROM schema_version ORDER BY version').fetchall()
         if versions != [(i,) for i in range(1, 11)]:
