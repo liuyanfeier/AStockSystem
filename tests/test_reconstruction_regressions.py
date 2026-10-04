@@ -63,6 +63,9 @@ def build(tmp_path, days=1, factor_values=None, day_offsets=None, factor_scope=N
             inputs.append(Input(request_id=checksum((dataset, day)), raw_object_id=raw.object_id, dataset=dataset, raw_hash=raw.sha256, raw_schema_hash=raw.schema_hash, row_count=len(items), is_output=True))
             for ordinal in range(len(items)):
                 scopes.setdefault(dataset, []).append(SourceObservation(raw_object_id=raw.object_id, raw_row_number=ordinal, event_date=day - timedelta(days=1) if dataset == 'adj_factor' and factor_scope == 'event' else day))
+    # Fixture creation precedes approval: dates/raw facts stay unchanged, SQL order is explicit.
+    for observations in scopes.values():
+        observations.sort(key=lambda o: (o.raw_object_id.int, o.raw_row_number, o.event_date))
     bindings = [ProviderBinding(binding_id=uuid4(), binding_version=1, dataset=dataset, native_identifier='000002.SZ' if dataset=='adj_factor' and factor_scope=='identity' else '000001.SZ', episode_id=factor_ep.episode_id if dataset=='adj_factor' and factor_scope=='identity' else ep.episode_id, representation_kind='EVENT_NATIVE', observations=tuple(observations), first_observed_at=OBS, decision_at=NOW, available_at=NOW, evidence_ids=('synthetic-capture',), decision_status='APPROVED', approval_ref=ep.approval_ref) for (dataset, observations) in scopes.items()]
     cases = dict(episodes=[ep.model_dump(),factor_ep.model_dump()] if factor_scope=='identity' else [ep.model_dump()], codes=[code.model_dump(),factor_code.model_dump()] if factor_scope=='identity' else [code.model_dump()], bindings=[b.model_dump() for b in bindings])
     approval = approval.model_copy(update={'approved_case_set_hash': checksum(cases)})

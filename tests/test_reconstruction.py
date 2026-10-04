@@ -367,8 +367,11 @@ def test_binding_first_observation_is_earliest_capture_not_every_capture(environ
     table=ProviderTable(fields=original.column_names,items=[list(original.to_pylist()[0].values())],retrieved_at=at)
     raw=RawWriter(e['root'],db).write(run,'daily',0,table,RequestParams(trade_date=DAY));RawWriter(e['root'],db).sidecar(run,'daily')
     b=ProviderBinding.model_validate(e['cases']['bindings'][0])
+    # Construct this unsigned fixture in persistent order before its synthetic approval.
+    observations=tuple(sorted((*b.observations,SourceObservation(raw_object_id=raw.object_id,
+        raw_row_number=0,event_date=DAY)),key=lambda o:(o.raw_object_id.int,o.raw_row_number,o.event_date)))
     new=b.model_copy(update=dict(binding_id=uuid4(),binding_version=2,supersedes_binding_id=b.binding_id,
-        observations=(*b.observations,SourceObservation(raw_object_id=raw.object_id,raw_row_number=0,event_date=DAY)),
+        observations=observations,
         decision_at=at,available_at=at))
     cases=dict(episodes=[],codes=[],bindings=[new.model_dump()])
     approval=e['approval'].model_copy(update={'approved_case_set_hash':checksum(cases)})
