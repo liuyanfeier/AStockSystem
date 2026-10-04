@@ -90,6 +90,18 @@ def test_uncertain_fake_metadata_cannot_resend_after_reopen(tmp_path):
         assert db.execute('SELECT count(*) FROM offline_raw_manifest').fetchone()[0]==0
 
 
+def test_read_only_or_escaped_connection_cannot_publish_metadata_sidecar(tmp_path):
+    path=tmp_path/'synthetic.duckdb';plan=m.build_plan(ROOT);r=plan['requests'][0];out=tmp_path/'outputs'
+    with warehouse_connection(path) as db:
+        a.initialize(ROOT,db)
+        m.capture_fake(ROOT,db,out,plan,r['request_id'],a.FakeTransport(payload(r)))
+    sidecar=next(out.glob('*.metadata.json'));sidecar.unlink()
+    with warehouse_connection(path,read_only=True) as read_only:
+        with pytest.raises(ValueError):m.capture_fake(ROOT,read_only,out,plan,r['request_id'],a.FakeTransport())
+    with pytest.raises(ValueError):m.capture_fake(ROOT,db,out,plan,r['request_id'],a.FakeTransport())
+    assert not sidecar.exists()
+
+
 def test_backfill_gross_verified_reuse_net_and_pacing_is_lower_bound():
     no=m.full_history_budget(0);all_=m.full_history_budget(126)
     assert no['gross_base']==no['net_base']==30126

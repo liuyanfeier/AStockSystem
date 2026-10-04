@@ -11,6 +11,7 @@ from astock.data import admission_offline as offline
 from astock.data.raw_validation import sha256
 from astock.data.raw_writer import atomic_new_file
 from astock.data.reconstruction import checksum
+from astock.data.warehouse_lock import require_writer
 
 PROTOCOL = 'ADMISSION_SZSE_METADATA_PROPOSAL_V1'
 CONTRACT_BYTES = 'f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11'
@@ -80,6 +81,7 @@ def validate_response(request: dict, payload: bytes) -> list[dict]:
 def capture_fake(root: Path, db, destination: Path, plan: dict, request_id: str,
                  transport: offline.FakeTransport, *, observe_claim=lambda: None) -> str:
     """Reuse durable lifecycle, never accept a callable or live transport adapter."""
+    require_writer(db)
     validate_plan(root, plan)
     if type(transport) is not offline.FakeTransport:
         raise ValueError('Closed fake transport required')
