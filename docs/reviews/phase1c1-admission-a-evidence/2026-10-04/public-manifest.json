@@ -1,0 +1,140 @@
+{
+  "BatchB": "NOT_AUTHORIZED",
+  "F1_F2": "AUTHOR_CORRECTED",
+  "Phase1C2": "CLOSED",
+  "approved_baseline": "90ced0bac3e305c0e994878645f455ceba4e8f5e",
+  "author_status": "ADMISSION_A_EVIDENCE_REVIEW_READY_PENDING_CI",
+  "baseline_tracked_preserved": 244,
+  "bounded_admission": "BLOCKED",
+  "budget": {
+    "gross": 30126,
+    "net": 30126,
+    "potential_net": 30000,
+    "reserve": 0,
+    "verified_reuse": 0
+  },
+  "engineering": "OLD_INDEPENDENT_ISOLATION_PASS_NEW_AUTHOR_SELF_CHECK_PASS",
+  "evidence": "BLOCKED",
+  "existing_files_preserved": 127193,
+  "final_SHA_CI": "Ignored postpushfinal-handoff.json recordsreportcommitexactSHA and CI",
+  "full_history": "BLOCKED",
+  "implementation_sha": "b8c2bd81debebc6f7dce3804b08fe602f3b6a3fe",
+  "market_requests": 0,
+  "new_case_approvals": 0,
+  "new_metadata_requests_executed": 0,
+  "new_metadata_requests_requested": 7,
+  "old_approved_rows": 192,
+  "old_quarantine_rows": 402054,
+  "original_db_sha256": "c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2",
+  "original_writes": 0,
+  "positive_original_documents": 10,
+  "primary": {
+    "Context": {
+      "bytes": 57902,
+      "bytes_sha256": "f18df203dfd9622555f6fecec61cd4d80e83d6bc76f1e486cf2c5b574d22b72f",
+      "canonical_hash": "3dc2f0fcea1c9465573cb96227ad5f66d56b7e38ab71da886d615140f10c316c",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/context-proposal-final.json"
+    },
+    "DQ": {
+      "bytes": 2438,
+      "bytes_sha256": "a5333054a4ffcfd283219941b5ceadbbbceb8d56d4ca4a284e217508a44a4624",
+      "canonical_hash": "a9a840111f8ac1be2489a2d0a4130e779e00afc4f326789dc60e481792cc6e42",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/dq-evidence-v2.json"
+    },
+    "acquisition": {
+      "bytes": 13355,
+      "bytes_sha256": "bd780d92815b5c440d62987cd6f458e9f4a8c893677f0632cc11bf35b3cebca3",
+      "canonical_hash": "f7033a0777f548f5bc623d3b6a241138a2c1baed798dcd93828aa7b4cff24ae9",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/evidence-acquisition-request-v3.json"
+    },
+    "approval": {
+      "bytes": 3009,
+      "bytes_sha256": "b2ebebcc614e6f2517d21a0297063970807f5fd3176d6145a05fda48122332b7",
+      "canonical_hash": "9a751b250e496e5b89972a1541449f71306b97df4e47d0f558029a3f41fb7d28",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/approval-request-final.json"
+    },
+    "backfill": {
+      "bytes": 11359,
+      "bytes_sha256": "959a66042f4477385ba0b9384145777dd56716ad3e52b3add78dda6e1bf0ef32",
+      "canonical_hash": "e75b7981da6edf613ed22b49043f171e2eb514cb351c8df73ee1e1e3ef104b5f",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/full-backfill-plan-v2.json"
+    },
+    "cases": {
+      "bytes": 49369,
+      "bytes_sha256": "86cfed2a08c8dd7d281c0916229bbb887fde7ac65b88e24fdbfa74f987458d8b",
+      "canonical_hash": "70301cbe60acee7666f42f9e666d069910254d9208ece6e60842c2adb86bb529",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/case-delta-and-merged-resolver-v2.json"
+    },
+    "checklist": {
+      "bytes": 5761,
+      "bytes_sha256": "4ed6e324206b714acf77707cefe3d22b54c2eb6aa68bf2c2185c932b80e074d9",
+      "canonical_hash": "0ff4335f2df110cd8b597667ae8338aaad25e2e93182109e2c1a6248127852a0",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/admission-checklist-final.json"
+    },
+    "claims": {
+      "bytes": 8559,
+      "bytes_sha256": "ddc542234ae09049d4e787a5d679992ebc778edd3a6282da4943555fe18c0e45",
+      "canonical_hash": "fd264693ff7fa0036b41ab78049b10084956d73612062b1b1f064cdb5dcf63df",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/claim-to-member-matrix.json"
+    },
+    "consistency": {
+      "bytes": 1314,
+      "bytes_sha256": "a2854c3cb75d960fb585d93f5804aba7fa2e19a68d8b89db1ce5eb6b55178cfe",
+      "canonical_hash": "1974fc97bd6c10997353311a828d79aa6dbe5c5d331582db85e1df9b1d0bdb3a",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/material-consistency-final.json"
+    },
+    "documents": {
+      "bytes": 24368,
+      "bytes_sha256": "1458d13519711cce51a44d94710a57340754e92c2d43849301130edc02fa3653",
+      "canonical_hash": "40979a2a57b0479ba19c0a8f98b1e3d1b0fdb5879a357f0017ef57458e2cb68c",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/document-claim-index.json"
+    },
+    "metadata_plan": {
+      "bytes": 5540,
+      "bytes_sha256": "bf8280a25a1f0456b30f79b2da5c5115e0c2bb6a09c3589bcf24911616fd0ec2",
+      "canonical_hash": "fb2c0792fdb6548c5849df398a56206e52802ca4bfab78da6f4ca3cdf5553a35",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/szse-metadata-plan-v1.json"
+    },
+    "metadata_validation": {
+      "bytes": 952,
+      "bytes_sha256": "9c01748fe0c26d71c58f5a3a252cead61adb624aa35272580cc19086f42b39d7",
+      "canonical_hash": "0c3adf41536d595dae7a94cff609e9713f8c04d6bc381d92732c393f9fb12f4e",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/metadata-offline-validation-final.json"
+    },
+    "missing15": {
+      "bytes": 114005,
+      "bytes_sha256": "ceb508d5c48d9206ca8e6ea8f0a5568b82fb9895fef5f5d7e5dc0f795c8cf3e5",
+      "canonical_hash": "7a260aba6d03b1b5749ee723d3755c064fa0e01318775b83001126ecf8526adc",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/missing15-finite-closure-dossiers.json"
+    },
+    "reuse": {
+      "bytes": 4999,
+      "bytes_sha256": "e3f4a1a19082e9784a46cf8c36e82768f9052193d16351c5030361b56aa6288e",
+      "canonical_hash": "486aa508bfda006e557185f8c44462cb32da60a23300bba5c192071ddfda218d",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/reused-proof-index.json"
+    },
+    "sessions": {
+      "bytes": 29239,
+      "bytes_sha256": "f1d92260bc93b1ffc3ab6289ca72c2ef3f1e357281b6c064015034c7dd7b71ee",
+      "canonical_hash": "1c7bc0afd8674d85417a2df5f7c34576a2ba3580e5c8a92acf4416a83ae560dc",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/session-evidence-v2.json"
+    },
+    "special": {
+      "bytes": 1152,
+      "bytes_sha256": "a755249225309bbce45e567fe512183e17479bfed01ad53ad2cf360eea92196c",
+      "canonical_hash": "684f874d09d42f361ba85d5ea68a75539e4ce8195a72913a4eb2b43e574e2934",
+      "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/special-boundary-claims.json"
+    }
+  },
+  "private_manifest": {
+    "bytes_sha256": "8b19fd425d3f277a3e0cde3c25318bcbf25b0286437aeb03d44687b151528f91",
+    "path": "data/private/phase1c1-admission-a-evidence/2026-10-04/package-manifest.json"
+  },
+  "production_integration": "NOT_PROVEN",
+  "tables_preserved": 34,
+  "tests": {
+    "passed": 668,
+    "seconds": 424.45,
+    "warnings": 1
+  }
+}

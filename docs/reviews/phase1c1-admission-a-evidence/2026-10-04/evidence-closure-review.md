@@ -1,0 +1,27 @@
+# Admission A Evidence Closure Review
+
+2026-10-04. Author delivery: **ADMISSION_A_EVIDENCE_REVIEW_READY**, conditional on final exact-SHA CI closure in the ignored handoff. Reviewed baseline: `90ced0bac3e305c0e994878645f455ceba4e8f5e`. Accepted isolated engineering: `fc23bcf2c5ef11764d619e3bf377f97c8dfc3e12`. New implementation: `b8c2bd81debebc6f7dce3804b08fe602f3b6a3fe`; its final report commit and CI are recorded after push. The retained independent review accepts previous engineering and investigation fidelity, not production identity/DQ/Context approvals.
+
+## Corrections and matched materials
+
+F1 is corrected in new versions. Full-history gross civil-day base is **30,126**. The 126 old captures are candidates, not verified reuse against a final future request/contract plan: verified reuse0, current net30,126; all126passing would give30,000. Reserve0; additional splits/permissions/true session count remain UNKNOWN. Start-to-start pacing gives a lower-bound span `(N-1)*1.25`, not a latency-inclusive runtime upper bound. The bounded7 metadata proposal and future28annual calendar prerequisite are separate and unlicensed.
+
+F2 is corrected: final approval request, primary index and handoff use the same `context-proposal-final.json` path, bytes/canonical hashes and implementation/design/policy/input/resolver/delta pins. The final preservation checklist links before/after and independent proof, with AUTHOR_VERIFIED_PASS. New approved_at/review_ref/reviewed_sha/approved hashes remain unset; licenses false. Automated material consistency checks reject stale Context, changed pins, pending preservation and authored approval.
+
+## Positive evidence and remaining facts
+
+Ten official documents were retrieved as original PDF/HTML bytes, with actual UTC retrieval, URL/hash, publication precision, extraction locations and limitations. These strengthen issuer listing/asset/continuity facts for the three historical-code groups and SZSE rules/2013/2026 event evidence. Failed originals and web-extracted/search evidence remain separately labelled. Current rules and mutable calendar pages do not automatically certify earlier dates or temporary-halt absence.
+
+[Shared evidence and acquisition decisions](evidence-and-acquisition.md) summarize the finite scope. All15 missing-bar dossiers retain exact30 native observations, raw UUID/zero-based ordinal/capture hash, existing episode, official-code claims and legacy finding keys. Issuer continuity does not independently establish provider historical dual-code representation or deduplication. Both rows stay retained. New executable identity delta remains empty, with explicit blocking conditions and three finite documentary clarification groups; old192 approvals and merged resolver stay unchanged. No bar refetch is requested.
+
+The248BSE/31,248cell matrix, all402,246source rows and15,756oldfindings are referenced by immutable private pins and were not regenerated. Ordinary386,249rows still lack joint issuer/interval/endpoint evidence. BSE code changes, episode continuity, provider-native semantics and venue sessions remain separate. CDR689009/providerSTK/NULL and T600018/code-reuse facts retain exclusions. No NULL substitution, last-day inference, native rewrite or finding closure occurs. Causal certified pairs0/unknown45 do not establish PASS.
+
+## Dedicated metadata proposal and verification
+
+Seven exact SZSE windows have POST/api_name/fields, YYYYMMDD params, pinned existing v2 contract bytes/canonical hash, deterministic request IDs and membership hash. Expected response completeness is42civil-date rows; provider cap remains UNKNOWN. Every request has one attempt and planned spacing>=1.25s. Future isolated raw/sidecar/manifest, uncertainty stop, external-evidence integration and approval conditions are explicit. No input is added to the old133/126Context.
+
+The new module accepts only closed FakeTransport and reuses the reviewed durable lifecycle. Seven synthetic completions/reopen repetitions preserve timestamps; malformed/partial/duplicate responses, plan changes, uncertainty resend and sidecar tamper are rejected. Self-review added writer ownership at entry; readonly/escaped handles cannot publish. Live transport/production pacing/account permissions remain NOT_IMPLEMENTED / NOT_PROVEN. The earlier full test run was intentionally interrupted for this guard correction; its log is retained. Final local suite:668passed,1warning,424.45s; doctor/bothcontracts/plan/specsPASS. Final exact-SHA CI results are in the final handoff; the accepted30,126stress was reused, not rerun.
+
+Original34tables/schema001–010,127,193existing runtime files and244baseline tracked files are preserved (AGENTS authorized append only). The DB remains `c687fc514a78ef8b68b6c89907b9932a42465d2b2cab5ae383647616287ca0e2`; strict133VALID/EXACT/failure0. Existing181raw/252oldcurated/1102protected evidence are retained. Market/provider calls0; document HTTP is separately recorded. Final credential, staging, expandedZIP and remoteSHA checks close the delivery.
+
+Engineering: accepted old isolation/new author self-check. Evidence/bounded admission/full history: BLOCKED. Production integration: NOT_PROVEN. **Batch B NOT_AUTHORIZED; Phase1C.2 CLOSED.** Review materials and the exact bounded7design/plan first; any live implementation, new acquisition or B execution requires its own matched approval and explicit user authorization.
