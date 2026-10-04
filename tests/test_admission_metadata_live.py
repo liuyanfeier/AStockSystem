@@ -279,3 +279,21 @@ def test_original_destination_and_symlink_ancestors_refused_before_publish(tmp_p
     store=tmp_path/'linked';other=tmp_path/'other';other.mkdir();store.symlink_to(other,target_is_directory=True)
     with pytest.raises(ValueError,match='SYMLINK'):live.safe_path(tmp_path,store/'metadata.duckdb')
     with pytest.raises(ValueError,match='ESCAPE'):live.safe_path(other,tmp_path/'outside')
+
+
+def test_production_http_constructor_explicitly_disables_environment_and_retries(tmp_path,monkeypatch):
+    state=setup(tmp_path);root=tmp_path/'project';root.mkdir()
+    store=root/live.DESTINATION;store.mkdir(parents=True)
+    license=copy.deepcopy(state[2]);license['namespace']='PRODUCTION'
+    constructors=[]
+    def http_transport(**kwargs):
+        constructors.append(kwargs)
+        assert kwargs==dict(retries=0,trust_env=False)
+        return httpx.MockTransport(lambda req:httpx.Response(200,json=body(state[0]['requests'][0])))
+    # Isolate only constructor/wire behavior; exact approval rejection has separate tests.
+    monkeypatch.setattr(live,'validate_license',lambda *a,**k:state[0])
+    monkeypatch.setattr(httpx,'HTTPTransport',http_transport)
+    with warehouse_connection(store/'metadata.duckdb') as db:
+        result=live.capture(root,db,store,state[1],license,state[0]['requests'][0]['request_id'],TOKEN,live=True,clock=state[3])
+        assert result['status']=='COMPLETE'
+    assert constructors==[dict(retries=0,trust_env=False)]

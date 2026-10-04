@@ -438,7 +438,7 @@ def capture(root: Path, db, store: Path, plan_path: Path, license: dict, request
     secret = token.get_secret_value()
     wire = request['wire']
     try:
-        with httpx.Client(transport=transport if fixture else httpx.HTTPTransport(retries=0),
+        with httpx.Client(transport=transport if fixture else httpx.HTTPTransport(retries=0, trust_env=False),
                           timeout=httpx.Timeout(20.0, connect=10.0), trust_env=False,
                           follow_redirects=False) as client:
             response = client.post('https://api.tushare.pro',
