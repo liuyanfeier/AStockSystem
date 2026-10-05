@@ -68,3 +68,20 @@ Preserve old v2/time/schema/DQ/identity semantics. Commit focused source/tests/d
 verify full offline tests, preservation/secrets and final exact-SHA CI, then stop
 `IMPORT_ATOMICITY_AND_FINITE45_PREVIEW_REVIEW_READY`. Limited15 remains accepted;
 finite45 production approval pending, global DQ/calendar BLOCKED, Phase1C.2 CLOSED.
+
+## Current Finite45 Formal Execution and Engineering Closure
+
+The 2026-10-05 human authorization supersedes only the finite45 production-approval
+waiting boundary; see `docs/reviews/phase1c1-finite45-formal-execution/2026-10-05/authorization.md`
+and retained formal-execution Prompt. Approved/runtime/Context implementation 546b57b
+and 171 source pins stay unchanged. Apply the actual independent 9 binding / 45 observation
+approval only after verified backup and fresh formal fixture_only=false isolation;
+0 episodes/codes/migrations, two 126 COMPLETE generations and approved append-only DQ.
+Retain old 34 table rowsets/Contexts/outputs/approvals, fixed failed metadata and prior
+isolates; only the authorized original DB hash/additive records and new outputs may
+change. No source/test/SQL/config/dependency/design changes, provider/document calls,
+capture/resume/replay/reset/license replacement or author independent PASS. Reuse
+approved 753 / 119 tests, complete real application/offline/secret/preservation checks,
+commit aggregate documentation and verify final exact-SHA CI. Stop
+`FINITE45_FORMAL_EXECUTION_AND_PHASE1C1_ENGINEERING_CLOSURE_REVIEW_READY`
+for independent final execution review; global DQ/calendar BLOCKED, Phase1C.2 CLOSED.

@@ -1,0 +1,9 @@
+# Finite45 formal execution authorization
+
+2026-10-05. The human supplied the independent Review, matching actual approval ZIP and retained formal-execution Prompt and instructed “继续吧”. This directly authorizes one bounded additive original application after verified backup and fresh matched formal isolation, followed by complete offline acceptance and one final delivery. It supersedes only the historical finite45 production-approval waiting boundary.
+
+Approved implementation/Context implementation: `546b57bcbb9af9e8b703a9f8edbfd1986f83bca4`. Actual independent approval: 9 bindings / 45 exact observations, 0 episodes / 0 official codes; reviewer ref ends `#FINITE45`, approved_at/knowledge_as_of: 2026-10-05T02:04:22.195893+00:00. All 8 approval JSON originals are retained verbatim. The independent artifact's false execution-license field is preserved; the human authorization is recorded separately, without author re-signing.
+
+Only the exact delta, approved Context and two new COMPLETE generations with approved append-only DQ are allowed. No source/tests/SQL/config/dependencies/frozen design edits or migration; no capture/resume/133replay, provider/metadata/calendar/mapping/document requests, reset/new metadata store/license or author independent PASS. Historical evidence, approvals, original 34 rowsets, old outputs, fixed failed metadata/candidate stores remain preserved. The current backup and failure evidence must be retained; no silent restore.
+
+This batch reuses the independently verified 753 full tests / 119 related regressions with all 171 accepted file pins unchanged; it requires fresh formal application acceptance, seven offline checks, credential/staging verification and final exact-SHA CI. Global DQ/calendar remain BLOCKED; Phase1C.2 CLOSED. Stop for independent final execution review.
