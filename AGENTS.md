@@ -85,3 +85,21 @@ approved 753 / 119 tests, complete real application/offline/secret/preservation 
 commit aggregate documentation and verify final exact-SHA CI. Stop
 `FINITE45_FORMAL_EXECUTION_AND_PHASE1C1_ENGINEERING_CLOSURE_REVIEW_READY`
 for independent final execution review; global DQ/calendar BLOCKED, Phase1C.2 CLOSED.
+
+## Current Evidence and Phase1C2 Launch Preparation
+
+Latest human authorization supersedes the completed finite45 stop only for the
+retained evidence-and-launch-preparation Prompt and 2026-10-05 authorization.
+Finite45 and Phase1C.1 engineering remain independently CLOSED; do not repeat them.
+Preserve accepted171 pins, original34 table rowsets/schema001–010, all raw/curated,
+old approvals/reviews and fixed FAILED metadata bytes. New separate runner/design,
+CLI/schema/tests and exact unapproved evidence/full-plan/first-batch applications
+are permitted. Freeze design before source implementation. Original managed
+read-only, data API0, original writes0; no133 replay or old metadata retry/reset.
+Direct official/provider DOCUMENT HTTP budget24 includes failures and redirects;
+retain body/location/version/time and exact member scopes. Production candidate
+review metadata null, execution license false; no author approval. Reuse accepted
+30126 synthetic proofs; test the new closed-mock runner path, full offline suite,
+decoded/encoded secrets and preservation, commit/push and exact-SHA CI. Deliver once
+EVIDENCE_AND_PHASE1C2_LAUNCH_PREPARATION_REVIEW_READY and stop for independent Review.
+Global admission BLOCKED pending external evidence; Phase1C.2 CLOSED.

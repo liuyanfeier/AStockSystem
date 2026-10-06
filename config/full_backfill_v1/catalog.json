@@ -1,0 +1,236 @@
+{
+  "adj_factor": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "ecf13a99b3a1b5169ff0b090165800a68c214e5ee2bd3d39c407579e1e7b0c18",
+    "contract_path": "config/contracts/v2/adj_factor.yaml",
+    "integer_fields": [],
+    "max_rows": null,
+    "natural_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "numeric_fields": [
+      "adj_factor"
+    ],
+    "required_fields": [
+      "ts_code",
+      "trade_date",
+      "adj_factor"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=28"
+  },
+  "daily": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "c9173f9dcb51d6a576655c2ed53ff7bc8d255546a334a0985e706fdd33fe1bf3",
+    "contract_path": "config/contracts/v2/daily.yaml",
+    "integer_fields": [],
+    "max_rows": 6000,
+    "natural_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "numeric_fields": [
+      "open",
+      "high",
+      "low",
+      "close",
+      "pre_close",
+      "change",
+      "pct_chg",
+      "vol",
+      "amount",
+      "ah_vol",
+      "ah_amount"
+    ],
+    "required_fields": [
+      "ts_code",
+      "trade_date",
+      "open",
+      "high",
+      "low",
+      "close",
+      "pre_close",
+      "change",
+      "pct_chg",
+      "vol",
+      "amount",
+      "ah_vol",
+      "ah_amount"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=27"
+  },
+  "daily_basic": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "648580f5d0cb7a6d263d04c0878f6a733ddd48667feab0eed08334e1e54a7c80",
+    "contract_path": "config/contracts/v2/daily_basic.yaml",
+    "integer_fields": [
+      "limit_status"
+    ],
+    "max_rows": 6000,
+    "natural_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "numeric_fields": [
+      "close",
+      "turnover_rate",
+      "turnover_rate_f",
+      "volume_ratio",
+      "pe",
+      "pe_ttm",
+      "pb",
+      "ps",
+      "ps_ttm",
+      "dv_ratio",
+      "dv_ttm",
+      "total_share",
+      "float_share",
+      "free_share",
+      "total_mv",
+      "circ_mv"
+    ],
+    "required_fields": [
+      "ts_code",
+      "trade_date",
+      "close",
+      "turnover_rate",
+      "turnover_rate_f",
+      "volume_ratio",
+      "pe",
+      "pe_ttm",
+      "pb",
+      "ps",
+      "ps_ttm",
+      "dv_ratio",
+      "dv_ttm",
+      "total_share",
+      "float_share",
+      "free_share",
+      "total_mv",
+      "circ_mv",
+      "limit_status"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=32"
+  },
+  "stk_limit": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "7ef72a01da1e02e9e87c753366cfd11d1c2a74c5771c74cacc48f00832833cb1",
+    "contract_path": "config/contracts/v2/stk_limit.yaml",
+    "integer_fields": [],
+    "max_rows": 5800,
+    "natural_key": [
+      "ts_code",
+      "trade_date"
+    ],
+    "numeric_fields": [
+      "pre_close",
+      "up_limit",
+      "down_limit"
+    ],
+    "required_fields": [
+      "trade_date",
+      "ts_code",
+      "pre_close",
+      "up_limit",
+      "down_limit",
+      "asset_type",
+      "exchange"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=183"
+  },
+  "stock_basic": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "fcc21c705dc756f5bdfc83dde1326954909aa968b1057e421da5e62858aa93f3",
+    "contract_path": "config/contracts/v2/stock_basic.yaml",
+    "integer_fields": [],
+    "max_rows": 6000,
+    "natural_key": [
+      "ts_code"
+    ],
+    "numeric_fields": [],
+    "required_fields": [
+      "ts_code",
+      "symbol",
+      "name",
+      "fullname",
+      "market",
+      "exchange",
+      "curr_type",
+      "list_status",
+      "list_date",
+      "delist_date"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=25"
+  },
+  "stock_st": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "78239b06c68ab52fd021a250cc4b2965f1be4f373e339a42dd33b109dc617258",
+    "contract_path": "config/contracts/v2/stock_st.yaml",
+    "integer_fields": [],
+    "max_rows": 1000,
+    "natural_key": [
+      "ts_code",
+      "trade_date",
+      "type"
+    ],
+    "numeric_fields": [],
+    "required_fields": [
+      "ts_code",
+      "name",
+      "trade_date",
+      "type",
+      "type_name"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=397"
+  },
+  "suspend_d": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "76d482d9ccf216e628db148c8b7a7f78eb26180a098d017f19a0af11740b2092",
+    "contract_path": "config/contracts/v2/suspend_d.yaml",
+    "integer_fields": [],
+    "max_rows": 5000,
+    "natural_key": [
+      "ts_code",
+      "trade_date",
+      "suspend_type",
+      "suspend_timing"
+    ],
+    "numeric_fields": [],
+    "required_fields": [
+      "ts_code",
+      "trade_date",
+      "suspend_timing",
+      "suspend_type"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=214"
+  },
+  "trade_cal": {
+    "capture_role": "SOURCE_TYPED_ONLY_NOT_RESEARCH_ADMISSION",
+    "contract_bytes_hash": "f1d8cc3b7147df703443c7fbff5669be0aaf3cf9d973a93fb0618e821c1cef11",
+    "contract_path": "config/contracts/v2/trade_cal.yaml",
+    "integer_fields": [
+      "is_open"
+    ],
+    "max_rows": null,
+    "natural_key": [
+      "exchange",
+      "cal_date"
+    ],
+    "numeric_fields": [],
+    "required_fields": [
+      "exchange",
+      "cal_date",
+      "is_open",
+      "pretrade_date"
+    ],
+    "source_type_basis": "Accepted v2 logical scalar types; date strings retained in raw capture. No normalized identity/curation.",
+    "source_url": "https://tushare.pro/document/2?doc_id=26"
+  }
+}
