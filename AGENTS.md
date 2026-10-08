@@ -120,3 +120,25 @@ The same F3 scope additionally requires v2.1 external-review binding to the cano
 absolute production destination. Preserve the superseded17e263a author package and
 v2 design/DDL/fixtures; no migration. A cloned root cannot reuse its approval to
 clear consumption. Re-run affected regressions and final exact-SHA CI before delivery.
+
+## Current Consolidated Evidence and Launch Admission
+
+The latest human instruction executes the retained consolidated Prompt under
+`docs/reviews/phase1c1-consolidated-evidence-launch-admission/2026-10-08/authorization.md`.
+Runner/F1–F4/root-clone independently PASS at57812dd; do not reopen that engineering.
+Use original reviewer Calendar29 plan/review bytes and actual matched human license:
+at most29 exact SSE15/SZSE14 calendar calls at the fixed store, one attempt, no retry;
+the separate exact Document9 budget permits at most9 unauthenticated GETs with no
+redirect/follow. Keep approved SHA/clean Git until all calls finish or stop. Any
+calendar anomaly stops remaining API calls; continue independent document/offline
+analysis. Preserve old34 tables/schema001–010, FAILED metadata,171 pins and all prior
+146568 protected files; originals managed read-only. No other market/stock_basic/
+mapping API,133 replay,finite45 import,Context/generation/DQ write,metadata reset or
+Phase1C.2. New bindings/policies/Context and additional exact requests are proposals
+only, with independent approval and actual future authorization still required.
+After calls stop, commit sanitized combined evidence/decision materials; preserve
+source/terminal stores, verify full preservation/secrets and final exact-SHA CI.
+Deliver CONSOLIDATED_EVIDENCE_AND_LAUNCH_ADMISSION_REVIEW_READY, then stop for Review.
+Actual Calendar29 stopped with1 UNCERTAIN,0 COMPLETE,28 unattempted; never resume,
+rename or clear consumption. Document9 used7 GETs/reused2 bodies. Global admission
+remains BLOCKED and Phase1C.2 CLOSED pending independent conclusions.
