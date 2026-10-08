@@ -1,7 +1,7 @@
 """Review F1-F4 regressions, actual file faults and sequential closed-mock plans."""
 import copy
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import httpx
@@ -286,7 +286,7 @@ def test_production_new_store_cannot_bypass_fixed_ledger(tmp_path,monkeypatch):
     path=root/'descriptors.json';path.write_bytes(run.canonical_json(descriptors))
     p['approval_descriptors']=dict(path=path.name,sha256=run.sha256(path),descriptor_hash=proposal.descriptor_hash(descriptors))
     p['namespace']=a['namespace']=h['namespace']='PRODUCTION'
-    a.update(implementation_sha='ISOLATED_TEST_SHA',review_ref='ISOLATED_TEST_REVIEW')
+    a.update(implementation_sha='ISOLATED_TEST_SHA',review_ref='ISOLATED_TEST_REVIEW',production_destination=str((root/run.DESTINATION).resolve()))
     h['authorization_ref']='ISOLATED_TEST_HUMAN';repin(state)
     monkeypatch.setattr(run.subprocess,'check_output',lambda cmd,**kw:'ISOLATED_TEST_SHA\n' if cmd[1]=='rev-parse' else b'')
     with warehouse_connection(s/'capture.duckdb') as db:
@@ -298,7 +298,7 @@ def test_production_new_store_cannot_bypass_fixed_ledger(tmp_path,monkeypatch):
 @pytest.mark.parametrize('repin_descriptor',[False,True])
 def test_final_descriptor_change_invalidates_file_or_matched_license_before_http(tmp_path,repin_descriptor):
     root,a,p=application_fixture(tmp_path);p['namespace']='FIXTURE';now=datetime.now(timezone.utc).isoformat()
-    review=dict(protocol=run.PROTOCOL,namespace='FIXTURE',plan_hash=run.checksum(p),membership_hash=p['membership_hash'],pins=p['pins'],budget=p['budget'],implementation_sha='FIXTURE:code',review_ref='FIXTURE:review',reviewed_at=now,execution_license=True)
+    review=dict(protocol=run.PROTOCOL,namespace='FIXTURE',plan_hash=run.checksum(p),membership_hash=p['membership_hash'],pins=p['pins'],budget=p['budget'],implementation_sha='FIXTURE:code',review_ref='FIXTURE:review',reviewed_at=now,production_destination=None,execution_license=True)
     human=dict(protocol=run.PROTOCOL,namespace='FIXTURE',approval_hash=run.checksum(review),authorization_ref='FIXTURE:human',authorized_at=now,execution_license=True)
     path=root/p['approval_descriptors']['path'];descriptors=json.loads(path.read_text());descriptors[0]['new_purpose']='changed after independent approval';path.write_bytes(run.canonical_json(descriptors))
     if repin_descriptor:p['approval_descriptors'].update(sha256=run.sha256(path),descriptor_hash=proposal.descriptor_hash(descriptors))
@@ -307,3 +307,31 @@ def test_final_descriptor_change_invalidates_file_or_matched_license_before_http
         with pytest.raises(ValueError,match='MATCHED_REVIEW_REQUIRED' if repin_descriptor else 'APPROVAL_DESCRIPTOR_FILE_CHANGED'):
             run.capture(root,db,store,p,review,human,p['requests'][0]['member_id'],TOKEN,fixture=True,live=True,transport=httpx.MockTransport(lambda req:pytest.fail('HTTP')))
         assert run.layout(db)==[]
+
+
+def test_same_external_review_cannot_relocate_fixed_ledger_by_cloning_root(tmp_path,monkeypatch):
+    import shutil
+    state=setup(tmp_path,count=1);p,a,h,_,clock=state;roots=[]
+    for name in ('A','B'):
+        root=tmp_path/name;root.mkdir();roots.append(root)
+        for rel in (run.SOURCE,run.DESIGN,run.CATALOG,run.DDL,'config/contracts/v2/daily.yaml','config/contracts/v2/trade_cal.yaml'):
+            dest=root/rel;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(ROOT/rel,dest)
+        path=root/'descriptors.json';descriptors=[dict(request=m,purpose='ISOLATED_TEST_ONLY') for m in p['requests']];path.write_bytes(run.canonical_json(descriptors))
+    p['approval_descriptors']=dict(path=path.name,sha256=run.sha256(path),descriptor_hash=proposal.descriptor_hash(descriptors))
+    p['namespace']=a['namespace']=h['namespace']='PRODUCTION'
+    a.update(implementation_sha='ISOLATED_TEST_SHA',review_ref='ISOLATED_TEST_REVIEW',production_destination=str((roots[0]/run.DESTINATION).resolve()));h['authorization_ref']='ISOLATED_TEST_HUMAN';repin(state)
+    monkeypatch.setattr(run.subprocess,'check_output',lambda cmd,**kw:'ISOLATED_TEST_SHA\n' if cmd[1]=='rev-parse' else b'')
+    calls=[]
+    def transport(**kwargs):
+        def handler(req):calls.append(1);return httpx.Response(200,stream=httpx.ByteStream(run.canonical_json(envelope(p['requests'][0]))))
+        return httpx.MockTransport(handler)
+    monkeypatch.setattr(httpx,'HTTPTransport',transport)
+    clock.wall+=timedelta(hours=1)
+    for root in roots:
+        store=root/run.DESTINATION;store.mkdir(parents=True)
+        with warehouse_connection(store/'capture.duckdb') as db:
+            if root is roots[0]:assert run.capture(root,db,store,p,a,h,p['requests'][0]['member_id'],TOKEN,live=True,clock=clock)['status']=='COMPLETE'
+            else:
+                with pytest.raises(ValueError,match='MATCHED_REVIEW_REQUIRED'):run.capture(root,db,store,p,a,h,p['requests'][0]['member_id'],TOKEN,live=True,clock=clock)
+                assert run.layout(db)==[]
+    assert len(calls)==1

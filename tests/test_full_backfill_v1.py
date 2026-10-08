@@ -62,7 +62,7 @@ def setup(tmp_path, dataset='daily', count=2):
     now = datetime.now(timezone.utc).isoformat()
     approval = dict(protocol=run.PROTOCOL, namespace='FIXTURE', plan_hash=run.checksum(plan), membership_hash=plan['membership_hash'],
                     pins=plan['pins'], budget=count, implementation_sha='fixture-code', review_ref='FIXTURE:review',
-                    reviewed_at=now, execution_license=True)
+                    reviewed_at=now, production_destination=None, execution_license=True)
     human = dict(protocol=run.PROTOCOL, namespace='FIXTURE', approval_hash=run.checksum(approval),
                  authorization_ref='FIXTURE:human', authorized_at=now, execution_license=True)
     store = tmp_path / 'store'; store.mkdir()
@@ -219,7 +219,7 @@ def test_production_authorization_branch_closed_mock_with_exact_sha_pins_store_a
     path = root / 'isolated-descriptors.json'; path.write_bytes(run.canonical_json(descriptors))
     p['approval_descriptors'] = dict(path=path.name, sha256=run.sha256(path), descriptor_hash=run.checksum(sorted(descriptors,key=lambda d:d['request']['member_id'])))
     p['namespace'] = a['namespace'] = h['namespace'] = 'PRODUCTION'
-    a.update(plan_hash=run.checksum(p), pins=run.pins(root), implementation_sha='isolated-test-reviewed-SHA', review_ref='ISOLATED_TEST_NOT_REAL_REVIEW')
+    a.update(plan_hash=run.checksum(p), pins=run.pins(root), implementation_sha='isolated-test-reviewed-SHA', review_ref='ISOLATED_TEST_NOT_REAL_REVIEW', production_destination=str((root / run.DESTINATION).resolve()))
     h.update(approval_hash=run.checksum(a), authorization_ref='ISOLATED_TEST_NOT_REAL_HUMAN_LICENSE')
     store = root / run.DESTINATION; store.mkdir(parents=True)
     monkeypatch.setattr(run.subprocess, 'check_output', lambda cmd, **kw: 'isolated-test-reviewed-SHA\n' if cmd[1]=='rev-parse' else b'')

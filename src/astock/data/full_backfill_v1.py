@@ -26,11 +26,11 @@ from astock.data.reconstruction import checksum, transaction
 from astock.data.tushare_client import ProviderTable
 from astock.data.warehouse_lock import require_writer, warehouse_connection
 
-PROTOCOL = 'FULL_BACKFILL_CAPTURE_V2'
+PROTOCOL = 'FULL_BACKFILL_CAPTURE_V2_1'
 DESTINATION = 'data/private/full-backfill-v1'
-DESIGN = 'docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.md'
+DESIGN = 'docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.1.md'
 CATALOG = 'config/full_backfill_v1/catalog.json'
-DDL = 'sql/offline/full_backfill_v2.sql'
+DDL = 'sql/offline/full_backfill_v2_1.sql'
 SOURCE = 'src/astock/data/full_backfill_v1.py'
 ENDPOINT = 'https://api.tushare.pro'
 FILES = {'response.body', 'http-source.json', 'typed.parquet', 'manifest.json', 'sidecar.json'}
@@ -128,7 +128,8 @@ def authorize(root: Path, plan: dict, approval: dict, human: dict, *, fixture: b
     validate_plan(root, plan, archived=archived)
     namespace = 'FIXTURE' if fixture else 'PRODUCTION'
     base = dict(protocol=PROTOCOL, namespace=namespace, plan_hash=checksum(plan),
-                membership_hash=plan['membership_hash'], pins=plan['pins'], budget=plan['budget'])
+                membership_hash=plan['membership_hash'], pins=plan['pins'], budget=plan['budget'],
+                production_destination=None if fixture else str((root / DESTINATION).resolve()))
     if (not isinstance(approval, dict) or set(approval) != set(base) | {'implementation_sha', 'review_ref', 'reviewed_at', 'execution_license'}
             or any(approval.get(k) != v for k, v in base.items())
             or approval['execution_license'] is not True or plan['namespace'] != namespace):
@@ -596,7 +597,7 @@ def capture(root: Path, db, store: Path, plan: dict, approval: dict, human: dict
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Independent exact-plan backfill v2; disabled without matched external approvals')
+    parser = argparse.ArgumentParser(description='Independent exact-plan backfill v2.1; disabled without matched external approvals')
     parser.add_argument('action', choices=('validate-plan', 'capture'))
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--plan', type=Path, required=True)

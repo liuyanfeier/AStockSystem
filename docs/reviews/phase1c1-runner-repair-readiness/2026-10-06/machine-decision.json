@@ -25,6 +25,7 @@
     },
     {
       "author_result": "FIXED_OFFLINE_VERIFIED",
+      "destination_followup": "CANONICAL_ABSOLUTE_DESTINATION_PINNED_IN_MATCHED_EXTERNAL_REVIEW; CLONED_ROOT_REJECTED_BEFORE_REGISTRATION_HTTP",
       "id": "F3",
       "independent_result": "PENDING",
       "priority": "P2"
@@ -37,13 +38,13 @@
     }
   ],
   "full_history_data_admission": "BLOCKED",
-  "full_suite": 872,
+  "full_suite": 873,
   "future_documents": 9,
   "implementation_pins": {
     "config/full_backfill_v1/catalog.json": "928ee3799c6ff21a26a9df6d67ce05491cf83079149e33718e7c002ee928dab8",
-    "docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.md": "9f831261182ef46031fe4b1cc399bb38bda257e0ff40742ad50ff737b15dd2ba",
-    "sql/offline/full_backfill_v2.sql": "e9a05d4008b1581d573ac0a43ac8d2774414ad7e37aaf86696f4773a2a6f74cc",
-    "src/astock/data/full_backfill_v1.py": "f68e44ff9aa65c2bffc15fc08da5e92d8c4adbe2e76ad20b6bb2042d6f7ecf8a"
+    "docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.1.md": "a3d5cfe232b66b23ba82476bd90ca6596a71a6d6ad78e886decd6e1bf039e629",
+    "sql/offline/full_backfill_v2_1.sql": "e9a05d4008b1581d573ac0a43ac8d2774414ad7e37aaf86696f4773a2a6f74cc",
+    "src/astock/data/full_backfill_v1.py": "f087335cfdbefc382068859b7c92c60eb7f9f99a1e38397ff8399480b578c4db"
   },
   "market_first_requests": 6,
   "new_Context": null,
@@ -51,8 +52,10 @@
   "new_identity_candidates": 0,
   "new_runner": "INDEPENDENT_REVIEW_PENDING",
   "next": "STOP_FOR_COLLECTIVE_INDEPENDENT_REVIEW",
+  "protocol": "FULL_BACKFILL_CAPTURE_V2_1",
   "request_budget_current": 0,
   "review_ref": null,
   "status": "AUTHOR_F1_F4_REPAIR_VERIFIED_INDEPENDENT_REVIEW_PENDING",
-  "targeted_tests": 119
+  "superseded_author_SHA": "17e263a466cadcca6f48f885a7199424035590aa",
+  "targeted_tests": 120
 }

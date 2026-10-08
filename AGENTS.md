@@ -115,3 +115,8 @@ API/document HTTP/original writes/replays/rebuilds/reset/retry all0. Managed ori
 read-only; no production approvals or license, no Phase1C.2. Full offline tests,
 preservation/secrets and exact-SHA CI, then stop
 RUNNER_INTEGRITY_REPAIR_AND_CALENDAR_ACQUISITION_READINESS_REVIEW_READY.
+
+The same F3 scope additionally requires v2.1 external-review binding to the canonical
+absolute production destination. Preserve the superseded17e263a author package and
+v2 design/DDL/fixtures; no migration. A cloned root cannot reuse its approval to
+clear consumption. Re-run affected regressions and final exact-SHA CI before delivery.

@@ -15,8 +15,8 @@ only after final exact-SHA CI; this is author verification, awaiting independent
 | F3/P2 one-plan fixed store | Calendar completed, next approved market plan rejected | Versioned append-only plan/membership/authorization registry and a global endpoint/dataset/params consumption key. One synthetic store completed calendar → market → later shard across close/reopen, retaining every old row/file/license. Exact COMPLETE reuse uses original provenance; noncomplete overlap, changed descriptors, failed/uncertain calls, archive tamper, orphan, concurrent claim and alternate production destination fail closed. |
 | F4/P2 stale descriptor digest | Declared `9448041e…`, actual `0ff5d7ff…` independently reproduced | Finalize descriptors, then separate ordered runtime membership, sorted complete-descriptor semantic hash and final file SHA256. Plan pins descriptor file/semantic hash, so future matched review/human licenses also bind every descriptor field. Actual mutation/reorder/member/partition/reference drift regressions verify these domains. |
 
-V2 retains the CLI module and fixed production destination `data/private/full-backfill-v1/`;
-it uses independent `sql/offline/full_backfill_v2.sql`. Existing v1 stores are rejected,
+V2.1 retains the CLI module and fixed production destination `data/private/full-backfill-v1/`;
+it uses independent `sql/offline/full_backfill_v2_1.sql`. Existing v1 stores are rejected,
 never migrated or reset. Archived v1/pre-final v2 synthetic stores, exact runtime snapshots
 and their hashes remain available. No production capture store was initialized.
 
@@ -59,12 +59,13 @@ Private artifacts retain old/new reproduction SQL, actual files, three-plan stag
 29 captured mock chains, all candidate/HOLD descriptors, runtime plans, evidence refs,
 full-plan v4, machine decision, final manifest/index/handoff and exact-SHA CI evidence.
 No databases, raw/curated rows, credentials, complete private proposals or ZIP enter Git.
-Final local suite **872 passed**, targeted regressions **119 passed**, diagnostics/contract/spec checks, decoded/encoded credential scan and
+Final local suite **873 passed**, targeted regressions **120 passed**, diagnostics/contract/spec checks, decoded/encoded credential scan and
 managed read-only preservation results are recorded in that exact delivery chain.
 
 Preserve original34 table rowsets/schema001–010, fixed metadata4 tables and terminal
 1consumed/6unattempted/0receipt state, accepted171 pins and the original145,156 protected
-files. This batch's baseline also includes231 files from the previous preparation package.
+files. This batch's baseline also includes231 files from the previous preparation package
+and764 files from the superseded author package:146,151 protected files in total.
 Original DB hash remains `30953a9ff2622c85724794b268bc878ea2494684d6faccd5ab0fc5cbb378eb81`;
 fixed metadata hash remains `91a2c5d20df935795e0e2b736175af13fb6b7b5f6092231a9e96975fd30b9ece`.
 
@@ -78,3 +79,12 @@ R1/finite45 engineering remains independently CLOSED. New runner awaits independ
 Review; Phase1C.1 overall and full-history admission remain BLOCKED; Phase1C.2 CLOSED.
 All production execution licenses are false. Stop after collective delivery; do not
 execute any proposed acquisition or declare independent PASS.
+
+## Destination follow-up within F3
+
+The author additionally reproduced two calls using the same license across two
+cloned reviewed roots. V2.1 binds the canonical absolute destination into the
+external review (and therefore human approval hash): first clone COMPLETE,
+second clone MATCHED_REVIEW_REQUIRED before registration/HTTP. Old17e263a CI872
+and sealed author package are retained as superseded evidence, not independent PASS.
+New final local/CI proofs bind the v2.1 implementation; no original deployment.
