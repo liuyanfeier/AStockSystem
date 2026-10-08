@@ -58,7 +58,7 @@ def setup(tmp_path, dataset='daily', count=2):
         m['member_id'] = run.logical_id(m); requests.append(m)
     plan = dict(protocol=run.PROTOCOL, namespace='FIXTURE', execution_license=False,
                 requests=requests, membership_hash=run.checksum(requests), max_attempts=1,
-                budget=count, pins=run.pins(ROOT), historical_PIT_eligible=False, prior_failed_logical_members=[])
+                budget=count, pins=run.pins(ROOT), approval_descriptors=None, historical_PIT_eligible=False, prior_failed_logical_members=[])
     now = datetime.now(timezone.utc).isoformat()
     approval = dict(protocol=run.PROTOCOL, namespace='FIXTURE', plan_hash=run.checksum(plan), membership_hash=plan['membership_hash'],
                     pins=plan['pins'], budget=count, implementation_sha='fixture-code', review_ref='FIXTURE:review',
@@ -215,6 +215,9 @@ def test_production_authorization_branch_closed_mock_with_exact_sha_pins_store_a
     state = setup(tmp_path); p, a, h, _, clock = state
     for m in p['requests']:
         rel = f"config/contracts/v2/{m['dataset']}.yaml"; dest = root / rel; dest.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(ROOT / rel, dest)
+    descriptors = [dict(request=m, purpose='ISOLATED_TEST_ONLY') for m in p['requests']]
+    path = root / 'isolated-descriptors.json'; path.write_bytes(run.canonical_json(descriptors))
+    p['approval_descriptors'] = dict(path=path.name, sha256=run.sha256(path), descriptor_hash=run.checksum(sorted(descriptors,key=lambda d:d['request']['member_id'])))
     p['namespace'] = a['namespace'] = h['namespace'] = 'PRODUCTION'
     a.update(plan_hash=run.checksum(p), pins=run.pins(root), implementation_sha='isolated-test-reviewed-SHA', review_ref='ISOLATED_TEST_NOT_REAL_REVIEW')
     h.update(approval_hash=run.checksum(a), authorization_ref='ISOLATED_TEST_NOT_REAL_HUMAN_LICENSE')

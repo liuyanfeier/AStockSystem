@@ -7,7 +7,7 @@ import io
 import json
 import re
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import quote
 from uuid import UUID, uuid4
@@ -26,11 +26,11 @@ from astock.data.reconstruction import checksum, transaction
 from astock.data.tushare_client import ProviderTable
 from astock.data.warehouse_lock import require_writer, warehouse_connection
 
-PROTOCOL = 'FULL_BACKFILL_CAPTURE_V1'
+PROTOCOL = 'FULL_BACKFILL_CAPTURE_V2'
 DESTINATION = 'data/private/full-backfill-v1'
-DESIGN = 'docs/remediation/phase1c1/evidence-and-launch-preparation/full-backfill-runner-design-v1.md'
+DESIGN = 'docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.md'
 CATALOG = 'config/full_backfill_v1/catalog.json'
-DDL = 'sql/offline/full_backfill_v1.sql'
+DDL = 'sql/offline/full_backfill_v2.sql'
 SOURCE = 'src/astock/data/full_backfill_v1.py'
 ENDPOINT = 'https://api.tushare.pro'
 FILES = {'response.body', 'http-source.json', 'typed.parquet', 'manifest.json', 'sidecar.json'}
@@ -45,17 +45,20 @@ def pins(root: Path) -> dict:
 
 
 def logical_id(request: dict) -> str:
-    return checksum({k: request[k] for k in ('dataset', 'params', 'fields', 'contract_bytes_hash')})
+    return checksum(dict(endpoint=ENDPOINT, dataset=request['dataset'], params=request['params']))
 
 
-def validate_plan(root: Path, plan: dict) -> dict:
+def validate_plan(root: Path, plan: dict, *, archived=False) -> dict:
     required = {'protocol', 'namespace', 'execution_license', 'requests', 'membership_hash',
-                'max_attempts', 'budget', 'pins', 'historical_PIT_eligible', 'prior_failed_logical_members'}
+                'max_attempts', 'budget', 'pins', 'historical_PIT_eligible', 'prior_failed_logical_members', 'approval_descriptors'}
     if (not isinstance(plan, dict) or set(plan) != required or plan['protocol'] != PROTOCOL
             or plan['namespace'] not in ('PROPOSED', 'FIXTURE', 'PRODUCTION')
             or plan['execution_license'] is not False or plan['historical_PIT_eligible'] is not False
             or plan['max_attempts'] != 1 or type(plan['max_attempts']) is not int
-            or type(plan['budget']) is not int or plan['budget'] < 1 or plan['pins'] != pins(root)):
+            or type(plan['budget']) is not int or plan['budget'] < 1
+            or not isinstance(plan['pins'], dict) or set(plan['pins']) != set(pins(root))
+            or any(not re.fullmatch(r'[0-9a-f]{64}', v) for v in plan['pins'].values())
+            or any(plan['pins'][k] != v for k, v in pins(root).items() if not archived or k != SOURCE)):
         raise BackfillError('PLAN_PIN_OR_SCOPE_INVALID')
     catalog = strict_json((root / CATALOG).read_bytes())
     requests = plan['requests']
@@ -105,14 +108,27 @@ def validate_plan(root: Path, plan: dict) -> dict:
                 path = safe_path(root, root / ev['path'], exists=True)
                 if sha256(path) != ev['sha256']:
                     raise BackfillError('MEMBER_EVIDENCE_CHANGED')
+                if m['dataset'] == 'trade_cal' and name == 'completeness_evidence' and strict_json(path.read_bytes()) != calendar_rule(m):
+                    raise BackfillError('CALENDAR_COMPLETENESS_RULE_CHANGED')
+    descriptor = plan['approval_descriptors']
+    if descriptor is not None:
+        if set(descriptor) != {'path','sha256','descriptor_hash'}:
+            raise BackfillError('APPROVAL_DESCRIPTOR_REF_INVALID')
+        path = safe_path(root, root / descriptor['path'], exists=True)
+        descriptors = strict_json(path.read_bytes())
+        if (sha256(path) != descriptor['sha256'] or not isinstance(descriptors,list)
+                or [d['request'] for d in descriptors] != requests
+                or len({d['request']['member_id'] for d in descriptors}) != len(descriptors)
+                or checksum(sorted(descriptors,key=lambda d:d['request']['member_id'])) != descriptor['descriptor_hash']):
+            raise BackfillError('APPROVAL_DESCRIPTOR_FILE_CHANGED')
     return catalog
 
 
-def authorize(root: Path, plan: dict, approval: dict, human: dict, *, fixture: bool, live: bool) -> None:
-    validate_plan(root, plan)
+def authorize(root: Path, plan: dict, approval: dict, human: dict, *, fixture: bool, live: bool, archived=False) -> None:
+    validate_plan(root, plan, archived=archived)
     namespace = 'FIXTURE' if fixture else 'PRODUCTION'
     base = dict(protocol=PROTOCOL, namespace=namespace, plan_hash=checksum(plan),
-                membership_hash=plan['membership_hash'], pins=pins(root), budget=plan['budget'])
+                membership_hash=plan['membership_hash'], pins=plan['pins'], budget=plan['budget'])
     if (not isinstance(approval, dict) or set(approval) != set(base) | {'implementation_sha', 'review_ref', 'reviewed_at', 'execution_license'}
             or any(approval.get(k) != v for k, v in base.items())
             or approval['execution_license'] is not True or plan['namespace'] != namespace):
@@ -132,15 +148,18 @@ def authorize(root: Path, plan: dict, approval: dict, human: dict, *, fixture: b
     else:
         if any('FIXTURE' in v or 'PROPOSED' in v for v in (approval['review_ref'], human['authorization_ref'])):
             raise BackfillError('FIXTURE_CANNOT_AUTHORIZE_PRODUCTION')
-        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-        if approval['implementation_sha'] != head or subprocess.check_output(['git', 'status', '--porcelain'], cwd=root):
-            raise BackfillError('IMPLEMENTATION_NOT_REVIEWED')
+        if plan['approval_descriptors'] is None:
+            raise BackfillError('PRODUCTION_APPROVAL_DESCRIPTORS_REQUIRED')
+        if not archived:
+            head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+            if approval['implementation_sha'] != head or subprocess.check_output(['git', 'status', '--porcelain'], cwd=root):
+                raise BackfillError('IMPLEMENTATION_NOT_REVIEWED')
         # Require an exhaustive historical consumption inventory from the matched review.
         # A newly authored plan cannot bypass the fixed FAILED metadata member by omitting it.
         from astock.data.admission_metadata import build_plan
         old = build_plan(root)['requests'][0]['wire']
         for m in plan['requests']:
-            if (m['dataset'], m['params'], ','.join(m['fields'])) == (old['api_name'], old['params'], old['fields']):
+            if (m['dataset'], m['params']) == (old['api_name'], old['params']):
                 raise BackfillError('OLD_METADATA_CALL_REQUIRES_EXTERNAL_RECONCILIATION')
         catalog = strict_json((root / CATALOG).read_bytes())
         if any(catalog[m['dataset']]['max_rows'] is None and m['completeness_evidence'] is None for m in plan['requests']):
@@ -159,33 +178,39 @@ def layout(db) -> list:
     return db.execute("SELECT table_name,sql FROM duckdb_tables() WHERE schema_name='main' ORDER BY table_name").fetchall()
 
 
-def initialize(root: Path, db, store: Path, plan: dict) -> None:
-    owner(db, store)
-    validate_plan(root, plan)
-    schema = (root / DDL).read_text()
-    with duckdb.connect(':memory:') as memory:
-        memory.execute(schema)
-        expected = layout(memory)
-    current = layout(db)
-    if not current:
-        if any(p.name not in ('capture.duckdb', 'capture.duckdb.lock', 'capture.duckdb.wal') for p in store.iterdir()):
-            raise BackfillError('ORPHAN_BEFORE_PLAN')
-        def create():
-            db.execute(schema)
-            db.execute('INSERT INTO backfill_pin VALUES (1,?)', [canonical_json(plan).decode()])
-            for m in plan['requests']:
-                db.execute('INSERT INTO backfill_member VALUES (?,?,?,?)',
-                           [m['member_id'], uuid4(), datetime.now(timezone.utc).isoformat(), canonical_json(m).decode()])
-        transaction(db, create)
-    if layout(db) != expected or db.execute('SELECT payload FROM backfill_pin').fetchall() != [(canonical_json(plan).decode(),)]:
-        raise BackfillError('STORE_PINS_CHANGED_NO_RESET')
-    members = db.execute('SELECT member_id,payload FROM backfill_member ORDER BY member_id').fetchall()
-    if members != sorted((m['member_id'], canonical_json(m).decode()) for m in plan['requests']):
-        raise BackfillError('STORE_MEMBERS_CHANGED')
-    allowed = {'capture.duckdb', 'capture.duckdb.lock', 'capture.duckdb.wal'} | {m['member_id'] for m in plan['requests']}
+def registry_validate(root: Path, db, store: Path) -> None:
+    """Audit every immutable plan, license and origin before extending the ledger."""
+    plans = {}
+    for ph, payload in db.execute('SELECT plan_hash,payload FROM backfill_pin').fetchall():
+        p = strict_json(payload.encode())
+        validate_plan(root, p, archived=True)
+        if ph != checksum(p) or payload != canonical_json(p).decode():
+            raise BackfillError('ARCHIVED_PLAN_CHANGED')
+        plans[ph] = p
+        members = db.execute('SELECT member_id,payload FROM backfill_plan_member WHERE plan_hash=? ORDER BY member_id', [ph]).fetchall()
+        if members != sorted((m['member_id'], canonical_json(m).decode()) for m in p['requests']):
+            raise BackfillError('ARCHIVED_MEMBERSHIP_CHANGED')
+    licenses = set()
+    for ph, ah, hh, av, hv in db.execute('SELECT * FROM backfill_authorization').fetchall():
+        a, h = strict_json(av.encode()), strict_json(hv.encode())
+        if ph not in plans or ah != checksum(a) or hh != checksum(h):
+            raise BackfillError('ARCHIVED_AUTHORIZATION_CHANGED')
+        authorize(root, plans[ph], a, h, fixture=plans[ph]['namespace']=='FIXTURE', live=True, archived=True)
+        licenses.add(ph)
+    members = db.execute('SELECT member_id,payload,origin_plan FROM backfill_member').fetchall()
+    if {m[0] for m in members} != {m['member_id'] for p in plans.values() for m in p['requests']}:
+        raise BackfillError('GLOBAL_MEMBERSHIP_CHANGED')
+    allowed = {'capture.duckdb', 'capture.duckdb.lock', 'capture.duckdb.wal'} | {m[0] for m in members}
     if any(p.name not in allowed for p in store.iterdir()):
         raise BackfillError('ORPHAN_STORE_EVIDENCE')
-    for mid, in db.execute('SELECT member_id FROM backfill_member').fetchall():
+    for mid, payload, ph in members:
+        m = strict_json(payload.encode())
+        if ph not in plans or m not in plans[ph]['requests'] or mid != logical_id(m):
+            raise BackfillError('ORIGIN_MEMBER_CHANGED')
+        for p in plans.values():
+            matches = [v for v in p['requests'] if v['member_id']==mid]
+            if matches and matches != [m]:
+                raise BackfillError('CROSS_PLAN_DESCRIPTOR_CHANGED')
         history = events(db, mid)
         directory = safe_path(store, store / mid)
         if directory.exists() and not history:
@@ -196,9 +221,69 @@ def initialize(root: Path, db, store: Path, plan: dict) -> None:
                           ['CLAIMED', 'CALL_ENTERED', 'FAILED'],
                           ['CLAIMED', 'CALL_ENTERED', 'UNCERTAIN'], ['CLAIMED', 'UNCERTAIN']):
             raise BackfillError('EVENT_HISTORY_CHANGED')
+        if history and ph not in licenses:
+            raise BackfillError('UNLICENSED_DURABLE_HISTORY')
         ordinals = [o for o, in db.execute('SELECT ordinal FROM backfill_event WHERE member_id=? ORDER BY ordinal', [mid]).fetchall()]
         if ordinals != list(range(len(history))) or [instant(v[1]) for v in history] != sorted(instant(v[1]) for v in history):
             raise BackfillError('EVENT_ORDER_CHANGED')
+        count = db.execute("SELECT count(*) FROM backfill_event e JOIN backfill_member m USING(member_id) WHERE origin_plan=? AND state='CLAIMED'", [ph]).fetchone()[0]
+        if count > plans[ph]['budget']:
+            raise BackfillError('ARCHIVED_BUDGET_EXCEEDED')
+        if history and history[-1][0]=='COMPLETE':
+            origin = origin_context(db, mid)
+            reconcile(root, db, store, *origin, clock=Clock())
+
+
+def origin_context(db, mid: str) -> tuple:
+    row = db.execute('SELECT p.payload,m.payload,a.approval,a.human FROM backfill_member m JOIN backfill_pin p ON p.plan_hash=m.origin_plan JOIN backfill_authorization a ON a.plan_hash=m.origin_plan WHERE m.member_id=?', [mid]).fetchone()
+    if row is None:
+        raise BackfillError('ORIGIN_LICENSE_MISSING')
+    return tuple(strict_json(v.encode()) for v in row)
+
+
+def initialize(root: Path, db, store: Path, plan: dict) -> None:
+    owner(db, store)
+    validate_plan(root, plan)
+    schema = (root / DDL).read_text()
+    with duckdb.connect(':memory:') as memory:
+        memory.execute(schema)
+        expected = layout(memory)
+    if not layout(db):
+        if any(p.name not in ('capture.duckdb','capture.duckdb.lock','capture.duckdb.wal') for p in store.iterdir()):
+            raise BackfillError('ORPHAN_BEFORE_PLAN')
+        transaction(db, lambda: db.execute(schema))
+    if layout(db) != expected:
+        raise BackfillError('STORE_PROTOCOL_CHANGED_NO_MIGRATION')
+    registry_validate(root, db, store)
+    ph = checksum(plan)
+    for payload, in db.execute('SELECT payload FROM backfill_pin').fetchall():
+        if strict_json(payload.encode())['namespace'] != plan['namespace']:
+            raise BackfillError('STORE_NAMESPACE_CANNOT_CHANGE')
+    if db.execute('SELECT 1 FROM backfill_pin WHERE plan_hash=?', [ph]).fetchone():
+        return
+    def register():
+        # Different plans cannot acquire a second claim, even through new fields/pins.
+        for m in plan['requests']:
+            old = db.execute('SELECT payload FROM backfill_member WHERE member_id=?', [m['member_id']]).fetchone()
+            if old and (old[0] != canonical_json(m).decode() or not db.execute('SELECT 1 FROM backfill_receipt WHERE member_id=?', [m['member_id']]).fetchone()):
+                raise BackfillError('CROSS_PLAN_MEMBER_NOT_REUSABLE')
+        db.execute('INSERT INTO backfill_pin VALUES (?,?)', [ph, canonical_json(plan).decode()])
+        for m in plan['requests']:
+            db.execute('INSERT INTO backfill_plan_member VALUES (?,?,?)', [ph, m['member_id'], canonical_json(m).decode()])
+            if not db.execute('SELECT 1 FROM backfill_member WHERE member_id=?', [m['member_id']]).fetchone():
+                db.execute('INSERT INTO backfill_member VALUES (?,?,?,?,?)',
+                           [m['member_id'], uuid4(), datetime.now(timezone.utc).isoformat(), canonical_json(m).decode(), ph])
+    transaction(db, register)
+    registry_validate(root, db, store)
+
+
+def register_authorization(db, plan: dict, approval: dict, human: dict) -> None:
+    row = (checksum(plan), checksum(approval), checksum(human), canonical_json(approval).decode(), canonical_json(human).decode())
+    existing = db.execute('SELECT * FROM backfill_authorization WHERE plan_hash=?', [row[0]]).fetchone()
+    if existing and existing != row:
+        raise BackfillError('PLAN_LICENSE_ALREADY_PINNED')
+    if not existing:
+        transaction(db, lambda: db.execute('INSERT INTO backfill_authorization VALUES (?,?,?,?,?)', row))
 
 
 def events(db, member: str) -> list:
@@ -260,6 +345,11 @@ def decoded_table(root: Path, member: dict, body: bytes, retrieved: str) -> pa.T
     if table.fields != member['fields']:
         raise BackfillError('PROVIDER_FIELDS_CHANGED')
     c = strict_json((root / CATALOG).read_bytes())[member['dataset']]
+    if c.get('nullable_key_fields'):
+        # Exact accepted contract pin and explicit catalog basis; no global NULL waiver.
+        if (member['dataset'] != 'suspend_d' or c['nullable_key_fields'] != ['suspend_timing']
+                or c['nullable_key_basis']['contract_bytes_hash'] != sha256(root / c['contract_path'])):
+            raise BackfillError('NULLABLE_KEY_RULE_NOT_PINNED')
     cap = c['max_rows']
     if cap is not None and len(table.items) >= cap:
         raise BackfillError('CAP_OR_TRUNCATION_STOPPED')
@@ -270,7 +360,8 @@ def decoded_table(root: Path, member: dict, body: bytes, retrieved: str) -> pa.T
     for row in table.items:
         values = dict(zip(table.fields, row))
         key = tuple(values[f] for f in c['natural_key'])
-        if any(v is None or v == '' for v in key):
+        nullable = set(c.get('nullable_key_fields', []))
+        if any(values[f] == '' or values[f] is None and f not in nullable for f in c['natural_key']):
             raise BackfillError('MISSING_NATURAL_KEY')
         if key in keys:
             raise BackfillError('DUPLICATE_NATURAL_KEY')
@@ -289,12 +380,25 @@ def decoded_table(root: Path, member: dict, body: bytes, retrieved: str) -> pa.T
                 raise BackfillError('SOURCE_TYPE_REJECTED')
             arrays[f].append(v)
     if member['dataset'] == 'trade_cal':
-        from datetime import timedelta
         first = datetime.strptime(member['params']['start_date'], '%Y%m%d').date()
         last = datetime.strptime(member['params']['end_date'], '%Y%m%d').date()
         expected_dates = {(first + timedelta(days=i)).strftime('%Y%m%d') for i in range((last-first).days + 1)}
         if set(arrays['cal_date']) != expected_dates:
             raise BackfillError('INCOMPLETE_CIVIL_CALENDAR')
+        previous = None
+        for row in sorted(table.items, key=lambda row: row[table.fields.index('cal_date')]):
+            v = dict(zip(table.fields, row)); day = v['cal_date']; pre = v['pretrade_date']
+            try:
+                datetime.strptime(pre, '%Y%m%d')
+            except (ValueError, TypeError):
+                raise BackfillError('INVALID_PRETRADE_DATE') from None
+            if not re.fullmatch(r'\d{8}', pre) or pre >= day or previous is not None and pre != previous:
+                raise BackfillError('INVALID_PRETRADE_RELATION')
+            previous = day if v['is_open'] == 1 else pre
+        if member['completeness_evidence'] is not None:
+            rule = strict_json((root / member['completeness_evidence']['path']).read_bytes())
+            if rule != calendar_rule(member):
+                raise BackfillError('CALENDAR_COMPLETENESS_RULE_CHANGED')
     schema = pa.schema([(f, pa.float64() if f in numeric else pa.int64() if f in integers else pa.string()) for f in table.fields])
     return pa.table(arrays, schema=schema)
 
@@ -307,11 +411,53 @@ def publish(path: Path, body: bytes) -> None:
         atomic_new_file(path, lambda p: p.write_bytes(body))
 
 
+def calendar_rule(member: dict) -> dict:
+    """An exact proposed completeness rule, never a claim of actual certification."""
+    p = member['params']
+    first = datetime.strptime(p['start_date'], '%Y%m%d').date()
+    last = datetime.strptime(p['end_date'], '%Y%m%d').date()
+    return dict(protocol='CALENDAR_CIVIL_COMPLETENESS_V1', dataset='trade_cal', params=p,
+                fields=member['fields'], contract_bytes_hash=member['contract_bytes_hash'],
+                expected_civil_dates=[(first+timedelta(days=i)).strftime('%Y%m%d') for i in range((last-first).days+1)],
+                unique_key=['exchange','cal_date'], is_open_values=[0,1],
+                pretrade_rule='STRICTLY_EARLIER_DATE_LAST_OBSERVABLE_OPEN_OR_UNCERTIFIED_LEADING_PREDECESSOR',
+                cross_window_rule='ADJACENT_CAPTURED_WINDOWS_MUST_AGREE_PREVIOUS_OPEN',
+                unknown_cap='REMAINS_UNKNOWN_EXACT_CIVIL_COVERAGE_REQUIRED',
+                empty_response='STOP', cap_or_truncation='STOP', account_permission='UNKNOWN',
+                historical_calendar_certified=False, execution_license=False,
+                provider_definition='pretrade_date: last trading date; is_open: 0 closed,1 open',
+                source_url='https://tushare.pro/document/2?doc_id=26')
+
+
+def calendar_cross_window(db, store: Path, member: dict, table: pa.Table) -> None:
+    if member['dataset'] != 'trade_cal':
+        return
+    p = member['params']; current = sorted(table.to_pylist(), key=lambda v:v['cal_date'])
+    def adjacent(end, start):
+        return datetime.strptime(end,'%Y%m%d') + timedelta(days=1) == datetime.strptime(start,'%Y%m%d')
+    for mid, payload in db.execute('SELECT m.member_id,m.payload FROM backfill_member m JOIN backfill_receipt r USING(member_id)').fetchall():
+        other = strict_json(payload.encode()); q = other['params']
+        if mid==member['member_id'] or other['dataset']!='trade_cal' or q['exchange']!=p['exchange']:
+            continue
+        if adjacent(q['end_date'],p['start_date']):
+            past = sorted(pq.read_table(store/mid/'typed.parquet').to_pylist(),key=lambda v:v['cal_date'])
+            last = past[-1]; previous = last['cal_date'] if last['is_open']==1 else last['pretrade_date']
+            if current[0]['pretrade_date'] != previous:
+                raise BackfillError('CROSS_WINDOW_PRETRADE_CONFLICT')
+        if adjacent(p['end_date'],q['start_date']):
+            future = sorted(pq.read_table(store/mid/'typed.parquet').to_pylist(),key=lambda v:v['cal_date'])
+            last = current[-1]; previous = last['cal_date'] if last['is_open']==1 else last['pretrade_date']
+            if future[0]['pretrade_date'] != previous:
+                raise BackfillError('CROSS_WINDOW_PRETRADE_CONFLICT')
+
+
 def reconcile(root: Path, db, store: Path, plan: dict, member: dict, approval: dict, human: dict,
               *, clock=None, fault=lambda stage: None) -> dict:
     owner(db, store)
     clock = clock or Clock()
     mid = member['member_id']; directory = safe_path(store, store / mid)
+    if origin_context(db, mid) != (plan, member, approval, human):
+        raise BackfillError('ORIGIN_PROVENANCE_MISMATCH')
     h = events(db, mid)
     if not h or h[-1][0] in ('FAILED', 'UNCERTAIN'):
         raise BackfillError('TERMINAL_NO_RESEND')
@@ -343,6 +489,7 @@ def reconcile(root: Path, db, store: Path, plan: dict, member: dict, approval: d
     if times != sorted(times):
         raise BackfillError('SOURCE_TIME_ORDER_INVALID')
     table = decoded_table(root, member, files['response.body'].read_bytes(), source['retrieved_at'])
+    calendar_cross_window(db, store, member, table)
     buf = io.BytesIO(); pq.write_table(table, buf); typed = buf.getvalue()
     manifest = dict(protocol=PROTOCOL, object_id=str(obj), member_id=mid, rows=table.num_rows,
                     body_hash=source['body_hash'], source_hash=checksum(source), typed_hash=hashlib.sha256(typed).hexdigest(),
@@ -358,7 +505,7 @@ def reconcile(root: Path, db, store: Path, plan: dict, member: dict, approval: d
             safe_path(store, files[name], exists=True)
             if files[name].read_bytes() != data:
                 raise BackfillError('COMPLETE_EVIDENCE_CHANGED')
-        if (str(receipt[0]), receipt[1], receipt[2]) != (str(obj), checksum(manifest), checksum(source)) or strict_json(h[-1][2].encode()) != dict(manifest_hash=checksum(manifest), source_hash=checksum(source)) or instant(receipt[3]) < times[-1]:
+        if (str(receipt[0]), receipt[1], receipt[2]) != (str(obj), checksum(manifest), checksum(source)) or strict_json(h[-1][2].encode()) != dict(manifest_hash=checksum(manifest), source_hash=checksum(source)) or not times[-1] <= instant(receipt[3]) <= instant(h[-1][1]):
             raise BackfillError('COMPLETE_RECEIPT_CHANGED')
         return dict(status='ALREADY_VALID', member_id=mid, rows=table.num_rows)
     if h[-1][0] != 'CALL_ENTERED':
@@ -373,6 +520,9 @@ def reconcile(root: Path, db, store: Path, plan: dict, member: dict, approval: d
         fault('after_registration')
         event(db, mid, 'COMPLETE', clock, dict(manifest_hash=checksum(manifest), source_hash=checksum(source)))
         fault('after_promotion')
+        # Same validator as reopen, against the final disk bytes inside this transaction.
+        if reconcile(root, db, store, plan, member, approval, human, clock=clock)['status'] != 'ALREADY_VALID':
+            raise BackfillError('FINAL_PHYSICAL_CLOSURE_FAILED')
     transaction(db, complete)
     return dict(status='COMPLETE', member_id=mid, rows=table.num_rows)
 
@@ -390,20 +540,18 @@ def capture(root: Path, db, store: Path, plan: dict, approval: dict, human: dict
     if not isinstance(token, SecretStr) or not token.get_secret_value():
         raise BackfillError('LOCAL_TOKEN_REQUIRED')
     initialize(root, db, store, plan)
+    register_authorization(db, plan, approval, human)
     selected = [m for m in plan['requests'] if m['member_id'] == member_id]
     if len(selected) != 1:
         raise BackfillError('UNKNOWN_EXACT_MEMBER')
     member = selected[0]; clock = clock or Clock()
-    # Validate ALL durable completions before any further send.
-    for m in plan['requests']:
-        if db.execute('SELECT 1 FROM backfill_receipt WHERE member_id=?', [m['member_id']]).fetchone():
-            reconcile(root, db, store, plan, m, approval, human, clock=clock)
+    registry_validate(root, db, store)
     h = events(db, member_id)
     if h:
-        return reconcile(root, db, store, plan, member, approval, human, clock=clock, fault=fault)
+        return reconcile(root, db, store, *origin_context(db, member_id), clock=clock, fault=fault)
     if db.execute("SELECT count(*) FROM backfill_event WHERE state IN ('FAILED','UNCERTAIN')").fetchone()[0] or db.execute("SELECT member_id FROM backfill_event WHERE state='CLAIMED' EXCEPT SELECT member_id FROM backfill_receipt").fetchall():
         raise BackfillError('PLAN_STOPPED_NO_RESEND')
-    if db.execute("SELECT count(*) FROM backfill_event WHERE state='CLAIMED'").fetchone()[0] >= plan['budget']:
+    if db.execute("SELECT count(*) FROM backfill_event e JOIN backfill_member m USING(member_id) WHERE state='CLAIMED' AND origin_plan=?", [checksum(plan)]).fetchone()[0] >= plan['budget']:
         raise BackfillError('BUDGET_EXHAUSTED')
     directory = safe_path(store, store / member_id)
     if directory.exists():
@@ -448,7 +596,7 @@ def capture(root: Path, db, store: Path, plan: dict, approval: dict, human: dict
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Independent exact-plan backfill v1; disabled without matched external approvals')
+    parser = argparse.ArgumentParser(description='Independent exact-plan backfill v2; disabled without matched external approvals')
     parser.add_argument('action', choices=('validate-plan', 'capture'))
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--plan', type=Path, required=True)

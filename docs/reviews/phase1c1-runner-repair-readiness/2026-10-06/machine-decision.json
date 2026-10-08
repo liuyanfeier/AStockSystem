@@ -1,0 +1,58 @@
+{
+  "HOLD": 7,
+  "Phase1C1_overall": "BLOCKED",
+  "Phase1C2": "CLOSED",
+  "R1_finite45": "INDEPENDENTLY_CLOSED",
+  "actual_calendar_certified": 0,
+  "approved_at": null,
+  "baseline_sha": "93d605676892459f78607790278bccc7a80e8f29",
+  "calendar_inventory": 36,
+  "candidates": 29,
+  "delivery_status": "RUNNER_INTEGRITY_REPAIR_AND_CALENDAR_ACQUISITION_READINESS_REVIEW_READY_AFTER_EXACT_SHA_CI",
+  "execution_license": false,
+  "findings": [
+    {
+      "author_result": "FIXED_OFFLINE_VERIFIED",
+      "id": "F1",
+      "independent_result": "PENDING",
+      "priority": "P1"
+    },
+    {
+      "author_result": "FIXED_OFFLINE_VERIFIED",
+      "id": "F2",
+      "independent_result": "PENDING",
+      "priority": "P1"
+    },
+    {
+      "author_result": "FIXED_OFFLINE_VERIFIED",
+      "id": "F3",
+      "independent_result": "PENDING",
+      "priority": "P2"
+    },
+    {
+      "author_result": "FIXED_OFFLINE_VERIFIED",
+      "id": "F4",
+      "independent_result": "PENDING",
+      "priority": "P2"
+    }
+  ],
+  "full_history_data_admission": "BLOCKED",
+  "full_suite": 872,
+  "future_documents": 9,
+  "implementation_pins": {
+    "config/full_backfill_v1/catalog.json": "928ee3799c6ff21a26a9df6d67ce05491cf83079149e33718e7c002ee928dab8",
+    "docs/remediation/phase1c1/runner-repair-readiness/full-backfill-runner-design-v2.md": "9f831261182ef46031fe4b1cc399bb38bda257e0ff40742ad50ff737b15dd2ba",
+    "sql/offline/full_backfill_v2.sql": "e9a05d4008b1581d573ac0a43ac8d2774414ad7e37aaf86696f4773a2a6f74cc",
+    "src/astock/data/full_backfill_v1.py": "f68e44ff9aa65c2bffc15fc08da5e92d8c4adbe2e76ad20b6bb2042d6f7ecf8a"
+  },
+  "market_first_requests": 6,
+  "new_Context": null,
+  "new_DQ_candidates": 0,
+  "new_identity_candidates": 0,
+  "new_runner": "INDEPENDENT_REVIEW_PENDING",
+  "next": "STOP_FOR_COLLECTIVE_INDEPENDENT_REVIEW",
+  "request_budget_current": 0,
+  "review_ref": null,
+  "status": "AUTHOR_F1_F4_REPAIR_VERIFIED_INDEPENDENT_REVIEW_PENDING",
+  "targeted_tests": 119
+}

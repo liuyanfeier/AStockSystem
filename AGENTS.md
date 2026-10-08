@@ -103,3 +103,15 @@ review metadata null, execution license false; no author approval. Reuse accepte
 decoded/encoded secrets and preservation, commit/push and exact-SHA CI. Deliver once
 EVIDENCE_AND_PHASE1C2_LAUNCH_PREPARATION_REVIEW_READY and stop for independent Review.
 Global admission BLOCKED pending external evidence; Phase1C.2 CLOSED.
+
+## Current Runner Repair and Acquisition Readiness
+
+The 2026-10-06 human authorization supersedes only the previous preparation stop;
+see `docs/reviews/phase1c1-runner-repair-readiness/2026-10-06/authorization.md` and
+retained repair Prompt. Complete F1–F4 and append-only v2 multi-plan synthetic
+integration, plus exact29 candidate/7 HOLD calendar proposals with pending rules.
+Freeze v2 design first, preserve v1 stores/design/DDL and all historical evidence.
+API/document HTTP/original writes/replays/rebuilds/reset/retry all0. Managed original
+read-only; no production approvals or license, no Phase1C.2. Full offline tests,
+preservation/secrets and exact-SHA CI, then stop
+RUNNER_INTEGRITY_REPAIR_AND_CALENDAR_ACQUISITION_READINESS_REVIEW_READY.

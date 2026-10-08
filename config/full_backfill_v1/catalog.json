@@ -201,6 +201,14 @@
       "suspend_type",
       "suspend_timing"
     ],
+    "nullable_key_basis": {
+      "contract_bytes_hash": "76d482d9ccf216e628db148c8b7a7f78eb26180a098d017f19a0af11740b2092",
+      "contract_path": "config/contracts/v2/suspend_d.yaml",
+      "note": "suspend_timing can be null; preserve full-day versus intraday semantics."
+    },
+    "nullable_key_fields": [
+      "suspend_timing"
+    ],
     "numeric_fields": [],
     "required_fields": [
       "ts_code",
