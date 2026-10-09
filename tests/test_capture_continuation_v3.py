@@ -268,3 +268,24 @@ def test_protected_history_manifest_and_files_fail_closed(tmp_path):
     artifact.write_text('changed')
     with pytest.raises(ValueError,match='PROTECTED_HISTORY_CHANGED'):run.protected_history_check(root,base)
     with pytest.raises(ValueError,match='PROTECTED_HISTORY_REQUIRED'):run.protected_history_check(root,{})
+
+
+def test_clock_rollback_after_durable_claim_never_enters_call_or_sends(tmp_path):
+    from datetime import timedelta
+    state=stopped(tmp_path);base,app,_,_,store,_=state
+    def rollback(stage):
+        if stage=='after_claim':state[-1].wall-=timedelta(seconds=1)
+    def never_send(request):pytest.fail('Clock rollback must stop before HTTP')
+    with warehouse_connection(store/'capture.duckdb') as db:
+        with pytest.raises(ValueError,match='CALL_BEFORE_DURABLE_CLAIM'):
+            capture(db,state,handler=never_send,fault=rollback)
+        assert [s for s,_,_ in run.events(db,app['members'][0]['member_id'])]==['CLAIMED']
+        assert db.execute('SELECT count(*) FROM continuation_attempt').fetchone()[0]==1
+        assert db.execute('SELECT count(*) FROM continuation_receipt').fetchone()[0]==0
+        assert run.rowsets(db)==base['legacy_rows']
+    with warehouse_connection(store/'capture.duckdb') as db:
+        run.audit(ROOT,db,store,base)
+        for index in (0,1):
+            with pytest.raises(ValueError):capture(db,state,index,handler=never_send)
+        assert db.execute('SELECT count(*) FROM continuation_attempt').fetchone()[0]==1
+        assert run.rowsets(db)==base['legacy_rows']

@@ -158,3 +158,30 @@ unlicensed. Research identity/session/reference/DQ gates remain BLOCKED; Phase1C
 startup AUTHORIZED. Preserve all old files/reviews and171pins. Complete new regressions,
 full offline/preservation/secret checks and exact-SHA CI; deliver once as
 PHASE1C2_STARTUP_AND_EXACT_ACQUISITION_REVIEW_READY, then stop for independent Review.
+
+## Current Combined Time Fix and Exact28 Calendar Execution
+
+The latest direct human instruction executes the retained combined Prompt under
+`docs/remediation/phase1c2-combined-fix-calendar28/` and the 2026-10-09 authorization.
+Only the reviewed two-line CALL_BEFORE_DURABLE_CLAIM source change is permitted;
+the other seven runtime/design/config/DDL pins remain fixed. Add one closed clock
+rollback regression, preserve the existing42, run full local/offline checks and
+exact execution-SHA CI, then a fresh original-store copy with28 closed mocks.
+Activate the supplied independent conditional decision only after all exact source,
+application/baseline/history/CI/human conditions pass; never author independent PASS.
+This batch supersedes startup dataAPI0 only for at most28 ordered existing calendar
+members and additive upgrade/objects at the fixed production capture store.
+Use existing managed production entry points, one attempt, spacing>=1.25s, no retry
+or redirect. Any new failed/uncertain/stranded claim or integrity anomaly stops calls.
+Never resend the two consumed unknown calendars; BSE6/SZSE2013 HOLD, market6,
+metadata6, documents/diagnostics,133 replay,warehouse/metadata/Context/DQ writes0.
+Preserve old six capture rowsets,objects,all history and171pins; only approved capture
+DB/additive objects may change. Keep execution SHA clean/fixed until calls stop.
+Deliver one private combined result package at the execution SHA, distinguish raw
+window results from blocked research admission, then stop for independent Review.
+
+Actual combined preflight found252 unchanged old curated hard links. Existing
+production protected-history validation rejects them with STORE_HARDLINK. Activation
+and real requests remain BLOCKED; do not unlink/rewrite old files or relax runtime
+guards beyond the approved two lines. Complete permitted offline/copy/CI evidence
+and one blocked handoff; further filesystem/policy repair requires separate review.

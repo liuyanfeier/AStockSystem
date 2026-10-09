@@ -457,6 +457,8 @@ def _capture(root: Path, db, store: Path, baseline: dict, app: dict, review: dic
     claimed=old.transaction(db,claim);fault('after_claim')
     def enter():
         at=old.stamp(clock)
+        if old.instant(at)<old.instant(claimed):
+            raise Error('CALL_BEFORE_DURABLE_CLAIM')
         db.execute('INSERT INTO continuation_event VALUES (?,?,?,?,?)',[mid,1,'CALL_ENTERED',at,
                    old.canonical_json(dict(authorization_id=aid,wall=at,monotonic=clock.monotonic(),boot=clock.boot())).decode()])
         return at
