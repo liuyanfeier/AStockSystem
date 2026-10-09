@@ -58,13 +58,14 @@ texts,page locators and inspected renders stay private.
 
 ## Verification and delivery
 
-41 new regressions cover licenses/root/scope/dependencies,global consumption,
+42 new regressions cover licenses/root/scope/dependencies,approved execution order,global consumption,
 concurrent claims,process death,new exception stop,physical mutation rollback,
 safe diagnostics,NULL/cap/previous and protected-history/time boundaries.
 Run the final full offline suite,doctor/contracts/plans,protected-file and decoded
 credential audits,then bind final exact-SHA CI in the private handoff. The provisional
-912-test run preceded the final two regressions and is retained separately;
-the final suite/CI is authoritative. No new dependency or old schema/contract changes.
+912-test run preceded the time/history regressions;the local914-test run passed
+before the final execution-order guard. Both are retained separately;final exact-SHA
+CI covers the915-test source and is authoritative. No dependency or old contract changes.
 
 Original34/metadata4 tables,old3Context/6generation/6audit,171pins and146656 prior
 protected files are preserved. Original warehouse/metadata/capture writes,133replay,

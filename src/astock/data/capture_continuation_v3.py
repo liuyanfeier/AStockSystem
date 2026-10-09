@@ -423,6 +423,8 @@ def _capture(root: Path, db, store: Path, baseline: dict, app: dict, review: dic
         raise Error('NEW_UNCERTAIN_STOPS_BATCH')
     current=consumption(db)
     if current[mid]:raise Error('CONSUMED_LOGICAL_MEMBER_NO_RESEND')
+    next_member=next((m['member_id'] for m in app['members'] if not current[m['member_id']]),None)
+    if mid!=next_member:raise Error('APPROVED_EXECUTION_ORDER_REQUIRED')
     for dep in m['dependencies']:
         if not current[dep] or current[dep][-1]!='COMPLETE':raise Error('DEPENDENCY_NOT_COMPLETE')
     directory=old.safe_path(store,store/mid)

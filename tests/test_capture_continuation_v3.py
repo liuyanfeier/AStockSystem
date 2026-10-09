@@ -248,6 +248,14 @@ def test_stale_clock_cannot_register_or_claim_before_human(tmp_path,monkeypatch)
         assert db.execute('SELECT count(*) FROM continuation_authorization').fetchone()[0]==0
 
 
+def test_later_approved_member_cannot_skip_first_unconsumed(tmp_path):
+    state=stopped(tmp_path)
+    with warehouse_connection(state[4]/'capture.duckdb') as db:
+        with pytest.raises(ValueError,match='APPROVED_EXECUTION_ORDER_REQUIRED'):
+            capture(db,state,1,handler=lambda r:pytest.fail('no out-of-order call'))
+        assert db.execute('SELECT count(*) FROM continuation_attempt').fetchone()[0]==0
+
+
 def test_protected_history_manifest_and_files_fail_closed(tmp_path):
     root=tmp_path/'root';root.mkdir();data=root/'data/warehouse/astock.duckdb';meta=root/'data/private/phase1c1-admission-metadata-live-v1/metadata.duckdb'
     for p in [data,meta]:
