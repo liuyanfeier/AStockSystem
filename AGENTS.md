@@ -142,3 +142,19 @@ Deliver CONSOLIDATED_EVIDENCE_AND_LAUNCH_ADMISSION_REVIEW_READY, then stop for R
 Actual Calendar29 stopped with1 UNCERTAIN,0 COMPLETE,28 unattempted; never resume,
 rename or clear consumption. Document9 used7 GETs/reused2 bodies. Global admission
 remains BLOCKED and Phase1C.2 CLOSED pending independent conclusions.
+
+## Current Phase1C.2 Startup
+
+The latest direct human instruction executes the retained startup Prompt and stage
+decision in `docs/remediation/phase1c2-startup/`, superseding historical Phase1C.2
+pauses only for this batch; see `docs/reviews/phase1c2-startup/2026-10-08/authorization.md`.
+Freeze a new version before implementation; preserve v2.1 and old six capture tables.
+Continue mechanisms only on private copies/closed mocks. One DNS/TCP/TLS to the exact
+provider host without HTTP/token and four exact SSE document GETs are authorized,
+with separate durable ledgers, no retries/redirects/follow. Data API0, original and
+real capture/metadata writes0, production upgrade0,133 replay0,Context/DQ writes0.
+Keep both consumed unknown calendars blocked and all28/HOLD/market6/metadata6 calls
+unlicensed. Research identity/session/reference/DQ gates remain BLOCKED; Phase1C.2
+startup AUTHORIZED. Preserve all old files/reviews and171pins. Complete new regressions,
+full offline/preservation/secret checks and exact-SHA CI; deliver once as
+PHASE1C2_STARTUP_AND_EXACT_ACQUISITION_REVIEW_READY, then stop for independent Review.
