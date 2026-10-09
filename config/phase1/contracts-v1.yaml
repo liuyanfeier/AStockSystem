@@ -1,0 +1,1140 @@
+protocol: PHASE1_INTEGRATED_V1
+envelope_profiles:
+  LEGACY:
+  - request_id
+  - code
+  - msg
+  - data
+  DIAGNOSTIC_V1:
+  - request_id
+  - code
+  - msg
+  - data
+  - detail
+datasets:
+  stock_basic:
+    domain: security
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      symbol:
+        type: str
+        nullable: false
+      name:
+        type: str
+        nullable: false
+      fullname:
+        type: str
+        nullable: false
+      market:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      curr_type:
+        type: str
+        nullable: false
+      list_status:
+        type: str
+        nullable: false
+      list_date:
+        type: date
+        nullable: false
+      delist_date:
+        type: date
+        nullable: true
+    key:
+    - ts_code
+    cap: 6000
+    date_axis: null
+    params:
+    - ts_code
+    - exchange
+    - list_status
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=25
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  trade_cal:
+    domain: calendar
+    source: TUSHARE
+    fields:
+      exchange:
+        type: str
+        nullable: false
+      cal_date:
+        type: date
+        nullable: false
+      is_open:
+        type: int
+        nullable: false
+      pretrade_date:
+        type: date
+        nullable: true
+    key:
+    - exchange
+    - cal_date
+    cap: null
+    date_axis: cal_date
+    params:
+    - exchange
+    - start_date
+    - end_date
+    units:
+      is_open: provider 0/1
+      cal_date: YYYYMMDD exchange-local date
+      pretrade_date: YYYYMMDD exchange-local date
+    source_url: https://tushare.pro/document/2?doc_id=26
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  daily:
+    domain: market
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      open:
+        type: number
+        nullable: true
+      high:
+        type: number
+        nullable: true
+      low:
+        type: number
+        nullable: true
+      close:
+        type: number
+        nullable: true
+      pre_close:
+        type: number
+        nullable: true
+      change:
+        type: number
+        nullable: true
+      pct_chg:
+        type: number
+        nullable: true
+      vol:
+        type: number
+        nullable: true
+      amount:
+        type: number
+        nullable: true
+      ah_vol:
+        type: number
+        nullable: true
+      ah_amount:
+        type: number
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    cap: 6000
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units:
+      open: price in security currency
+      high: price in security currency
+      low: price in security currency
+      close: price in security currency
+      pre_close: provider ex-right reference price
+      change: price in security currency
+      pct_chg: percent
+      vol: provider lots (手)
+      amount: thousand yuan
+      ah_vol: hands
+      ah_amount: thousand CNY
+    source_url: https://tushare.pro/document/2?doc_id=27
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  daily_basic:
+    domain: market
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      close:
+        type: number
+        nullable: true
+      turnover_rate:
+        type: number
+        nullable: true
+      turnover_rate_f:
+        type: number
+        nullable: true
+      volume_ratio:
+        type: number
+        nullable: true
+      pe:
+        type: number
+        nullable: true
+      pe_ttm:
+        type: number
+        nullable: true
+      pb:
+        type: number
+        nullable: true
+      ps:
+        type: number
+        nullable: true
+      ps_ttm:
+        type: number
+        nullable: true
+      dv_ratio:
+        type: number
+        nullable: true
+      dv_ttm:
+        type: number
+        nullable: true
+      total_share:
+        type: number
+        nullable: true
+      float_share:
+        type: number
+        nullable: true
+      free_share:
+        type: number
+        nullable: true
+      total_mv:
+        type: number
+        nullable: true
+      circ_mv:
+        type: number
+        nullable: true
+      limit_status:
+        type: int
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    cap: 6000
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units:
+      close: price in security currency
+      turnover_rate: percent
+      pe: ratio; nullable for loss-making securities
+      pb: ratio
+      total_share: ten thousand shares
+      total_mv: ten thousand yuan
+      turnover_rate_f: percent
+      dv_ratio: percent
+      dv_ttm: percent
+      float_share: ten thousand shares
+      free_share: ten thousand shares
+      circ_mv: ten thousand CNY
+    source_url: https://tushare.pro/document/2?doc_id=32
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  adj_factor:
+    domain: market
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      adj_factor:
+        type: number
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    cap: null
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units:
+      adj_factor: dimensionless
+    source_url: https://tushare.pro/document/2?doc_id=28
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  stk_limit:
+    domain: market
+    source: TUSHARE
+    fields:
+      trade_date:
+        type: date
+        nullable: false
+      ts_code:
+        type: str
+        nullable: false
+      pre_close:
+        type: number
+        nullable: true
+      up_limit:
+        type: number
+        nullable: true
+      down_limit:
+        type: number
+        nullable: true
+      asset_type:
+        type: str
+        nullable: true
+      exchange:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    cap: 5800
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units:
+      up_limit: price in security currency
+      down_limit: price in security currency
+      pre_close: price in security currency
+    source_url: https://tushare.pro/document/2?doc_id=183
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  stock_st:
+    domain: status
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      name:
+        type: str
+        nullable: true
+      trade_date:
+        type: date
+        nullable: false
+      type:
+        type: str
+        nullable: true
+      type_name:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    - type
+    cap: 1000
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=397
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  suspend_d:
+    domain: status
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      suspend_timing:
+        type: str
+        nullable: true
+      suspend_type:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    - suspend_type
+    - suspend_timing
+    cap: 5000
+    date_axis: trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=214
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - suspend_timing
+  income:
+    domain: financial
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      ann_date:
+        type: date
+        nullable: true
+      f_ann_date:
+        type: date
+        nullable: true
+      end_date:
+        type: date
+        nullable: false
+      report_type:
+        type: str
+        nullable: false
+      comp_type:
+        type: str
+        nullable: false
+      total_revenue:
+        type: number
+        nullable: true
+      n_income_attr_p:
+        type: number
+        nullable: true
+      basic_eps:
+        type: number
+        nullable: true
+      int_income:
+        type: number
+        nullable: true
+      update_flag:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - end_date
+    - report_type
+    - comp_type
+    - ann_date
+    - f_ann_date
+    - update_flag
+    params:
+    - ts_code
+    - ann_date
+    - f_ann_date
+    - start_date
+    - end_date
+    - period
+    - report_type
+    - comp_type
+    cap: null
+    date_axis: ann_date
+    units:
+      total_revenue: CNY
+      n_income_attr_p: CNY
+      basic_eps: CNY/share
+      int_income: CNY
+    source_url: https://tushare.pro/document/2?doc_id=33
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - ann_date
+    - f_ann_date
+    - update_flag
+  balancesheet:
+    domain: financial
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      ann_date:
+        type: date
+        nullable: true
+      f_ann_date:
+        type: date
+        nullable: true
+      end_date:
+        type: date
+        nullable: false
+      report_type:
+        type: str
+        nullable: false
+      comp_type:
+        type: str
+        nullable: false
+      total_assets:
+        type: number
+        nullable: true
+      total_liab:
+        type: number
+        nullable: true
+      total_hldr_eqy_exc_min_int:
+        type: number
+        nullable: true
+      cash_reser_cb:
+        type: number
+        nullable: true
+      update_flag:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - end_date
+    - report_type
+    - comp_type
+    - ann_date
+    - f_ann_date
+    - update_flag
+    params:
+    - ts_code
+    - ann_date
+    - start_date
+    - end_date
+    - period
+    - report_type
+    - comp_type
+    cap: null
+    date_axis: ann_date
+    units:
+      total_assets: CNY
+      total_liab: CNY
+      total_hldr_eqy_exc_min_int: CNY
+      cash_reser_cb: CNY
+    source_url: https://tushare.pro/document/2?doc_id=36
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - ann_date
+    - f_ann_date
+    - update_flag
+  cashflow:
+    domain: financial
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      ann_date:
+        type: date
+        nullable: true
+      f_ann_date:
+        type: date
+        nullable: true
+      end_date:
+        type: date
+        nullable: false
+      report_type:
+        type: str
+        nullable: false
+      comp_type:
+        type: str
+        nullable: false
+      net_profit:
+        type: number
+        nullable: true
+      n_cashflow_act:
+        type: number
+        nullable: true
+      n_cashflow_inv_act:
+        type: number
+        nullable: true
+      n_cash_flows_fnc_act:
+        type: number
+        nullable: true
+      update_flag:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - end_date
+    - report_type
+    - comp_type
+    - ann_date
+    - f_ann_date
+    - update_flag
+    params:
+    - ts_code
+    - ann_date
+    - f_ann_date
+    - start_date
+    - end_date
+    - period
+    - report_type
+    - comp_type
+    cap: null
+    date_axis: ann_date
+    units:
+      net_profit: CNY
+      n_cashflow_act: CNY
+      n_cashflow_inv_act: CNY
+      n_cash_flows_fnc_act: CNY
+    source_url: https://tushare.pro/document/2?doc_id=44
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - ann_date
+    - f_ann_date
+    - update_flag
+  fina_indicator:
+    domain: financial
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      ann_date:
+        type: date
+        nullable: true
+      end_date:
+        type: date
+        nullable: false
+      eps:
+        type: number
+        nullable: true
+      roe:
+        type: number
+        nullable: true
+      roa:
+        type: number
+        nullable: true
+      netprofit_margin:
+        type: number
+        nullable: true
+      debt_to_assets:
+        type: number
+        nullable: true
+      update_flag:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - end_date
+    - ann_date
+    - update_flag
+    params:
+    - ts_code
+    - ann_date
+    - start_date
+    - end_date
+    - period
+    cap: 100
+    date_axis: end_date
+    units:
+      roe: percent
+      debt_to_assets: percent
+      eps: CNY/share
+    source_url: https://tushare.pro/document/2?doc_id=79
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - ann_date
+    - update_flag
+  index_classify:
+    domain: industry
+    source: TUSHARE
+    fields:
+      index_code:
+        type: str
+        nullable: false
+      industry_name:
+        type: str
+        nullable: false
+      level:
+        type: str
+        nullable: false
+      industry_code:
+        type: str
+        nullable: false
+      src:
+        type: str
+        nullable: false
+    key:
+    - index_code
+    - src
+    params:
+    - index_code
+    - level
+    - src
+    cap: null
+    date_axis: null
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=181
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  index_member_all:
+    domain: industry
+    source: TUSHARE
+    fields:
+      l1_code:
+        type: str
+        nullable: false
+      l1_name:
+        type: str
+        nullable: true
+      l2_code:
+        type: str
+        nullable: false
+      l2_name:
+        type: str
+        nullable: true
+      l3_code:
+        type: str
+        nullable: false
+      l3_name:
+        type: str
+        nullable: true
+      ts_code:
+        type: str
+        nullable: false
+      name:
+        type: str
+        nullable: true
+      in_date:
+        type: date
+        nullable: true
+      out_date:
+        type: date
+        nullable: true
+      is_new:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - l3_code
+    - in_date
+    - out_date
+    params:
+    - l1_code
+    - l2_code
+    - l3_code
+    - ts_code
+    - is_new
+    cap: 2000
+    date_axis: null
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=335
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key:
+    - in_date
+    - out_date
+  index_basic:
+    domain: index
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      name:
+        type: str
+        nullable: true
+      market:
+        type: str
+        nullable: false
+      publisher:
+        type: str
+        nullable: true
+      category:
+        type: str
+        nullable: true
+      base_date:
+        type: date
+        nullable: true
+      base_point:
+        type: number
+        nullable: true
+      list_date:
+        type: date
+        nullable: true
+      exp_date:
+        type: date
+        nullable: true
+    key:
+    - market
+    - ts_code
+    params:
+    - ts_code
+    - market
+    - publisher
+    - category
+    cap: 8000
+    date_axis: null
+    units:
+      base_point: index points
+    source_url: https://tushare.pro/document/2?doc_id=94
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  index_daily:
+    domain: index
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      open:
+        type: number
+        nullable: true
+      high:
+        type: number
+        nullable: true
+      low:
+        type: number
+        nullable: true
+      close:
+        type: number
+        nullable: true
+      pre_close:
+        type: number
+        nullable: true
+      change:
+        type: number
+        nullable: true
+      pct_chg:
+        type: number
+        nullable: true
+      vol:
+        type: number
+        nullable: true
+      amount:
+        type: number
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    params:
+    - ts_code
+    - trade_date
+    - start_date
+    - end_date
+    cap: null
+    date_axis: trade_date
+    units:
+      open: index points
+      high: index points
+      low: index points
+      close: index points
+      pre_close: index points
+      change: index points
+      pct_chg: percent
+      vol: provider lots (手)
+      amount: thousand yuan
+    source_url: https://tushare.pro/document/2?doc_id=95
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  security_identifiers:
+    domain: security
+    source: APPROVED_FACT_BATCH
+    fields:
+      security_id:
+        type: str
+        nullable: false
+      episode_id:
+        type: str
+        nullable: false
+      source:
+        type: str
+        nullable: false
+      identifier:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      board:
+        type: str
+        nullable: false
+      list_status:
+        type: str
+        nullable: false
+      evidence_source:
+        type: str
+        nullable: false
+      valid_from:
+        type: date
+        nullable: false
+      valid_to:
+        type: date
+        nullable: true
+      identifier_type:
+        type: str
+        nullable: false
+    key:
+    - source
+    - identifier
+    - exchange
+    - valid_from
+    params: []
+    cap: null
+    date_axis: null
+    units: {}
+    source_url: https://www.bse.cn/
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  security_status:
+    domain: status
+    source: APPROVED_FACT_BATCH
+    fields:
+      security_id:
+        type: str
+        nullable: false
+      episode_id:
+        type: str
+        nullable: false
+      state_type:
+        type: str
+        nullable: false
+      state_value:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      evidence_source:
+        type: str
+        nullable: false
+      valid_from:
+        type: date
+        nullable: false
+      valid_to:
+        type: date
+        nullable: true
+    key:
+    - security_id
+    - state_type
+    - valid_from
+    params: []
+    cap: null
+    date_axis: null
+    units: {}
+    source_url: https://www.sse.com.cn/
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  industry_membership:
+    domain: industry
+    source: APPROVED_FACT_BATCH
+    fields:
+      security_id:
+        type: str
+        nullable: false
+      classification_version:
+        type: str
+        nullable: false
+      industry_code:
+        type: str
+        nullable: false
+      level:
+        type: str
+        nullable: false
+      evidence_source:
+        type: str
+        nullable: false
+      valid_from:
+        type: date
+        nullable: false
+      valid_to:
+        type: date
+        nullable: true
+    key:
+    - security_id
+    - classification_version
+    - level
+    - valid_from
+    params: []
+    cap: null
+    date_axis: null
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=335
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  rule_history:
+    domain: rule
+    source: DOCUMENT_EXTRACT
+    fields:
+      rule_id:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      board:
+        type: str
+        nullable: false
+      state:
+        type: str
+        nullable: false
+      evidence_source:
+        type: str
+        nullable: false
+      valid_from:
+        type: date
+        nullable: false
+      valid_to:
+        type: date
+        nullable: true
+      price_limit_ratio:
+        type: number
+        nullable: true
+      ipo_no_limit_sessions:
+        type: int
+        nullable: true
+      sell_delay_trading_days:
+        type: int
+        nullable: true
+      min_order_qty:
+        type: int
+        nullable: true
+      order_qty_step:
+        type: int
+        nullable: true
+      price_tick:
+        type: number
+        nullable: true
+    key:
+    - rule_id
+    - valid_from
+    params: []
+    cap: null
+    date_axis: null
+    units:
+      price_limit_ratio: fraction
+      sell_delay_trading_days: subsequent trading sessions, purchase day0
+    source_url: https://www.sse.com.cn/lawandrules/sselawsrules/trade/
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+    nullable_key: []
+  listing_episodes:
+    domain: security
+    source: APPROVED_FACT_BATCH
+    fields:
+      security_id:
+        type: str
+        nullable: false
+      episode_id:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      board:
+        type: str
+        nullable: false
+      asset_type:
+        type: str
+        nullable: false
+      list_date:
+        type: date
+        nullable: false
+      last_trading_date:
+        type: date
+        nullable: true
+      delist_date:
+        type: date
+        nullable: true
+      valid_from:
+        type: date
+        nullable: false
+      valid_to:
+        type: date
+        nullable: true
+      evidence_source:
+        type: str
+        nullable: false
+    key:
+    - episode_id
+    - valid_from
+    nullable_key: []
+    params: []
+    cap: null
+    date_axis: null
+    units: {}
+    source_url: https://www.sse.com.cn/
+    research_usage: OBSERVED_ONLY_UNTIL_ADMISSION
+  bak_basic:
+    domain: security
+    source: TUSHARE
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      name:
+        type: str
+        nullable: true
+      list_date:
+        type: date
+        nullable: true
+      industry:
+        type: str
+        nullable: true
+    key:
+    - ts_code
+    - trade_date
+    nullable_key: []
+    params:
+    - ts_code
+    - trade_date
+    cap: 7000
+    date_axis: trade_date
+    units: {}
+    source_url: https://tushare.pro/document/2?doc_id=262
+    research_usage: SOURCE_CLAIM_NOT_IDENTITY_OR_INDUSTRY_PIT
+  market_crosscheck:
+    domain: market
+    source: DOCUMENT_EXTRACT
+    fields:
+      ts_code:
+        type: str
+        nullable: false
+      exchange:
+        type: str
+        nullable: false
+      trade_date:
+        type: date
+        nullable: false
+      open:
+        type: number
+        nullable: true
+      high:
+        type: number
+        nullable: true
+      low:
+        type: number
+        nullable: true
+      close:
+        type: number
+        nullable: true
+      volume_shares:
+        type: number
+        nullable: true
+      amount_cny:
+        type: number
+        nullable: true
+      evidence_source:
+        type: str
+        nullable: false
+    key:
+    - ts_code
+    - trade_date
+    - evidence_source
+    nullable_key: []
+    params: []
+    cap: null
+    date_axis: trade_date
+    units:
+      open: CNY/share
+      high: CNY/share
+      low: CNY/share
+      close: CNY/share
+      volume_shares: shares
+      amount_cny: CNY
+    source_url: https://www.sse.com.cn/
+    research_usage: INDEPENDENT_SOURCE_CANDIDATE_NOT_AUTOMATIC_ADMISSION

@@ -2,9 +2,21 @@
 
 **AStockSystem is a research and risk-management project. It does not guarantee investment returns.**
 
-本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过**；当前已完成 **Phase 1C.1 有界历史演练**，真实数据门为 **BLOCKED**。历史证据见 [演练报告](docs/reviews/2026-10-01-phase1c1-review.md)、[R1-G0 设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md)、[G1 独立审查与补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)、[G2 独立审查](docs/reviews/2026-10-02-phase1c1-r1-g2-independent-review.md)及 [G2 修复/G3 副本交付](docs/reviews/2026-10-02-phase1c1-r1-g3-copy-review.md)。用户转达 exact SHA `ac622718d978b85f90680694ec1cc8e0a3bd8b1a` 的独立 REVIEW PASS 并[授权原库部署](docs/reviews/2026-10-02-phase1c1-r1-g3-deployment-authorization.md)。现已完成原库 007、133 binding/133 upgrade audit 及离线验收，见 [R1 最终审查包](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)。状态为 **R1 FINAL_REVIEW_READY**，等待独立 R1 FINAL REVIEW；作者不宣称 FINAL PASS。
+本项目在 Mac 上建立可审计的 A 股研究、风险管理与交易训练基础。**Phase 0 已获 REVIEW 通过，Phase 1C.1 工程修复已独立关闭，Phase 1C.2 已开始；研究数据准入仍为 BLOCKED。** 阶段依据见 [关闭与启动决定](docs/remediation/phase1c2-startup/2026-10-08_Phase1C1_Closure_And_Phase1C2_Start_Decision.md)。工程关闭、采集许可和研究准入分别验收，不能互相替代。
 
-本轮已执行固定 21 个交易日和 7 个小窗口日历检查，共 133 次请求；后续仅审查已有本地证据。已生成带身份隔离和谱系的 Parquet 审查输出，没有全量回填、生产行情表、选股、信号、策略、回测引擎、券商接口或自动下单。后续早期交易由人确认并在券商终端手工执行。
+截至 **2026-10-09**，126 个旧备份已同字节脱离硬链接并通过独立维护审查，主文件 inode 和历史内容保留，严格保护检查通过。已审查代码为 `9784f86cd6b2f647f54b2a31454dd8ec9b83b20b`，对应 [CI：916 passed](https://github.com/liuyanfeier/AStockSystem/actions/runs/37895930473)。最新直接授权获得正常审批，原 capture store 已追加五张 v3 表。首个 SSE 2013 年日历请求返回 HTTP 200、provider code 0 和 365 行，但响应新增字段被冻结解析器拒绝：**1 次真实请求、1 个 FAILED、0 回执、27 个成员未发送**。已按首错停止；原响应和消费事实保留，不重试、不放宽解析规则。driver 的异常日志记录同时存在重复键错误，需单独审查。
+
+原 warehouse/旧 metadata、旧 capture 六表、所有历史文件及 171 个固定证据均保留。现有 402,060 条 DQ findings 和身份/session/reference 研究阻断未清除。行情六接口仅完成离线申请准备，license=false；全量回填、策略、回测及券商交易均未开始。固定 21 个交易日、7 个日历小窗口和 133 次请求属于历史演练，禁止重跑。早期交易仍由人确认并在券商终端手工执行。
+
+历史审查材料继续保留：[演练报告](docs/reviews/2026-10-01-phase1c1-review.md)、[R1-G0 设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md)、[G1 补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)、[G2 独立审查](docs/reviews/2026-10-02-phase1c1-r1-g2-independent-review.md)、[G3 副本交付](docs/reviews/2026-10-02-phase1c1-r1-g3-copy-review.md)、[原库部署授权](docs/reviews/2026-10-02-phase1c1-r1-g3-deployment-authorization.md)及 [R1 最终审查包](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)。这些文档记录当时的审批边界；当前进度以本节及 AGENTS.md 的最新状态为准。
+
+## Phase1 整体工程交付（待独立 Review）
+
+统一版本已实现采集/恢复、证券与状态/规则历史、行情与因果复权、财务 PIT、行业 PIT、质量覆盖、历史查询及重建/增量。作者离线自检 **967 passed（新增51项）**；23个非空合同、62条合成事实及两次同逻辑摘要重建用于软件验收，不能代表真实历史覆盖。原库写入和新增真实市场/元数据请求均为0，旧消费、402,060条DQ和171个冻结pin保持不变。
+
+运行入口为 `uv run --offline --frozen python -m astock.phase1`。查看[操作手册](docs/phase1/operations.md)、[验收矩阵](docs/phase1/acceptance-matrix.md)和[综合报告](docs/reviews/phase1-integrated/report.md)。统一真实申请提出27日历＋17源试点＋6行情，预算50；许可仍为false，需要匹配最终实现的独立批准及人类执行授权。全量财务/行业/vintage/预算仍有外部缺口。
+
+冻结旧driver的异常日志问题保留为历史事实；新统一driver已回归验证主错误保留、次级输出错误披露和首错停止。未重跑旧driver或修改其pin。
 
 ## 本机运行
 
@@ -91,7 +103,7 @@ uv sync --locked
 | Phase 6 | Intraday |
 | Phase 7 | Broker API |
 
-保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md) 记录已完成演练的范围。[R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 和[旧批次授权](docs/reviews/2026-10-02-phase1c1-r1-batch-authorization.md)保留。本次[原库授权与执行](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)完成已审查 007 部署，验证 133 回执、181 raw、252 旧 curated、17 张历史表和 1,102 个受保护文件。等待独立 R1 FINAL REVIEW；R2 LOCKED、数据门 BLOCKED、Phase1C.2 CLOSED，新增市场请求预算仍为零。旧规划不扩大任务。
+保留的 [总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 是长期背景；[Phase 1C.1 Prompt](Codex_Phase1C1_Implementation_Prompt_v1.0.md)、[R1 规格与逐 Gate Prompt](docs/remediation/phase1c1/README_Phase1C1_R1_R2.md) 和[旧批次授权](docs/reviews/2026-10-02-phase1c1-r1-batch-authorization.md)是历史记录。后续 R1/R2、limited15 和 finite45 工程工作已经完成，不能把旧文档中的 R2 LOCKED 或 Phase1C.2 CLOSED 当作当前阶段。当前采用独立审查、精确成员许可、真实人类授权及运行时保护；旧规划或文档状态更新均不扩大执行范围。原两个 UNKNOWN/UNCERTAIN 禁止重发，133 请求禁止重跑；Calendar28 已在首个 FAILED 后停止；旧driver不得重跑，27个未消费成员及行情6只进入新统一版本的未许可申请，全量回填需具体预算与后续授权。
 
 详见 [架构](docs/architecture.md)、[数据契约](docs/data_contract.md)、[数据字典](docs/data_dictionary.md) 与 [风险宪法模板](docs/risk_constitution.md)。
 

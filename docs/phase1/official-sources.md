@@ -1,0 +1,15 @@
+# Official Source Audit
+
+Sources were read for contract design; this is not account permission or historical-data admission. Direct anonymous document HTTP is recorded separately from the web retrieval service. The private ledgers retain all 18 direct GET attempts: two completed HTTP200 responses and sixteen connection failures, without retry or redirect-follow. Web-service cache/search fetches have no observable underlying HTTP count; they are not counted as confirmed direct requests. New market/metadata API calls remain zero.
+
+| Official source | Engineering consequence | Remaining evidence |
+|---|---|---|
+| [Stock master](https://tushare.pro/document/2?doc_id=25), [archival basic](https://tushare.pro/document/2?doc_id=262) | L/D/P claims retained; archive does not supply earlier complete identity | Historical episodes/2013–2015 and full delisted universe |
+| [Income](https://tushare.pro/document/2?doc_id=33), [balance](https://tushare.pro/document/2?doc_id=36), [cash flow](https://tushare.pro/document/2?doc_id=44), [indicators](https://tushare.pro/document/2?doc_id=79) | Announcement versus report-period axes differ; non-VIP per-security core fields | Actual permissions, unknown caps and version-specific financial vintage |
+| [SW classification](https://tushare.pro/document/2?doc_id=181), [members](https://tushare.pro/document/2?doc_id=335) | Explicit taxonomy; retain exited members, use `is_new=N` for the pilot | Historical version/exit semantics and completeness |
+| [Index basic](https://tushare.pro/document/2?doc_id=94), [index daily](https://tushare.pro/document/2?doc_id=95) | Two full HTML bodies retained; base point is numeric; index points stay distinct from equity CNY/share | Account and history coverage; independent sampled reference |
+| [SSE 2026 rule notice](https://www.sse.com.cn/lawandrules/sselawsrules2025/stocks/exchange/c/c_20260424_10816482.shtml) | Published 2026-04-24, effective 2026-07-06; previous 2023 version repealed and some provisions deferred | Full archived clauses, deferred provisions and preceding versions; direct capture failed |
+| [SZSE 2023 notice](https://investor.szse.cn/lawrules/index/rule/t20230217_598773.html), [effective-date explanation](https://www.szse.cn/www/investor/index/update/t20230621_601277.html) | Notice and actual effective date are separate; do not use publication day as effect | Full preceding rule versions and clause applicability |
+| [BSE trial rules](https://www.bse.cn/jygl_list/200010919.html) | Exchange-specific rule source; no inference from SSE/SZSE | Full body/effective history and migration/inception evidence; direct capture failed |
+
+No official trading-rule fact was seeded into production or proposed as independently approved. Rule-engine positive examples are explicitly synthetic. Official pages include version changes and deferred clauses; their current contents cannot be applied to the entire 2013–2026 interval. Historical clause/IPO/status/lot exceptions and independent market-value sampling remain external admission gates.

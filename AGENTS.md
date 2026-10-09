@@ -1,5 +1,74 @@
 # Repository Guidelines
 
+## Active Integrated Phase1 Engineering Batch
+
+The latest direct human authorization executes `docs/phase1/integrated-delivery-prompt-v1.md`;
+see `docs/reviews/phase1-integrated/authorization.md`. Complete every Phase1 domain,
+new versioned acquisition/recovery, PIT/query/DQ/rebuild/increment and one unified
+execution application continuously, with source/tests/new contracts/isolated schema,
+official documentation, docs/commit/push/final-SHA CI authorized. Preserve existing
+document edits and all frozen old implementations,171 pins, raw/approved facts and
+historical reviews. Original warehouse/metadata/capture SQL writes and new real
+market/metadata API calls are0. No replay133, consumed FAILED/UNKNOWN/UNCERTAIN reset
+or resend, strategy/backtest/broker functionality or author independent approval.
+Local evidence gaps do not stop independent modules. New live/deployment needs
+actual matched final implementation review, explicit members/budget/destination and
+human runtime license; proposals remain null/false. Deliver once with a complete
+software-versus-real-coverage matrix and private evidence/application; engineering
+readiness does not declare Phase1 data completion. Prior sections below are retained
+historical batch boundaries, superseded only within this explicit engineering scope.
+
+## Integrated Delivery Acceptance (2026-10-09)
+
+Author offline acceptance passed967 tests, including51 integrated regressions;
+23 nonempty contracts and62 synthetic facts exercise all Phase1 domains. Two
+rebuilds match logical content. Original three database hashes,146656 protected
+files and171 frozen pins remain unchanged. See `docs/phase1/acceptance-matrix.md`,
+`docs/phase1/operations.md` and `docs/reviews/phase1-integrated/report.md`.
+The new public entry is `python -m astock.phase1`; old entry points remain frozen.
+The unified50-request application is a proposal only: reviewer/license fields
+are null/false, research admission remains BLOCKED and full coverage is incomplete.
+Commit/push and final-SHA CI are authorized for this engineering delivery; after
+that delivery stop for independent review, without production execution.
+
+## Current Status & Scope (2026-10-09)
+
+Phase1C.1 engineering is independently CLOSED; Phase1C.2 has STARTED. Research
+admission remains BLOCKED with 402,060 existing DQ findings. These are distinct
+from RAW_ONLY acquisition authorization. The reviewed execution SHA is
+`9784f86cd6b2f647f54b2a31454dd8ec9b83b20b` (43 targeted regressions and 916-test CI).
+
+The exact126 backup-end same-byte detachments passed independent maintenance
+review; all252 paths now have nlink1, primary126 inodes and all historical bytes
+remain unchanged, and the original strict protected-history guard passes.
+The old STORE_HARDLINK condition recorded below is historical, not a current defect.
+
+The latest direct human retry authorization received normal execution approval.
+One unchanged reviewed driver ran at the clean approved SHA: five additive v3
+tables were deployed to the fixed original capture store, preserving all old six
+rowsets. The first SSE2013 member returned HTTP200/code0/365 rows, but unexpected
+provider envelope keys caused strict rejection. Durable state is one FAILED call,
+zero receipts and27 unattempted members; first-error stop remains in force.
+The private driver's error logger also raised duplicate-key TypeErrors; preserve
+the original log and use explicitly labeled post-exit database readback evidence.
+Do not rerun the driver, reset consumption, promote the failed raw response,
+relax the frozen decoder or execute the remaining27 under this stopped batch.
+Further engineering or execution requires matched new review/authorization.
+Retain every earlier refusal, package, approval and frozen source/design pin.
+
+The user separately authorized AGENTS.md/README status updates after execution
+stopped. Saved edits were restored after all calls stopped and corrected to the
+actual result. These edits do not alter runtime guards or grant a new license;
+no new commit is permitted by this resume Prompt. Old UNKNOWN
+calendars and133 requests must not be resent; market6/metadata6/BSE6/documents/
+diagnostics/full-backfill calls and original warehouse/metadata/Context/DQ writes
+remain0. The market6 offline proposal keeps execution_license=false.
+
+Read the phase-specific scopes below as retained records of their named batches;
+later direct user authorizations supersede only their explicit scope. Standing
+development, integrity, testing and secrets guidance remains applicable. New local
+evidence is under ignored `data/private/phase1c2-calendar28-production-resume/`.
+
 ## Scope & Structure
 
 AStockSystem is a macOS A-share research project. R1 FINAL independently passed at `cc458ce2e8229dcc914e9a45ae2ac6186f48c45c`. The user authorized R2-A under `docs/remediation/phase1c1/Codex_Phase1C1_R2_Batched_Prompts_v1.1.md`; see `docs/reviews/2026-10-02-phase1c1-r2-a-authorization.md`. Freeze concrete design before implementing provider/episode resolution, DQ policy, context/publication/quarantine/audits and synthetic regressions. A replaces intermediate G0/G1/G3/G4 pauses and permits G2 proposals only. Original warehouse, raw, old252 curated/lineage, frozen identity/receipts/audits, SQL001–007 and old specifications/reviews remain immutable; no real new bindings/episodes or generations take effect. Use scoped managed connections per `docs/phase1c1_writer_lifecycle.md`. Missing evidence is EVIDENCE_REQUIRED, conflict is CONFLICT; never infer aliases, merge company successors, rewrite native identifiers or relax NULL/tolerances. Zero market/provider requests, including metadata/mapping/calendar; no capture/resume/replay. Read-only official/provider documentation is allowed. Complete all A work with focused commits, one final full offline verification/secret scan and final exact-SHA CI, then stop as R2_A_REVIEW_READY for independent policy/context/approved_case_set review. R2-B NOT_AUTHORIZED, real-data gate BLOCKED, Phase1C.2 CLOSED; no backfill, strategies, signals, backtests, portfolio, broker or orders.
