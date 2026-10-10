@@ -25,7 +25,7 @@ OBJECT_FILES = {"response.body", "http-source.json", "typed.parquet", "manifest.
 
 
 def pins(root: Path) -> dict:
-    names = [DDL, contracts.CATALOG, "docs/phase1/design-v2.md", "config/phase1/frozen-v1.json", "config/phase1/frozen-v2-5672.json"]
+    names = [DDL, contracts.CATALOG, "docs/phase1/design-v2.md", "config/phase1/frozen-v1.json"]
     names += [str(p.relative_to(root)) for p in sorted((root / "src/astock/phase1").glob("*.py"))]
     return {n: file_hash(root / n) for n in names}
 

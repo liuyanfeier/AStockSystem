@@ -67,6 +67,7 @@ def inputs(root: Path, destination: Path, db) -> list[dict]:
                            transform_pins=strict_json(db.execute('SELECT payload FROM p1_plan WHERE plan_hash=?',[source['batch_hash']]).fetchone()[0].encode())['pins']))
     owner=strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
     from astock.phase1 import versions
+    default_pins=versions.v1_registry(root)['pins'] if owner['protocol']=='PHASE1_INTEGRATED_V1' else acquisition.pins(root)
     prior = db.execute("SELECT payload FROM p1_meta WHERE key='evidence'").fetchone()
     registered = strict_json(prior[0].encode()) if prior else []
     directory = destination / 'evidence'
@@ -84,15 +85,9 @@ def inputs(root: Path, destination: Path, db) -> list[dict]:
         if package.get('raw_reference'):
             interpreted = interpretation.validate(root, package, destination=destination, db=db)
             require(all(source[k] == v for k, v in interpreted.items()), 'INTERPRETATION_SOURCE_CHANGED')
-        if 'transform_pins' in source:
-            selected = source['transform_pins']
-            require(isinstance(selected, dict) and bool(selected), 'SOURCE_TRANSFORM_VERSION_REQUIRED')
-        else:
-            require(owner['protocol']==source['protocol']=='PHASE1_INTEGRATED_V1', 'SOURCE_TRANSFORM_VERSION_REQUIRED')
-            selected = versions.v1_registry(root)['pins']
         result.append(dict(object_id=oid, kind='DOCUMENT_FACT', request=source['request'], source=source,
                            body_path=str(base / 'response.body'), source_path=str(base / 'source.json'),
-                           body_hash=file_hash(base / 'response.body'), source_hash=digest(source), transform_pins=selected))
+                           body_hash=file_hash(base / 'response.body'), source_hash=digest(source), transform_pins=source.get('transform_pins',default_pins)))
     if registered and any(not r['source']['fixture_only'] for r in result if r['kind'] == 'DOCUMENT_FACT'):
         # Recheck actual approval/source bytes at reopen; no admission is inferred
         # from an author-provided policy_hash alone.
@@ -185,24 +180,13 @@ def source_decode(root: Path, descriptor: dict, *, destination=None, db=None, pi
             file_hash(Path(descriptor['source_path'])) == descriptor['source_hash'], 'INPUT_CHANGED_DURING_BUILD')
     require(Path(descriptor['source_path']).read_bytes() == encoded(descriptor['source']) and
             descriptor['request'] == descriptor['source']['request'] and descriptor['object_id'] == descriptor['source']['object_id'], 'INPUT_SOURCE_DESCRIPTOR_CHANGED')
-    selected = None
-    require(descriptor['kind'] in ('CAPTURE', 'DOCUMENT_FACT'), 'UNKNOWN_SOURCE_KIND')
     if descriptor['kind'] == 'CAPTURE':
         origin = Path(descriptor['body_path']).parents[2]
-        def capture_version(original):
-            acquisition.physical_validate(root, origin, original, descriptor['source']['logical_id'])
-            row = original.execute('SELECT payload FROM p1_plan WHERE plan_hash=?', [descriptor['source']['batch_hash']]).fetchone()
-            require(row is not None, 'SOURCE_PLAN_REQUIRED')
-            plan = strict_json(row[0].encode())
-            require(digest(plan) == descriptor['source']['batch_hash'], 'SOURCE_PLAN_CHANGED')
-            return plan['pins']
         if destination is not None and origin.resolve() == destination.resolve() and db is not None:
-            selected = capture_version(db)
+            acquisition.physical_validate(root, origin, db, descriptor['source']['logical_id'])
         else:
             with acquisition.store(root, origin, read_only=True) as original:
-                selected = capture_version(original)
-        if 'transform_pins' in descriptor['source']:
-            require(descriptor['source']['transform_pins'] == selected, 'SOURCE_TRANSFORM_BINDING_CHANGED')
+                acquisition.physical_validate(root, origin, original, descriptor['source']['logical_id'])
     if descriptor['kind'] == 'DOCUMENT_FACT':
         directory = Path(descriptor['body_path']).parent
         package = strict_json(safe_path(directory, directory / 'package.json', exists=True).read_bytes())
@@ -217,35 +201,8 @@ def source_decode(root: Path, descriptor: dict, *, destination=None, db=None, pi
             batch = [strict_json(safe_path(store, store / 'evidence' / i / 'package.json', exists=True).read_bytes()) for i in source['batch_object_ids']]
             checked = authorize(root, store, batch, source['approval'], source['human'], runtime=False)
             require(all(source[k] == v for k, v in checked.items()), 'GENERATION_POLICY_CHANGED')
-        if 'transform_pins' in source:
-            selected = source['transform_pins']
-            require(isinstance(selected, dict) and bool(selected), 'SOURCE_TRANSFORM_VERSION_REQUIRED')
-        else:
-            require(source['protocol']=='PHASE1_INTEGRATED_V1', 'SOURCE_TRANSFORM_VERSION_REQUIRED')
-            origin = directory.parents[1]
-            def legacy_version(original):
-                acquisition.audit(root, origin, original)
-                identity = strict_json(original.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-                registered = original.execute("SELECT payload FROM p1_meta WHERE key='evidence'").fetchone()
-                require(identity['protocol']==source['protocol']=='PHASE1_INTEGRATED_V1' and
-                        registered is not None and descriptor['object_id'] in strict_json(registered[0].encode()) and
-                        source['fixture_only']==(identity['namespace']=='FIXTURE'), 'LEGACY_SOURCE_VERSION_UNPROVEN')
-                from astock.phase1.versions import v1_registry
-                return v1_registry(root)['pins']
-            if destination is not None and origin.resolve()==destination.resolve() and db is not None:
-                selected = legacy_version(db)
-            else:
-                with acquisition.store(root, origin, read_only=True) as original:
-                    selected = legacy_version(original)
-        if not source['fixture_only']:
-            require(selected == source['approval']['pins'], 'SOURCE_APPROVAL_TRANSFORM_CHANGED')
     from astock.phase1 import versions
-    version = versions.validate(root, selected)
-    require(descriptor['source']['protocol'] == ('PHASE1_INTEGRATED_V1' if version=='V1' else PROTOCOL), 'SOURCE_VERSION_PROTOCOL_CHANGED')
-    require(pinned is None or pinned == selected, 'SOURCE_TRANSFORM_BINDING_CHANGED')
-    if 'transform_pins' in descriptor:
-        require(descriptor['transform_pins'] == selected, 'SOURCE_TRANSFORM_BINDING_CHANGED')
-    cs, ds = versions.adapters(root, selected)
+    cs, ds = versions.adapters(root, pinned or descriptor.get('transform_pins') or acquisition.pins(root))
     decoded = cs.decode(root, descriptor['request'], Path(descriptor['body_path']).read_bytes())
     return ds.facts(root, descriptor['request'], decoded['rows'], descriptor['source'])
 

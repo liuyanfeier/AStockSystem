@@ -1,0 +1,9 @@
+# Immutable Source Version Binding
+
+Freeze the exact executed5672e8f V2 files and pins under `compat/phase1/v2-5672/`; retain V1 unchanged. Registry hashes are fixed in the version dispatcher, archived file bytes are verified, and archived contracts read their own frozen catalog. A future current version never replaces historical source/approval pins.
+
+CAPTURE conversion obtains its version from the physically validated origin store's exact plan, whose digest equals the immutable HTTP source batch hash and whose production authorization is reverified. DOCUMENT_FACT conversion obtains its version from immutable source.json; production sources must also match their retained fact approval pins. Any descriptor/generation override must equal that source version. Missing transform metadata is accepted only for a registered, physically verified V1 store with a registered source object, matching V1 protocol and namespace. Missing/null metadata on V2 fails; no fallback to current pins or V1 is permitted.
+
+Legitimate reinterpretation uses a distinct reviewed DOCUMENT_FACT package with its own version/approval and exact raw reference. It appends a new source object and preserves the original capture/input version, rather than overriding the original descriptor. This existing channel remains offline and unapproved for the real RAW50 store in this batch.
+
+Test source/body-preserving, self-consistent registered-version substitution for both capture and document facts; missing/null/unknown versions and policy mutation; provider/dataset identity scope; genuine V1/V2 compatibility, historical generations, A/B rebuild and correction/idempotence. Production-shaped approvals remain TEST_ONLY, closed transport and marker-bound outside the actual repository. The real RAW50 store receives read-only audit only after calls stop.

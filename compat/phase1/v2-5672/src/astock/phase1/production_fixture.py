@@ -33,10 +33,6 @@ def rehearsal(repository: Path,root: Path,*,fault=lambda stage:None):
     registry=strict_json((repository/'config/phase1/frozen-v1.json').read_bytes())
     for name in registry['pins']:
         path=root/registry['archive']/name;path.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(repository/registry['archive']/name,path)
-    from astock.phase1.versions import v2_registry
-    archived_v2 = v2_registry(repository)
-    for name in archived_v2['pins']:
-        path=root/archived_v2['archive']/name;path.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(repository/archived_v2['archive']/name,path)
     shutil.copyfile(repository/'sql/offline/phase1_integrated_v1.sql',root/'sql/offline/phase1_integrated_v1.sql')
     publish(root/'TEST_ONLY_PHASE1.json',encoded(dict(namespace='TEST_PRODUCTION_SHAPE',root=str(root.resolve()))))
     dest=root/PRODUCTION

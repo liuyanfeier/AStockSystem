@@ -1,5 +1,20 @@
 # Repository Guidelines
 
+## Active RAW50 and Source Version Integrity Batch (2026-10-10)
+
+Execute the retained RAW50/source-version Prompt and authorization under
+`docs/reviews/phase1-raw50-source-version/`. Real capture used the fixed reviewed
+5672e8f SHA and sole new destination; it stopped after one UNCERTAIN SSE2014 call,
+with0 receipts/objects and49 unattempted. No further HTTP, retries or resets are
+licensed. Continue the scoped offline F1-R fix, exact executed V2 archive/source
+binding, positive V1/V2 compatibility, closed production-shaped tests, coverage/
+recovery proposals, preservation/secrets, commit/push and final-SHA CI. Original
+three stores/34+11 rowsets, old consumption,171 pins, V1 bytes and all prior reviews
+remain immutable; no real fact import/build/adoption. Retain real execution SHA
+separately from final repair SHA. Deliver once as
+RAW50_EXECUTION_AND_SOURCE_VERSION_INTEGRITY_FIX_REVIEW_READY, then independent
+Review; remaining execution application null/false and full admission BLOCKED.
+
 ## Active Consolidated Phase1 Fix Batch (2026-10-10)
 
 Execute the retained consolidated fix Prompt under `docs/reviews/phase1-consolidated-fix/`.

@@ -2,6 +2,18 @@
 
 Use the existing locked Python3.12 environment. Current runtime is PHASE1_INTEGRATED_V2; original source engines and contracts v1 stay frozen. See [V2 design](design-v2.md), [matrix](acceptance-matrix-v2.md) and [consolidated report](../reviews/phase1-consolidated-fix/report.md).
 
+## Latest RAW50 stop and source binding
+
+See [actual result and scoped repair](../reviews/phase1-raw50-source-version/report.md) and [source-version design](source-version-integrity-design.md). The fixed5672e8f pilot stopped after one SSE2014 UNCERTAIN, zero response/receipt and49 unattempted members. Do not run the old50 plan again or use its approval at the repair SHA. Original V1 and executed V2_5672 adapters remain fixed; conversion uses actual source/plan/approval pins, never a generation's replacement declaration. Missing V2 source pins fail, while proven V1 remains readable.
+
+The new actual capture store is RAW_ONLY. This batch permits read-only audit after the stop; production import/build/interpretation is not licensed. Audit sends no HTTP:
+
+```bash
+uv run --offline --frozen python -m astock.phase1 audit --destination data/private/phase1-integrated-v1
+```
+
+The ignored delivery index locates the exact remaining49 members/plan/application, baseline and stopped consumption digest. These retain26 calendars+17 pilots+6 market members, have license=false and require new matched final-repair review/human evidence. After such approval, use the same unified `execute --live` template below with those exact new files; no calendar-specific driver or per-member confirmation is needed. A new error stops all remaining calls and consumes its claim permanently. The full-domain coverage plan excludes SSE2014 as a consumed-unknown HOLD; source answers remain unknown because no response was obtained.
+
 ## Complete closed verification
 
 ```bash

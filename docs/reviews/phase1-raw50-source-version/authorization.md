@@ -1,0 +1,5 @@
+# RAW50 and Source Version Integrity Authorization
+
+The direct human message supplied `Codex_Phase1_RAW50_Execution_And_Source_Version_Fix_Prompt_v1.md` and stated “没问题，开始下一步吧”. It authorizes this continuous batch: the exact independent CAPTURE50_RAW_ONLY approval at5672e8f, then the scoped offline F1-R repair, frozen V2 compatibility, tests, sanitized docs, commit/push and final-SHA CI. Actual approval/plan/human bytes and execution evidence remain ignored/private. This supersedes previous zero-request waiting boundaries only for the fixed50 members and the new destination; it grants no original SQL writes, production derivation/adoption, retry or independent author approval.
+
+The reviewed CLI stopped at its first member, SSE2014, with one durable UNCERTAIN and49 unattempted members. No response/receipt exists. Do not rerun or clear that request; no further HTTP is licensed after this stop. Offline repair continues; final delivery waits for one independent Review. Phase1C.1 engineering remains CLOSED, Phase1C.2 STARTED and whole Phase1 research admission BLOCKED.

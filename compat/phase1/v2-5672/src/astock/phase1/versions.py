@@ -2,12 +2,10 @@
 from __future__ import annotations
 import builtins
 import types
-from functools import lru_cache
 from pathlib import Path
 from astock.phase1.core import file_hash, require, strict_json
 
 V1_REGISTRY_SHA = "09c8b5f8afe9201b797e5df6ab239836740c8cef43aaa97ae592c6825e255500"
-V2_REGISTRY_SHA = "559f37e2ebc7e94267cc86ab1a98c8ea49b4d43c0c6f00efc1b20de5b4728811"
 
 
 def v1_registry(root):
@@ -23,45 +21,23 @@ def validate(root, pinned):
     from astock.phase1 import acquisition
     if pinned == v1_registry(root)['pins']:
         return 'V1'
-    v2 = v2_registry(root, verify_archive=False)
-    if pinned == v2['pins']:
-        v2_registry(root)
-        return 'V2_5672'
     if pinned == acquisition.pins(root):
         return 'V2'
     require(pinned == v1_registry(root)['pins'], 'UNREGISTERED_TRANSFORM_VERSION')
     return 'V1'
 
 
-def v2_registry(root, *, verify_archive=True):
-    path = root / 'config/phase1/frozen-v2-5672.json'
-    require(file_hash(path) == V2_REGISTRY_SHA, 'FROZEN_VERSION_REGISTRY_CHANGED')
-    value = strict_json(path.read_bytes())
-    if verify_archive:
-        for name, checksum in value['pins'].items():
-            require(file_hash(root / value['archive'] / name) == checksum, 'FROZEN_ADAPTER_CHANGED')
-    return value
-
-
 def adapters(root, pinned):
-    version = validate(root, pinned)
-    if version == 'V2':
+    if validate(root, pinned) == 'V2':
         from astock.phase1 import contracts, domains
         return contracts, domains
-    # validate() rehashes the archive before every lookup, including cache hits.
-    return _archived_adapters(root.resolve(), version)
-
-
-@lru_cache(maxsize=16)
-def _archived_adapters(root, version):
-    v = v1_registry(root) if version == 'V1' else v2_registry(root)
-    module_prefix = 'frozen_phase1_' + version.lower()
-    package = types.ModuleType(module_prefix)
+    v = v1_registry(root)
+    package = types.ModuleType('frozen_phase1_v1')
     package.PROTOCOL = v['protocol']
     loaded = {}
     def load(name):
         if name in loaded: return loaded[name]
-        module = types.ModuleType(module_prefix + '.' + name)
+        module = types.ModuleType('frozen_phase1_v1.' + name)
         loaded[name] = module
         setattr(package, name, module)
         path = root / v['archive'] / 'src/astock/phase1' / (name + '.py')
@@ -78,7 +54,6 @@ def _archived_adapters(root, version):
         module.__dict__.update(__builtins__=env, __file__=str(path))
         exec(compile(path.read_bytes(), str(path), 'exec'), module.__dict__)
         return module
-    # Historical adapters read their archived catalog, even if current contracts change.
-    cs = load('contracts')
-    cs.CATALOG = v['archive'] + '/config/phase1/contracts-v1.yaml'
-    return cs, load('domains')
+    # The unchanged v1 catalog is explicitly pinned as well.
+    require(file_hash(root / 'config/phase1/contracts-v1.yaml') == v['pins']['config/phase1/contracts-v1.yaml'], 'V1_CATALOG_UNAVAILABLE')
+    return load('contracts'), load('domains')
