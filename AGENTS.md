@@ -1,5 +1,23 @@
 # Repository Guidelines
 
+## Active Controlled RAW49 and Full Delivery Task (2026-10-10)
+
+Latest direct human Prompt under docs/reviews/phase1-raw49-controlled authorized
+actual frozen66b1 controller/policy and bounded child derivation. Calls have now
+stopped: 49 new consumed, COMPLETE=26, FAILED=2, RAW_RETAINED=21, 0 unattempted;
+HOLD index_member_all: UNEXPLAINED_EMPTY, stock_basic: UNEXPLAINED_EMPTY. Keep earlier SSE2014 UNCERTAIN, old133, all old/RAW49 consumed states,
+three original stores/34+11 historical tables/146656 files/171 pins immutable.
+No retry/reset, further market/document/diagnostic HTTP or real fact build/adoption
+is licensed. Runtime23 pins/V1/executed5672 unchanged; retained actual66b1 archive
+is private. Complete offline full task, preservation/decoded-secret audit/docs/
+commit/push/CI/package continuously; then independent Review. Runtime1005-test CI
+belongs to66b1; documentation-only final HEAD is separately recorded. Whole
+2013–2026 request/attempt/IO/retry/isolation/admission task has finite bounds but
+licensefalse and source/resource/policy preconditions; no author data FINAL PASS.
+See docs/phase1/full-historical-delivery-task-v1.md. Older scopes below are history
+and superseded only inside this explicit batch. Phase1C.1 CLOSED,1C.2 STARTED,
+whole research admission BLOCKED.
+
 ## Active RAW50 and Source Version Integrity Batch (2026-10-10)
 
 Execute the retained RAW50/source-version Prompt and authorization under

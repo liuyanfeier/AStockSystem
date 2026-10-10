@@ -1,5 +1,20 @@
 # Phase1 Consolidated Acceptance Matrix v2
 
+## Latest independent source review and controlled acquisition
+
+F1-R independently PASS at66b1 (retained actual report); runtime1005-test CI is
+unchanged. Author actual RAW49 result: BOUNDED_CAPTURE_FINISHED_WITH_HOLDS,
+49 new attempts/47 receipts,
+0 unattempted, HOLD index_member_all: UNEXPLAINED_EMPTY, stock_basic: UNEXPLAINED_EMPTY; real facts/generations0.
+The old SSE2014 unknown and all historical bytes remain. New calendar/raw responses
+are source evidence only, not complete legal/PIT/state/rule/taxonomy coverage.
+The [whole task](full-historical-delivery-task-v1.md) has finite explicit products,
+caps, recovery/protection/resource/admission conditions; no new pilot-only budget
+or author production approval. Private proof tests and final documentation SHA/CI
+are indexed in the [controlled report](../reviews/phase1-raw49-controlled/report.md).
+
+### Retained historical correction matrix
+
 Author final local suite991 passed (24 new cases); closed production-shaped35 calls,70→71 facts and independent A/B correction rebuild passed. Baseline b350787 received CHANGES REQUIRED. These rows cover the corrective implementation; final observed results are recorded in the consolidated report/private index. Software, real coverage and execution permission are assessed separately.
 
 Latest independent review at5672e8f passed F2–F5 and CAPTURE50_RAW_ONLY, with F1-R source-version binding still CHANGES REQUIRED. The direct-human licensed RAW50 then stopped at1 UNCERTAIN/0 response/0 receipt/49 unattempted. The scoped repair now anchors conversion to origin plan/source/actual approval and freezes executed V2 bytes. New compatibility/attack/full-suite evidence and final repair SHA/CI are recorded in [the current report](../reviews/phase1-raw50-source-version/report.md) and its private index; no author independent PASS or research admission is claimed.

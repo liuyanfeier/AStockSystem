@@ -2,6 +2,22 @@
 
 Use the existing locked Python3.12 environment. Current runtime is PHASE1_INTEGRATED_V2; original source engines and contracts v1 stay frozen. See [V2 design](design-v2.md), [matrix](acceptance-matrix-v2.md) and [consolidated report](../reviews/phase1-consolidated-fix/report.md).
 
+## Latest controlled RAW49 closure and whole task
+
+See [controlled report](../reviews/phase1-raw49-controlled/report.md) and
+[whole task](full-historical-delivery-task-v1.md). Actual controller closed as
+BOUNDED_CAPTURE_FINISHED_WITH_HOLDS; 49 new attempts, COMPLETE=26, FAILED=2, RAW_RETAINED=21,
+0 unattempted. Parent/child policy approval was actual reviewed
+derivation, not author independent signing; all chains and old consumption retained.
+Do not run the controller again, clear its session or activate remaining members.
+Runtime source/23pins stayed66b1; documents are now separate delivery HEAD. Audit
+is read-only, originals remain immutable, real facts/adoption unlicensed.
+The full task uses a private exact-product generator and finite caps; source/IO/
+full-controller policy plus independent/human matching approval precede execution.
+New bounded read retries apply only to future newly approved full-task members;
+old and RAW49 consumed failures/unknown never refund. Prior RAW50 text below is
+retained historical scope, superseded only for the now-completed bounded RAW49 batch.
+
 ## Latest RAW50 stop and source binding
 
 See [actual result and scoped repair](../reviews/phase1-raw50-source-version/report.md) and [source-version design](source-version-integrity-design.md). The fixed5672e8f pilot stopped after one SSE2014 UNCERTAIN, zero response/receipt and49 unattempted members. Do not run the old50 plan again or use its approval at the repair SHA. Original V1 and executed V2_5672 adapters remain fixed; conversion uses actual source/plan/approval pins, never a generation's replacement declaration. Missing V2 source pins fail, while proven V1 remains readable.

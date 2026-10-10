@@ -10,6 +10,20 @@
 
 历史审查材料继续保留：[演练报告](docs/reviews/2026-10-01-phase1c1-review.md)、[R1-G0 设计](docs/reviews/2026-10-02-phase1c1-r1-g0-design.md)、[G1 补修](docs/reviews/2026-10-02-phase1c1-r1-g1-fix-review.md)、[G2 独立审查](docs/reviews/2026-10-02-phase1c1-r1-g2-independent-review.md)、[G3 副本交付](docs/reviews/2026-10-02-phase1c1-r1-g3-copy-review.md)、[原库部署授权](docs/reviews/2026-10-02-phase1c1-r1-g3-deployment-authorization.md)及 [R1 最终审查包](docs/reviews/2026-10-02-phase1c1-r1-g3-final-review.md)。这些文档记录当时的审批边界；当前进度以本节及 AGENTS.md 的最新状态为准。
 
+## 受控 RAW49 与全量历史交付申请（2026-10-10）
+
+F1-R来源版本修复已由独立审查通过。最新直接授权使用固定66b1内核和
+审查者原字节控制器，执行诊断及原49未消费成员；实际结果：
+**BOUNDED_CAPTURE_FINISHED_WITH_HOLDS，新增49次消费，COMPLETE=26, FAILED=2, RAW_RETAINED=21，
+0未尝试**。数据集HOLD：index_member_all: UNEXPLAINED_EMPTY, stock_basic: UNEXPLAINED_EMPTY。旧SSE2014 UNCERTAIN不变，
+新响应仅RAW_ONLY，原三库写入0、真实facts/generations0。
+
+证券旧异常是T600018.SH，而固定T00018.SH查询为空；不能互换别名或合并法律实体。
+下一份[全量任务](docs/phase1/full-historical-delivery-task-v1.md)已有各域精确种子清单、
+分母/复用/HOLD和有限request/attempt/IO上限，仍需历史来源、vintage、资源和匹配全量批准。
+见[本批报告](docs/reviews/phase1-raw49-controlled/report.md)与[操作手册](docs/phase1/operations.md)。
+本轮调用已经关闭，不重跑控制器；全Phase1研究准入仍BLOCKED。
+
 ## RAW50 与来源版本绑定修复（2026-10-10）
 
 独立审查通过固定50请求的 RAW_ONLY 采集范围；F2–F5修复通过，完整派生工程仍有F1-R来源版本绑定问题。用户授权后在固定 `5672e8f8464b20e3437ab94bd3ef17cbb05f7bcf`（991-test CI）运行既有入口，只写新增目的地。首个SSE2014成员发生传输未知，实际结果为 **1 UNCERTAIN、0回执/响应对象、49未发送**，首错停止且不重发。
