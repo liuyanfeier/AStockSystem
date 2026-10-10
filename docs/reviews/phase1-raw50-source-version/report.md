@@ -22,6 +22,8 @@ Regression evidence includes self-consistent registered V1/V2 substitution for C
 
 The first test iteration exposed a DuckDB foreign-key limitation in the attacker fixture's deletion order: four attacks failed before reaching their intended assertion. The fixture commits lineage deletion first, preserving schema constraints; failure logs and focused reruns remain private. Product validation was not relaxed.
 
+The first full suite also found an obsolete startup-only assertion that the canonical new catalog must not exist after an unlicensed fact import is rejected. RAW50 legitimately created that catalog. The regression now snapshots directory existence and every file hash, requires the same license rejection and verifies no content change, covering both fresh and already populated stores. Its focused rerun passed; the final frozen-source full run and final-SHA CI are separate observed delivery records.
+
 ## Remaining application and coverage
 
 The recovery proposal contains exactly the original49 unattempted members in order:26 calendars,17 source pilots,6 market members. It binds the unchanged original baseline, new-store prior consumption/resume digest, destination, final repair pins/SHA, one attempt, ≥1.25s spacing and first-error stop. Reviewer/human fields remain null and execution_license=false; the old RAW50 approval cannot execute this new plan. Consumed SSE2014 and all old133/FAILED/UNKNOWN/UNCERTAIN/HOLD scopes remain excluded without refund or reset.

@@ -402,9 +402,15 @@ def test_new_scope_overlap_held_and_no_weak_pit_proof(tmp_path):
 
 def test_fact_production_without_actual_approval_rejected(tmp_path):
     packages = f.sample_inputs(ROOT)[2]
+    destination = ROOT / 'data/private/phase1-integrated-v1'
+    existed = destination.exists()
+    before = {str(path.relative_to(destination)): file_hash(path)
+              for path in destination.rglob('*') if path.is_file()}
     with pytest.raises(Phase1Error, match='MATCHED_FACT_POLICY_LICENSE_REQUIRED'):
-        p.import_evidence(ROOT, ROOT / 'data/private/phase1-integrated-v1', packages, fixture=False)
-    assert not (ROOT / 'data/private/phase1-integrated-v1/catalog.duckdb').exists()
+        p.import_evidence(ROOT, destination, packages, fixture=False)
+    assert destination.exists() == existed
+    assert {str(path.relative_to(destination)): file_hash(path)
+            for path in destination.rglob('*') if path.is_file()} == before
 
 
 def test_hard_process_death_preserves_durable_consumption(tmp_path):
