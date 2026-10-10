@@ -20,12 +20,12 @@ from astock.phase1 import contracts, legacy
 from astock.phase1.core import (ENDPOINT, PRODUCTION, Phase1Error, append_log, category,
     day, digest, encoded, file_hash, instant, logical_id, overlapping, publish, require, safe_path, stamp, strict_json)
 
-DDL = "sql/offline/phase1_integrated_v2.sql"
+DDL = "sql/offline/phase1_integrated_v1.sql"
 OBJECT_FILES = {"response.body", "http-source.json", "typed.parquet", "manifest.json", "sidecar.json"}
 
 
 def pins(root: Path) -> dict:
-    names = [DDL, contracts.CATALOG, "docs/phase1/design-v2.md", "config/phase1/frozen-v1.json"]
+    names = [DDL, contracts.CATALOG, "docs/phase1/design.md"]
     names += [str(p.relative_to(root)) for p in sorted((root / "src/astock/phase1").glob("*.py"))]
     return {n: file_hash(root / n) for n in names}
 
@@ -42,38 +42,22 @@ def owner(root: Path, destination: Path, fixture: bool) -> dict:
 
 
 @contextmanager
-def store(root: Path, destination: Path, *, fixture=None, read_only=False, derived=None):
+def store(root: Path, destination: Path, *, fixture=True, read_only=False):
+    identity = owner(root, destination, fixture)
     path = destination / "catalog.duckdb"
-    if not read_only: destination.mkdir(parents=True, exist_ok=True)
+    if not read_only:
+        destination.mkdir(parents=True, exist_ok=True)
     safe_path(destination, path, exists=read_only)
     with warehouse_connection(path, read_only=read_only) as db:
-        if not db.execute('SHOW TABLES').fetchall():
-            require(not read_only, 'STORE_REQUIRED')
-            identity = owner(root, destination, fixture if fixture is not None else destination.resolve() != (root/PRODUCTION).resolve())
-            if derived:
-                require(destination.resolve() != (root/PRODUCTION).resolve(), 'DERIVED_CAPTURE_DESTINATION_FORBIDDEN')
-                identity.update(namespace='DERIVED_ONLY', source=derived)
+        if not read_only and not db.execute('SHOW TABLES').fetchall():
             db.execute((root / DDL).read_text())
-            db.execute('INSERT INTO p1_meta VALUES (?,?)', ['owner', encoded(identity).decode()])
-        identity = strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-        require(identity['root']==str(root.resolve()) and identity['destination']==str(destination.resolve()), 'ROOT_STORE_NAMESPACE_CHANGED')
-        if identity['namespace']=='DERIVED_ONLY':
-            require((fixture is None or fixture is True and identity['source']['namespace']=='FIXTURE') and (derived is None or identity['source']==derived), 'DERIVED_SCOPE_CHANGED')
-            require(set(identity['source'])=={'path','namespace'} and identity['source']['namespace'] in ('FIXTURE','PRODUCTION'), 'DERIVED_SCOPE_CHANGED')
-            owner(root,destination,True)
-        else:
-            flag=identity['namespace']=='FIXTURE'
-            require(identity['namespace'] in ('FIXTURE','PRODUCTION') and (fixture is None or fixture==flag), 'ROOT_STORE_NAMESPACE_CHANGED')
-            expected=owner(root,destination,flag)
-            expected['protocol']=identity['protocol']
-            require(identity==expected,'ROOT_STORE_NAMESPACE_CHANGED')
-        ddl = DDL if identity['protocol']==PROTOCOL else 'sql/offline/phase1_integrated_v1.sql'
-        require(identity['protocol'] in (PROTOCOL,'PHASE1_INTEGRATED_V1'), 'STORE_VERSION_UNKNOWN')
-        require(read_only or identity['protocol']==PROTOCOL, 'LEGACY_STORE_READ_ONLY')
+            db.execute('INSERT INTO p1_meta VALUES (?,?)', ["owner", encoded(identity).decode()])
+        row = db.execute('SELECT payload FROM p1_meta WHERE key=?', ["owner"]).fetchone()
+        require(row == (encoded(identity).decode(),), "ROOT_STORE_NAMESPACE_CHANGED")
         with duckdb.connect(':memory:') as reference:
-            reference.execute((root/ddl).read_text())
+            reference.execute((root / DDL).read_text())
             from astock.data.full_backfill_v1 import layout
-            require(layout(db)==layout(reference), 'STORE_SCHEMA_CHANGED')
+            require(layout(db) == layout(reference), "STORE_SCHEMA_CHANGED")
         yield db
 
 
@@ -91,8 +75,7 @@ def transaction(db, fn):
 
 def local_consumption(db) -> list:
     result = []
-    for row in db.execute('SELECT * FROM p1_attempt ORDER BY logical_id').fetchall():
-        mid,batch,request,origin,obj,at = row[:6]
+    for mid, batch, request, origin, obj, at in db.execute('SELECT * FROM p1_attempt ORDER BY logical_id').fetchall():
         states = db.execute('SELECT state FROM p1_event WHERE logical_id=? ORDER BY ordinal', [mid]).fetchall()
         result.append(dict(logical_id=mid, batch_hash=batch, request=strict_json(request.encode()),
                            origin_id=origin, object_id=obj, claimed_at=stamp(at), states=[r[0] for r in states]))
@@ -140,12 +123,6 @@ def validate_plan(root: Path, destination: Path, plan: dict, baseline: dict, db,
 def authorize(root: Path, destination: Path, plan: dict, baseline: dict, approval: dict | None,
               human: dict | None, *, live: bool, transport) -> None:
     fixture = plan['namespace'] == 'FIXTURE'
-    if approval and approval.get('test_only'):
-        from astock.phase1.authorization import validate, test_scope
-        test_scope(root,approval)
-        require(not live and type(transport) is httpx.MockTransport, 'CLOSED_MOCK_ONLY')
-        validate(root,destination,plan,approval,human)
-        return
     if fixture:
         require(not live and type(transport) is httpx.MockTransport, "CLOSED_MOCK_ONLY")
         return
@@ -189,8 +166,7 @@ def event(db, mid: str, state: str, at: datetime, payload: dict) -> None:
 def physical_validate(root: Path, destination: Path, db, mid: str) -> dict:
     row = db.execute('SELECT * FROM p1_attempt WHERE logical_id=?', [mid]).fetchone()
     require(row is not None, "ORPHAN_OBJECT")
-    _, batch, payload, origin, obj, at = row[:6]
-    auth_hash = row[6] if len(row)>6 else None
+    _, batch, payload, origin, obj, at = row
     m = strict_json(payload.encode())
     directory = safe_path(destination, destination / 'objects' / obj)
     require(directory.is_dir() and {p.name for p in directory.iterdir()} == OBJECT_FILES, "OBJECT_MEMBERSHIP")
@@ -205,29 +181,19 @@ def physical_validate(root: Path, destination: Path, db, mid: str) -> dict:
             and (source['content_length'] is None or source['content_length'] == len(body)), "SOURCE_BINDING_CHANGED")
     times = [instant(source[k]) for k in ('claimed_at', 'call_entered_at', 'retrieved_at')]
     require(times == sorted(times), "SOURCE_TIME_ORDER")
-    from astock.phase1 import versions
-    plan = strict_json(db.execute('SELECT payload FROM p1_plan WHERE plan_hash=?',[batch]).fetchone()[0].encode())
-    cs,_ = versions.adapters(root,plan['pins'])
-    decoded = cs.decode(root, m, body)
-    require(source['protocol'] == plan['protocol'] and source['fixture_only'] ==
+    decoded = contracts.decode(root, m, body)
+    require(source['protocol'] == PROTOCOL and source['fixture_only'] ==
             (strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())['namespace'] == 'FIXTURE'), 'SOURCE_NAMESPACE_CHANGED')
     if m['dataset'] == 'trade_cal':
         cross_calendar(root, destination, db, mid, m, decoded['rows'])
-    if not source['fixture_only']:
-        require(plan['protocol']==PROTOCOL,'LEGACY_PRODUCTION_AUTHORIZATION_UNCERTIFIED')
-        from astock.phase1.authorization import retained
-        checked,record=retained(root,destination,db,batch)
-        require(auth_hash==checked==source.get('authorization_hash') and instant(record['persisted_at'])<=times[0], 'CAPTURE_AUTHORIZATION_CHANGED')
-        for _,at,payload in db.execute('SELECT state,recorded_at,payload FROM p1_event WHERE logical_id=?',[mid]).fetchall():
-            require(strict_json(payload.encode()).get('authorization_hash')==checked,'EVENT_AUTHORIZATION_CHANGED')
-    manifest = dict(protocol=plan['protocol'], logical_id=mid, object_id=obj, request_hash=digest(m),
+    manifest = dict(protocol=PROTOCOL, logical_id=mid, object_id=obj, request_hash=digest(m),
                     body_hash=file_hash(paths['response.body']), source_hash=digest(source),
                     typed_hash=file_hash(paths['typed.parquet']), rows=len(decoded['rows']),
                     schema_hash=decoded['schema_hash'], completeness=decoded['completeness'],
                     envelope_profile=decoded['envelope_profile'], research_admitted=False)
     require(paths['typed.parquet'].read_bytes() == decoded['typed'], "TYPED_BYTES_CHANGED")
     require(paths['manifest.json'].read_bytes() == encoded(manifest), "MANIFEST_CHANGED")
-    sidecar = dict(protocol=plan['protocol'], logical_id=mid, object_id=obj, manifest_hash=digest(manifest), source_hash=digest(source))
+    sidecar = dict(protocol=PROTOCOL, logical_id=mid, object_id=obj, manifest_hash=digest(manifest), source_hash=digest(source))
     require(paths['sidecar.json'].read_bytes() == encoded(sidecar), "SIDECAR_CHANGED")
     receipt = db.execute('SELECT object_id,manifest_hash,source_hash,completed_at,completeness FROM p1_receipt WHERE logical_id=?', [mid]).fetchone()
     require(receipt is not None and receipt[:3] == (obj, digest(manifest), digest(source))
@@ -235,9 +201,7 @@ def physical_validate(root: Path, destination: Path, db, mid: str) -> dict:
     history = db.execute('SELECT state,recorded_at,payload FROM p1_event WHERE logical_id=? ORDER BY ordinal', [mid]).fetchall()
     require([r[0] for r in history] in (['CLAIMED', 'CALL_ENTERED', 'COMPLETE'], ['CLAIMED', 'CALL_ENTERED', 'RAW_RETAINED']), "EXACT_SUCCESS_HISTORY")
     require(stamp(history[1][1]) == source['call_entered_at'] and times[-1] <= instant(receipt[3]) <= instant(history[-1][1]), "RECEIPT_TIME_CHANGED")
-    completion=dict(manifest_hash=digest(manifest),source_hash=digest(source))
-    if auth_hash: completion['authorization_hash']=auth_hash
-    require(strict_json(history[-1][2].encode()) == completion, "COMPLETION_BINDING_CHANGED")
+    require(strict_json(history[-1][2].encode()) == dict(manifest_hash=digest(manifest), source_hash=digest(source)), "COMPLETION_BINDING_CHANGED")
     return dict(logical_id=mid, object_id=obj, rows=len(decoded['rows']), status='VALID', completeness=decoded['completeness'])
 
 
@@ -269,13 +233,7 @@ def audit(root: Path, destination: Path, db) -> dict:
     for ph, payload in db.execute('SELECT * FROM p1_plan').fetchall():
         plan = strict_json(payload.encode())
         require(digest(plan) == ph and plan['root'] == str(root.resolve()) and
-                plan['destination'] == str(destination.resolve()), 'PLAN_OWNER_OR_PINS_CHANGED')
-        from astock.phase1 import versions
-        versions.validate(root,plan['pins'])
-        if plan['namespace']=='PRODUCTION':
-            from astock.phase1.authorization import retained
-            require(plan['protocol']==PROTOCOL,'LEGACY_PRODUCTION_AUTHORIZATION_UNCERTIFIED')
-            retained(root,destination,db,ph)
+                plan['destination'] == str(destination.resolve()) and plan['pins'] == pins(root), 'PLAN_OWNER_OR_PINS_CHANGED')
         attempted = {r['logical_id']: r for r in local_consumption(db) if r['batch_hash'] == ph}
         prefix = [logical_id(m) for m in plan['members']][:len(attempted)]
         require(set(attempted) == set(prefix), 'BATCH_ORDER_PREFIX_CHANGED')
@@ -292,12 +250,6 @@ def audit(root: Path, destination: Path, db) -> dict:
                           ['CLAIMED', 'CALL_ENTERED', 'FAILED'], ['CLAIMED', 'CALL_ENTERED', 'UNCERTAIN'],
                           ['CLAIMED', 'CALL_ENTERED', 'COMPLETE'], ['CLAIMED', 'CALL_ENTERED', 'RAW_RETAINED']), "EVENT_HISTORY_CHANGED")
         require(r['logical_id'] == logical_id(r['request']), "REQUEST_ID_CHANGED")
-        if plan['namespace']=='PRODUCTION':
-            from astock.phase1.authorization import retained
-            h,record=retained(root,destination,db,r['batch_hash'])
-            stored_h=db.execute('SELECT authorization_hash FROM p1_attempt WHERE logical_id=?',[r['logical_id']]).fetchone()[0]
-            require(stored_h==h and instant(record['persisted_at'])<=instant(r['claimed_at']),'ATTEMPT_AUTHORIZATION_CHANGED')
-            require(all(strict_json(v.encode()).get('authorization_hash')==h for v, in db.execute('SELECT payload FROM p1_event WHERE logical_id=?',[r['logical_id']]).fetchall()),'EVENT_AUTHORIZATION_CHANGED')
         histories = db.execute('SELECT ordinal,recorded_at FROM p1_event WHERE logical_id=? ORDER BY ordinal', [r['logical_id']]).fetchall()
         require([v[0] for v in histories] == list(range(len(histories))) and [instant(v[1]) for v in histories] == sorted(instant(v[1]) for v in histories), "EVENT_ORDER_CHANGED")
         if states[-1] in ('COMPLETE', 'RAW_RETAINED'):
@@ -327,13 +279,7 @@ def capture(root: Path, destination: Path, db, member: dict, batch_hash: str, to
     clock = clock or Clock()
     mid, obj = logical_id(member), member.get('object_id') or str(uuid4())
     require(not db.execute('SELECT 1 FROM p1_attempt WHERE logical_id=?', [mid]).fetchone(), "NO_RESEND")
-    identity=strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-    fixture=identity['namespace']=='FIXTURE'
-    require(identity['namespace'] in ('FIXTURE','PRODUCTION'),'DERIVED_CAPTURE_FORBIDDEN')
-    auth_hash=None
-    if not fixture:
-        from astock.phase1.authorization import retained
-        auth_hash,_=retained(root,destination,db,batch_hash)
+    fixture = type(transport) is httpx.MockTransport
     require(isinstance(token, SecretStr) and bool(token.get_secret_value()), "TOKEN_REQUIRED")
     require(not fixture or token.get_secret_value().startswith('closed-'), "FIXTURE_TOKEN_REQUIRED")
     require(contracts.catalog(root)[member['dataset']]['source'] == 'TUSHARE', "OFFLINE_EVIDENCE_IMPORT_ONLY")
@@ -353,13 +299,13 @@ def capture(root: Path, destination: Path, db, member: dict, batch_hash: str, to
     require(not directory.exists(), "ORPHAN_BEFORE_CLAIM")
     claimed = instant(clock.utc())
     def claim():
-        db.execute('INSERT INTO p1_attempt VALUES (?,?,?,?,?,?,?)', [mid, batch_hash, encoded(member).decode(), member.get('origin_id', mid), obj, claimed,auth_hash])
-        event(db, mid, 'CLAIMED', claimed, dict(batch_hash=batch_hash,**({'authorization_hash':auth_hash} if auth_hash else {})))
+        db.execute('INSERT INTO p1_attempt VALUES (?,?,?,?,?,?)', [mid, batch_hash, encoded(member).decode(), member.get('origin_id', mid), obj, claimed])
+        event(db, mid, 'CLAIMED', claimed, dict(batch_hash=batch_hash))
     transaction(db, claim)
     fault('after_claim')
     entered = instant(clock.utc())
     transaction(db, lambda: event(db, mid, 'CALL_ENTERED', entered, dict(monotonic=clock.monotonic(),
-                boot=clock.boot() if hasattr(clock, 'boot') else 'FIXTURE', batch_hash=batch_hash,**({'authorization_hash':auth_hash} if auth_hash else {}))))
+                boot=clock.boot() if hasattr(clock, 'boot') else 'FIXTURE', batch_hash=batch_hash)))
     fault('after_call_entered')
     try:
         with httpx.Client(transport=transport or httpx.HTTPTransport(retries=0, verify=True, trust_env=False),
@@ -373,10 +319,10 @@ def capture(root: Path, destination: Path, db, member: dict, batch_hash: str, to
                     chunks.append(chunk)
                 body = b''.join(chunks)
     except Exception:
-        transaction(db, lambda: event(db, mid, 'UNCERTAIN', clock.utc(), dict(reason='TRANSPORT_UNKNOWN_NO_RESEND',**({'authorization_hash':auth_hash} if auth_hash else {}))))
+        transaction(db, lambda: event(db, mid, 'UNCERTAIN', clock.utc(), dict(reason='TRANSPORT_UNKNOWN_NO_RESEND')))
         raise Phase1Error('TRANSPORT_UNKNOWN_NO_RESEND') from None
     if secret_present(body, token.get_secret_value()):
-        transaction(db, lambda: event(db, mid, 'FAILED', clock.utc(), dict(reason='UNSAFE_BODY_SUPPRESSED',**({'authorization_hash':auth_hash} if auth_hash else {}))))
+        transaction(db, lambda: event(db, mid, 'FAILED', clock.utc(), dict(reason='UNSAFE_BODY_SUPPRESSED')))
         raise Phase1Error('UNSAFE_BODY_SUPPRESSED')
     length = response.headers.get('content-length')
     source = dict(protocol=PROTOCOL, request=member, logical_id=mid, object_id=obj,
@@ -385,7 +331,6 @@ def capture(root: Path, destination: Path, db, member: dict, batch_hash: str, to
                   content_length=int(length) if length and length.isdecimal() else None if not length else -1,
                   content_encoding=response.headers.get('content-encoding', ''), body_hash=hashlib.sha256(body).hexdigest(),
                   body_bytes=len(body), complete_body=True, fixture_only=fixture)
-    if auth_hash: source['authorization_hash']=auth_hash
     safe_path(destination, directory)
     directory.mkdir(parents=True)
     def put(name, content):
@@ -409,13 +354,13 @@ def capture(root: Path, destination: Path, db, member: dict, batch_hash: str, to
         status = 'COMPLETE' if decoded['completeness'] == 'CIVIL_WINDOW_VALID' else 'RAW_RETAINED'
         def complete():
             db.execute('INSERT INTO p1_receipt VALUES (?,?,?,?,?,?)', [mid, obj, digest(manifest), digest(source), clock.utc(), decoded['completeness']])
-            event(db, mid, status, clock.utc(), dict(manifest_hash=digest(manifest), source_hash=digest(source),**({'authorization_hash':auth_hash} if auth_hash else {})))
+            event(db, mid, status, clock.utc(), dict(manifest_hash=digest(manifest), source_hash=digest(source)))
             fault('before_readback')
             physical_validate(root, destination, db, mid)
         transaction(db, complete)
         return dict(logical_id=mid, status=status, rows=len(decoded['rows']), research_admitted=False)
     except Exception as error:
-        transaction(db, lambda: event(db, mid, 'FAILED', clock.utc(), dict(reason=category(error),**({'authorization_hash':auth_hash} if auth_hash else {}))))
+        transaction(db, lambda: event(db, mid, 'FAILED', clock.utc(), dict(reason=category(error))))
         raise Phase1Error(category(error)) from None
 
 
@@ -424,9 +369,8 @@ def run_batch(root: Path, destination: Path, plan: dict, baseline: dict, *, toke
               log=append_log, output=publish, fault=lambda stage: None, protect=None) -> dict:
     authorize(root, destination, plan, baseline, approval, human, live=live, transport=transport)
     fixture = plan['namespace'] == 'FIXTURE'
-    testing=bool(approval and approval.get('test_only'))
-    require(fixture or testing or clock is None, "PRODUCTION_SYSTEM_CLOCK_ONLY")
-    if fixture or testing:
+    require(fixture or clock is None, "PRODUCTION_SYSTEM_CLOCK_ONLY")
+    if fixture:
         protect = protect or (lambda: None)
     else:
         # A caller cannot replace mandatory production preservation with a noop.
@@ -444,21 +388,13 @@ def run_batch(root: Path, destination: Path, plan: dict, baseline: dict, *, toke
         audit(root, destination, db)
         protect()
         ph = digest(plan)
-        def register():
-            db.execute('INSERT INTO p1_plan VALUES (?,?)',[ph,encoded(plan).decode()])
-            if not fixture:
-                from astock.phase1.authorization import validate
-                at=stamp(clock.utc() if clock else datetime.now(timezone.utc))
-                record=dict(validate(root,destination,plan,approval,human,at=at),persisted_at=at)
-                db.execute('INSERT INTO p1_authorization VALUES (?,?,?)',[digest(record),ph,encoded(record).decode()])
-                fault('authorization_registered')
-        transaction(db,register)
+        transaction(db, lambda: db.execute('INSERT INTO p1_plan VALUES (?,?)', [ph, encoded(plan).decode()]))
         try:
             for member in plan['members']:
                 try:
                     log(destination / 'driver.ndjson', dict(stage='MEMBER_ENTER', logical_id=logical_id(member)))
                     if not fixture:
-                        authorize(root, destination, plan, baseline, approval, human, live=live, transport=transport if testing else None)
+                        authorize(root, destination, plan, baseline, approval, human, live=live, transport=None)
                         protect()
                     capture(root, destination, db, member, ph, token, transport=transport, clock=clock, fault=fault)
                     log(destination / 'driver.ndjson', dict(stage='MEMBER_COMPLETE', logical_id=logical_id(member)))

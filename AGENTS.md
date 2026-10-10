@@ -1,5 +1,23 @@
 # Repository Guidelines
 
+## Active Consolidated Phase1 Fix Batch (2026-10-10)
+
+Execute the retained consolidated fix Prompt under `docs/reviews/phase1-consolidated-fix/`.
+F1–F5 supersede the preceding software acceptance claim: source-derived integrity,
+cross-code financial identity, independent production-source rebuild, durable
+acquisition authorization and target-based coverage require repair. Complete all
+repairs, closed production-shaped rehearsal, coverage planning/application, tests,
+secret/preservation audits, commit/push and final-SHA CI without intermediate gates.
+Real market/metadata calls and original SQL writes remain0; proposals null/false.
+Retain old version bytes, approvals/reviews/171 pins and consumed failures. Only
+isolated synthetic approvals explicitly bound to TEST roots are permitted in mocks.
+Deliver once as PHASE1_CONSOLIDATED_FIX_AND_EXECUTION_READINESS_REVIEW_READY, then
+stop for independent review; Phase1 real coverage remains BLOCKED.
+Author offline acceptance991 passed (24 new consolidated cases); CLOSED TEST
+production source70→71 facts and independent A/B rebuild/correction passed.
+Final exact-SHA CI/evidence are bound in the ignored delivery index; no actual
+production execution/adoption license has been issued.
+
 ## Active Integrated Phase1 Engineering Batch
 
 The latest direct human authorization executes `docs/phase1/integrated-delivery-prompt-v1.md`;

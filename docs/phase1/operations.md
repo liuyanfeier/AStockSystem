@@ -1,4 +1,36 @@
-# Integrated Phase1 Operations
+# Phase1 V2 Consolidated Operations
+
+Use the existing locked Python3.12 environment. Current runtime is PHASE1_INTEGRATED_V2; original source engines and contracts v1 stay frozen. See [V2 design](design-v2.md), [matrix](acceptance-matrix-v2.md) and [consolidated report](../reviews/phase1-consolidated-fix/report.md).
+
+## Complete closed verification
+
+```bash
+uv run --offline --frozen python -m astock.phase1 specs
+uv run --offline --frozen python -m astock.phase1 demo --destination data/private/phase1-v2-demo
+uv run --offline --frozen python -m astock.phase1 production-rehearsal --destination data/private/phase1-v2-TEST-root
+uv run --offline --frozen python -m astock.phase1 --output data/private/target.json coverage-target --destination data/private/phase1-v2-demo --start 2025-01-01 --end 2025-05-16
+uv run --offline --frozen python -m astock.phase1 coverage --destination data/private/phase1-v2-demo --target data/private/target.json
+```
+
+Production rehearsal requires a fresh TEST root and closed transport; it creates synthetic policies/documents/licenses clearly labeled TEST_ONLY. Actual repository activation rejects these. Coverage targets bind current fact/input evidence and report known obligations separately from unknown universe/schedule denominators. Default coverage generates the same evidenced-session/listing obligations without manually enumerating missing tuples. Explicit goals can add report/vintage/taxonomy/rule requirements; a changed source generation requires a newly frozen target, never silently reusing the old hash.
+
+## Source versions and independent targets
+
+```bash
+uv run --offline --frozen python -m astock.phase1 rebuild --source data/private/phase1-integrated-v1 --destination data/private/phase1-derived-a
+uv run --offline --frozen python -m astock.phase1 rebuild --source data/private/phase1-integrated-v1 --destination data/private/phase1-derived-b
+uv run --offline --frozen python -m astock.phase1 audit --destination data/private/phase1-derived-a
+uv run --offline --frozen python -m astock.phase1 coverage --destination data/private/phase1-derived-a
+uv run --offline --frozen python -m astock.phase1 as-of --destination data/private/phase1-derived-a --security APPROVED_SECURITY_ID --event-date 2025-05-15 --as-of 2025-05-15T10:00:00Z
+uv run --offline --frozen python -m astock.phase1 rebuild --source data/private/phase1-integrated-v1 --destination data/private/phase1-derived-a
+uv run --offline --frozen python -m astock.phase1 increment --destination data/private/phase1-derived-a
+```
+
+These production-source commands are templates after actual source approval/admission; this batch deploys nothing. Rebuild targets are DERIVED_ONLY, bound to their source owner, and cannot capture/admit production packages. Source-driven rebuild on an existing target incorporates approved corrections; plain increment verifies/idempotently reuses its existing sources. A/B logical hashes must match for identical input sets. Raw/source/approval bytes are checked on every audit/query; DB self-hashes alone are insufficient.
+
+V1 sources are read-only; archived adapters and registry fix the original bytes. Never replace old plan/approval/receipt pins with current pins. Unbound old production capture is explicitly uncertified; actual adoption needs a separate reviewed policy. Register a reviewed frozen transformation before a future runtime upgrade; unknown versions fail closed. New V2 schema is created only in a fresh isolated/new licensed destination, not installed on the old original three stores.
+
+## Retained integrated operating details
 
 Use Python 3.12 and the existing locked environment. Run from the canonical repository root. Every command defaults to offline; `execute` requires `--live` plus actual matched independent approval and human license files. New production destination is `data/private/phase1-integrated-v1`, separate from all three immutable original databases.
 

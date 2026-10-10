@@ -1,5 +1,7 @@
 # Phase1 Acceptance Matrix
 
+**2026-10-10 correction:** the baseline author PASS below was superseded by independent CHANGES REQUIRED (3 P1/2 P2). Current F1–F5 implementation and verification are in the [consolidated report](../reviews/phase1-consolidated-fix/report.md) and [V2 matrix](acceptance-matrix-v2.md). The original evidence counts below remain historical; they do not certify the corrected implementation.
+
 All software results below are author offline acceptance, pending independent review. Real coverage remains BLOCKED. Public entry: `uv run --offline --frozen python -m astock.phase1`; see [operations](operations.md), [contracts/time dictionary](contracts-and-time.md) and [delivery report](../reviews/phase1-integrated/report.md).
 
 | Requirement / existing baseline | New executable entry and input evidence | Software acceptance | Real coverage / external dependency | Next action |

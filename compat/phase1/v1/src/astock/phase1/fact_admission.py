@@ -15,20 +15,10 @@ def authorize(root: Path, destination: Path, packages: list[dict], approval: dic
     require(destination.resolve() == (root / PRODUCTION).resolve(), 'CANONICAL_FACT_DESTINATION')
     require(isinstance(approval, dict) and isinstance(human, dict), 'MATCHED_FACT_POLICY_LICENSE_REQUIRED')
     expected = dict(protocol='PHASE1_FACT_ADMISSION_V1', namespace='PRODUCTION', root=str(root.resolve()),
-                    destination=str(destination.resolve()), packages_hash=digest(sorted(packages, key=digest)), pins=acquisition.pins(root) if runtime else approval.get('pins'))
-    from astock.phase1 import versions
-    versions.validate(root,expected['pins'])
+                    destination=str(destination.resolve()), packages_hash=digest(sorted(packages, key=digest)), pins=acquisition.pins(root))
     require(all(approval.get(k) == v for k, v in expected.items()), 'FACT_APPROVAL_SCOPE_CHANGED')
-    testing=bool(approval.get('test_only'))
-    if testing:
-        from astock.phase1.authorization import test_scope
-        test_scope(root,approval)
-    sha = 'TEST_ONLY' if testing else subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
-    require(not runtime or testing or sha == approval.get('implementation_sha') and not subprocess.check_output(['git', 'status', '--porcelain'], cwd=root), 'CLEAN_REVIEWED_SHA_REQUIRED')
-    if approval.get('test_only'):
-        from astock.phase1.authorization import test_scope
-        test_scope(root,approval)
-        require(human.get('test_only') is True,'TEST_LICENSE_NAMESPACE')
+    sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+    require(not runtime or sha == approval.get('implementation_sha') and not subprocess.check_output(['git', 'status', '--porcelain'], cwd=root), 'CLEAN_REVIEWED_SHA_REQUIRED')
     require(approval.get('execution_license') is True and approval.get('reviewer') and approval.get('review_ref')
             and isinstance(approval.get('policy'), dict), 'INDEPENDENT_FACT_POLICY_REQUIRED')
     require(human.get('execution_license') is True and human.get('source') == 'DIRECT_USER'

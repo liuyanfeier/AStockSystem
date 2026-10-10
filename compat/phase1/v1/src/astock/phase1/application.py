@@ -50,11 +50,7 @@ def propose(root: Path, selection_path: Path, market6_path: Path, baseline: dict
         stage['checks'] = [dict(dataset=m['dataset'], logical_id=logical_id(m), params=m['params'], fields=m['fields'], contract_hash=m['contract_hash'],
                                 cap=cs[m['dataset']]['cap'], date_axis=cs[m['dataset']]['date_axis'], empty_policy='STOP_UNLESS_MATCHED_EVIDENCE',
                                 permission='ACCOUNT_PERMISSION_UNVERIFIED', research_usage=False) for m in stage.pop('requests')]
-    from astock.phase1.planning import full_target
-    return dict(coverage_plan=full_target(), coverage_target_protocol='PHASE1_COVERAGE_TARGET_V2',
-                authorization_protocol='PHASE1_CAPTURE_AUTHORIZATION_V2',
-                storage_protocol='PHASE1_INTEGRATED_V2', derived_rebuild='SOURCE_BOUND_DERIVED_ONLY_NO_CAPTURE_PERMISSION',
-                historical_versions='FROZEN_V1_READ_ONLY_REDERIVATION;UNBOUND_PRODUCTION_CAPTURE_UNCERTIFIED', protocol='PHASE1_UNIFIED_EXECUTION_APPLICATION_V1', execution_license=False, reviewer=None, approved_at=None,
+    return dict(protocol='PHASE1_UNIFIED_EXECUTION_APPLICATION_V1', execution_license=False, reviewer=None, approved_at=None,
                 implementation_sha=None, delivery_sha=None, independent_review_ref=None, human_license=None,
                 root=str(root.resolve()), destination=str(destination.resolve()), pins=acquisition.pins(root),
                 legacy_snapshot_hash=digest(baseline), protected_history=protected_history,
@@ -87,7 +83,7 @@ def expand_market(root: Path, destination: Path, baseline: dict, *, start: str, 
     """Offline deterministic proposal only; missing civil coverage stops expansion."""
     require(type(budget) is int and budget > 0, 'EXPLICIT_EXPANSION_CAP_REQUIRED')
     require(day(start) <= day(end), 'EXPANSION_WINDOW')
-    with acquisition.store(root, destination, read_only=True) as db:
+    with acquisition.store(root, destination, fixture=destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as db:
         pipeline.inputs(root, destination, db)
         pipeline.verify_generation_inputs(root, destination, db)
         rows = pipeline.fact_rows(db)

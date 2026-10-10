@@ -32,13 +32,9 @@ def main(argv=None):
     s.add_argument('--source-row', type=int, required=True)
     s.add_argument('--exchange')
     s.add_argument('--asset-type')
-    for command in ('demo', 'production-rehearsal', 'audit', 'coverage', 'build', 'increment'):
+    for command in ('demo', 'audit', 'coverage', 'build', 'increment'):
         s = sub.add_parser(command)
         s.add_argument('--destination', type=Path, required=True)
-        if command=='coverage':s.add_argument('--target',type=Path)
-    s = sub.add_parser('coverage-target')
-    s.add_argument('--destination',type=Path,required=True)
-    s.add_argument('--start');s.add_argument('--end');s.add_argument('--as-of');s.add_argument('--goals',type=Path)
     s = sub.add_parser('import-evidence')
     s.add_argument('--destination', type=Path, required=True)
     s.add_argument('--packages', required=True)
@@ -109,7 +105,7 @@ def main(argv=None):
     try:
         if args.command == 'specs':
             cs = contracts.catalog(root)
-            result = dict(protocol=__import__('astock.phase1',fromlist=['PROTOCOL']).PROTOCOL, datasets={k: dict(domain=v['domain'], fields=list(v['fields']), cap=v['cap'], date_axis=v['date_axis']) for k, v in cs.items()}, live_default=False)
+            result = dict(protocol='PHASE1_INTEGRATED_V1', datasets={k: dict(domain=v['domain'], fields=list(v['fields']), cap=v['cap'], date_axis=v['date_axis']) for k, v in cs.items()}, live_default=False)
         elif args.command == 'legacy': result = legacy.snapshot(root)
         elif args.command == 'identity-compatibility': result = evidence.compatible_identity(root)[1]
         elif args.command == 'legacy-resolve':
@@ -120,27 +116,19 @@ def main(argv=None):
                 event_date=day(args.event_date), raw_object_id=UUID(args.source_object), raw_row_number=args.source_row,
                 knowledge_as_of=instant(args.as_of), provider_exchange=args.exchange, provider_asset_type=args.asset_type).model_dump(mode='json')
         elif args.command == 'demo': result = fixtures.demo(root, args.destination)
-        elif args.command=='production-rehearsal':
-            from astock.phase1.production_fixture import rehearsal
-            result=rehearsal(root,args.destination)
         elif args.command == 'import-evidence': result = pipeline.import_evidence(root, args.destination, load(args.packages),
                      fixture=not args.live, approval=load(args.approval) if args.approval else None,
                      human=load(args.human) if args.human else None)
         elif args.command in ('build', 'increment', 'rebuild'):
             result = pipeline.build(root, args.destination, source_destination=args.source if args.command == 'rebuild' else None)
         elif args.command == 'audit':
-            with acquisition.store(root, args.destination, read_only=True) as db:
+            with acquisition.store(root, args.destination, fixture=args.destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as db:
                 pipeline.verify_generation_inputs(root, args.destination, db)
                 result = dict(capture=acquisition.audit(root, args.destination, db), lineage=pipeline.validate_lineage(db))
-        elif args.command == 'coverage': result = pipeline.coverage(root, args.destination,target_manifest=load(args.target) if args.target else None)
-        elif args.command=='coverage-target':
-            from astock.phase1 import coverage_targets
-            with acquisition.store(root,args.destination,read_only=True) as db:
-                pipeline.verify_generation_inputs(root,args.destination,db)
-                result=coverage_targets.target(pipeline.fact_rows(db),start=args.start,end=args.end,as_of=args.as_of,goals=load(args.goals) if args.goals else None)
+        elif args.command == 'coverage': result = pipeline.coverage(root, args.destination)
         elif args.command == 'as-of': result = pipeline.query(root, args.destination, args.security, args.event_date, args.as_of, taxonomy=args.taxonomy)
         elif args.command in ('adjust', 'rule', 'reference'):
-            with acquisition.store(root, args.destination, read_only=True) as db:
+            with acquisition.store(root, args.destination, fixture=args.destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as db:
                 pipeline.inputs(root, args.destination, db)
                 pipeline.verify_generation_inputs(root, args.destination, db)
                 pipeline.validate_lineage(db)

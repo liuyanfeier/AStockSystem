@@ -1,0 +1,20 @@
+# Phase1 Unified Coverage Candidate v2
+
+Target:2013-01-01–2026-09-30; three venues,5,021 civil days. This is one **license-false candidate** accompanying the same50-member application, not an execution budget. The private application fixes all requests, root/destination, contracts/pins, actual consumption and protected-history reference. Actual reviewer, approval time and human license remain null.
+
+| Domain | Calculable candidate / expansion rule | Pilot question / unresolved denominator |
+|---|---|---|
+| Civil calendar |42 venue-year upper candidates;15,063 civil rows upper. Preserve27 untouched original members. | SSE2013 complete FAILED body needs separate adoption; SZSE2013 consumed unknown and BSE inception/HOLD cannot be resent or assumed. |
+| Market/status | Six interfaces × verified trading-date union, excluding reused/consumed/overlapping HOLD;30,126 civil-date upper before exclusions. | Actual trading union, universe, caps, sparse empty semantics and permission. The preserved market6 establishes RAW_ONLY evidence; absence is not NORMAL/suspension. |
+| Security | Nine current venue/status partition candidates; daily bak_basic archives from2016 require evidenced trading dates. | L/D/P scope support, episode/legal-entity continuity, historical native mapping, missing2013–15 sources; document totals unknown. |
+| Financial |55 report quarters plus2012Q4 predecessor; four domains give nominal224 report probes per evidenced security. | Universe/report types, required earlier predecessors, caps, archive/revision/vintage completeness and announcement precision. Actual totals unknown; current ann_date alone does not establish vintage. |
+| Industry | SW2014/SW2021 × L1/L2/L3 gives six classification candidates; pilot retains only two L1 calls. | Member universe, activation dates, historical intervals/exit inclusivity and caps. Membership requests unknown. |
+| Rules | Official version × venue/board/status/IPO effective scope. | Historical source inventory, deferred clauses, listing age, order/session/lot rules. Document budget unknown; synthetic rules are not evidence. |
+| Reference | Retain index_basic/index_daily two-call pilot;5,021 civil-date daily upper for one minimal reference. | Actual sessions, permission/cap/completeness; no index research expansion. |
+| IO | Calendar upper15,063 rows; market rows=sum(active evidenced universe/session) × applicable endpoints. | Raw/normalized bytes and storage budget unknown until source pilots; full protection scan remains mandatory (latest51.57s, prior53.95s). |
+
+The50 pilot members remain27 calendars +17 source probes +6 preserved market requests, with unchanged dates, order and origin IDs. Sources cover three stock_basic cases, one bak_basic date, four financial domains/two securities, two classification versions, one membership and two reference probes. No permission, cap or empty-result assumption is silently widened. Matched finite expansion requires an actual independent review and explicit human budget/destination license; pilot success cannot authorize a full historical budget.
+
+`coverage-target` binds range/as-of, full fact digest, source dependencies, taxonomy and optional report/vintage goals. Default `coverage` generates known session/listing/market/status/rule/membership obligations without handwritten missing tuples. Output separates expected, observed, missing, duplicate_conflict, uncertified and source_backed_not_applicable by dataset/year/venue/security/episode; full-universe and schedule unknowns remain explicit. Explicit financial goals select versions at known_by and can require ann_date/f_ann_date or an exact source object; a later revision cannot satisfy an earlier vintage. A modified/stale target is rejected. Fresh source additions require a new target.
+
+Original133 and consumed FAILED/UNKNOWN/UNCERTAIN remain immutable and excluded. The old252 finite identity observations are reused whole; no guessed aliases or new author approvals. Full Phase1 completion additionally needs actual coverage, historical PIT/status/rule/industry integrity, second-source sampling, rebuild/increment and independent final admission.

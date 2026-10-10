@@ -61,14 +61,6 @@ def facts(root: Path, member: dict, rows: list[dict], source: dict) -> tuple[lis
     for ordinal, row in enumerate(rows):
         k = knowledge(row, source, member.get('metadata', {}), fixture=source['fixture_only'])
         payload = dict(row, source_publication_date=k.pop('source_publication_date'), vintage_status=k.pop('vintage_status'))
-        if ds == 'security_identifiers' and member.get('metadata',{}).get('identifier_datasets'):
-            payload['datasets']=member['metadata']['identifier_datasets'].get(row['identifier'],[])
-        if ds in FINANCIAL and member.get('metadata',{}).get('financial_identity_basis'):
-            basis=member['metadata']['financial_identity_basis']
-            require(basis.get('dataset')==ds and basis.get('source')==c['source'] and basis.get('basis')=='PUBLICATION_NATIVE'
-                    and len(basis.get('evidence_hash',''))==64,'FINANCIAL_IDENTITY_POLICY_REQUIRED')
-            require(source['fixture_only'] or source.get('approved_knowledge_policy_hash'),'FINANCIAL_IDENTITY_POLICY_REQUIRED')
-            payload['financial_identity_basis']=basis
         entity = row.get('security_id') or row.get('ts_code') or row.get('index_code')
         event = row.get('trade_date') or row.get('cal_date') or row.get('end_date') or row.get('valid_from')
         start, end = row.get('valid_from'), row.get('valid_to')
@@ -142,12 +134,12 @@ def active(row: dict, event: str) -> bool:
     return (row['valid_from'] is None or day(row['valid_from']) <= day(event)) and (row['valid_to'] is None or day(event) < day(row['valid_to']))
 
 
-def resolve(rows: list[dict], native: str, event: str, as_of: str, *, exchange=None, source=None, dataset=None) -> dict:
+def resolve(rows: list[dict], native: str, event: str, as_of: str, *, exchange=None, source=None) -> dict:
     mappings, conflicts = known_versions([r for r in rows if r['dataset'] == 'security_identifiers'], as_of)
-    def scoped(r):
-        return r['payload']['identifier']==native and active(r,event) and (exchange is None or r['payload']['exchange']==exchange) and (source is None or r['payload']['source']==source) and (dataset is None or dataset in r['payload'].get('datasets',['*']) or '*' in r['payload'].get('datasets',['*']))
-    matches=[r for r in mappings if scoped(r)]
-    if any(scoped(r) for r in conflicts) or len(matches)>1:
+    matches = [r for r in mappings if r['payload']['identifier'] == native and active(r, event)
+               and (exchange is None or r['payload']['exchange'] == exchange)
+               and (source is None or r['payload']['source'] == source)]
+    if any(r['payload']['identifier'] == native and active(r, event) for r in conflicts) or len(matches) > 1:
         return dict(status='CONFLICT', security_id=None, episode_id=None)
     if not matches:
         return dict(status='EVIDENCE_REQUIRED', security_id=None, episode_id=None)
@@ -172,55 +164,26 @@ def historical_snapshot(rows: list[dict], security_id: str, event: str, as_of: s
     identities = [resolve(rows, n, event, as_of) for n in native]
     exchanges = {r['exchange'] for r in identities if r['status'] == 'RESOLVED'}
     boards = {r['board'] for r in identities if r['status'] == 'RESOLVED'}
-    episodes = {r['episode_id'] for r in identities if r['status']=='RESOLVED'}
-    financial_unknowns=[]
-    def financial_identity(r):
-        scope=dict(source='TUSHARE',dataset=r['dataset'])
-        identity=resolve(rows,r['entity'],r['event_date'],as_of,**scope)
-        if identity['status']=='RESOLVED':return identity
-        if identity['status']=='CONFLICT':return identity
-        basis=r['payload'].get('financial_identity_basis')
-        if basis:
-            publication=r['payload'].get('f_ann_date') or r['payload'].get('ann_date')
-            candidate=resolve(rows,r['entity'],publication,as_of,**scope)
-            if candidate['status']=='RESOLVED':
-                known_episodes,conflicts=known_versions([x for x in rows if x['dataset']=='listing_episodes'],as_of)
-                matches=[x for x in known_episodes if x['payload']['episode_id']==candidate['episode_id'] and active(x,r['event_date'])]
-                if len(matches)==1 and not any(x['payload']['episode_id']==candidate['episode_id'] and active(x,r['event_date']) for x in conflicts):return candidate
-            return dict(status='CONFLICT' if candidate['status']=='CONFLICT' else 'EVIDENCE_REQUIRED',security_id=None,episode_id=None)
-        return identity
     def belongs(r):
         if r['dataset'] == 'trade_cal':
             return r['payload']['exchange'] in exchanges and r['event_date'] == day(event).isoformat()
         if r['dataset'] == 'rule_history':
             return r['payload']['exchange'] in exchanges and r['payload']['board'] in boards | {'*'}
         if r['entity'] == security_id:
-            return not r['payload'].get('episode_id') or r['payload']['episode_id'] in episodes
-        if r['domain']=='financial':
-            identity=financial_identity(r)
-            if identity['status']!='RESOLVED':
-                financial_unknowns.append(dict(domain='financial',dataset=r['dataset'],native=r['entity'],reason='FINANCIAL_IDENTITY_'+identity['status']))
-            return identity['status']=='RESOLVED' and identity['security_id']==security_id and identity['episode_id'] in episodes
-        if r['entity'] is not None:
-            identity = resolve(rows, r['entity'], r['event_date'] or event, as_of,source='TUSHARE',dataset=r['dataset'])
+            return True
+        if r['entity'] in native:
+            identity = resolve(rows, r['entity'], r['event_date'] or event, as_of)
             return identity['status'] == 'RESOLVED' and identity['security_id'] == security_id
         return False
     result = dict(security_id=security_id, event_date=day(event).isoformat(), as_of=stamp(instant(as_of)),
                   query_mode='CURRENT_RECONSTRUCTION' if instant(as_of).astimezone(SHANGHAI).date() > day(event) else 'HISTORICAL_KNOWLEDGE_CUTOFF',
-                  research_admitted=False, domains={}, unknowns=[dict(domain='security',reason='CURRENT_IDENTITY_'+r['status']) for r in identities if r['status']!='RESOLVED'])
+                  research_admitted=False, domains={}, unknowns=[])
     for domain in ('security', 'calendar', 'market', 'status', 'financial', 'industry', 'rule', 'index'):
         chosen = [r for r in known if r['domain'] == domain and belongs(r) and active(r, event)]
         if domain == 'market':
             chosen = [r for r in chosen if r['event_date'] == day(event).isoformat()]
         if domain == 'financial':
-            selected=[r for r in rows if r['domain']=='financial' and r['available_at'] and instant(r['available_at'])<=instant(as_of) and r['event_date'] and day(r['event_date'])<=day(event) and belongs(r)]
-            normalized=[dict(r,series_key=digest(dict(dataset=r['dataset'],security_id=security_id,episode_id=financial_identity(r)['episode_id'],period=r['event_date'],report_type=r['payload'].get('report_type'),comp_type=r['payload'].get('comp_type')))) for r in selected]
-            chosen,financial_conflicts=known_versions(normalized,as_of)
-            by_hash={r['fact_hash']:r for r in selected}
-            chosen=[by_hash[r['fact_hash']] for r in chosen]
-            if financial_conflicts:
-                chosen=[]
-                result['unknowns'].append(dict(domain='financial',reason='SAME_TIME_VERSION_CONFLICT'))
+            chosen = [r for r in chosen if r['event_date'] is not None and day(r['event_date']) <= day(event)]
         if domain == 'industry':
             chosen = [r for r in chosen if r['dataset'] == 'industry_membership' and
                       (taxonomy is None or r['payload']['classification_version'] == taxonomy)]
@@ -253,7 +216,6 @@ def historical_snapshot(rows: list[dict], security_id: str, event: str, as_of: s
         result['domains'][domain] = chosen
         if not chosen:
             result['unknowns'].append(dict(domain=domain, reason='EVIDENCE_REQUIRED'))
-    result['unknowns'] += [dict(t) for t in {tuple(sorted(q.items())) for q in financial_unknowns}]
     return result
 
 

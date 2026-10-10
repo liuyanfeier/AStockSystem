@@ -33,7 +33,7 @@ def import_evidence(root: Path, destination: Path, packages: list[dict], *, fixt
             contracts.decode(root, member, body)
             oid = digest(package)
             source = dict(protocol=PROTOCOL, object_id=oid, request=member, retrieved_at=stamp(instant(observed)),
-                          body_hash=digest(package['response']), fixture_only=fixture, transform_pins=acquisition.pins(root),
+                          body_hash=digest(package['response']), fixture_only=fixture,
                           evidence=package['evidence'], evidence_hash=digest(package), **policy)
             if package.get('raw_reference'):
                 source.update(interpretation.validate(root, package, destination=destination, db=db))
@@ -63,11 +63,7 @@ def inputs(root: Path, destination: Path, db) -> list[dict]:
         source = strict_json(safe_path(destination, directory / 'http-source.json', exists=True).read_bytes())
         result.append(dict(object_id=oid, kind='CAPTURE', request=source['request'], source=source,
                            body_path=str(directory / 'response.body'), source_path=str(directory / 'http-source.json'),
-                           body_hash=file_hash(directory / 'response.body'), source_hash=digest(source),
-                           transform_pins=strict_json(db.execute('SELECT payload FROM p1_plan WHERE plan_hash=?',[source['batch_hash']]).fetchone()[0].encode())['pins']))
-    owner=strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-    from astock.phase1 import versions
-    default_pins=versions.v1_registry(root)['pins'] if owner['protocol']=='PHASE1_INTEGRATED_V1' else acquisition.pins(root)
+                           body_hash=file_hash(directory / 'response.body'), source_hash=digest(source)))
     prior = db.execute("SELECT payload FROM p1_meta WHERE key='evidence'").fetchone()
     registered = strict_json(prior[0].encode()) if prior else []
     directory = destination / 'evidence'
@@ -87,7 +83,7 @@ def inputs(root: Path, destination: Path, db) -> list[dict]:
             require(all(source[k] == v for k, v in interpreted.items()), 'INTERPRETATION_SOURCE_CHANGED')
         result.append(dict(object_id=oid, kind='DOCUMENT_FACT', request=source['request'], source=source,
                            body_path=str(base / 'response.body'), source_path=str(base / 'source.json'),
-                           body_hash=file_hash(base / 'response.body'), source_hash=digest(source), transform_pins=source.get('transform_pins',default_pins)))
+                           body_hash=file_hash(base / 'response.body'), source_hash=digest(source)))
     if registered and any(not r['source']['fixture_only'] for r in result if r['kind'] == 'DOCUMENT_FACT'):
         # Recheck actual approval/source bytes at reopen; no admission is inferred
         # from an author-provided policy_hash alone.
@@ -105,56 +101,15 @@ def inputs(root: Path, destination: Path, db) -> list[dict]:
 
 
 def verify_generation_inputs(root, destination, db):
-    """Compare every generation to raw-derived truth, including all immutable columns."""
-    from astock.phase1 import versions
     refs = db.execute("SELECT payload FROM p1_meta WHERE key='generation_inputs'").fetchone()
-    generations = db.execute('SELECT * FROM p1_generation ORDER BY generation_hash').fetchall()
-    if not generations:
-        require(not fact_rows(db) and not db.execute('SELECT 1 FROM p1_quality').fetchone(), 'UNPUBLISHED_FACTS')
-        return
-    require(refs is not None, 'GENERATION_INPUT_MEMBERSHIP')
-    descriptors = strict_json(refs[0].encode())
-    require(len({r['object_id'] for r in descriptors}) == len(descriptors), 'GENERATION_INPUT_MEMBERSHIP')
-    owner = strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-    expected_namespace = owner.get('source',{}).get('namespace',owner['namespace'])
-    by_id = {r['object_id']: r for r in descriptors}
-    persisted = {r['fact_hash']: r for r in fact_rows(db)}
-    expected_all, quality_all, seen_objects = {}, {}, set()
-    omit = ('body_path', 'source_path', 'transform_pins')
-    for gh, payload, content, namespace, completed in generations:
-        manifest = strict_json(payload.encode())
-        require(digest(manifest) == gh and namespace == manifest['namespace'], 'GENERATION_BINDING_CHANGED')
-        require(namespace==expected_namespace and all(r['source']['fixture_only']==(namespace=='FIXTURE') for r in manifest['objects']), 'GENERATION_NAMESPACE_CHANGED')
-        versions.validate(root, manifest['pins'])
-        require(len({r['object_id'] for r in manifest['objects']}) == len(manifest['objects']), 'GENERATION_INPUT_MEMBERSHIP')
-        expected = {}
-        for bound in manifest['objects']:
-            oid = bound['object_id']; seen_objects.add(oid)
-            require(oid in by_id, 'GENERATION_INPUT_MEMBERSHIP')
-            descriptor = by_id[oid]
-            require({k:v for k,v in descriptor.items() if k not in omit} ==
-                    {k:v for k,v in bound.items() if k not in omit}, 'GENERATION_INPUT_BINDING_CHANGED')
-            pinned = bound.get('transform_pins', manifest['pins'])
-            if descriptor.get('transform_pins'):
-                require(descriptor['transform_pins'] == pinned, 'TRANSFORM_BINDING_CHANGED')
-            fs, qs = source_decode(root, descriptor, destination=destination, db=db, pinned=pinned)
-            expected.update({f['fact_hash']:f for f in fs})
-            for q in qs:
-                q = dict(q, event_date=day(q['event_date']).isoformat() if q['event_date'] else None, source_object=oid)
-                quality_all[digest(q)] = q
-        hashes = [r[0] for r in db.execute('SELECT fact_hash FROM p1_lineage WHERE generation_hash=? ORDER BY fact_hash', [gh]).fetchall()]
-        require(hashes == sorted(expected) and all(persisted.get(h) == expected[h] for h in hashes), 'SOURCE_DERIVED_FACT_SET_CHANGED')
-        require(content == digest([expected[h] for h in sorted(expected)]), 'SOURCE_DERIVED_CONTENT_CHANGED')
-        expected_all.update(expected)
-    require(seen_objects == set(by_id), 'GENERATION_INPUT_MEMBERSHIP')
-    require(persisted == expected_all, 'SOURCE_DERIVED_FACT_SET_CHANGED')
-    actual_quality = {}
-    for h, ds, entity, date, reason, oid, payload in db.execute('SELECT * FROM p1_quality').fetchall():
-        q = strict_json(payload.encode())
-        require(digest(q) == h and (ds,entity,date.isoformat() if date else None,reason,oid) ==
-                tuple(q[k] for k in ('dataset','entity','event_date','reason','source_object')), 'QUALITY_BINDING_CHANGED')
-        actual_quality[h] = q
-    require(actual_quality == quality_all, 'SOURCE_DERIVED_QUALITY_SET_CHANGED')
+    if refs:
+        descriptors = strict_json(refs[0].encode())
+        bound = {r['object_id']: r for p, in db.execute('SELECT input_manifest FROM p1_generation').fetchall()
+                 for r in strict_json(p.encode())['objects']}
+        require({r['object_id'] for r in descriptors} == set(bound), 'GENERATION_INPUT_MEMBERSHIP')
+        for descriptor in descriptors:
+            require({k: v for k, v in descriptor.items() if k not in ('body_path', 'source_path')} == bound[descriptor['object_id']], 'GENERATION_INPUT_BINDING_CHANGED')
+            source_decode(root, descriptor, destination=destination, db=db)
 
 
 def fact_rows(db) -> list[dict]:
@@ -175,18 +130,9 @@ def fact_rows(db) -> list[dict]:
     return output
 
 
-def source_decode(root: Path, descriptor: dict, *, destination=None, db=None, pinned=None) -> tuple[list, list]:
+def source_decode(root: Path, descriptor: dict, *, destination=None, db=None) -> tuple[list, list]:
     require(file_hash(Path(descriptor['body_path'])) == descriptor['body_hash'] and
             file_hash(Path(descriptor['source_path'])) == descriptor['source_hash'], 'INPUT_CHANGED_DURING_BUILD')
-    require(Path(descriptor['source_path']).read_bytes() == encoded(descriptor['source']) and
-            descriptor['request'] == descriptor['source']['request'] and descriptor['object_id'] == descriptor['source']['object_id'], 'INPUT_SOURCE_DESCRIPTOR_CHANGED')
-    if descriptor['kind'] == 'CAPTURE':
-        origin = Path(descriptor['body_path']).parents[2]
-        if destination is not None and origin.resolve() == destination.resolve() and db is not None:
-            acquisition.physical_validate(root, origin, db, descriptor['source']['logical_id'])
-        else:
-            with acquisition.store(root, origin, read_only=True) as original:
-                acquisition.physical_validate(root, origin, original, descriptor['source']['logical_id'])
     if descriptor['kind'] == 'DOCUMENT_FACT':
         directory = Path(descriptor['body_path']).parent
         package = strict_json(safe_path(directory, directory / 'package.json', exists=True).read_bytes())
@@ -201,35 +147,22 @@ def source_decode(root: Path, descriptor: dict, *, destination=None, db=None, pi
             batch = [strict_json(safe_path(store, store / 'evidence' / i / 'package.json', exists=True).read_bytes()) for i in source['batch_object_ids']]
             checked = authorize(root, store, batch, source['approval'], source['human'], runtime=False)
             require(all(source[k] == v for k, v in checked.items()), 'GENERATION_POLICY_CHANGED')
-    from astock.phase1 import versions
-    cs, ds = versions.adapters(root, pinned or descriptor.get('transform_pins') or acquisition.pins(root))
-    decoded = cs.decode(root, descriptor['request'], Path(descriptor['body_path']).read_bytes())
-    return ds.facts(root, descriptor['request'], decoded['rows'], descriptor['source'])
+    decoded = contracts.decode(root, descriptor['request'], Path(descriptor['body_path']).read_bytes())
+    return domains.facts(root, descriptor['request'], decoded['rows'], descriptor['source'])
 
 
 def build(root: Path, destination: Path, *, source_destination: Path | None = None,
           fault=lambda stage: None) -> dict:
     """A rebuild imports fixed validated inputs; increment merges immutable facts."""
     source_destination = source_destination or destination
-    derived = None
-    if source_destination.resolve() != destination.resolve():
-        with acquisition.store(root, source_destination, read_only=True) as src:
-            verify_generation_inputs(root,source_destination,src)
-            descriptors=inputs(root,source_destination,src)
-            source_owner=strict_json(src.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-            if source_owner['namespace']=='DERIVED_ONLY':
-                descriptors += strict_json(src.execute("SELECT payload FROM p1_meta WHERE key='generation_inputs'").fetchone()[0].encode())
-            source_namespace=source_owner.get('source',{}).get('namespace',source_owner['namespace'])
-            derived=dict(path=str(source_destination.resolve()),namespace=source_namespace)
+    if source_destination != destination:
+        with acquisition.store(root, source_destination, fixture=source_destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as src:
+            descriptors = inputs(root, source_destination, src)
     else:
         descriptors = None
-    with acquisition.store(root, destination, derived=derived) as db:
-        target_owner=strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-        fixture=target_owner.get('source',{}).get('namespace',target_owner['namespace'])=='FIXTURE'
+    fixture = destination.resolve() != (root / PRODUCTION).resolve()
+    with acquisition.store(root, destination, fixture=fixture) as db:
         descriptors = descriptors if descriptors is not None else inputs(root, destination, db)
-        if target_owner['namespace']=='DERIVED_ONLY' and not descriptors:
-            refs=db.execute("SELECT payload FROM p1_meta WHERE key='generation_inputs'").fetchone()
-            descriptors=strict_json(refs[0].encode()) if refs else []
         require(bool(descriptors), 'NONEMPTY_BUILD_INPUTS_REQUIRED')
         require(all(r['source']['fixture_only'] == fixture for r in descriptors), 'REBUILD_NAMESPACE_CHANGED')
         refs = db.execute("SELECT payload FROM p1_meta WHERE key='generation_inputs'").fetchone()
@@ -239,7 +172,6 @@ def build(root: Path, destination: Path, *, source_destination: Path | None = No
         manifest = dict(protocol=PROTOCOL, namespace='FIXTURE' if fixture else 'PRODUCTION', pins=acquisition.pins(root), objects=[
             {k: v for k, v in r.items() if k not in ('body_path', 'source_path')} for r in descriptors])
         generation = digest(manifest)
-        verify_generation_inputs(root, destination, db)
         old = fact_rows(db)
         prepared, findings = [], []
         for r in descriptors:
@@ -247,8 +179,7 @@ def build(root: Path, destination: Path, *, source_destination: Path | None = No
             prepared.extend(fs)
             findings.extend(dict(q, event_date=day(q['event_date']).isoformat() if q['event_date'] else None,
                                  source_object=r['object_id']) for q in qs)
-        expected = {f['fact_hash']: f for f in prepared}
-        require(all(expected.get(f['fact_hash']) == f for f in old), 'OLD_FACT_NOT_SOURCE_DERIVED')
+        expected = {f['fact_hash']: f for f in old + prepared}
         content_hash = digest([expected[h] for h in sorted(expected)])
         previous = db.execute('SELECT input_manifest,logical_content_hash FROM p1_generation WHERE generation_hash=?', [generation]).fetchone()
         if previous:
@@ -272,7 +203,6 @@ def build(root: Path, destination: Path, *, source_destination: Path | None = No
             for r in descriptors:
                 source_decode(root, r, destination=destination, db=db)
             require(fact_rows(db) == [expected[h] for h in sorted(expected)], 'GENERATION_READBACK_CHANGED')
-            verify_generation_inputs(root, destination, db)
             validate_lineage(db)
         acquisition.transaction(db, append)
         return dict(status='COMPLETE', generation_hash=generation, logical_content_hash=content_hash, facts=len(expected), research_admitted=False)
@@ -295,13 +225,11 @@ def validate_lineage(db) -> dict:
         require(all(by_hash[h]['source_object'] in objects for h in hashes), 'LINEAGE_SOURCE_MISSING')
         checked += 1
     require(set(by_hash) == referenced, 'UNPUBLISHED_FACTS')
-    owner = strict_json(db.execute("SELECT payload FROM p1_meta WHERE key='owner'").fetchone()[0].encode())
-    verify_generation_inputs(Path(owner['root']), Path(owner['destination']), db)
     return dict(status='VALID', generations=checked, facts=len(rows))
 
 
-def coverage(root: Path, destination: Path, *, expectations: list | None = None, target_manifest=None) -> dict:
-    with acquisition.store(root, destination, read_only=True) as db:
+def coverage(root: Path, destination: Path, *, expectations: list | None = None) -> dict:
+    with acquisition.store(root, destination, fixture=destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as db:
         acquisition.audit(root, destination, db)
         verify_generation_inputs(root, destination, db)
         validate_lineage(db)
@@ -346,18 +274,13 @@ def coverage(root: Path, destination: Path, *, expectations: list | None = None,
         changed = [k for k, v in converted.items() if v is not None and reference['payload'][k] is not None and v != reference['payload'][k]]
         if changed:
             findings.append(dict(dataset='market_crosscheck', entity=reference['entity'], event_date=reference['event_date'], source_object=reference['source_object'], reason='CROSS_SOURCE_VALUE_DISAGREEMENT', fields=changed, selection='NEITHER_SOURCE_OVERWRITTEN'))
-    from astock.phase1 import coverage_targets
-    target_report=coverage_targets.evaluate(rows,target_manifest or coverage_targets.target(rows))
-    for goal in target_report['obligations']:
-        if goal['state']=='missing':
-            findings.append(dict(dataset=goal['dataset'],entity=goal.get('entity'),event_date=goal['event_date'],source_object=None,reason='EXPECTED_OBSERVATION_MISSING_NOT_INFERRED_SUSPENDED'))
     for q in findings:
         candidates = [r for r in rows if r['entity'] == q.get('entity') and r['event_date'] == q.get('event_date')]
         identity = domains.resolve(rows, q.get('entity'), q['event_date'], max((r['available_at'] for r in candidates), default=stamp())) if q.get('entity') and q.get('event_date') else {}
         q['exchange'] = identity.get('exchange') or next((r['payload'].get('exchange') for r in candidates if r['payload'].get('exchange')), 'UNKNOWN')
         q['episode_id'] = identity.get('episode_id') or 'UNKNOWN'
     dimensions = Counter((q['dataset'], q['reason'], (q.get('event_date') or 'UNKNOWN')[:4], q.get('entity') or 'UNKNOWN', q['exchange'], q['episode_id']) for q in findings)
-    return dict(status='SOFTWARE_AUDIT_VALID_REAL_ADMISSION_BLOCKED', target_coverage=target_report, datasets=dict(Counter(r['dataset'] for r in rows)),
+    return dict(status='SOFTWARE_AUDIT_VALID_REAL_ADMISSION_BLOCKED', datasets=dict(Counter(r['dataset'] for r in rows)),
                 domains=dict(Counter(r['domain'] for r in rows)), reasons=dict(Counter(q['reason'] for q in findings)),
                 dimensions=[dict(dataset=d, reason=q, year=y, entity=e, exchange=x, episode_id=ep, count=n) for (d, q, y, e, x, ep), n in sorted(dimensions.items())],
                 findings=findings, old_findings_preserved=402060, research_admitted=False,
@@ -365,7 +288,7 @@ def coverage(root: Path, destination: Path, *, expectations: list | None = None,
 
 
 def query(root: Path, destination: Path, security_id: str, event: str, as_of: str, *, taxonomy=None) -> dict:
-    with acquisition.store(root, destination, read_only=True) as db:
+    with acquisition.store(root, destination, fixture=destination.resolve() != (root / PRODUCTION).resolve(), read_only=True) as db:
         inputs(root, destination, db)
         verify_generation_inputs(root, destination, db)
         validate_lineage(db)

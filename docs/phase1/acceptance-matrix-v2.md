@@ -1,0 +1,16 @@
+# Phase1 Consolidated Acceptance Matrix v2
+
+Author final local suite991 passed (24 new cases); closed production-shaped35 calls,70→71 facts and independent A/B correction rebuild passed. Baseline b350787 received CHANGES REQUIRED. These rows cover the corrective implementation; final observed results are recorded in the consolidated report/private index. Software, real coverage and execution permission are assessed separately.
+
+| Requirement | Entry / source evidence | Corrective software acceptance | Real coverage / dependencies | Next action |
+|---|---|---|---|---|
+| Source-derived facts/PIT/quality | pipeline generation verification; immutable raw and document policies | Every generation and consumer uses complete re-derivation; EPS99/time/source-row/member/eligibility/quality attacks rejected | No new real facts admitted; vintage/source policy still requires matched approval | Independent F1 review |
+| Security and cross-code financial histories | domains.resolve/snapshot; scoped identifiers and episodes | Four financial domains, two versions, old/new codes and code reuse/conflicts exercised | Only252 existing finite observations accepted; universe/history incomplete | Actual identity/episode/financial source pilots |
+| Independent rebuild/version compatibility | build/rebuild; DERIVED_ONLY owner and frozen-v1 registry | Production-shaped A/B query/hash; correction/idempotence; genuine v1 read-only rebuild; no capture grant | TEST policies are synthetic; no new production deployment | Review new destinations, source manifests and exact version pins |
+| Capture/recovery authorization | authorization before claim; attempt/event/source/receipt chain | Missing/false/changed/registration-failure/process-death cases checked; historical evidence uses execution-time version |50 pilot unlicensed; stopped/unknown consumption retained | Matched independent review + direct human license |
+| Market/adjustment/status/rules/industry/reference | existing23 contracts and current domain consumers | Preserve nonempty all-domain/PIT/causal regressions; missing bar distinct from sourced full suspension; interval/taxonomy/rule gaps explicit | Historic state/rule/industry and second-source coverage incomplete | Source pilots and reviewed documentary fact packages |
+| Coverage target/public entry | coverage-target/coverage --target; civil calendars/evidenced listing universe | Default finds missing days/securities; all counters/dimensions; target tamper/stale/unknown prerequisites | Full universe, financial vintages and calendars not certified | Freeze actual target and source dependency set |
+| Unified full-target planning | planning/application; preserved27+17+6 members | Computed per-domain candidates/formulas and unknowns, V2 binding, license=false | No account permissions/full budgets/vintage proof | Pilot answers then matched finite expansions |
+| History/secrets/CI | complete legacy guard, current staged paths, final exact SHA | Final suite/doctor/contracts/preservation/secrets and CI observed at delivery | Original stores/historical bytes unchanged; research BLOCKED | One unified independent Review |
+
+The software status is author verification, not independent PASS or full Phase1 completion. Actual calendars/market requests, original SQL writes and production approvals remain0 in this correction batch.

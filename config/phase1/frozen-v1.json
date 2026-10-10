@@ -1,0 +1,24 @@
+{
+  "protocol": "PHASE1_INTEGRATED_V1",
+  "implementation_sha": "334f44aa96aa8c3d57127a97294aebe15773f696",
+  "delivery_sha": "b3507877b5d91f700f6ec26b890868fb3ff8b6c5",
+  "archive": "compat/phase1/v1",
+  "pins": {
+    "config/phase1/contracts-v1.yaml": "c34cfeb527f64e634ea388906c21a2404471cd320db784c3f01631f0ffc3a861",
+    "sql/offline/phase1_integrated_v1.sql": "b4b2cf0c33ec404f224e436d916800b18ef87b4361116049ba678364e32a6829",
+    "docs/phase1/design.md": "4ca69e75fec3eeb5ae5e30ff855ff0f4275a5dcfe75a5e3bbf53ca714e3f34f2",
+    "src/astock/phase1/__init__.py": "083ae0edd95044daa46defd66321ed54725ebd6924e56499e9aa955ac4473693",
+    "src/astock/phase1/__main__.py": "801be08535fd1559e376018419e90ed6e8b5fafbb95ca907c6f4ff562ccfbb66",
+    "src/astock/phase1/acquisition.py": "796676ab94b9d322ae2c16bb97b0c84d949f075031bb4c2dc92124998ff2ae68",
+    "src/astock/phase1/application.py": "6e1f70dec331783476633a765ee1da4923ffd040a8fd6b88364491b44797e292",
+    "src/astock/phase1/contracts.py": "fc10db161cd7add21f068ad1c69a3b3842734dd6cacd10ec528acd333e707369",
+    "src/astock/phase1/core.py": "95c7f5f7b5fda7e55d52fc7110044bcf917c9de8df968d2f8d25bff0aafe696c",
+    "src/astock/phase1/domains.py": "c45cb60095e6b9643d6b13b2b7e288d3bc53dae0c96d02078bf16bdcc6d3f8b0",
+    "src/astock/phase1/evidence.py": "893f2c3f454f8fe7cf284f8ae78dfe504757acd76d83c6a79edd8528b2cbd8c2",
+    "src/astock/phase1/fact_admission.py": "50f7d4476c851bcfc6eff7ee2bb4963ee77ad573abec4a56596db939a8dad26b",
+    "src/astock/phase1/fixtures.py": "728ea600465a30aa0138a4dae0e59f24b59a21cece9baad4023e90bac731ed1c",
+    "src/astock/phase1/interpretation.py": "656a729faf3eeba748ad5ccb862832d3d5a9bd285ae2ef19ed9034c989ab1f6b",
+    "src/astock/phase1/legacy.py": "4b9b6135f4838ffbac565d6d7f0cd84fb457b409a1c9461c4e5ea39885dcee1d",
+    "src/astock/phase1/pipeline.py": "bf9289d2675fd1c0477043fa4babc1e5fb4685f795851d3bac9aa5f8b63d622a"
+  }
+}

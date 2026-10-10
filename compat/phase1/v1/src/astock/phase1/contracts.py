@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import io
-from functools import lru_cache
-from copy import deepcopy
 from datetime import timedelta
 from pathlib import Path
 
@@ -18,13 +16,8 @@ FINANCIAL = {"income", "balancesheet", "cashflow", "fina_indicator"}
 MARKET = {"daily", "daily_basic", "adj_factor", "stk_limit", "suspend_d", "stock_st"}
 
 
-@lru_cache(maxsize=8)
-def _catalog_bytes(body):
-    return yaml.safe_load(body)
-
-
 def catalog(root: Path) -> dict:
-    result = deepcopy(_catalog_bytes((root / CATALOG).read_bytes()))
+    result = yaml.safe_load((root / CATALOG).read_bytes())
     require(result["protocol"] == "PHASE1_INTEGRATED_V1", "CATALOG_PROTOCOL")
     for name, c in result["datasets"].items():
         require(c["key"] and set(c["key"]) <= set(c["fields"]), "CATALOG_KEY")
