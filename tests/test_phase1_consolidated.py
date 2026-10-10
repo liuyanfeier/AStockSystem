@@ -107,12 +107,30 @@ def test_default_coverage_and_frozen_target_staleness(demo,tmp_path):
     missing=[r for r in t['obligations'] if r['state']=='missing']
     assert any(r['dataset']=='daily' and r['event_date']=='2025-01-03' for r in missing)
     assert t['expected']>t['observed'] and t['uncertified']>0 and t['unknown_denominators']
+    assert all(next(r for r in t['obligations'] if r['dataset']==ds and r['event_date']=='2025-01-02' and r.get('security_id')=='S1')['state']=='observed' for ds in ('daily','daily_basic','adj_factor','stk_limit'))
+    assert any(r['dataset']=='industry_membership' and r.get('security_id')=='S1' and r['state']=='observed' for r in t['obligations'])
     with a.store(ROOT,demo,read_only=True) as db:rows=p.fact_rows(db)
     custom=ct.target(rows,goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',known_by='2025-03-01T00:00:00Z')]);assert ct.evaluate(rows,custom)['missing']>0
     vintage=ct.target(rows,goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',known_by='2025-04-15T10:00:00Z',ann_date='20250401')])
     assert ct.evaluate(rows,vintage)['obligations'][-1]['state']=='observed'
     wrong=ct.target(rows,goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',known_by='2025-04-15T10:00:00Z',ann_date='20250501')])
     assert ct.evaluate(rows,wrong)['obligations'][-1]['state']=='missing'
+    retained=ct.target(rows,goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',known_by='2025-06-02T00:00:00Z',ann_date='20250401')])
+    assert ct.evaluate(rows,retained)['obligations'][-1]['state']=='observed'
+    ceiling=ct.target(rows,as_of='2025-04-15T10:00:00Z',goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',known_by='2025-06-02T00:00:00Z',ann_date='20250501')])
+    assert ct.evaluate(rows,ceiling)['obligations'][-1]['state']=='missing'
+    original=next(r for r in rows if r['dataset']=='income' and r['payload']['ann_date']=='20250401')
+    exact=ct.target(rows,goals=[dict(dataset='income',entity='000001.SZ',event_date='2024-12-31',source_object=original['source_object'])])
+    assert ct.evaluate(rows,exact)['obligations'][-1]['state']=='observed'
+    # Inapplicable rule states/venues must not hide the applicable positive rule.
+    rules=deepcopy(rows)
+    base=next(r for r in rules if r['dataset']=='rule_history' and d.active(r,'2025-01-02'))
+    base['payload']['state']='ST'
+    other=deepcopy(base);other['payload']['state']='NORMAL';other['series_key']=digest('OTHER_STATE');rules.append(other)
+    other_venue=deepcopy(base);other_venue['payload']['exchange']='SSE';other_venue['series_key']=digest('OTHER_VENUE');rules += [other_venue,deepcopy(other_venue)]
+    rules[-1]['payload']['price_limit_ratio']=.99
+    rule=next(r for r in ct.evaluate(rules,ct.target(rules))['obligations'] if r['dataset']=='rule_history' and r['event_date']=='2025-01-02' and r['security_id']=='S1')
+    assert rule['state']=='observed' and rule['observed_versions']==1
     custom['start']='2025-01-02'
     with pytest.raises(Phase1Error,match='TARGET_CHANGED'):ct.evaluate(rows,custom)
     stale=ct.target(rows);stale['facts_hash']='a'*64;stale['target_hash']=digest({k:v for k,v in stale.items() if k!='target_hash'})

@@ -12,7 +12,7 @@
 
 ## Phase1 合并修复（2026-10-10）
 
-此前整体交付获独立 **CHANGES REQUIRED（3 P1、2 P2）**，967项测试通过不能代替完整工程验收。当前批次统一修复原始证据重推导、跨码财务身份、生产来源独立重建、持久授权链及覆盖目标，并更新同一50请求申请。见[合并修复报告](docs/reviews/phase1-consolidated-fix/report.md)、[V2验收矩阵](docs/phase1/acceptance-matrix-v2.md)及[操作手册](docs/phase1/operations.md)。本轮作者离线验收 **991 passed（新增24项）**，闭合生产形状演练覆盖持久授权、70→71条派生事实及独立A/B重建。真实调用/原库写入仍为0，实际许可尚未签发；最终SHA/CI及证据包由私有交付索引记录，等待统一独立Review。
+此前整体交付获独立 **CHANGES REQUIRED（3 P1、2 P2）**，967项测试通过不能代替完整工程验收。当前批次统一修复原始证据重推导、跨码财务身份、生产来源独立重建、持久授权链及覆盖目标，并更新同一50请求申请。见[合并修复报告](docs/reviews/phase1-consolidated-fix/report.md)、[V2验收矩阵](docs/phase1/acceptance-matrix-v2.md)及[操作手册](docs/phase1/operations.md)。本轮最终源码全套 **990 passed**，并行私有演练干扰的1项目录快照用例在停演练后单独复验通过（新增24项均通过），闭合生产形状演练覆盖持久授权、70→71条派生事实及独立A/B重建。真实调用/原库写入仍为0，实际许可尚未签发；最终无并行干扰的全套结果、SHA/CI及证据包由私有交付索引记录，等待统一独立Review。
 
 ## Phase1 整体工程交付（历史作者自检）
 

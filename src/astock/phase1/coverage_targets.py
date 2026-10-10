@@ -59,28 +59,38 @@ def evaluate(rows,t):
     results=[]
     for goal in obligations:
         ds=goal['dataset'];date=goal['event_date'];entity=goal.get('entity')
-        # Select versions at an explicit goal cutoff before testing that vintage.
-        scoped_known=domains.known_versions(rows,goal['known_by'])[0] if goal.get('known_by') else known
-        candidates=[r for r in scoped_known if r['dataset']==ds and (entity is None or r['entity']==entity)]
+        # A named archived vintage is an inventory goal, not the latest report.
+        # Keep the target's knowledge ceiling even when a deadline is later.
+        cutoff=min((at,goal.get('known_by',at)),key=instant)
+        pool=[r for r in rows if r['dataset']==ds and (entity is None or r['entity']==entity)]
+        # Episode is a target dimension; only explicit-episode facts carry it.
+        fields=['state_type','classification_version','report_type','comp_type','ann_date','f_ann_date','vintage_status']
+        if ds in ('security_status','security_identifiers','listing_episodes'):fields.append('episode_id')
+        for field in fields:
+            if field in goal:pool=[r for r in pool if r['payload'].get(field)==goal[field]]
+        if goal.get('source_object'):pool=[r for r in pool if r['source_object']==goal['source_object']]
+        if ds=='rule_history':pool=[r for r in pool if r['payload']['exchange']==goal['venue'] and r['payload']['board'] in ('*',goal['board'])]
+        candidates,scoped_conflicts=domains.known_versions(pool,cutoff)
         if ds in ('industry_membership','security_status','rule_history'):candidates=[r for r in candidates if domains.active(r,date)]
         else:candidates=[r for r in candidates if r['event_date']==date]
-        for field in ('episode_id','state_type','classification_version','report_type','comp_type'):
-            if field in goal:candidates=[r for r in candidates if r['payload'].get(field)==goal[field]]
-        if goal.get('known_by'):candidates=[r for r in candidates if instant(r['available_at'])<=instant(goal['known_by'])]
-        for field in ('ann_date','f_ann_date','vintage_status'):
-            if field in goal:candidates=[r for r in candidates if r['payload'].get(field)==goal[field]]
-        if goal.get('source_object'):candidates=[r for r in candidates if r['source_object']==goal['source_object']]
-        if ds=='rule_history':candidates=[r for r in candidates if r['payload']['exchange']==goal['venue'] and r['payload']['board'] in ('*',goal['board'])]
-        reason=None;state='observed' if candidates else 'missing'
-        conflict_rows=[r for r in conflicts if r['dataset']==ds and (entity is None or r['entity']==entity) and (r['event_date']==date or domains.active(r,date))]
-        if len(candidates)>1 or conflict_rows:state='duplicate_conflict'
-        if not candidates and ds=='daily':
-            suspended=[r for r in known if r['dataset']=='suspend_d' and r['entity']==entity and r['event_date']==date and r['payload']['suspend_type']=='S' and r['payload']['suspend_timing'] is None]
-            if len(suspended)==1:state='source_backed_not_applicable';reason='FULL_DAY_SUSPENSION_SOURCE'
+        scoped_known=known if cutoff==at else domains.known_versions(rows,cutoff)[0]
+        statuses=[]
         if ds=='rule_history':
-            statuses=[r for r in known if r['dataset']=='security_status' and r['entity']==goal['security_id'] and r['payload']['state_type']=='RISK_WARNING' and domains.active(r,date)]
+            statuses=[r for r in scoped_known if r['dataset']=='security_status' and r['entity']==goal['security_id'] and r['payload']['state_type']=='RISK_WARNING' and domains.active(r,date)]
+            if len(statuses)==1:
+                states=('*',statuses[0]['payload']['state_value'])
+                candidates=[r for r in candidates if r['payload']['state'] in states]
+                scoped_conflicts=[r for r in scoped_conflicts if r['payload']['state'] in states]
+        reason=None;state='observed' if candidates else 'missing'
+        conflict_rows=[r for r in scoped_conflicts if r['event_date']==date or domains.active(r,date)]
+        if len(candidates)>1 or conflict_rows:state='duplicate_conflict'
+        if not candidates and not conflict_rows and ds=='daily':
+            sparse=[r for r in scoped_known if r['dataset']=='suspend_d' and r['entity']==entity and r['event_date']==date]
+            suspended=[r for r in sparse if r['payload']['suspend_type']=='S' and r['payload']['suspend_timing'] is None]
+            if len(suspended)==1 and not any(r['payload']['suspend_type']=='R' for r in sparse):state='source_backed_not_applicable';reason='FULL_DAY_SUSPENSION_SOURCE'
+        if ds=='rule_history':
             if len(statuses)!=1:state='uncertified';reason='RULE_STATUS_UNKNOWN_OR_CONFLICT'
-            elif candidates and not all(r['payload']['state'] in ('*',statuses[0]['payload']['state_value']) for r in candidates):state='missing';reason='RULE_STATE_SCOPE_MISSING'
+            elif not candidates and not conflict_rows:reason='RULE_STATE_SCOPE_MISSING'
         if ds=='security_status' and not candidates:state='uncertified';reason='MISSING_STATE_NOT_NORMAL'
         results.append(dict(goal,state=state,reason=reason,observed_versions=len(candidates)))
     counts=Counter(r['state'] for r in results)
