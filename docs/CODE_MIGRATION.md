@@ -1,0 +1,46 @@
+# 代码迁移与删除清单
+
+2026-10-11；依据实际源码、导入、动态 adapter、CLI、配置 pin 与回归。
+本批不删除源码、配置或回归测试，不添加替代业务框架。
+DEPRECATE 表示退出新业务默认入口；现有历史命令并未被代码禁用。
+MIGRATE/后续 DELETE 是带验收条件的计划，不表示迁移已完成。
+
+| 路径/能力 | 分类 | 实际用途与依据 | 下一步/退出条件 |
+|---|---|---|---|
+| paths.py、settings.py、cli/main.py、uv.lock、pyproject.toml | KEEP | 诊断、秘密类型、路径、依赖与实际入口；doctor/tests 使用 | 保留；Research 子入口拆分后再评估 CLI 历史部分 |
+| data/availability.py、identity.py、provider_identity.py | REUSE | 知识时间、来源域身份、官方码/原生表示；有时点回归 | 新 adapter 遵循相同语义；有限身份不能放大全市场 |
+| data/contracts.py、curation.py | REUSE | v1/v2 契约、单位、空表类型与配置摘要；不是空占位 | Research adapter 复用验证；新版契约独立版本，不改旧 bytes |
+| data/warehouse_lock.py、raw_validation.py | REUSE | 锁前连接、读写权限、物理 raw/sidecar 证明 | 新 store 复用，保留竞争/kill/fork/攻击回归 |
+| data/raw_writer.py、receipt_integrity.py | REUSE | 不可变发布、回执/谱系；也耦合旧 schema/请求 | 只复用适合新 store 的原语；旧 migrate/写入路径不自动调用 |
+| data/tushare_client.py | REUSE | 实际 HTTPS/端点/重定向/秘密保护，不是 SDK 占位 | 新采集边界另实现持久预算/停止策略；不自动继承旧重试行为或许可 |
+| data/slice_errors.py、audit.py、transport_diagnostics.py | KEEP | 安全错误、MOCK/RequestParams、脱敏观测被旧/新数据工具导入 | 不把旧 MOCK/传输探针当业务采集器；按依赖逐步提取 |
+| data/probe.py、probe_review.py、probe_audit.py | DEPRECATE | 固定 Phase1B 探测/审查；真实历史仍需可读验证 | 不用于新增研究采集；迁移活跃调用后删除旧生产入口，必要审计留存 |
+| data/slice_plan.py、slice_capture.py | DEPRECATE | 固定133/21日演练与消费生命周期，有回归/历史账本 | 不重跑；Research ingestion 替代后移除新增采集路径，保留消费读取 |
+| data/slice_curate.py、slice_dq.py、bootstrap.py | MIGRATE | 实际类型化清洗、因果审计、有限身份，非通用 universe 服务 | 提取通用单位/校验；验证旧源→新观察查询；不制造全市场身份/日历 |
+| data/receipt_schema.py、receipt_migration.py | KEEP | schema007 检验与显式迁移仍被旧回执/回归依赖 | 历史读取兼容；新 Research schema 不走旧部署 |
+| data/reconstruction.py、reconstruction_dq.py、admission_delta.py | MIGRATE | R2 Context、审批绑定、事务合并、generation 与 DQ 的真实现 | 新用途复用事务/来源/时间原则；独立验证再退出旧业务写入，保留读回 |
+| data/acquisition_proposal.py、admission_metadata.py、admission_offline.py、admission_rehearsal.py | DEPRECATE | 特定旧审批/合成候选演练工作流，仍被其他代码/测试导入 | 不作为研究前置流程；移出活跃消费者后删重复工作流，回归保留有意义部分 |
+| data/admission_metadata_live.py、full_backfill_v1.py、capture_continuation_v3.py | DEPRECATE | 精确七请求/全量方案/停止库延续；新 Phase1 引用工具函数和历史读取 | 没有新调用许可；迁出通用辅助函数与消费读取，再删除旧 live 入口 |
+| data/__init__.py | KEEP | 包初始化，只有 docstring；不是业务功能 | 保留包本身，不据此宣称已有功能 |
+| phase1/contracts.py、domains.py、core.py | REUSE | 解码、知识/有效时间、复权、规则、原生身份和 hash | adapter 复用；既有源码/设计 pin 不被随手改写 |
+| phase1/pipeline.py、interpretation.py、evidence.py、fact_admission.py | MIGRATE | 来源重推导、批准绑定、事实/质量/谱系/原子 generation、真实来源校验 | Research Store 另设用途/读接口；不能直接把真实 fact build 当普通导入 |
+| phase1/acquisition.py、authorization.py、legacy.py | MIGRATE | durable 授权/消费、请求停止、原三库只读保护 | Research ingestion 按当次许可复用原则/原语；旧消费 adapter 持续保留 |
+| phase1/planning.py、application.py、coverage_targets.py、__main__.py | DEPRECATE | 全域目标、全历史请求/申请与旧CLI；不是业务筛选 | 不执行全历史计划；覆盖衡量转为具体报告用途，迁移后删除旧业务入口 |
+| phase1/versions.py、__init__.py | KEEP | 来源版本判定、原始 pin 与动态 decoder 依赖 | 保留历史版本只读验证，不能冒充新 V2 来源 |
+| phase1/fixtures.py、production_fixture.py | KEEP | 真实路径的闭合合成/生产形状演练；有攻击与兼容回归 | 只用于测试，不作真实批准 |
+| compat/phase1/v1、v2-5672（38个文件，388,476逻辑字节） | KEEP | versions.adapters 动态加载契约/domains；两份 design 重复但有 hash 依赖 | 冻结解码资产；全部来源独立新 decoder 等价验证或封存恢复后才退出 |
+| features、regime、sectors、screening、catalysts、portfolio、backtest、reports 八包 | NEEDS_VERIFICATION | 当前只含 Reserved docstring；paths.REQUIRED_DIRECTORIES 与 doctor 要求这些目录 | 在已有包实现业务；不通过删目录/改检查伪装清理。完成能力后变 KEEP |
+| config/regime.yaml、risk.yaml、universe.yaml、data_sources.yaml | NEEDS_VERIFICATION | disabled/null 的配置骨架，test_config 明确验证；无运行时策略解析器 | 新功能引入版本加载器，保留未知语义；风险参数待用户批准 |
+| config/contracts、curation、dq、slices、probes、full_backfill_v1、phase1 | KEEP / DEPRECATE | 契约/DQ/冻结版本保留；固定演练配置退出新业务。存在运行/配置/历史 hash 依赖 | 新配置另版本；旧 replay 参数不扩大许可，不能仅按旧命名删除 |
+| tests/test_*.py、warehouse_worker.py、fixtures | KEEP | 全套1005项基线，时间/事务/回执/源版本/进程保护等真实回归 | 不删重要断言、不skip；迁移后修改消费者与等价验证，淘汰仅确证无价值的重复测试 |
+| 本批可证明无依赖的源码 | DELETE：0 | 空包仍为 doctor 所需；旧 live 代码仍有导入/CLI/历史源依赖 | 不做主观批量删除；文件名扫描不是删除证据 |
+
+## 主动删除的后续责任
+
+Research V1 首批建立单一 query/import/report 路径和明确 consumers 清单。
+迁移完成的旧生产分支应在同批或紧随的迁移提交删除，不接受“新实现可用但旧实现永久仍活跃”。
+验收须覆盖相同合法输入、拒绝/缺失/冲突、单位/时间、来源读回、故障/回滚及恢复。
+
+历史 decoder、真实消费账本与必要回归属于来源兼容资产，不是第二套活跃研究系统。
+若某旧文件同时含通用 helper 和过期 live 入口，先迁出依赖并验证，不能删除 helper 破坏旧证据读取。
+本批没有替换任何数据业务实现，所以没有以“已替换”名义删除未经迁移验证的代码。

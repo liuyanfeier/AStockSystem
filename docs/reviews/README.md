@@ -1,17 +1,11 @@
-# Review Artifacts
+# 历史审查资料
 
-Commit lightweight human/AI review summaries and manifests in `docs/reviews/`.
-Use descriptive date-prefixed names such as `YYYY-MM-DD-phase0-review.md`.
-Existing Phase 0 acceptance evidence remains in `docs/phase0_report.md`.
+本目录保留实际授权、独立结论、实现/修复报告和来源 manifest。
+它们记录当时范围，不自动成为当前执行任务，也不意味着许可证可重复使用。
 
-A summary or manifest should identify the reviewed commit, scope, commands and
-results, limitations/open questions, and artifact paths or checksums when relevant.
-Do not include credentials, account details or raw market datasets. Append dated
-corrections or add a new summary rather than rewriting historical conclusions.
+请从 [历史证据索引](../HISTORY.md) 定位重要资料。
+当前方向与能力以 [项目宪章](../PROJECT_CHARTER.md)、[当前状态](../CURRENT_STATE.md)
+和当前用户明确授权为准。作者自检、独立审查、真实数据用途和执行许可分别判断。
 
-Large/generated runtime reports remain under ignored `reports/`; raw, curated and
-warehouse data remain ignored. Link or describe those artifacts in a small review
-manifest when needed; do not force-add runtime output to Git for a review.
-
-This is a storage/documentation policy only. No report generator, upload service,
-artifact publisher or retention infrastructure is implemented.
+真实响应、数据库、实际许可、个人持仓/成交与私密研究留在 ignored 私有目录。
+公开材料只含脱敏摘要；保留失败/未知状态，不重签历史审批，不改写 Git 历史。
