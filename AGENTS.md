@@ -57,3 +57,16 @@ uv run --offline --frozen astock data contracts
 data/private/、private/、data/ 或 reports/。不 force-add，不打印/提交 token，
 不持有券商凭据。公开材料仅放脱敏摘要。提交前检查路径、diff 及明文/编码/解码凭据。
 Git 只保护代码和文档，不替代私有数据备份。旧来源版本与消费事实的恢复不能通过 reset/retry 实现。
+
+## 仓库内自包含交付与 Review
+
+- 从本批开始，交付内容随代码提交；用户只需提供 PR 或分支链接，无需重复转交 Prompt、报告和截图。
+- 维护单一 [当前 Review 入口](docs/REVIEW.md)：记录本批用户授权范围、验收条件、基线、变更、
+  验证命令/结果、准确的受测 SHA 与 CI 链接、未完成项和恢复边界；文档随实际实现更新。
+- 每个 commit 保持聚焦且可回滚，提交说明解释目的；每批统一审查，不为每个 commit 新建审批报告。
+  使用 PR 时按仓库模板填写；最终审查版本从 PR head 或 git rev-parse HEAD 获取，避免文档自引用 SHA。
+- Review 必须读取实际 diff、相关依赖与测试，核对该 SHA 的 CI；作者摘要不是独立 PASS。
+  pending/失败/未验证如实记录，前一 SHA 的成功不能冒充最终 HEAD 的成功。
+- 私有数据与凭据仍不入 Git。公开保留核验方法、脱敏结果和局限；缺少访问权限的 reviewer
+  应注明无法独立核验，不要求用户每次打包私密材料，也不能据摘要宣称真实数据已完整验收。
+- 普通软件交付持续完成必要修复后统一 Review；独立结论不自动授权真实采集、私有破坏性删除或交易。

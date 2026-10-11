@@ -12,6 +12,8 @@
 - [Research V1 开发入口](docs/RESEARCH_V1.md)：下一批直接建设候选观察报告。
 - [代码迁移清单](docs/CODE_MIGRATION.md) · [存储治理](docs/STORAGE_GOVERNANCE.md)。
 - [历史证据索引](docs/HISTORY.md) · [本次清理记录](docs/REPOSITORY_RESET.md)。
+- [当前 Review 入口](docs/REVIEW.md)：交付范围、提交基线、验证证据及未完成项。
+  审查时提供 PR 或分支链接即可，从此入口读取材料并核查实际 diff 和当前 HEAD 的 CI。
 
 ## 当前能做什么
 
