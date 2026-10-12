@@ -40,7 +40,7 @@ def markdown(snapshot: dict) -> str:
                       f"1日收益{display(f['return_1'],percent=True)} / 窗口收益{display(f['window_return'],percent=True)} / 相对基准{display(f['relative_return'],percent=True)}",
                       f"均线{display(f['ma'])} / 前高{display(f['prior_high'])} / 平均成交额CNY{display(f['mean_amount_cny'])}",
                       f"成交活跃比{display(f['activity_ratio'])}；日波动{display(f['volatility_daily'],percent=True)}；排序：{card.get('ranking_basis','窗口收益')}",
-                      f"状态：ST={card['status']['st']}，停牌={card['status']['suspended']}；风险预算未设定；交易资格false。"])
+                      f"状态：ST={card['status']['st']}，停牌观察={card['status']['suspended']}（含日内事件，非全天/收盘后可交易判定）；风险预算未设定；交易资格false。"])
         for setup in card.get("setups", []):
             lines.append(f"待研究Setup {setup['kind']}：{setup['state']}，参考{display(setup['reference'])}；{setup['condition']}")
         for title, key in (("入场观察条件", "entry_observation"), ("反面证据与风险", "counter_evidence"),

@@ -152,6 +152,8 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
                     require(v in {"UNKNOWN", "YES", "NO"}, "STATUS_ENUM")
                     row[f] = v
                 if spec.adapter == "tushare-response-v1":
+                    if raw.get("event_key"):
+                        row["event_key"] = raw["event_key"]
                     row["status_event"] = dict(api=spec.request["api"], suspend_type=raw.get("suspend_type"),
                                                suspend_timing=raw.get("suspend_timing"), warning_type=raw.get("type"))
                 row["up_limit"] = number(raw.get("up_limit"), nullable=True)
@@ -193,7 +195,7 @@ def load_bundle(path: Path, manifest: dict | None = None) -> tuple[Bundle, list[
         for row in parsed:
             key = (spec.dataset, row.get("code"), row.get("exchange") if spec.dataset == "calendar" else None, row.get("date"))
             if spec.dataset == "status" and spec.adapter == "tushare-response-v1":
-                key = (*key[:3], (key[3], spec.sha256))
+                key = (*key[:3], (key[3], spec.sha256, row.get("event_key")))
             require(key not in seen, "DUPLICATE_OR_CONFLICT")
             seen[key] = row
             if spec.dataset == "instruments":

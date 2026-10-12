@@ -375,3 +375,25 @@ def test_manual_flat_then_reopen_starts_new_thesis(full_capture):
         path.write_bytes(encoded(e));append_event(store,path)
     h=journal_snapshot(store,'2026-10-16T20:00:00+08:00',{})['positions'][0]
     assert h['original_thesis']=='new thesis' and h['shares']==50
+
+
+def test_same_day_distinct_suspension_events_retained(full_capture):
+    plan,dest,bundle,store,bid,p=full_capture
+    b=read_json(bundle)
+    spec=next(f for f in b['files'] if f['request']['api']=='suspend_d')
+    member=spec['request'];v=response(plan,member)
+    fields=member['fields']
+    rows=[dict(ts_code=plan['universe'][0],trade_date='20261012',suspend_type=t,suspend_timing=timing)
+          for t,timing in [('S','09:30-10:00'),('R','10:00')]]
+    v['data']['items']=[[row[f] for f in fields] for row in rows]
+    path=dest/'intraday-events.json';path.write_bytes(encoded(v))
+    spec.update(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    m=dest/'events-bundle.json';m.write_bytes(encoded(b))
+    new_id=store.import_bundle(m)
+    _,normalized=store.snapshot(new_id,ASOF)
+    events=[r for r in normalized['status'] if r.get('status_event',{}).get('api')=='suspend_d']
+    assert len(events)==2 and len({r['event_key'] for r in events})==2
+    merged=merge_status(events)[(plan['universe'][0],'2026-10-12')]
+    assert merged['suspended']=='YES' and {e['suspend_type'] for e in merged['events']}=={'S','R'}
+    v['data']['items'].append(v['data']['items'][0])
+    with pytest.raises(ResearchError,match='PROVIDER_DUPLICATE_OR_CONFLICT'):decode_response(encoded(v),member)

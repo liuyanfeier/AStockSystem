@@ -26,6 +26,8 @@ def observation_key(spec: SourceFile, row: dict) -> str:
     values = [row.get("code"), row.get("exchange"), row.get("date")]
     if spec.dataset == "status" and spec.adapter == "tushare-response-v1":
         values.append(spec.sha256)
+        if row.get("event_key"):
+            values.append(row["event_key"])
     return digest(values)
 
 

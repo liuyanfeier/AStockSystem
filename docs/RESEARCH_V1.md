@@ -136,7 +136,7 @@ CSV/Parquet旧adapter仍兼容，未修改冻结Phase1合同。现存旧bundle/�
 新增manifest默认元数据可能产生新bundleID，原ID仍按原manifest读取核验。
 
 index_basic身份是INDEX、交易所UNKNOWN，保留provider_market/publisher；研究交易日历须另显式
-绑定且沪深自然日表一致。S/R与ST保留当日事件，绝不从稀疏缺席填NO；多个状态来源分别
+绑定且沪深自然日表一致。同日不同S/R/日内时间分开保留，重复事件拒绝；S/R与ST保留当日观察，绝不从稀疏缺席填NO；多个状态来源分别
 保留再按as-of合并，矛盾拒绝。完整来源重推导仍为每次查询默认，含DB主键一致性核验。
 USER_DECLARED只表示用户文件声明，LOCAL_CAPTURE_BOUND表示本地TLS采集和消费链绑定，
 非独立供应商数字签名；SYNTHETIC不能当真实行情。输入限当前观察用途。

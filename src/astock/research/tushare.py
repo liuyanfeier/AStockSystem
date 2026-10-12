@@ -100,6 +100,9 @@ def decode_response(body: bytes, member: dict) -> list[dict]:
             if 'start_date' in params:
                 require(day(params['start_date']) <= d <= day(params['end_date']), 'RESPONSE_DATE_OUTSIDE_REQUEST')
         key = (row.get('ts_code'), row.get('exchange'), event)
+        if member['api'] == 'suspend_d':
+            require(row.get('suspend_timing') is None or isinstance(row['suspend_timing'], str), 'SUSPENSION_TIMING_TYPE')
+            key += (row.get('suspend_type'), row.get('suspend_timing'))
         require(key not in keys, 'PROVIDER_DUPLICATE_OR_CONFLICT')
         keys.add(key)
         result.append(row)
@@ -111,6 +114,12 @@ def decode_response(body: bytes, member: dict) -> list[dict]:
 def response_rows(spec, body: bytes) -> list[dict]:
     rows = decode_response(body, spec.request)
     api = spec.request['api']
+    if api == 'suspend_d':
+        from collections import Counter
+        multiplicity = Counter((r['ts_code'], r['trade_date']) for r in rows)
+        for row in rows:
+            if multiplicity[(row['ts_code'], row['trade_date'])] > 1:
+                row['event_key'] = digest([row['suspend_type'], row['suspend_timing']])
     for row in rows:
         if api in {'index_basic', 'stock_basic'}:
             required = ('name', 'market', 'publisher') if api == 'index_basic' else ('name', 'exchange', 'market', 'list_date', 'list_status')
