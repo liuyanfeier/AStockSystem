@@ -2,7 +2,9 @@
 
 2026-10-12。重置及统一Review批次已按用户提供的独立结论关闭：
 a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
-Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；本批在codex/research-v1-1推进V1.1；不重开文档治理或全历史Phase1。
+Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1在020672b独立Level A有条件通过。
+PR #2已合入codex/research-v1（b4e9caa），main仍c1a9ef7；当前在该专用开发线修复唯一前置P1，
+将PR #1调整为main的完整累计交付，待独立Review和合并授权；不重开文档治理或全历史Phase1。
 当前整批版本、验收与验证见[REVIEW](REVIEW.md)。
 
 ## 实际可运行能力
@@ -70,6 +72,12 @@ Level A离线实现及作者本机验收完成：固定功能源码89b2bc7全套
 Level B真实最新128日仍未采集。
 旧5股3日真实报告/来源保存，没有新真实持仓数据或交易风险参数生效。此次合成128日和性能
 不能用于宣称最新真实选股已验收；后续批准一次近期预算即可进入实际数据业务验证。
+
+当前P1已实现采集谱系授予/核验：plan→批准→claim→COMPLETE回执→原JSON，
+导入与Store按保留旁证重建统一验证；普通manifest声明或自报hash不赋予LOCAL_CAPTURE_BOUND。
+Mock始终SYNTHETIC，USER_DECLARED继续兼容。新P1回归与最终HEAD完整测试/CI见REVIEW和PR #1；
+历史1071通过不能代替新修复验收。先完成P1独立审查，再由用户明确批准最终39请求清单；目前未授权。
+该等级仍为本地无签名链绑定，不宣称供应商认证；合成生产形状链不是真实行情验证。
 
 本批CLI九API全流程由39个严格Mock响应验证，生成4合成候选并独立重建一致；
 人工日志与待核实持仓提醒由模拟记录验证。固定代码保留真实五股三日报告仍为0默认筛选/5人工观察。

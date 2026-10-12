@@ -131,10 +131,15 @@ class ResearchStore:
         expected = []
         for item in manifest["files"]:
             spec = SourceFile.model_validate(item)
+            body = (self.path.parent / "raw" / spec.sha256).read_bytes()
+            proofs = {p.sha256: (self.path.parent / "raw" / p.sha256).read_bytes() for p in spec.evidence}
+            # Verify even sources later than as_of; invalid grades cannot hide in
+            # a retained manifest. Original capture paths need not still exist.
+            from astock.research.evidence import capture_grade
+            capture_grade(spec, body, bundle, proofs)
             if instant(spec.available_at) <= instant(as_of):
-                body = (self.path.parent / "raw" / spec.sha256).read_bytes()
                 expected.extend((spec.dataset, observation_key(spec, r), spec.sha256, encoded(r).decode())
-                                for r in records(spec, body, bundle))
+                                for r in records(spec, body, bundle, evidence_bodies=proofs))
         require(sorted(rows) == sorted(expected), "STORED_OBSERVATIONS_CHANGED")
         result: dict[str, list] = {}
         for dataset, _, source_hash, payload in rows:

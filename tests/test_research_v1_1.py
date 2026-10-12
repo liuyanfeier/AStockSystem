@@ -252,6 +252,7 @@ def test_database_key_tamper_rejected(full_capture):
 
 
 def test_conflict_and_calendar_mismatch_before_store(full_capture):
+    from research_fixture import rebind_synthetic_raw
     from astock.research.inputs import load_bundle
     plan,dest,bundle,store,bid,p=full_capture
     b=read_json(bundle)
@@ -259,7 +260,12 @@ def test_conflict_and_calendar_mismatch_before_store(full_capture):
     raw=read_json(Path(f['path']))
     raw['data']['items'][0][f['request']['fields'].index('up_limit')]=999
     changed=dest/'conflicting.json';changed.write_bytes(encoded(raw))
-    b['files'].append({**f,'path':str(changed),'sha256':hashlib.sha256(changed.read_bytes()).hexdigest()})
+    import copy
+    conflicting = copy.deepcopy({**f,'path':str(changed),'sha256':hashlib.sha256(changed.read_bytes()).hexdigest()})
+    # This separate intentionally conflicting synthetic source is user-declared,
+    # not falsely attributed to the original collector receipt.
+    conflicting.update(evidence_grade='USER_DECLARED', evidence=[])
+    b['files'].append(conflicting)
     m=dest/'conflict-bundle.json';m.write_bytes(encoded(b))
     with pytest.raises(ResearchError,match='STATUS_SOURCE_CONFLICT'):
         load_bundle(m)
@@ -270,6 +276,7 @@ def test_conflict_and_calendar_mismatch_before_store(full_capture):
     raw['data']['items'][3][f['request']['fields'].index('is_open')]=1
     changed=dest/'calendar-mismatch.json';changed.write_bytes(encoded(raw))
     f.update(path=str(changed),sha256=hashlib.sha256(changed.read_bytes()).hexdigest())
+    rebind_synthetic_raw(f)
     m.write_bytes(encoded(b))
     with pytest.raises(ResearchError,match='BENCHMARK_CALENDAR_DISAGREEMENT'):load_bundle(m)
 
@@ -378,6 +385,7 @@ def test_manual_flat_then_reopen_starts_new_thesis(full_capture):
 
 
 def test_same_day_distinct_suspension_events_retained(full_capture):
+    from research_fixture import rebind_synthetic_raw
     plan,dest,bundle,store,bid,p=full_capture
     b=read_json(bundle)
     spec=next(f for f in b['files'] if f['request']['api']=='suspend_d')
@@ -388,6 +396,7 @@ def test_same_day_distinct_suspension_events_retained(full_capture):
     v['data']['items']=[[row[f] for f in fields] for row in rows]
     path=dest/'intraday-events.json';path.write_bytes(encoded(v))
     spec.update(path=str(path),sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    rebind_synthetic_raw(spec)
     m=dest/'events-bundle.json';m.write_bytes(encoded(b))
     new_id=store.import_bundle(m)
     _,normalized=store.snapshot(new_id,ASOF)

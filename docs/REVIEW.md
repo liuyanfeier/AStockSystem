@@ -1,11 +1,65 @@
-# 当前 Review：Research V1.1
+# 当前 Review：Research V1.1 来源等级修复及开发线整合
+
+用户提供的独立审查针对`020672b448675cb519786edff9723dea7816d10c`：
+Level A有条件通过，CI1071 passed/6 warnings/0 failures；唯一进入Level B前的P1是来源等级防伪。
+本批仅修复该P1、补相关回归、同步必要状态并整理现有PR；保留架构，不扩展历史审批框架。
+真实采集39请求仍未授权；真实市场API、破坏性私有删除、交易风险参数及订单均0。
+
+## 分支关系与累计审查范围
+
+2026-10-12实际核对：[PR #2](https://github.com/liuyanfeier/AStockSystem/pull/2)已由用户合入
+`codex/research-v1`，合并提交`b4e9caa40a1b98571b7872d2c7f60cedf626109c`。
+main仍为`c1a9ef7`；这次合并没有改变main，无需撤销或重放PR #2。
+修复继续在现有专用开发线，保留重置、V1、V1.1及PR #2的合并历史。
+[PR #1](https://github.com/liuyanfeier/AStockSystem/pull/1)改为base=main、head=codex/research-v1，
+统一呈现完整开发线；不另建重复整合PR。本批只准备合并，未自动合入main。
+
+审查须同时看：`020672b..HEAD`的P1修复，以及`origin/main...HEAD`的实际累计Diff。
+已接受重置基线`a00c7dd544a331fe42c319a1c8ab9826027b988d`与V1基线`1a81338`仍可复核；
+旧PR #2和独立审查固定SHA仍保留。最终准确HEAD、完整本机回归结果及对应CI链接从
+PR #1正文/head/checks读取；下述旧1071结果不是本次最终HEAD验收。
+
+## P1实现及验证入口
+
+新增小型`research/evidence.py`，共用既有strict_json、CapturePlan、hash和时间原语。
+LOCAL_CAPTURE_BOUND只能用于响应adapter，必须保留完整plan、claim、批准、COMPLETE回执和原JSON。
+校验四类旁证角色/字节、计划hash、精确成员、批准消费绑定、授权类型/有效时间/历史目的地、
+transport、claim hash、原对象/原JSON hash、抓取时间、保守可用时间、研究池/窗口及基准日历。
+Mock批准与transport只能赋予SYNTHETIC；用户自报hash或来源文本不能提升等级。
+直接records、导入以及Store保留字节重建走同一校验；as-of之前暂不可见来源也先检查谱系。
+原始路径迁移后按Store保留对象核验，不依赖原capture目录继续存在。
+USER_DECLARED和无采集证据的SYNTHETIC输入继续兼容；旧原库、schema、旧报告不改写。
+不合格旧LOCAL声明会拒绝，不能静默改成已验证；可核实后以USER_DECLARED新bundle重新导入。
+
+本地无签名JSON链可被拥有全部字节写入权的人整体伪造：此等级只表示本地链内部绑定，
+不等于不可伪造的供应商/独立认证。没有新增签名系统，也不以格式正确的合成TLS形状冒充真实采集。
+
+`tests/test_research_capture_evidence.py`覆盖自报等级/任意hash、缺四类旁证、Mock升格、
+重算hash后的回执/授权/时间/请求/来源/范围篡改、保留旁证损坏、重算Store manifest ID后的伪造，
+以及合法闭合生产形状链、原路径搬移后重建；全部为明确标注合成测试。
+既有冲突/日历不一致/同日S-R回归继续检验原业务失败条件：仅把刻意改变的合成fixture旁证同步，
+或明确降为用户声明，不删除、跳过或放宽这些断言。
+聚焦回归已完成：100 passed（新增28项），46.57s；无新增依赖或旧回归删除。
+
+~~~bash
+export PATH="$PWD/scripts:$PATH"
+uv run --offline --frozen pytest tests/test_research_capture_evidence.py tests/test_research_v1_1.py tests/test_research_v1.py tests/test_research_publication.py tests/test_cli.py
+uv run --offline --frozen pytest
+uv run --offline --frozen astock doctor
+uv run --offline --frozen astock data contracts
+git diff --stat origin/main...HEAD
+git diff 020672b448675cb519786edff9723dea7816d10c..HEAD
+~~~
+
+Level B须本P1独立Review及用户明确批准最终请求清单后开展；本批未制造真实最新默认20/60观察报告。
+
+## 已接受V1.1工程与历史证据
 
 基线为已独立ACCEPT的Research V1：`1a81338ada05888d9c9727e0bb5d3da9714cb57f`，
 [PR #1](https://github.com/liuyanfeier/AStockSystem/pull/1)固定HEAD的
 [CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38199136159)已成功、1032 passed。
-2026-10-12核对PR仍open/draft、未合并，工作区干净；新分支codex/research-v1-1。
-[PR #2](https://github.com/liuyanfeier/AStockSystem/pull/2) base=codex/research-v1，head=codex/research-v1-1，审查本批只比较上述固定基线到新head。
-最终并入main顺序：已接受重置分支 → PR #1 → 本批；本次没有自动合并任何分支。
+当时PR #1仍open/draft，本V1.1分支为codex/research-v1-1，PR #2以codex/research-v1为base。
+该历史工程批次比较上述V1固定基线；最新合并关系和当前整批范围见本文开头。
 最终固定SHA从PR head或git rev-parse HEAD读取，避免文档自引用。
 
 ## 用户授权与验收
@@ -18,7 +72,7 @@
 官方文档只读核对已授权，不把浏览网页或MockTransport当行情API成功。
 
 Level A离线软件：逐API转换、完整20/60合成窗口独立期望、错误/时间/冲突/缺失、文件和SQL故障恢复、
-单一计算路径、持仓日志、统一CLI、旧回归及来源保护。作者结果是工程自测，待独立Review。
+单一计算路径、持仓日志、统一CLI、旧回归及来源保护。用户提供独立结论为有条件通过；P1修复待新Review。
 Level B最新真实研究：仍未开展，没有新的采集授权；此前5股连续3日有限真实证据仍保留，
 不能冒充128日或最新默认配置验证。未导入用户实际账户/持仓/成交。
 

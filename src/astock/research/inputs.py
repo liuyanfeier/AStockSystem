@@ -51,6 +51,9 @@ class SourceFile(StrictModel):
             if self.adapter in {"tushare-v1", "tushare-response-v1"}:
                 require((self.volume_unit, self.amount_unit) == ("lots100", "thousand_CNY"), "TUSHARE_UNITS")
         require((self.format == "json") == (self.adapter == "tushare-response-v1"), "RESPONSE_FORMAT_ADAPTER")
+        if self.evidence_grade == "LOCAL_CAPTURE_BOUND":
+            require(self.adapter == "tushare-response-v1" and len(self.evidence) == 4,
+                    "CAPTURE_EVIDENCE_REQUIRED")
         if self.adapter == "tushare-response-v1":
             from astock.research.tushare import DATASETS, validate_member
             require(self.request is not None, "RESPONSE_REQUEST_REQUIRED")
@@ -89,7 +92,9 @@ def number(value: object, *, nullable: bool = False) -> float | None:
     return value
 
 
-def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
+def records(spec: SourceFile, body: bytes, bundle: Bundle, *, evidence_bodies: dict[str, bytes] | None = None) -> list[dict]:
+    from astock.research.evidence import capture_grade
+    grade = capture_grade(spec, body, bundle, evidence_bodies)
     if spec.format == "json":
         from astock.research.tushare import response_rows
         rows = response_rows(spec, body)
@@ -114,7 +119,7 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
                 identity.update(calendar_exchange=raw.get("calendar_exchange") or exchange,
                                 identity_basis=raw["identity_basis"], provider_market=raw.get("market"),
                                 publisher=raw.get("publisher"), list_date=raw.get("list_date"),
-                                evidence_grade=spec.evidence_grade)
+                                evidence_grade=grade)
             result.append(identity)
             continue
         if spec.dataset == "calendar":
@@ -169,7 +174,7 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
     if spec.adapter == "tushare-response-v1":
         for row in result:
             row.update(retrieved_at=spec.retrieved_at.isoformat(), available_at=spec.available_at.isoformat(),
-                       evidence_grade=spec.evidence_grade)
+                       evidence_grade=grade)
     return result
 
 
@@ -184,14 +189,17 @@ def load_bundle(path: Path, manifest: dict | None = None) -> tuple[Bundle, list[
         source = Path(spec.path)
         source = source if source.is_absolute() else path.parent / source
         require(source.is_file() and not source.is_symlink(), "SOURCE_MISSING_OR_SYMLINK")
+        proofs = {}
         for evidence in spec.evidence:
             proof = Path(evidence.path)
             proof = proof if proof.is_absolute() else path.parent / proof
-            require(proof.is_file() and not proof.is_symlink() and
-                    hashlib.sha256(proof.read_bytes()).hexdigest() == evidence.sha256, "SOURCE_EVIDENCE_CHANGED")
+            require(proof.is_file() and not proof.is_symlink(), "SOURCE_EVIDENCE_CHANGED")
+            value = proof.read_bytes()
+            require(hashlib.sha256(value).hexdigest() == evidence.sha256, "SOURCE_EVIDENCE_CHANGED")
+            proofs[evidence.sha256] = value
         body = source.read_bytes()
         require(hashlib.sha256(body).hexdigest() == spec.sha256, "SOURCE_HASH_MISMATCH")
-        parsed = records(spec, body, bundle)
+        parsed = records(spec, body, bundle, evidence_bodies=proofs)
         for row in parsed:
             key = (spec.dataset, row.get("code"), row.get("exchange") if spec.dataset == "calendar" else None, row.get("date"))
             if spec.dataset == "status" and spec.adapter == "tushare-response-v1":

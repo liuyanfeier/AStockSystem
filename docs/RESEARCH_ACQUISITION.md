@@ -89,6 +89,9 @@ HTTP/权限/结构/日期/单位/大小/秘密错误FAILED，传输/本地中断
 capture-import仅读取COMPLETE；身份/日历缺失则尚不能导入，行情/状态缺失则明确披露。
 完整规范化由原JSON现场推导，无人工CSV拼装；Store保留原JSON、计划/claim/批准/回执证据。
 证据等级区分USER_DECLARED、LOCAL_CAPTURE_BOUND和SYNTHETIC；本地TLS绑定不是供应商数字签名。
+等级授予须完整计划/批准/claim/COMPLETE回执/原JSON语义一致，不能只校验manifest自报hash。
+Store重建从保留对象复核同一链，Mock固定SYNTHETIC。P1独立修复Review与用户最终清单批准前，
+39次真实采集仍未授权；PR合并及Level A工程通过不自动许可Level B。
 
 ## 全A股日常增量：下一步可落地方案
 

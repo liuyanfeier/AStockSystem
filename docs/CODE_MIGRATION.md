@@ -75,3 +75,10 @@ Research V1 首批建立单一 query/import/report 路径和明确 consumers 清
 没有新增服务、依赖、Curated副本、日常核验旁路或缓存框架。100股128日完整分析约5秒，
 未发现需要牺牲来源核验的瓶颈。新增纯研究合同仅用于当次CURRENT_OBSERVATION，不替代
 历史Phase1解码事实，也不修改既有历史消费账本。
+## Research V1.1 P1补充
+
+KEEP：五表Research Store、原JSON响应adapter、原子发布、人工日志与旧重要回归。
+REUSE：strict_json、CapturePlan、hash/时间和保留来源原语；增加小型evidence语义核验模块。
+DELETE：records直接复制manifest自报LOCAL_CAPTURE_BOUND等级的旧授予行为，替换为统一链验证。
+MIGRATE：外部capture路径读取与Store保留hash路径均输入同一核验函数；无schema升级、旧库改写或第二套业务计算。
+NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证券遍历优化；本批不执行或提前宣称通过。

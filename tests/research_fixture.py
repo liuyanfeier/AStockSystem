@@ -116,3 +116,14 @@ def approved_mock(root,plan,handler=None):
     result=capture(root,plan_file,live=True,approval_file=approval_file,transport=httpx.MockTransport(request),
                    token=SecretStr('SYNTHETIC_TEST_TOKEN_12345'),now=lambda:CAPTURED,sleep=lambda _:None)
     return result,calls,destination
+
+
+def rebind_synthetic_raw(spec):
+    """Update a deliberately edited synthetic fixture's receipt, never real evidence."""
+    assert spec['evidence_grade'] == 'SYNTHETIC'
+    receipt = next(p for p in spec['evidence'] if set(read_json(Path(p['path']))) >= {'claim_hash', 'transport'})
+    value = read_json(Path(receipt['path']))
+    assert value['transport'] == 'MOCK'
+    value['sha256'] = spec['sha256']
+    Path(receipt['path']).write_bytes(encoded(value))
+    receipt['sha256'] = digest(value)

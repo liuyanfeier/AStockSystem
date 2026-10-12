@@ -138,6 +138,8 @@ def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
         require(approval_path.is_file() and not approval_path.is_symlink(), 'CAPTURE_APPROVAL_MISSING')
         a = read_json(approval_path)
         require(digest(a) == c['approval_hash'] and a['plan_hash'] == c['plan_hash'] and key in a['member_ids'], 'CAPTURE_APPROVAL_CHANGED')
+        from astock.research.evidence import validate_authority
+        validate_authority(plan, c, a)
         if not terminal.exists():
             continue  # durable UNKNOWN; never eligible for resend
         r = read_json(terminal)

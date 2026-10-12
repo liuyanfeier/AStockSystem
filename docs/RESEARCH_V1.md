@@ -140,6 +140,11 @@ index_basic身份是INDEX、交易所UNKNOWN，保留provider_market/publisher�
 保留再按as-of合并，矛盾拒绝。完整来源重推导仍为每次查询默认，含DB主键一致性核验。
 USER_DECLARED只表示用户文件声明，LOCAL_CAPTURE_BOUND表示本地TLS采集和消费链绑定，
 非独立供应商数字签名；SYNTHETIC不能当真实行情。输入限当前观察用途。
+LOCAL_CAPTURE_BOUND不可由manifest自报授予：响应须绑定完整plan/claim/批准/COMPLETE回执及原JSON，
+并验证成员、授权类型/时间、transport、原对象、抓取/可用时间、窗口/池及日历。
+直接响应转换、导入与Store重建共用该验证；Mock不能升格，缺失/篡改回执拒绝。
+Store保留全部旁证字节，原capture搬移后仍可重建；保守延后available_at允许，回填更早时间拒绝。
+旧无旁证用户文件仅USER_DECLARED，已有报告不改写；本地无签名链不是防全部字节恶意伪造的独立认证。
 
 默认20/60配置在10股/2指数、128交易日合成供应商形状上验证，含拆分、假日、ST、停牌断档、
 新股30日、因子缺末日、零成交、晚到as-of/陈旧和筛选排除。指标有独立期望，不只验证重复性。
@@ -149,3 +154,6 @@ USER_DECLARED只表示用户文件声明，LOCAL_CAPTURE_BOUND表示本地TLS采
 性能可用scripts/profile_research.py分别量导入、完整来源校验、特征、含校验分析、报告；
 支持10/100股合成输入，只写指定私有目录。RSS是进程累计峰值，Python峰值不含原生分配。
 没有测得需要Store重写的瓶颈；没有新增缓存/查询旁路或依赖。
+扩大至数千证券前，先一次按code/日期归组行情、因子、状态，复用日历及基准窗口，
+避免features逐股扫描全部观察行；共享plan/批准校验按hash去重。先保留独立全量重推导作一致性基准，
+再验证10/100/1000股耗时、内存及输出等价。此为后续性能计划，本P1未实施缓存或声称全市场已测。
