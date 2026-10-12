@@ -98,8 +98,8 @@ def test_doctor_checks_python_baseline(doctor_root, monkeypatch):
     assert "Python 3.12: FAIL" in result.output
 
 
-def test_help_has_only_diagnostic_command():
+def test_help_exposes_offline_research_and_legacy_diagnostics():
     result = runner.invoke(main.app, ["--help"])
     assert result.exit_code == 0
     assert "doctor" in result.output
-    assert set(get_command(main.app).commands) == {"doctor", "data"}
+    assert set(get_command(main.app).commands) == {"doctor", "data", "research"}

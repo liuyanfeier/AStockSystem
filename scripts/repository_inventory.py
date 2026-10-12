@@ -80,11 +80,72 @@ def inventory(root: Path, *, hash_data: bool = False, excluded: Path | None = No
                 limitation="File blocks only; excludes directory blocks and cannot resolve APFS shared extents")
 
 
+
+def inventory_many(roots: list[Path]) -> dict:
+    """Count explicit project roots, aliases/nested roots once and global hardlinks once.
+
+    No credential/file contents or database connections are needed. Missing roots,
+    permission errors and symlinks remain visible, never reported as zero usage.
+    """
+    requested = sorted({p.resolve() for p in roots}, key=lambda p: (len(p.parts), str(p)))
+    selected: list[Path] = []
+    for path in requested:
+        if not path.is_dir():
+            raise ValueError("Capacity root missing or not a directory")
+        if not any(path.is_relative_to(parent) for parent in selected):
+            selected.append(path)
+    seen: set = set()
+    result, errors = [], []
+    unique_allocated = 0
+    for root in selected:
+        summary = dict(root=str(root), files=0, logical_bytes=0, allocated_bytes=0,
+                       databases=0, symlinks=0, groups={})
+        def failure(error):
+            errors.append(dict(root=str(root), error=type(error).__name__))
+        for directory, dirs, files in os.walk(root, followlinks=False, onerror=failure):
+            base = Path(directory)
+            summary["symlinks"] += sum((base / d).is_symlink() for d in dirs)
+            dirs[:] = [d for d in dirs if not (base / d).is_symlink()]
+            for name in files:
+                path = base / name
+                if path.is_symlink():
+                    summary["symlinks"] += 1
+                    continue
+                try:
+                    st = path.stat()
+                except OSError as error:
+                    failure(error)
+                    continue
+                if not path.is_file():
+                    continue
+                summary["files"] += 1
+                summary["logical_bytes"] += st.st_size
+                summary["allocated_bytes"] += st.st_blocks * 512
+                summary["databases"] += int(path.suffix in {".duckdb", ".db", ".sqlite", ".sqlite3"})
+                rel = path.relative_to(root)
+                group = "/".join(rel.parts[:2]) if len(rel.parts) > 2 else rel.parts[0]
+                counts = summary["groups"].setdefault(group, dict(files=0, logical_bytes=0, allocated_bytes=0))
+                for key, value in (("files", 1), ("logical_bytes", st.st_size), ("allocated_bytes", st.st_blocks * 512)):
+                    counts[key] += value
+                inode = (st.st_dev, st.st_ino)
+                if inode not in seen:
+                    unique_allocated += st.st_blocks * 512
+                    seen.add(inode)
+        result.append(summary)
+    return dict(roots=result, logical_bytes=sum(r["logical_bytes"] for r in result),
+                unique_file_allocated_bytes=unique_allocated, complete=not errors, errors=errors,
+                requested_roots=len(requested), counted_roots=len(selected),
+                target_bytes=50_000_000_000, ceiling_bytes=100_000_000_000,
+                limitation="Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--hash-data", action="store_true")
+    parser.add_argument("--additional-root", type=Path, action="append", default=[],
+                        help="Explicit historical project workspace; read-only capacity accounting")
     args = parser.parse_args()
     root = args.root.resolve()
     output = args.output.resolve()
@@ -94,6 +155,8 @@ def main() -> None:
     if output.exists():
         parser.error("Output already exists; choose a new snapshot name")
     result = inventory(root, hash_data=args.hash_data, excluded=private)
+    if args.additional_root:
+        result["project_capacity"] = inventory_many([root, *args.additional_root])
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("x") as stream:
         json.dump(result, stream, ensure_ascii=False, indent=2)

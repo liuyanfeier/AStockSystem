@@ -70,3 +70,19 @@ def test_cli_refuses_public_output_and_snapshot_overwrite(tmp_path):
     rejected = subprocess.run(command + [str(output)], capture_output=True, text=True)
     assert rejected.returncode == 2 and "already exists" in rejected.stderr
     assert output.read_bytes() == before
+
+
+def test_project_inventory_includes_external_roots_and_global_inode_dedup(tmp_path, inventory_module):
+    current, historical = tmp_path / "current", tmp_path / "historical"
+    current.mkdir(); historical.mkdir()
+    raw = current / "source.duckdb"; raw.write_bytes(b"SYNTHETIC_DB_BYTES")
+    os.link(raw, historical / "copy.duckdb")
+    (historical / "evidence").write_bytes(b"SYNTHETIC_HISTORICAL_EVIDENCE")
+    (historical / "external-alias").symlink_to(current, target_is_directory=True)
+    result = inventory_module.inventory_many([current, historical, current])
+    assert result["complete"] and result["counted_roots"] == 2
+    assert result["logical_bytes"] == raw.stat().st_size * 2 + (historical / "evidence").stat().st_size
+    assert result["unique_file_allocated_bytes"] == raw.stat().st_blocks * 512 + (historical / "evidence").stat().st_blocks * 512
+    assert result["roots"][1]["symlinks"] == 1
+    assert inventory_module.inventory_many([tmp_path, historical])["counted_roots"] == 1
+    with pytest.raises(ValueError):inventory_module.inventory_many([tmp_path / "missing"])

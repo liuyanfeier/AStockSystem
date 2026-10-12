@@ -1,0 +1,12 @@
+{
+  "version": "observation-v1",
+  "return_sessions": 20,
+  "trend_sessions": 60,
+  "breakout_sessions": 20,
+  "activity_sessions": 20,
+  "top_n": 10,
+  "min_mean_amount_cny": 10000000,
+  "max_stale_calendar_days": 7,
+  "strategy_validated": false,
+  "risk_budget": null
+}

@@ -1,4 +1,4 @@
-"""Offline diagnostics and explicitly bounded, opt-in data audit commands."""
+"""Offline research, diagnostics and retained bounded data-audit commands."""
 
 import sys
 
@@ -12,7 +12,7 @@ from astock.settings import load_settings
 
 
 app = typer.Typer(
-    help="AStockSystem offline diagnostics.",
+    help="AStockSystem offline research and diagnostics.",
     add_completion=False,
     pretty_exceptions_enable=False,
 )
@@ -20,7 +20,7 @@ app = typer.Typer(
 
 @app.callback()
 def main() -> None:
-    """Research foundation; no ingestion or trading commands."""
+    """Source-traceable observation research; no trading or implicit network access."""
 
 
 @app.command()
@@ -283,3 +283,8 @@ def slice_receipt_audit(batch: str = typer.Option(..., '--batch'),
     except Exception:
         typer.echo('Receipt audit: BLOCKED (safe details only)')
         raise typer.Exit(1)
+
+# Business entry shares the existing CLI; legacy capture commands remain frozen
+# for historical audit compatibility and do not supply Research V1 input implicitly.
+from astock.cli.research import app as research_app
+app.add_typer(research_app, name="research")
