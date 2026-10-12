@@ -96,3 +96,46 @@ uv run --offline --frozen python scripts/repository_inventory.py \
 需要同字节证明时显式加 --hash-data；默认仅做文件统计，不打开数据库、不跟随符号链接、不读凭据内容。
 输出必须在指定 ignored 治理目录并禁止覆盖；该目录排除出基础盘点，需单独计入总容量。
 数据库业务读回仍通过 warehouse_connection；本脚本不签发采集/删除/研究准入许可。
+
+## Research V1 扩展到仓库外（2026-10-12）
+
+仅统计当前checkout会漏掉已确认属于AStockSystem的历史工作目录。
+本次确认Documents/Codex/2026-10-02/referenced-chatgpt-conversation-this-is-an，
+其work/outputs包含本项目旧独立审查、审批/来源证明、失败演练和pytest副本，不能整目录当缓存。
+其他日期Codex目录的项目标记扫描未找到新增AStockSystem根；没有将gupiao-2等独立股票项目
+或整个Documents目录擅自计入本项目。未确认的外置/远端备份仍是范围缺口，不作为零占用。
+
+| 已确认根 | 普通文件数 | 逻辑字节 | 文件blocks字节 | 数据库数 |
+|---|---:|---:|---:|---:|
+| 当前AStockSystem（本批初始时点） | 171,091 | 18,768,652,784 | 19,318,566,912 | 186 |
+| 上述旧Codex项目目录 | 76,901 | 8,204,401,835 | 8,402,071,552 | 787 |
+| 跨根汇总 | 247,992 | 26,973,054,619 | **27,720,044,544**（去重inode） | 973 |
+
+统计包含当前治理证据和工具/环境，口径与上节昨日仅数据/checkout不同；
+不跟随符号链接（52+409），无缺失/权限错误。APFS clone共享块和目录blocks仍无法精确归属。
+旧outputs/private约1.123GB；两份finite45 matched SQL工作副本各约0.937GB，
+finite45独立tests约0.989GB；这些数字是容量来源，不是已验证可删空间。
+旧目录没有执行删除/移动，重要实际审查和源证据保留；清理需逐副本依赖/恢复验证并由用户批准。
+
+新增`--additional-root`可重复指定明确项目历史目录；嵌套/别名根只统计一次，
+跨根硬链接按inode去重，缺失根报错，权限错误显示complete=false，不掩盖容量。
+命令输出仍只能存专用ignored治理目录，不读取凭据内容/打开数据库。
+
+~~~bash
+uv run --offline --frozen python scripts/repository_inventory.py \
+  --additional-root /本机已确认的项目历史目录 \
+  --output data/private/repository-governance/新快照/capacity.json
+~~~
+
+全套1032回归完成后补测三个已确认属于本批AStockSystem的pytest临时根（185/186/187）：
+共52,806文件、540数据库，逻辑3,261,662,449字节，文件blocks3,393,064,960字节。
+它们是本项目合成测试生成物，不是旧真实消费/原始数据；仍未手工删除。
+整体最后快照包含5个确认根，**30,279,250,140逻辑字节、31,157,391,360去重inode文件blocks
+（约31.16GB）**，300,915普通文件、1,515数据库；complete=true，无权限/缺失错误或未确认pytest根。
+这将临时产物单列计入，不能通过只看checkout把3.39GB藏起来。
+
+若后续清理这些精确测试根，应先保留本批日志、源码/uv.lock版本、必要失败复现场景，
+确认均可合成重建且无进程持锁，再按用户批准清单处理；预计释放逻辑上限3.26GB、
+file blocks约3.39GB，APFS共享/硬链接和后续自动pytest保留策略会影响实际数字，不能保证释放。
+全项目快照私有保存，外置/远端未确认备份不伪记为零。
+新增Research原字节/store/报告约数MB，近期采集提案上限256MiB；整体50GB目标/100GB上限不变。

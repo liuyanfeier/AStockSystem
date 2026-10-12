@@ -1,68 +1,56 @@
 # 当前状态
 
-核查日期：2026-10-11；开始基线 c1a9ef7f0ebb063f4b0ebd3ec6e4733a15e6f5db。
-这是代码、文件、数据库与 GitHub CI 的现场核查；不是历史完整覆盖或收益承诺。
-本次结果见 [清理记录](REPOSITORY_RESET.md)。
+2026-10-12。重置及统一Review批次已按用户提供的独立结论关闭：
+a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
+本批在codex/research-v1直接开发业务；不重开文档治理或全历史Phase1。
+当前整批版本、验收与验证见[REVIEW](REVIEW.md)。
 
-## 已实现与未实现
+## 实际可运行能力
 
-| 能力 | 实际证据 | 可用于什么 / 缺口 |
+| 能力 | 当前实现与证据 | 实际限制 |
 |---|---|---|
-| 本地环境、设置、CLI | Python 3.12.14、uv.lock、doctor、秘密类型、路径校验 | 可离线诊断；仅 editable checkout |
-| 契约与单位 | 旧 v1 12、v2 9 个契约；统一 Phase1 23 个可执行契约 | 真实解码/范围/空值验证；契约数不是数据覆盖 |
-| raw / 回执 / durable consumption | 不可变 Parquet/sidecar、首错停止、历史全局消费、原子回执 | 可保留与审计真实来源；已停止批次不重跑 |
-| 身份与时间 | identity/provider_identity、availability、R2 resolver、domains | 原生代码、有效区间、as-of、保守知识时间；不凭代码或名字猜映射 |
-| 数据库生命周期 | warehouse_connection、系统锁、事务和读写权限 | 新存储可复用；旧库仍只读 |
-| 统一数据派生 | pipeline、domains、versions：facts、generation、lineage、coverage、rebuild、increment | 合成/闭合演练机制已实现；本地统一生产 store 的 facts/generations 都为 0 |
-| 复权、规则与财务/行业 as-of | domains 中 adjusted_price、rule_at、known_versions 等 | 有算法及回归；未证明全市场真实历史覆盖，没有完整回测引擎 |
-| Market Regime / Features / Screening / Reports | 现有包均仅一个 Reserved docstring | 没有趋势/宽度计算、筛选器或股票研究报告生成 |
-| Sectors / Catalysts / Portfolio / Backtest | 同为空占位；risk/regime/universe/data_sources YAML disabled | 没有主题、催化核实、仓位退出、撮合、策略验证或日志服务 |
-| 研究流程 | skills/a-share-research/SKILL.md 是旧 Phase0 工作流骨架 | 可参考研究检查顺序；不是已实现产品，旧阶段限制不主导当前授权 |
+| Research Store | 独立5表；原字节/侧证据、hash、捕获/可知时间、单位、原子导入、受管锁、快照 | 当前观察用途；不迁移/写旧库，不是PIT回测store |
+| 输入与用途 | CSV/Parquet明确schema及Tushare原生字段adapter；完整自然日日历、身份/单位/主键/时间校验 | 用户文件自报来源不等于独立认证；缺失保持UNKNOWN |
+| 保留真实来源复用 | legacy-bundle只读核验raw/sidecar/DB登记及真实日历HTTP来源/冻结decoder | 不采用旧事实构建/全历史许可；仅为新用途验证输入 |
+| Features / Market Regime | 连续交易日尾窗、因子价格收益、均线/前高、成交活跃/波动、池内宽度及分母、基准 | 局部池不是全市场；风格代理UNKNOWN；无仓位指示 |
+| Screening / 候选报告 | 流动性/价格趋势/时效筛选、透明排序和排除理由、可复现私有Markdown/JSON | 未验证策略；候选卡含失效/不交易条件，trade_eligible恒false |
+| 私有日志与持仓 | PLAN/POSITION/EXECUTION/EXIT/REVIEW追加事件、更正、as-of过滤、人工持仓/退出逻辑/复盘到期 | 不与券商同步，不自动由成交推仓位/现金/可卖数量；无自动退出/风险参数 |
+| 旧可靠基础 | 原契约、身份/时点、受管数据库、冻结来源兼容、历史审计/重建及回归保留 | 旧机制软件通过不代表完整真实研究覆盖，失败/未知消费不重跑 |
+| 仍未实现 | 行业/动态主题/催化核实、公司基本面业务、正式入场退出、组合风控、回测/业绩归因、告警 | 后续按具体业务补齐；不得根据涨幅虚构催化或风险预算 |
 
-仓库源码/兼容/测试共 140 份已跟踪 Python 文件做了解析与依赖盘点；
-166 份已跟踪 Markdown 在清理前做了内容/引用/重复核查。关键实现进一步阅读了事务、
-来源重推导、版本 adapter、知识时间、CLI 与历史消费路径。未根据文件名批量判断无用。
+CLI已支持`astock research import / legacy-bundle / market / screen / report / journal-add`。
+无live采集或券商命令；运行和输入契约见[RESEARCH_V1](RESEARCH_V1.md)。
+原占位features/regime/screening/reports包已添加实际模块，不另建同名系统。
+旧risk/regime/universe/data_sources顶层YAML仍disabled，新观察参数仅在config/research/版本化。
 
-## 本地真实数据
+## 本批真实业务结果
 
-四个主要数据库通过现有受管只读连接核查，读取前后文件 SHA256 相同，均无 WAL。
+从原库保留来源只读生成10文件bundle：5股、2026-09-28至09-30连续3个交易日，
+包含证券身份、行情/因子和已验证交易日历；实际观察时间按来源保留，没有回填旧历史可用时间。
+在研究可知截止2026-10-12T00:00:00+08:00生成：
 
-| 存储 | 现场结果 | 研究限制 |
-|---|---|---|
-| data/warehouse/astock.duckdb | 34 表；181 raw manifests；133 slice 回执；252 curated manifests；6 generations、3 Context | 21 个离散交易日，2013-01-04 至 2026-09-30，不能当作连续 2013–2026；基础 security_master、trade_calendar、market_rule_history 均为空 |
-| 旧 metadata store | 4 表；7 members、3 events、0 receipts | 失败执行证据，不是可用 metadata |
-| 旧 capture store | 11 表；29 members；旧 receipt 与 continuation receipt 均为 0 | UNKNOWN/FAILED/UNCERTAIN 事实保留，不能当作交易日覆盖 |
-| data/private/phase1-integrated-v1/catalog.duckdb | 50 attempts、47 receipts；末态 26 COMPLETE、21 RAW_RETAINED、2 FAILED、1 UNCERTAIN；0 facts、0 generations | RAW_ONLY；47 回执不等于 47 个通过研究准入的数据集 |
+- 默认20/60日配置：程序筛选0，人工观察5；不足窗口及12自然日陈旧明确披露。
+- 三日探索配置：程序观察候选5，非默认/未验证研究参数；不冒充120日或最新行情筛选。
+- 两种报告均为OBSERVATION_ONLY，ST/停牌/限价、基准/基本面/公告/主题证据不足写UNKNOWN。
+- 反复运行同样输入/代码/参数/as-of/日志，快照及报告字节相同；从保留原字节重推导与DB比对。
+- 没有导入用户真实持仓/成交。日志能力由合成回归验证，不能据此宣称已接入真实账户。
 
-旧库 listing_episode=3、official_exchange_code=18、provider_native_binding=24、
-provider_binding_observation=252；这些是精确有限事实，不是全市场身份认证。
-旧真实 raw 包含日行情/因子/每日估值/限价/ST/停牌、stock_basic 与 BSE 映射样本；
-来源抓取时间是 2026-10-01。当前行情新鲜度不足，不能生成冒充 2026-10-11 最新行情的报告。
+第一份真实历史样本观察报告已产生；最新连续120日候选报告尚缺近期输入。
+[采集预算](RESEARCH_ACQUISITION.md)已列48个固定请求、2指数、窗口/字段、端点、停止条件、
+96MiB总响应与256MiB新增磁盘上限，execution_authorized=false。本批市场API调用0。
 
-重建日志累计 2,412,678 finding observations 和 2,412,174 quarantine rows 属于多个 generation
-的重复观察，不能等同于独立证券数或当前独立缺陷数。历史交付记录的 402,060 findings
-没有在本批消解；本批没有重新执行 DQ。index_member_all 与 stock_basic 空返回 HOLD 仍存在。
-没有检验真实交易账户/持仓，不能因基础 research_hypothesis 表为空就断言用户没有交易记录。
+## 旧数据与容量
 
-数据总计 155,655 个普通文件、17,998,464,927 逻辑字节（约 18.00GB），其中 186 个数据库文件；
-大头是私有演练与历史证据副本。详细大小、实际 blocks 和候选清理见 [存储治理](STORAGE_GOVERNANCE.md)。
+旧真实日行情仍主要是21个离散样本日，不能当完整2013–2026序列。
+旧warehouse有34表/181raw/133slice/252curated/6generations/3Context；基础三表为空。
+旧metadata失败、capture失败/未知、RAW_ONLY统一catalog的47回执与0facts/generations仍保留；
+旧全量研究准入缺口未被本批宣称消解。旧累计DQ观察不等同于当前独立证券/缺陷数量。
+具体历史数据与执行事实见[重置记录](REPOSITORY_RESET.md)和[历史索引](HISTORY.md)。
 
-## 当前用途判断
-
-- 旧真实样本：可供只读来源/字段验证和带截止时间的历史观察开发；需逐输入验证，
-  不能自动成为新 Research Store 已准入事实。
-- 当前候选观察：下一批先获得已授权最新来源或用户真实文件，再按当次 universe、字段、时间与用途验证。
-  可以明确输出局部观察与 UNKNOWN，不要求所有历史域先全部完美。
-- 历史 PIT 回测：仍缺连续日历、完整历史证券/状态/规则、独立对照与财务 vintage 等，当前不满足。
-- 真实入场/退出/组合/交易执行：未实现，也没有本批执行授权。业务报告先标为 OBSERVATION_ONLY。
-
-## Git 与验证
-
-开始位于 main，有用户未提交的完整宪章文件和 docs/handoffs/2026-10-11-session-handoff.md。
-宪章已逐字纳入 PROJECT_CHARTER；交接原文保持不变，作为历史快照保留。
-开发分支 codex/project-reset-research-v1 不改写历史；保留冻结版本/来源与旧实际消费。
-
-基线 HEAD 的 [GitHub CI 38043097292](https://github.com/liuyanfeier/AStockSystem/actions/runs/38043097292)
-经 GitHub API 实时核实 completed/success。它认证文档交付 c1a9ef7，
-实际 RAW49 执行 SHA 为 66b1cec4914d51f75b0cf4f5211623a03dd9de2d，两者分开记录。
-本批最终验证和提交状态以 [清理记录](REPOSITORY_RESET.md) 为准。
+整体容量盘点扩展到已确认AStockSystem旧Codex工作目录，而非只看当前checkout：
+该目录另有约8.20GB逻辑数据/787数据库，含审查来源/证明、演练与临时副本。
+两个已确认目录合计约26.97GB逻辑字节、27.72GB去重inode文件blocks；
+本批三个已确认测试临时目录另有3.39GB文件blocks；最终5根汇总约31.16GB（30.28GB逻辑），
+不把工程生成物遗漏，也不把其他股票项目自动算成本仓库。
+[STORAGE_GOVERNANCE](STORAGE_GOVERNANCE.md)记录口径、完整性和已确认范围；
+私有破坏性清理未执行，旧恢复/消费/审批数据保留。

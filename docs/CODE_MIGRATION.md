@@ -44,3 +44,18 @@ Research V1 首批建立单一 query/import/report 路径和明确 consumers 清
 历史 decoder、真实消费账本与必要回归属于来源兼容资产，不是第二套活跃研究系统。
 若某旧文件同时含通用 helper 和过期 live 入口，先迁出依赖并验证，不能删除 helper 破坏旧证据读取。
 本批没有替换任何数据业务实现，所以没有以“已替换”名义删除未经迁移验证的代码。
+
+
+## Research V1 实际迁移（2026-10-12）
+
+- REUSE：warehouse_connection/lock、RecordTimes、严格JSON/原字节hash、旧raw侧证据验证、
+  统一物理来源/冻结decoder验证；不改变旧原库、pins、消费和真实执行事实。
+- MIGRATE完成：原features/regime/screening/reports空包已添加实际观察模块；所有Research
+  market/screen/report共用research.service；没有另保留一套被替代业务实现。
+- KEEP：历史decoder/审批/审计、已有重要回归。CLI菜单测试随新research入口更新允许集合，
+  doctor/秘密保护测试不删不弱化。旧真实采集入口未用于Research，不在本批主观删除。
+- 新增人工journal为持仓/退出/复盘的最小记录基础；后续业务迁移仍需验证时点/输出/故障与恢复。
+
+旧171源码pin基线的主CLI及菜单测试随业务入口改变，其余169项同字节；
+原CLI/test字节从a00c7dd可恢复，未改历史pin清单/审查。实际来源运行23pins与V1/V2兼容archive
+仍原字节，不把历史整体源码基线当新功能禁止修改代码的Gate。

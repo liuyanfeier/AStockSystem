@@ -17,13 +17,14 @@
 
 ## 当前能做什么
 
-已有版本化行情/财务/行业契约、身份和时点模型、不可变来源与回执、受管数据库锁、
-隔离演练、历史查询和重建机制。Market Regime、Screening、业务报告、策略、组合与回测
-尚未实现；下一步是“真实行情 → Research Store → Market Regime / Screening → 候选观察报告”。
+已有独立 Research Store、真实文件导入、连续窗口验证、池内 Market Regime、可解释 Screening、
+候选观察卡和私有持仓/交易日志的最小记录能力；沿用可靠契约、来源和受管数据库基础。
+已从保留的真实三日行情生成报告；默认长窗口筛选不满足，最新连续行情仍待采集授权。
+行业/催化/公司研究、正式入场退出、组合风控、策略验证和回测尚未完成。
 
 本地已保留真实样本与历史执行账本，但不是最新完整研究数据库。旧演练和 RAW49 已停止，
 不能重试；新统一 store 尚无生产 facts。历史全量准入阻断与当前观察用途需分别判断，
-本次整理没有产生新的采集、真实导入或交易许可。
+Research V1 已获离线真实来源导入新store授权；没有新市场采集、旧库写入或交易许可。
 
 ## 本机运行
 
@@ -43,8 +44,22 @@ uv run --offline --frozen pytest
 具体历史工具见 [Phase1 操作资料](docs/phase1/operations.md)，其中生产命令不是当前执行指令。
 
 TUSHARE_TOKEN 只存本地 .env，诊断仅显示有无。ASTOCK_DATA_DIR 默认 data/，
-ASTOCK_DB_PATH 默认 data/warehouse/astock.duckdb；新 Research Store 将使用独立明确路径，
+ASTOCK_DB_PATH 默认 data/warehouse/astock.duckdb；Research Store 使用 data/private/research-v1/research.duckdb，
 不迁移或写入这个旧库。当前四份顶层 YAML 均 disabled，只是待验证的业务配置骨架。
+
+## Research V1
+
+~~~bash
+uv run --offline --frozen astock research --help
+uv run --offline --frozen astock research import --bundle 私有输入bundle.json
+uv run --offline --frozen astock research report --bundle 输出的bundleID \
+  --as-of 带时区的研究截止时间 --watch 原生股票代码
+uv run --offline --frozen astock research journal-add --event 私有人工记录.json
+~~~
+
+输入schema、保留来源adapter与复现见[Research V1](docs/RESEARCH_V1.md)。
+报告存 reports/private/research-v1/，行情不足就缺项或空列表，观察卡不生成订单。
+[近期连续行情预算](docs/RESEARCH_ACQUISITION.md)仍待用户批准，当前所有命令离线。
 
 ## 仓库边界
 

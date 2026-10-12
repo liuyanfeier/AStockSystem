@@ -1,6 +1,6 @@
 # 架构与迁移边界
 
-2026-10-11。以 [宪章](PROJECT_CHARTER.md) 与当前用户授权为准。
+2026-10-12。以 [宪章](PROJECT_CHARTER.md) 与当前用户授权为准。
 
 ## 业务主路径
 
@@ -16,7 +16,8 @@
 ~~~
 
 Research V1 从当前观察研究开始，随后扩展持仓/退出、策略验证和日志。
-上图除已存在的数据基础之外均是目标架构；模块完成前不得宣称可运行。
+Research Store、Features、Regime、Screening、报告及人工日志已在Research V1实现；
+其余为目标架构，模块完成前不得宣称可运行。
 
 ## 已有资产与边界
 
@@ -28,14 +29,16 @@ Research V1 从当前观察研究开始，随后扩展持仓/退出、策略验�
 | 旧有界演练 | probe*、slice*、admission*、reconstruction*、capture v1/v3 | 停用业务采集入口；保留历史审计/回归，按依赖逐步退出 |
 | 统一 Phase1 | phase1/contracts.py、domains.py、pipeline.py、versions.py 等 | 用 adapter 复用解码/时点/来源校验；不把全历史审批链搬进新业务 |
 | 历史来源兼容 | compat/phase1/{v1,v2-5672} | 被 versions.adapters() 实际调用；冻结字节，供旧来源读取，不作为新业务系统 |
-| 业务层 | regime/screening/reports 等八个包只有 docstring | 在已有包逐步实现；不再建立第二套同名业务框架 |
+| 业务层 | features/regime/screening/reports已实现观察路径；sectors/catalysts/backtest仍空 | 共用research.service，不维护平行筛选/报告框架 |
 
 ## Research Store 最小设计边界
 
-计划使用 ignored data/private/research-v1/，与旧三个原库及统一 capture store 隔离。
-首批需要证券观察表、交易日、日行情、指数行情、当日 ST/停牌/涨跌停资料、来源索引、
-质量/覆盖、run manifest 和报告输入快照。具体 schema 在 Research V1 实施时确定，不能伪称已部署。
-
+已使用 ignored data/private/research-v1/，与旧原库和统一capture store隔离。
+五表为research_meta、research_bundle、research_observation、research_report、research_journal；
+观察按dataset储存证券、日历、行情、因子和显式状态；原字节/侧证据按hash在旁raw/留存。
+导入先完整验证，再在受管连接内事务提交；分析从原字节重推导比对标准化观察。
+快照记录代码/参数/来源/as-of/日志，报告生成路径只接受专用私有根。
+尚无实时采集、公司研究、交易/组合schema；不为未实现能力提前建复杂框架。
 每条数据记录原生证券/来源、事件日、retrieved_at、available_at、单位、raw hash 与用途。
 当前上市名单是当次观察 universe；不用于冒充历史可交易证券全集。当前抓取的旧财务修订值
 仅能作当前研究，未经 vintage 证据不能参与历史 PIT 回测。UNKNOWN/CONFLICT 不归零、不静默填充。

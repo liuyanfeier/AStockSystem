@@ -1,77 +1,87 @@
-# 当前交付与 Review 入口
+# 当前交付与 Review 入口：Research V1
 
-本文件与代码一起提交，是最新批次的审查入口。后续批次更新这里，过去版本从 Git 查阅；
-长期目标、真实状态、架构和数据契约继续各自维护，不复制成大量临时报告。
-用户提供 PR 或分支链接即可。Reviewer 先取得可访问的实际仓库版本；如果无法读取代码或 CI，
-应说明访问限制，不能仅凭链接或作者摘要给出 PASS。
+2026-10-12。用户明确关闭重置/统一Review批次：独立审查基准
+`a00c7dd544a331fe42c319a1c8ab9826027b988d`，其CI成功、1008 passed。
+本批直接开发实际研究业务，不重启全历史Phase1或普通文档治理任务。
+此入口随提交维护；Reviewer读取实际diff、相关依赖、测试与对应head的CI，
+作者摘要不等于独立PASS。无法访问私有来源时应注明数据核验局限。
 
-## 当前批次与验收范围
+## 当前范围与业务结果
 
-2026-10-11，项目方向重置、渐进清理及仓库内自包含交付。
-用户明确要求在现有 AStockSystem 继续建设长期投资研究与交易决策系统，并提供完整宪章 V2；
-随后同意从现在开始，让 GPT 通过 Git 提交和提交内文件评估与 Review，无需额外转交材料。
-当前授权允许专用分支连续提交、必要修复和测试；未授权新市场 API、真实 fact 导入、
-历史事实改写、不可恢复私有数据删除或自动下单。
+用户授权：独立简洁Research Store；真实行情/连续窗口/用途/来源；Regime、筛选与真实观察报告；
+候选同步入场观察、反面证据、失效和不交易；私有持仓/日志最小能力；近期采集预算；
+容量覆盖仓库外历史工作目录。允许连续commit、普通修复/测试；
+未批准新市场API、私有破坏性删除或交易风险/订单。本批这些实际操作均为0。
 
-| 验收要求 | 对应交付与审查重点 |
+已经从本机保留且只读核验的真实来源产生报告，而不是只交设计：
+
+| 业务运行 | 实际结果与边界 |
 |---|---|
-| 完整长期目标，保持原意 | [PROJECT_CHARTER](PROJECT_CHARTER.md) 保留用户完整正文；[README](../README.md)、[AGENTS](../AGENTS.md) 统一入口与文档优先级 |
-| 真实理解现有成果与不足 | [CURRENT_STATE](CURRENT_STATE.md)：代码、真实数据、空占位、Git/CI；不得将旧阶段报告当成当前软件状态 |
-| 业务路线及新旧迁移边界 | [ROADMAP](ROADMAP.md)、[ARCHITECTURE](ARCHITECTURE.md)、[CODE_MIGRATION](CODE_MIGRATION.md)；核查动态依赖，未批量删除旧代码 |
-| 有依据地精简历史文档 | [HISTORY](HISTORY.md)、[REPOSITORY_RESET](REPOSITORY_RESET.md)：5份删除文件、原因、原路径与Git恢复依据；重要历史审查/来源保留 |
-| 数据保护与容量治理 | [STORAGE_GOVERNANCE](STORAGE_GOVERNANCE.md)、[容量工具](../scripts/repository_inventory.py)、[边界测试](../tests/test_repository_inventory.py)；私有清理只是提案 |
-| 下一批直接产生研究价值 | [RESEARCH_V1](RESEARCH_V1.md)：真实行情 → 独立 Research Store → Market Regime / Screening → 候选观察报告；已列已有依赖、数据和新模块 |
-| Git 内自包含 Review | 本入口、AGENTS交付规范及[PR模板](../.github/PULL_REQUEST_TEMPLATE.md)；任务范围、证据、局限和版本随提交公开 |
+| 输入 | 5股、2026-09-28至09-30连续3交易日；10文件来源bundle、身份/行情/因子/日历；不是最新120日行情 |
+| 默认观察配置 | 20日收益/60日均线：筛选0、人工观察5；长窗口、12自然日陈旧与状态/基准/基本面缺口明确披露 |
+| 三日探索配置 | 显式非默认短窗口：程序观察候选5；没有策略验证或交易资格，不冒充长期筛选 |
+| 复现与恢复 | 同一输入/代码/参数/as-of/日志的快照与报告字节相同；新独立store从保留来源重建，结果相同 |
+| 候选/退出准备 | 每卡入场观察、反面证据、逻辑失效、不交易和退出跟踪；risk_budget=null、trade_eligible=false |
+| 持仓/日志 | 人工POSITION与PLAN/EXECUTION/EXIT/REVIEW追加、更正、截止时间过滤、复盘到期；未导入用户实际持仓，不推算券商账户 |
+| 最新连续输入 | [48请求具体预算](RESEARCH_ACQUISITION.md) / [请求清单](../config/research/acquisition-proposal.json)可批准；当前execution_authorized=false，没有live命令 |
+| 全项目容量 | 最终5个确认根含当前仓库、旧Codex工作和本批测试临时目录，约31.16GB文件blocks；未手工删除私有数据 |
 
-## 版本与审查方式
+实际参数、操作和schema见[RESEARCH_V1](RESEARCH_V1.md)，状态见[CURRENT_STATE](CURRENT_STATE.md)。
+默认报告run：`d1f46b8a9e578902eb0bdc14c0af09212041da900ceba5800695f09df1631d82`；
+三日探索run：`11dbc787ee494dec55fbaae0bd9580a0181b2b58c143661efb3d83eef3fc6f52`。
+报告在本机reports/private/research-v1/，原字节/DB在data/private/research-v1/；
+公开Git不含真实行情行、私密研究、账户、成交、许可或凭据。
 
-- 仓库：[liuyanfeier/AStockSystem](https://github.com/liuyanfeier/AStockSystem)。
-- 开发分支：[codex/project-reset-research-v1](https://github.com/liuyanfeier/AStockSystem/tree/codex/project-reset-research-v1)。
-- 开始基线：`c1a9ef7f0ebb063f4b0ebd3ec6e4733a15e6f5db`。
-- 方向、清理及容量工具提交：`7a27b53ab97b695fb857722fefa4c7ecfd076fbf`。
-- 本地验证记录提交：`3c6ecace207c052e2373b0c52aa3d3d5eed121f4`。
-- 后续提交落实本入口与交付规范；最终版本取当前 PR head 或 `git rev-parse HEAD`。
-  Reviewer 开始时记录具体 SHA，避免审查过程中分支更新改变对象。
+## 版本与实际变更
+
+基线：`a00c7dd544a331fe42c319a1c8ab9826027b988d`。
+分支：[codex/research-v1](https://github.com/liuyanfeier/AStockSystem/tree/codex/research-v1)。
+业务实现提交：`aad5f52a48c0a2d62d268dc7b4b1066d710b9ccb`；随后提交同步操作/预算/验证。
+最终审查对象取PR当前head或`git rev-parse HEAD`，审查开始记录固定SHA。
+本分支基于已审查重置分支；main未自动合并。审查本批请比较以下明确范围：
 
 ~~~bash
-git rev-parse HEAD
-git log --oneline c1a9ef7f0ebb063f4b0ebd3ec6e4733a15e6f5db..HEAD
-git diff --stat c1a9ef7f0ebb063f4b0ebd3ec6e4733a15e6f5db...HEAD
-git diff c1a9ef7f0ebb063f4b0ebd3ec6e4733a15e6f5db...HEAD
+ git rev-parse HEAD
+ git log --oneline a00c7dd544a331fe42c319a1c8ab9826027b988d..HEAD
+ git diff --stat a00c7dd544a331fe42c319a1c8ab9826027b988d...HEAD
+ git diff a00c7dd544a331fe42c319a1c8ab9826027b988d...HEAD
 ~~~
 
-这些是只读审查命令。审查要沿实际 diff 检查相关调用、配置和回归，不限于提交摘要。
-当前批次没有替换既有业务实现；容量工具新增3条测试，既有测试和安全检查完整保留。
-main 未改动，历史不重写。文档恢复办法见清理记录；Git不能恢复未入库的私有数据。
+核心路径：research/inputs、store、legacy、service、journal；features/market、regime/market、
+screening/candidates、reports/research和cli/research。共用一个分析路径、5表store，无新依赖/服务。
+复用warehouse_connection/lock、RecordTimes、严格JSON/hash、raw侧证据和冻结物理来源校验；
+未使用旧pipeline.build，没有旧store schema或真实消费状态改写。
+旧重要回归完整保留；CLI允许菜单测试随实际新增research入口扩展，并保持doctor/秘密断言。
+[迁移记录](CODE_MIGRATION.md)说明原占位包落实，无被替代业务路径遗留。
+容量工具增加显式外部根、跨根inode去重、缺失/权限错误及符号链接计数。
 
-## 验证证据与实际局限
+## 验证与 reviewer 重点
 
-| 验证 | 已观察结果与范围 |
-|---|---|
-| 本地既有全套回归 | 既有源码/测试与开始基线c1a9ef7一致：1005 passed，1个既有fork弃用警告，1217.32秒；新测试另运行 |
-| 新增容量工具回归 | 对应7a27b53中的新增脚本和测试：`uv run --offline --frozen pytest tests/test_repository_inventory.py`：3 passed，0.32秒；与上一行分开运行，不冒充一次1008项全套 |
-| 本地离线诊断与契约 | doctor、v1/v2 contracts、identity/slice specs、probe/slice plan及统一23契约 specs通过；命令见[清理记录](REPOSITORY_RESET.md)和[操作资料](phase1/operations.md) |
-| 数据与来源保护 | 作者本机自检：既有155,655数据文件全hash起止一致、146,656保护路径、171固定pin、23运行pin及V1/V2来源验证通过；4个主要DB只读查询前后hash不变且无WAL |
-| 公开材料与秘密 | 作者自检：入口链接、diff和明文/编码/解码凭据检查通过，无私有数据入Git；Review仍应检查实际提交 |
-| 本次交付规范更新 | 5份新增/修改文件本地链接、明文/编码/解码凭据与diff检查通过；宪章仍与用户原文逐字节相同，既有运行代码、测试、配置和CI工作流无改动 |
-| GitHub CI | [3c6ecac运行](https://github.com/liuyanfeier/AStockSystem/actions/runs/38106829086)在本入口写入时仍in_progress，无成功结论；[当前分支CI](https://github.com/liuyanfeier/AStockSystem/actions?query=branch%3Acodex%2Fproject-reset-research-v1)可核对新HEAD |
+聚焦合成回归37 passed（Research、容量、CLI）。业务源码aad5f52对应完整离线回归
+**1032 passed，1个既有fork弃用警告，1239.28秒**；未skip重要回归或关闭网络禁止。
+公开CI以[分支运行](https://github.com/liuyanfeier/AStockSystem/actions?query=branch%3Acodex%2Fresearch-v1)
+或PR checks核对准确head、状态和日志；未完成不等于通过，旧a00c7dd成功不能冒充新HEAD成功。
 
-CI状态是上述版本的观察记录，之后可能变化。Reviewer须核对 run 的 head_sha、status、
-conclusion和日志；前一版本CI或本地分组通过不等于最新HEAD CI通过。
-本批后续交付规范改动仅涉及文档与PR模板，完整软件验证与最终文档HEAD分别记录。
-复现公开软件检查使用README命令；不用真实市场API或私有原库写入来验证本批文档整理。
+1. 原子事务及中途失败不能部分导入；旧库拒绝迁移，锁先于连接。
+2. 精确原生身份、真实捕获/可知时间、自然日日历、单位与公司行为因子；
+   中间断档/末日缺失不能跨越；未知ST/停牌/限价不能成为交易资格。
+3. 原字节/证据保留；从原字节重推导比对DB，来源/事实/输出篡改失败；报告可重复且仅私有输出。
+4. 池内宽度的有效分母、同日期基准、短窗口和陈旧数据；筛选排除与空列表，不能虚构全市场/催化。
+5. 人工日志追加/更正/知识时间，已有逻辑/退出条件和复盘提醒；未推算持仓或自动交易。
+6. 新预算仅提案；不重放已消费失败/未知，不因软件通过扩大授权；外部历史/临时容量不遗漏。
 
-私有核验清单、原文副本及全hash证据保留在本地 ignored `data/private/repository-governance/2026-10-11/`，
-不需要用户每批转交。公开仓库只足以复查软件、文档、方法、公开CI与脱敏摘要；
-没有私有访问权限时，真实数据保护结果只能标为作者自检，不能写成独立数据验收PASS。
-独立Review不能自动扩大采集、删除、风险参数或交易授权。
+doctor、v1/v2 contracts、identity/slice specs、统一23契约离线校验通过。
+作者本机自检：原155,655数据文件全hash不变；4个主要原DB同hash且无WAL。
+旧171源码基线中169项同字节；主CLI和菜单测试2项因新增业务入口按本批授权修改，
+原版本仍在a00c7dd及旧Git历史，未改旧pin清单或历史审查事实。
+23个实际运行pin及V1/V2冻结来源archive保持不变；没有把旧阶段根源码冻结扩大为新开发禁令。
+私有核验结果保留data/private/repository-governance/2026-10-12/，公开只含脱敏计数与方法；
+没有私有访问权限时不能把这些摘要写为独立数据验收。实际真实报告也不需要用户每批额外打包转交。
 
-## 未完成项与下一批
+## 缺口与下一批
 
-- Research Store、Market Regime、Screening和业务报告仍未实现；本批完成的是明确可执行入口。
-- 最新真实股票报告需要当前用途适合的近期来源；旧离散样本、RAW_ONLY和未准入facts不能冒充最新连续行情。
-- 全历史研究准入仍有缺口；它不应变成重新开启大规模Phase1的默认任务。
-- 私有冗余/缓存候选约0.881GB，未删除；实际释放受备份、共享块、依赖和用户批准影响。
-
-下一批按RESEARCH_V1完成最小观察闭环。新增真实调用、私有破坏性清理及风险参数需要各自明确授权，
-普通离线开发与回归按当前范围持续完成后统一Review。
+最新连续120日及基准真实报告尚待预算批准/新输入；当前真实运行是历史三日样本，
+完整Market Regime、公司/催化、策略有效性、正式退出/组合风控及回测未完成。
+下一批优先补当次近期数据、验证默认配置候选，并核实候选公司与持仓退出逻辑。
+不把未知填零、不按成本价擅设止损/仓位、不为此重建庞大历史审批框架。
+源码和文档可按commit回滚；私有store/raw/报告与日志需整组备份，Git不能替代私有数据恢复。
