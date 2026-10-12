@@ -4,7 +4,7 @@
 [PR #1](https://github.com/liuyanfeier/AStockSystem/pull/1)固定HEAD的
 [CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38199136159)已成功、1032 passed。
 2026-10-12核对PR仍open/draft、未合并，工作区干净；新分支codex/research-v1-1。
-新PR base=codex/research-v1，head=codex/research-v1-1，审查本批只比较上述固定基线到新head。
+[PR #2](https://github.com/liuyanfeier/AStockSystem/pull/2) base=codex/research-v1，head=codex/research-v1-1，审查本批只比较上述固定基线到新head。
 最终并入main顺序：已接受重置分支 → PR #1 → 本批；本次没有自动合并任何分支。
 最终固定SHA从PR head或git rev-parse HEAD读取，避免文档自引用。
 
@@ -54,9 +54,16 @@ uv run --offline --frozen python scripts/profile_research.py --size 10 --output 
 uv run --offline --frozen python scripts/profile_research.py --size 100 --output data/private/research-v1/新目录100
 ~~~
 
-## 作者验证与CI（随实际结果更新）
+## 作者验证与CI
 
-聚焦回归当前72 passed；整套本批回归与新HEAD CI进行中，**尚未标记通过**。
+固定功能源码`89b2bc750c49d30afc037f2ba80e5f6b9219df09`本机完整回归：
+**1071 passed、1 warning、1267.50s**；Python 3.12.14。聚焦回归72 passed。
+警告来自既有warehouse_ownership多线程fork测试；未关闭警告或改变该回归。
+doctor、v1/v2 contracts、probe plan、identity specs、slice plan/specs及phase1 specs均通过。
+本批功能版[CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38236902529)对应上述完整SHA；
+随后仅提交Review/状态/容量文档，功能、配置、依赖和测试均未再改变。
+交付文档HEAD同样触发完整CI，最终准确结论/运行链接记录于本[PR #2正文及checks](https://github.com/liuyanfeier/AStockSystem/pull/2)。
+本机通过不替代CI；不将进行中/失败标为成功。
 上批1032只是基线，不代表本批通过。旧重要回归未删/skip/减弱，网络禁止保留。
 CI以本PR head checks及准确日志为准；公开审查须读取实际改动/依赖/测试，不能据作者摘要独立PASS。
 
@@ -66,17 +73,28 @@ CI以本PR head checks及准确日志为准；公开审查须读取实际改动/
 HTTP/权限/重定向/超时/响应大小/字段/重复/未来日期/价格/秘密/截断、
 批准不匹配零调用、停止后未尝试恢复、stranded claim不重发均闭合Mock测试。
 
-初步性能（tracemalloc启用、合成128日，非供应商延迟）：
+固定功能源码`89b2bc750c49d30afc037f2ba80e5f6b9219df09`实测（tracemalloc启用，合成128日，非供应商延迟）：
 
-| 股票数 | 导入 | 来源完整重推导+读取 | 特征 | 含完整核验分析 | 报告发布 | Python峰值（分析） |
+| 股票数 | 导入 | 来源完整重推导+读取 | 特征 | 含完整核验分析 | 报告发布 | Python分析峰值 / 进程累计RSS峰值 |
 |---|---:|---:|---:|---:|---:|---:|
-| 10 | 1.15s | 0.49s | 0.018s | 0.56s | 0.007s | 约10MB |
-| 100 | 10.21s | 4.29s | 0.292s | 4.86s | 0.039s | 约92MB |
+| 10 | 1.1946s | 0.5347s | 0.0194s | 0.6014s | 0.0072s | 10.47MB / 194.12MB |
+| 100 | 10.8666s | 5.3093s | 0.4042s | 5.9640s | 0.0415s | 99.83MB / 480.51MB |
+
+10/100股各自私有profile输出约3.42/16.17MB逻辑长度，包含原响应、manifest、Store和报告；
+不将100股性能或外推空间视为全市场实测。代码hash为
+`f8935d6f54751a4a0798a7b3c90480030771a699766efe61049f9be788e87c52`。
+
+CLI实测在同一固定功能版本上完成：39个Mock响应全COMPLETE，经capture-status、capture-import、
+market、screen、report直接运行；默认20/60、观察池10股/2基准、4合成候选/6排除，
+报告重复发布与独立Store重建snapshot一致。合成人工POSITION经journal-add保存并关联该研究，
+后续报告显示原研究陈旧、复盘到期、缺风险计划、未确认及退出待核实；无真实用户持仓。
+旧真实5股3日bundle在独立验证Store用默认配置生成0筛选/5人工观察，原Research Store hash不变。
+本机私有报告可读；旧来源和模拟结果分别标识，未产生最新真实128日报告。
 
 同时修复旧日志新增默认字段的幂等兼容、关联报告hash核验、采集时钟回退下一请求前停止；各有回归；真实transport不接受测试时钟/节拍注入，人工零股后重开持仓重新关联原始逻辑。
 
 100股尚非日常瓶颈，故保留每次完整来源一致性核验，不引入缓存/双查询路径或重写Store。
-tracemalloc不覆盖原生DuckDB/Arrow；profile脚本同时记录进程累计峰值RSS，正式实测随后补齐。
+tracemalloc仅计Python分配；RSS包含原生DuckDB/Arrow且是进程累计峰值，不等于某阶段独立新增占用。
 私有来源/容量/恢复核验不能由公开Git独立验证；提供脱敏结果和方法，原字节、DB/日志/报告不提交。
 
 ## 保留、迁移及下一步
@@ -94,5 +112,19 @@ tracemalloc不覆盖原生DuckDB/Arrow；profile脚本同时记录进程累计�
 基准清单复查采用已保留且经physical_validate再次核验的000300.SH/market=SSE来源；
 新提案仍需精确验证000905.SH，不自动换成.CSI别名。同日不同S/R及日内时间事件分别保留，
 完全重复事件拒绝；YES表示当日停牌观察，不表示全天停牌或收盘后交易资格。
-修复/更正期间先前完整运行已被取代，其日志留存，不当最终验收；最终固定源码重跑全套。
+修复/更正期间先前完整运行已被取代，其日志留存，不当最终验收；最终固定源码重跑全套1071通过。
 其中人为停止旧运行时触发了旧中断恢复测试失败，该运行不作为PASS，也不删除回归规避。
+
+## 本批保全与实际容量
+
+本机逐文件SHA256复核原盘点155,655个data文件：改变0、缺失0；原四库及基线历史库文件均同字节。
+旧data/phase1/compat/SQL及uv.lock相对本批基线无diff；公开改动凭据明文、编码及JSON解码检查无匹配。
+真实市场请求0、旧库SQL写入0、私有破坏性删除0、风险参数启用0、自动订单0。
+公开Git没有实际行情/持仓/个人报告/授权令牌；上述私有结果须有本机访问权才可独立复核。
+
+本机最终容量快照见[STORAGE_GOVERNANCE](STORAGE_GOVERNANCE.md)：6个确认根，
+329,006普通文件、1,882数据库；32,386,899,566逻辑字节、33,342,554,112去重inode文件blocks。
+包含旧项目外部工作目录8.20GB及本批保留pytest目录5.27GB逻辑，complete=true、错误0。
+blocks不解析APFS clone共享或目录开销，未确认外置/远端备份不当零；整体50GB目标/100GB上限。
+可再生测试目录仅列建议：日志/版本/失败现场保留、无进程持锁及精确批准后才清理。
+本批未执行私有删除，不能承诺已经释放空间。
