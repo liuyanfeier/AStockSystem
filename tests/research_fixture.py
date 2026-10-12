@@ -61,7 +61,7 @@ def response(plan, member, anomalies=True):
         for c in codes:
             rows.append(dict(ts_code=c,name='SYNTHETIC '+c,exchange='SZSE' if c in plan['universe'][:5] else 'SSE',market='主板',list_date=days[-30].strftime('%Y%m%d') if anomalies and c==plan['universe'][6] else '20000101',list_status='L'))
     elif api=='index_basic':
-        rows=[dict(ts_code=c,name='SYNTHETIC benchmark',market='CSI',publisher='SYNTHETIC 中证') for c in codes]
+        rows=[dict(ts_code=c,name='SYNTHETIC benchmark',market=p['market'],publisher='SYNTHETIC 中证') for c in codes]
     elif api=='stock_st':
         rows=[dict(ts_code=plan['universe'][5],name='SYNTHETIC ST',trade_date=days[-1].strftime('%Y%m%d'),type='ST',type_name='风险警示板')]
     elif api=='suspend_d':

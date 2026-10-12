@@ -1,11 +1,11 @@
 {
   "benchmark_calendars": {
-    "000300.CSI": "SSE",
-    "000905.CSI": "SSE"
+    "000300.SH": "SSE",
+    "000905.SH": "SSE"
   },
   "benchmarks": [
-    "000300.CSI",
-    "000905.CSI"
+    "000300.SH",
+    "000905.SH"
   ],
   "destination": "data/private/research-v1/capture-20261012-v1-1",
   "endpoint": "https://api.tushare.pro",
@@ -186,8 +186,8 @@
         "publisher"
       ],
       "params": {
-        "market": "CSI",
-        "ts_code": "000300.CSI"
+        "market": "SSE",
+        "ts_code": "000300.SH"
       },
       "row_cap": 8000
     },
@@ -200,8 +200,8 @@
         "publisher"
       ],
       "params": {
-        "market": "CSI",
-        "ts_code": "000905.CSI"
+        "market": "SSE",
+        "ts_code": "000905.SH"
       },
       "row_cap": 8000
     },
@@ -590,7 +590,7 @@
       "params": {
         "end_date": "20261012",
         "start_date": "20260401",
-        "ts_code": "000300.CSI"
+        "ts_code": "000300.SH"
       },
       "row_cap": 2000
     },
@@ -610,7 +610,7 @@
       "params": {
         "end_date": "20261012",
         "start_date": "20260401",
-        "ts_code": "000905.CSI"
+        "ts_code": "000905.SH"
       },
       "row_cap": 2000
     }
