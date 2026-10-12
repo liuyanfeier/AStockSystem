@@ -49,7 +49,7 @@ def append_event(store: ResearchStore, path: Path) -> str:
         store._check(db)
         old = db.execute("SELECT payload FROM research_journal WHERE id=?", [key]).fetchone()
         if old:
-            require(old[0] == encoded(payload).decode(), "JOURNAL_ID_CONFLICT")
+            require(JournalEvent.model_validate(json.loads(old[0])).model_dump(mode="json") == payload, "JOURNAL_ID_CONFLICT")
             return key
         if event.correction_of:
             require(event.correction_of != key and db.execute("SELECT 1 FROM research_journal WHERE id=?", [event.correction_of]).fetchone() is not None,
@@ -82,7 +82,8 @@ def journal_snapshot(store: ResearchStore, as_of: str, instruments: dict, max_st
             if ref and ref not in reports:
                 row = db.execute("SELECT snapshot FROM research_report WHERE id=?", [ref]).fetchone()
                 snapshot = json.loads(row[0]) if row else None
-                if snapshot and instant(snapshot["as_of"]) <= cutoff:
+                require(snapshot is not None and digest(snapshot) == ref, "JOURNAL_REPORT_CHANGED")
+                if instant(snapshot["as_of"]) <= cutoff:
                     reports[ref] = snapshot
     holdings = []
     for code, event in sorted(positions.items()):

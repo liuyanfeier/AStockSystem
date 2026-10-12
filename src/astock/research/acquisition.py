@@ -195,16 +195,20 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
         # Failed/unknown transfer sizes are unknowable: reserve their entire cap.
         charged = consumed * plan.max_body_bytes
         completed, stopped = 0, None
+        latest_observed = max([instant(plan.not_before), instant(approval['approved_at']),
+                               *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
+                               *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
         with httpx.Client(transport=transport, verify=True, follow_redirects=False, trust_env=False,
                           timeout=httpx.Timeout(30), limits=httpx.Limits(max_connections=1)) as client:
             for member in remaining:
-                require(clock() <= instant(approval['expires_at']), 'APPROVAL_EXPIRED')
+                claim_time = instant(clock())
+                require(latest_observed <= claim_time <= instant(approval['expires_at']), 'APPROVAL_EXPIRED_OR_CLOCK_ROLLBACK')
                 require(consumed < plan.maximum_attempts and charged + plan.max_body_bytes <= plan.max_total_body_bytes, 'CAPTURE_BUDGET')
                 # Two body copies plus derivation/headroom; no call when local peak cannot fit.
                 require(disk_bytes(destination) + 2 * plan.max_body_bytes + 32 * 1024**2 <= plan.max_added_disk_bytes, 'CAPTURE_DISK_BUDGET')
                 key = digest(member)
                 claim_path = destination / f'{key}.claim.json'
-                claim = dict(plan_hash=plan_hash, member=member, claimed_at=clock().isoformat(), approval_hash=digest(approval))
+                claim = dict(plan_hash=plan_hash, member=member, claimed_at=claim_time.isoformat(), approval_hash=digest(approval))
                 publish_bytes(claim_path, encoded(claim))  # irrevocable UNKNOWN BEFORE transport
                 consumed += 1
                 charged += plan.max_body_bytes
@@ -221,7 +225,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                             require(size <= plan.max_body_bytes, 'CAPTURE_BODY_CAP')
                             chunks.append(chunk)
                         body = b''.join(chunks)
-                    captured = clock().isoformat()
+                    captured = instant(clock()).isoformat()
                     require(instant(captured) >= instant(claim['claimed_at']), 'CAPTURE_CLOCK_ROLLBACK')
                     require(not secret_present(body, secret), 'CAPTURE_SECRET')
                     payload_rows(plan, member, body, captured)
@@ -241,6 +245,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 if state != 'COMPLETE':
                     stopped = state
                     break
+                latest_observed = instant(captured)
                 completed += 1
                 if completed < len(remaining):
                     sleep(plan.min_spacing_seconds)

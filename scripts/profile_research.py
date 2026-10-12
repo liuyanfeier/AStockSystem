@@ -7,6 +7,7 @@ import json
 import runpy
 import resource
 import sys
+import subprocess
 import time
 import tracemalloc
 
@@ -58,7 +59,7 @@ def main():
                                           rows['adj_factor'],rows['calendar'],p_end(manifest),p) for c in plan['universe']+plan['benchmarks']])
     snapshot=stage('analyze_including_full_audit',lambda:analyze(store,bid,support['ASOF'],p))
     stage('report_publication',lambda:publish(snapshot,output/'reports'))
-    metrics.update(size=args.size,sessions=snapshot['features'][0]['expected_sessions'],
+    metrics.update(source_sha=subprocess.check_output(["git", "rev-parse", "HEAD"],cwd=root,text=True).strip(),code_hash=snapshot["code_hash"],size=args.size,sessions=snapshot['features'][0]['expected_sessions'],
                    logical_bytes=sum(p.stat().st_size for p in output.rglob('*') if p.is_file()),synthetic=True,
                    note='tracemalloc reports Python allocations, not native DuckDB/Arrow RSS')
     (output/'profile.json').write_bytes(encoded(metrics)+b'\n')

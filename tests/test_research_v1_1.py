@@ -301,3 +301,55 @@ def test_incomplete_capture_does_not_publish_invalid_bundle(tmp_path):
     with pytest.raises(ResearchError,match='IDENTITY_EVIDENCE_REQUIRED'):
         make_capture_bundle(dest)
     assert not list(dest.glob('*.bundle.json'))
+
+
+def test_legacy_journal_defaults_remain_idempotent(full_capture):
+    from astock.data.warehouse_lock import warehouse_connection
+    from astock.research.journal import append_event
+    plan,dest,bundle,store,bid,p=full_capture
+    event=dict(event_id='legacy-position',kind='POSITION',code=plan['universe'][0],event_at=ASOF,recorded_at=ASOF,
+               research_report_id=None,shares=100,price_cny=None,thesis='original',invalidation='invalid',
+               exit_conditions='review',review_due=None,notes='',correction_of=None)
+    with warehouse_connection(store.path) as db:
+        db.execute('INSERT INTO research_journal VALUES (?,?,?,?)',[event['event_id'],ASOF,ASOF,encoded(event).decode()])
+    path=dest/'legacy-event.json';path.write_bytes(encoded(event))
+    assert append_event(store,path)==event['event_id']
+    with warehouse_connection(store.path,read_only=True) as db:
+        assert db.execute('SELECT payload FROM research_journal').fetchone()[0]==encoded(event).decode()
+
+
+def test_linked_report_tamper_rejected(full_capture):
+    from astock.data.warehouse_lock import warehouse_connection
+    from astock.research.journal import append_event,journal_snapshot
+    plan,dest,bundle,store,bid,p=full_capture
+    snapshot=analyze(store,bid,ASOF,p);rid=store.save_report(snapshot)
+    e=dict(event_id='linked',kind='POSITION',code=plan['universe'][0],event_at=ASOF,recorded_at=ASOF,shares=10,research_report_id=rid)
+    path=dest/'event.json';path.write_bytes(encoded(e));append_event(store,path)
+    with warehouse_connection(store.path) as db:
+        snapshot['window_end']='2026-10-11'
+        db.execute('UPDATE research_report SET snapshot=? WHERE id=?',[encoded(snapshot).decode(),rid])
+    with pytest.raises(ResearchError,match='JOURNAL_REPORT_CHANGED'):journal_snapshot(store,ASOF,{})
+
+
+def test_clock_rollback_stops_before_next_claim(tmp_path):
+    from research_fixture import CAPTURED
+    from astock.research.core import digest
+    from astock.research.acquisition import capture,implementation_hash,capture_status
+    from pydantic import SecretStr
+    from datetime import timedelta
+    plan=fixture_plan();p=tmp_path/'plan.json';p.write_bytes(encoded(plan))
+    a=dict(protocol='RESEARCH_CAPTURE_APPROVAL_V1_1',plan_hash=digest(plan),destination=str((tmp_path/plan['destination']).resolve()),
+           implementation_hash=implementation_hash(),authorized_by='SYNTHETIC_TEST',approved_at='2026-10-13T00:00:00+00:00',
+           expires_at='2026-10-14T00:00:00+00:00',member_ids=[digest(m) for m in plan['members']],fixture_only=True,execution_authorized=True)
+    approval=tmp_path/'approval.json';approval.write_bytes(encoded(a))
+    current=[CAPTURED];calls=[]
+    def handler(req):
+        calls.append(req)
+        return httpx.Response(200,stream=BytesStream(encoded(response(plan,plan['members'][len(calls)-1]))))
+    def rollback(_):current[0]-=timedelta(hours=1)
+    with pytest.raises(ResearchError,match='CLOCK_ROLLBACK'):
+        capture(tmp_path,p,live=True,approval_file=approval,transport=httpx.MockTransport(handler),token=SecretStr('SYNTHETIC_TEST_TOKEN_12345'),
+                now=lambda:current[0],sleep=rollback)
+    assert len(calls)==1
+    states=capture_status(tmp_path/plan['destination'])['states']
+    assert states==dict(COMPLETE=1,FAILED=0,UNKNOWN=0,UNATTEMPTED=38)
