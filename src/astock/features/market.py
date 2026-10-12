@@ -32,7 +32,7 @@ class ObservationParameters(StrictModel):
 def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
              calendar: list[dict], end: date, p: ObservationParameters) -> dict:
     sessions = sorted(day(r["date"]) for r in calendar
-                      if r["exchange"] == identity["exchange"] and r["is_open"] == 1 and day(r["date"]) <= end)
+                      if r["exchange"] == identity.get("calendar_exchange", identity["exchange"]) and r["is_open"] == 1 and day(r["date"]) <= end)
     data = {day(r["date"]): r for r in prices if r["code"] == code and day(r["date"]) <= end}
     factor = {day(r["date"]): r["adj_factor"] for r in factors if r["code"] == code}
     f = dict(code=code, name=identity.get("name"), exchange=identity["exchange"],
@@ -57,7 +57,10 @@ def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
         f["gaps"].append("最后交易日行情缺失；不以前一日冒充当日")
         return f
     f.update(last_date=tail[-1]["date"], close=tail[-1]["close"],
-             source_hashes=sorted({r["source_hash"] for r in tail}))
+             source_hashes=sorted({r["source_hash"] for r in tail} |
+                                  {r["source_hash"] for r in factors if r["code"] == code and r["date"] in {t["date"] for t in tail}} |
+                                  {r["source_hash"] for r in calendar if r["exchange"] == identity.get("calendar_exchange", identity["exchange"])} |
+                                  ({identity["source_hash"]} if identity.get("source_hash") else set())))
     needed = max(p.return_sessions + 1, p.trend_sessions, p.breakout_sessions + 1, p.activity_sessions)
     if len(tail) < needed:
         f["gaps"].append(f"连续{len(tail)}日，不足配置所需{needed}日；长窗口指标保持缺失")

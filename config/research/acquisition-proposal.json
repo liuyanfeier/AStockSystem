@@ -1,1 +1,638 @@
-{"benchmarks":["000300.SH","000905.SH"],"destination":"data/private/research-v1/capture-20261009","endpoint":"https://api.tushare.pro","excludes":["prior consumed UNKNOWN/UNCERTAIN/FAILED replay","all-history development","real trading","old database writes"],"execution_authorized":false,"expected_min_sessions":120,"max_added_disk_bytes":268435456,"max_body_bytes_per_request":2097152,"max_total_body_bytes":100663296,"maximum_attempts":48,"maximum_requests":48,"members":[{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000001.SZ"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000002.SZ"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000333.SZ"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"002415.SZ"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"300750.SZ"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600000.SH"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600036.SH"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600519.SH"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601318.SH"}},{"contract_hash":"3d9b49a84d534cdc75f3d645a2158721476002c84ecff295affc0bb687cd26bc","dataset":"daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount","ah_vol","ah_amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601899.SH"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000001.SZ"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000002.SZ"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000333.SZ"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"002415.SZ"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"300750.SZ"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600000.SH"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600036.SH"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600519.SH"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601318.SH"}},{"contract_hash":"5aa221ca605fdbfa50aa356a1fe0141c5a668ba8f033253e2415e81b2153c4ea","dataset":"adj_factor","empty_evidence":null,"fields":["ts_code","trade_date","adj_factor"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601899.SH"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000001.SZ"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000002.SZ"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000333.SZ"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"002415.SZ"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"300750.SZ"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600000.SH"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600036.SH"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600519.SH"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601318.SH"}},{"contract_hash":"add2108bc0dae529c0d6ceaaaa538c3cac8bd76d2a429cbc92c22e61cb4b4634","dataset":"stk_limit","empty_evidence":null,"fields":["trade_date","ts_code","pre_close","up_limit","down_limit","asset_type","exchange"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601899.SH"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000001.SZ"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000002.SZ"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000333.SZ"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"002415.SZ"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"300750.SZ"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600000.SH"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600036.SH"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"600519.SH"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601318.SH"}},{"contract_hash":"da4e2346a1fe0f3a2126f12b8be2fadddef5fdbda958e973fcf157ac34dd7e04","dataset":"suspend_d","empty_evidence":null,"fields":["ts_code","trade_date","suspend_timing","suspend_type"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"601899.SH"}},{"contract_hash":"b3fd237486f5015e391b30661e6a00a26607f2eb54290767b9de4424aefd6238","dataset":"index_daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000300.SH"}},{"contract_hash":"56be6e2a357ecbbb636ed723a5476b773e5db72c00a7ac83fea33880704acaa7","dataset":"index_basic","empty_evidence":null,"fields":["ts_code","name","market","publisher","category","base_date","base_point","list_date","exp_date"],"metadata":{},"params":{"market":"SSE","ts_code":"000300.SH"}},{"contract_hash":"b3fd237486f5015e391b30661e6a00a26607f2eb54290767b9de4424aefd6238","dataset":"index_daily","empty_evidence":null,"fields":["ts_code","trade_date","open","high","low","close","pre_close","change","pct_chg","vol","amount"],"metadata":{},"params":{"end_date":"20261009","start_date":"20260401","ts_code":"000905.SH"}},{"contract_hash":"56be6e2a357ecbbb636ed723a5476b773e5db72c00a7ac83fea33880704acaa7","dataset":"index_basic","empty_evidence":null,"fields":["ts_code","name","market","publisher","category","base_date","base_point","list_date","exp_date"],"metadata":{},"params":{"market":"SSE","ts_code":"000905.SH"}},{"contract_hash":"63daf1f5d65c49cd0e4c0937677f09165070485877645168e854273277efb306","dataset":"trade_cal","empty_evidence":null,"fields":["exchange","cal_date","is_open","pretrade_date"],"metadata":{},"params":{"end_date":"20261009","exchange":"SSE","start_date":"20260401"}},{"contract_hash":"63daf1f5d65c49cd0e4c0937677f09165070485877645168e854273277efb306","dataset":"trade_cal","empty_evidence":null,"fields":["exchange","cal_date","is_open","pretrade_date"],"metadata":{},"params":{"end_date":"20261009","exchange":"SZSE","start_date":"20260401"}},{"contract_hash":"fa6d8c4ae36b6f9061a1ce71b259c399403dafb47700bb45cb3170a50e490f36","dataset":"stock_basic","empty_evidence":null,"fields":["ts_code","symbol","name","fullname","market","exchange","curr_type","list_status","list_date","delist_date"],"metadata":{},"params":{"list_status":"L"}},{"contract_hash":"9627aacaf3d6a176cff644752568febb2037d4cb7d81f5d91915175013d51985","dataset":"stock_st","empty_evidence":null,"fields":["ts_code","name","trade_date","type","type_name"],"metadata":{},"params":{"trade_date":"20261009"}}],"method":"POST","min_spacing_seconds":1.25,"observation_universe":["000001.SZ","000002.SZ","000333.SZ","002415.SZ","300750.SZ","600000.SH","600036.SH","600519.SH","601318.SH","601899.SH"],"protocol":"RESEARCH_V1_ACQUISITION_PROPOSAL","purpose":"CURRENT_OBSERVATION","redirects":0,"retries":0,"status_semantics":"Sparse/empty suspension or ST rows do not prove normal state; preserve UNKNOWN without explicit completeness evidence","stop_conditions":["permission/HTTP/provider error","body cap/truncation","credential leak","invalid identity/calendar/date/units","uncertain or stranded attempt"],"window_end":"2026-10-09","window_start":"2026-04-01"}
+{
+  "benchmark_calendars": {
+    "000300.SH": "SSE",
+    "000905.SH": "SSE"
+  },
+  "benchmarks": [
+    "000300.SH",
+    "000905.SH"
+  ],
+  "destination": "data/private/research-v1/capture-20261012-v1-1",
+  "endpoint": "https://api.tushare.pro",
+  "execution_authorized": false,
+  "expected_min_sessions": 120,
+  "max_added_disk_bytes": 268435456,
+  "max_body_bytes": 2097152,
+  "max_total_body_bytes": 81788928,
+  "maximum_attempts": 39,
+  "maximum_requests": 39,
+  "members": [
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "index_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "market",
+        "publisher"
+      ],
+      "params": {
+        "market": "SSE",
+        "ts_code": "000300.SH"
+      },
+      "row_cap": 8000
+    },
+    {
+      "api": "index_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "market",
+        "publisher"
+      ],
+      "params": {
+        "market": "SSE",
+        "ts_code": "000905.SH"
+      },
+      "row_cap": 8000
+    },
+    {
+      "api": "trade_cal",
+      "fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "exchange": "SSE",
+        "start_date": "20260401"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "trade_cal",
+      "fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "exchange": "SZSE",
+        "start_date": "20260401"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ,000002.SZ,000333.SZ,002415.SZ,300750.SZ,600000.SH,600036.SH,600519.SH,601318.SH,601899.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "suspend_d",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ,000002.SZ,000333.SZ,002415.SZ,300750.SZ,600000.SH,600036.SH,600519.SH,601318.SH,601899.SH"
+      },
+      "row_cap": 5000
+    },
+    {
+      "api": "stock_st",
+      "fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "params": {
+        "trade_date": "20261012"
+      },
+      "row_cap": 1000
+    },
+    {
+      "api": "index_daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000300.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "index_daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000905.SH"
+      },
+      "row_cap": 2000
+    }
+  ],
+  "min_spacing_seconds": 1.25,
+  "not_before": "2026-10-13T09:30:00+08:00",
+  "protocol": "RESEARCH_CAPTURE_V1_1",
+  "purpose": "CURRENT_OBSERVATION",
+  "redirects": 0,
+  "retries": 0,
+  "universe": [
+    "000001.SZ",
+    "000002.SZ",
+    "000333.SZ",
+    "002415.SZ",
+    "300750.SZ",
+    "600000.SH",
+    "600036.SH",
+    "600519.SH",
+    "601318.SH",
+    "601899.SH"
+  ],
+  "window_end": "2026-10-12",
+  "window_start": "2026-04-01"
+}

@@ -7,6 +7,7 @@ from pathlib import Path
 from astock.data.warehouse_lock import warehouse_connection, warehouse_lock
 from astock.research.core import digest, encoded, instant, read_json, require
 from astock.research.inputs import Bundle, SourceFile, load_bundle, records
+from astock.research.publication import publish_bytes
 
 SCHEMA = """
 CREATE TABLE research_meta(version INTEGER PRIMARY KEY);
@@ -19,6 +20,15 @@ CREATE TABLE research_report(id VARCHAR PRIMARY KEY, bundle_id VARCHAR, snapshot
 CREATE TABLE research_journal(id VARCHAR PRIMARY KEY, event_at TIMESTAMPTZ, available_at TIMESTAMPTZ,
     payload JSON NOT NULL);
 """
+
+
+def observation_key(spec: SourceFile, row: dict) -> str:
+    values = [row.get("code"), row.get("exchange"), row.get("date")]
+    if spec.dataset == "status" and spec.adapter == "tushare-response-v1":
+        values.append(spec.sha256)
+        if row.get("event_key"):
+            values.append(row["event_key"])
+    return digest(values)
 
 
 class ResearchStore:
@@ -80,15 +90,14 @@ class ResearchStore:
                 if target.exists():
                     require(hashlib.sha256(target.read_bytes()).hexdigest() == checksum, "RAW_CORRUPTED")
                 else:
-                    with target.open("xb") as stream:
-                        stream.write(body)
+                    publish_bytes(target, body)
             db.execute("BEGIN")
             try:
                 db.execute("INSERT INTO research_bundle VALUES (?,?)", [bundle_id, encoded(manifest).decode()])
                 values = []
                 for spec, _, rows in inputs:
                     for row in rows:
-                        key = digest([row.get("code"), row.get("exchange"), row.get("date")])
+                        key = observation_key(spec, row)
                         values.append([bundle_id, spec.dataset, key, spec.available_at, spec.sha256, encoded(row).decode()])
                 if values:
                     db.executemany("INSERT INTO research_observation VALUES (?,?,?,?,?,?)", values)
@@ -114,7 +123,7 @@ class ResearchStore:
             manifest = json.loads(item[0])
             require(digest(manifest) == bundle_id, "STORED_MANIFEST_CHANGED")
             self._verify_sources(manifest)
-            rows = db.execute("SELECT dataset,source_hash,payload FROM research_observation WHERE bundle_id=? AND available_at<=? ORDER BY dataset,record_key",
+            rows = db.execute("SELECT dataset,record_key,source_hash,payload FROM research_observation WHERE bundle_id=? AND available_at<=? ORDER BY dataset,record_key",
                               [bundle_id, instant(as_of)]).fetchall()
         # Re-derive normalized observations from retained source bytes. This also
         # supplies an independent rebuild path without touching original stores.
@@ -124,11 +133,11 @@ class ResearchStore:
             spec = SourceFile.model_validate(item)
             if instant(spec.available_at) <= instant(as_of):
                 body = (self.path.parent / "raw" / spec.sha256).read_bytes()
-                expected.extend((spec.dataset, spec.sha256, encoded(r).decode())
+                expected.extend((spec.dataset, observation_key(spec, r), spec.sha256, encoded(r).decode())
                                 for r in records(spec, body, bundle))
         require(sorted(rows) == sorted(expected), "STORED_OBSERVATIONS_CHANGED")
         result: dict[str, list] = {}
-        for dataset, source_hash, payload in rows:
+        for dataset, _, source_hash, payload in rows:
             result.setdefault(dataset, []).append({**json.loads(payload), "source_hash": source_hash})
         return manifest, result
 

@@ -1,87 +1,130 @@
-# 当前交付与 Review 入口：Research V1
+# 当前 Review：Research V1.1
 
-2026-10-12。用户明确关闭重置/统一Review批次：独立审查基准
-`a00c7dd544a331fe42c319a1c8ab9826027b988d`，其CI成功、1008 passed。
-本批直接开发实际研究业务，不重启全历史Phase1或普通文档治理任务。
-此入口随提交维护；Reviewer读取实际diff、相关依赖、测试与对应head的CI，
-作者摘要不等于独立PASS。无法访问私有来源时应注明数据核验局限。
+基线为已独立ACCEPT的Research V1：`1a81338ada05888d9c9727e0bb5d3da9714cb57f`，
+[PR #1](https://github.com/liuyanfeier/AStockSystem/pull/1)固定HEAD的
+[CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38199136159)已成功、1032 passed。
+2026-10-12核对PR仍open/draft、未合并，工作区干净；新分支codex/research-v1-1。
+[PR #2](https://github.com/liuyanfeier/AStockSystem/pull/2) base=codex/research-v1，head=codex/research-v1-1，审查本批只比较上述固定基线到新head。
+最终并入main顺序：已接受重置分支 → PR #1 → 本批；本次没有自动合并任何分支。
+最终固定SHA从PR head或git rev-parse HEAD读取，避免文档自引用。
 
-## 当前范围与业务结果
+## 用户授权与验收
 
-用户授权：独立简洁Research Store；真实行情/连续窗口/用途/来源；Regime、筛选与真实观察报告；
-候选同步入场观察、反面证据、失效和不交易；私有持仓/日志最小能力；近期采集预算；
-容量覆盖仓库外历史工作目录。允许连续commit、普通修复/测试；
-未批准新市场API、私有破坏性删除或交易风险/订单。本批这些实际操作均为0。
+直接任务是Research V1.1连续业务开发，普通实现/修复/测试/提交/CI无需逐步审批。
+核心：九API真实格式响应自动进入独立Store；连续窗口与来源/用途；Market Regime/筛选/候选卡；
+持仓原始逻辑、退出待核实及复盘；默认dry-run的受限采集；性能/空间实测。
+不做全历史Phase1重建、新闻平台、分钟行情、机器学习、会计/券商引擎或文档治理重开。
+新真实市场API、破坏性私有删除、风险参数生效及订单均未授权，本批均0。
+官方文档只读核对已授权，不把浏览网页或MockTransport当行情API成功。
 
-已经从本机保留且只读核验的真实来源产生报告，而不是只交设计：
+Level A离线软件：逐API转换、完整20/60合成窗口独立期望、错误/时间/冲突/缺失、文件和SQL故障恢复、
+单一计算路径、持仓日志、统一CLI、旧回归及来源保护。作者结果是工程自测，待独立Review。
+Level B最新真实研究：仍未开展，没有新的采集授权；此前5股连续3日有限真实证据仍保留，
+不能冒充128日或最新默认配置验证。未导入用户实际账户/持仓/成交。
 
-| 业务运行 | 实际结果与边界 |
-|---|---|
-| 输入 | 5股、2026-09-28至09-30连续3交易日；10文件来源bundle、身份/行情/因子/日历；不是最新120日行情 |
-| 默认观察配置 | 20日收益/60日均线：筛选0、人工观察5；长窗口、12自然日陈旧与状态/基准/基本面缺口明确披露 |
-| 三日探索配置 | 显式非默认短窗口：程序观察候选5；没有策略验证或交易资格，不冒充长期筛选 |
-| 复现与恢复 | 同一输入/代码/参数/as-of/日志的快照与报告字节相同；新独立store从保留来源重建，结果相同 |
-| 候选/退出准备 | 每卡入场观察、反面证据、逻辑失效、不交易和退出跟踪；risk_budget=null、trade_eligible=false |
-| 持仓/日志 | 人工POSITION与PLAN/EXECUTION/EXIT/REVIEW追加、更正、截止时间过滤、复盘到期；未导入用户实际持仓，不推算券商账户 |
-| 最新连续输入 | [48请求具体预算](RESEARCH_ACQUISITION.md) / [请求清单](../config/research/acquisition-proposal.json)可批准；当前execution_authorized=false，没有live命令 |
-| 全项目容量 | 最终5个确认根含当前仓库、旧Codex工作和本批测试临时目录，约31.16GB文件blocks；未手工删除私有数据 |
+## 实际实现与可运行入口
 
-实际参数、操作和schema见[RESEARCH_V1](RESEARCH_V1.md)，状态见[CURRENT_STATE](CURRENT_STATE.md)。
-默认报告run：`d1f46b8a9e578902eb0bdc14c0af09212041da900ceba5800695f09df1631d82`；
-三日探索run：`11dbc787ee494dec55fbaae0bd9580a0181b2b58c143661efb3d83eef3fc6f52`。
-报告在本机reports/private/research-v1/，原字节/DB在data/private/research-v1/；
-公开Git不含真实行情行、私密研究、账户、成交、许可或凭据。
+- research/publication复用data.raw_writer.atomic_new_file：临时写/校验/fsync/硬链接无覆盖发布。
+  SQL回滚只留下完整未引用对象；报告双文件中断可同输入恢复；同名异内容拒绝。
+- research/tushare纯响应合同覆盖全部9接口，原JSON直接推导6类观察，不增加Curated副本；
+  身份、请求范围、时间、单位、完整日历、上市日期、上限、重复/冲突检查。
+  stock_basic明确exchange；index_basic保留market/publisher，日历另证，后缀不推断身份。
+- 稀疏ST/停复牌/限价证据按as-of合并；R不扩展为每日正常，未知不填NO。
+  原JSON/plan/claim/批准/结果/hash保留，来源等级区分声明、LOCAL_CAPTURE_BOUND、SYNTHETIC。
+- research/acquisition独立39请求计划，默认dry-run，不访问旧执行入口；永久claim先于HTTP，
+  首错停止、FAILED/UNKNOWN不重发；新批准只恢复未claim成员。TLS、无代理/重定向/重试、流式大小/磁盘预留。
+- features/regime/screening/report仍共用service；价格/因子/日历/身份来源纳入特征证据。
+  Breakout/Pullback为待研究Setup，有参考价/状态、反证、不交易与失效条件，无策略有效或买卖声明。
+- journal追加人工快照/更正，保留最初逻辑和研究版本，as-of防迟到更正泄漏；
+  缺逻辑/风险计划、原研究陈旧、复盘到期、人工待确认、用户退出条件PENDING_VERIFICATION。
+  缺持仓输入不推断空仓；不从成交推账户或按成本设止损。
+- 报告增加活跃/波动、Setup、持仓复盘与下一研究日跟踪，仍私有可复现。
 
-## 版本与实际变更
-
-基线：`a00c7dd544a331fe42c319a1c8ab9826027b988d`。
-分支：[codex/research-v1](https://github.com/liuyanfeier/AStockSystem/tree/codex/research-v1)。
-业务实现提交：`aad5f52a48c0a2d62d268dc7b4b1066d710b9ccb`；随后提交同步操作/预算/验证。
-最终审查对象取PR当前head或`git rev-parse HEAD`，审查开始记录固定SHA。
-本分支基于已审查重置分支；main未自动合并。审查本批请比较以下明确范围：
+运行命令和规范：[RESEARCH_V1](RESEARCH_V1.md)；
+一次可批准的范围/官方依据/恢复及全市场增量：[RESEARCH_ACQUISITION](RESEARCH_ACQUISITION.md)。
 
 ~~~bash
- git rev-parse HEAD
- git log --oneline a00c7dd544a331fe42c319a1c8ab9826027b988d..HEAD
- git diff --stat a00c7dd544a331fe42c319a1c8ab9826027b988d...HEAD
- git diff a00c7dd544a331fe42c319a1c8ab9826027b988d...HEAD
+export PATH="$PWD/scripts:$PATH"
+uv run --offline --frozen astock research capture
+uv run --offline --frozen pytest tests/test_research_publication.py tests/test_research_v1_1.py tests/test_research_v1.py tests/test_cli.py
+uv run --offline --frozen pytest
+uv run --offline --frozen astock doctor
+uv run --offline --frozen astock data contracts
+uv run --offline --frozen python scripts/profile_research.py --size 10 --output data/private/research-v1/新目录10
+uv run --offline --frozen python scripts/profile_research.py --size 100 --output data/private/research-v1/新目录100
 ~~~
 
-核心路径：research/inputs、store、legacy、service、journal；features/market、regime/market、
-screening/candidates、reports/research和cli/research。共用一个分析路径、5表store，无新依赖/服务。
-复用warehouse_connection/lock、RecordTimes、严格JSON/hash、raw侧证据和冻结物理来源校验；
-未使用旧pipeline.build，没有旧store schema或真实消费状态改写。
-旧重要回归完整保留；CLI允许菜单测试随实际新增research入口扩展，并保持doctor/秘密断言。
-[迁移记录](CODE_MIGRATION.md)说明原占位包落实，无被替代业务路径遗留。
-容量工具增加显式外部根、跨根inode去重、缺失/权限错误及符号链接计数。
+## 作者验证与CI
 
-## 验证与 reviewer 重点
+固定功能源码`89b2bc750c49d30afc037f2ba80e5f6b9219df09`本机完整回归：
+**1071 passed、1 warning、1267.50s**；Python 3.12.14。聚焦回归72 passed。
+警告来自既有warehouse_ownership多线程fork测试；未关闭警告或改变该回归。
+doctor、v1/v2 contracts、probe plan、identity specs、slice plan/specs及phase1 specs均通过。
+本批功能版[CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38236902529)对应上述完整SHA；
+随后仅提交Review/状态/容量文档，功能、配置、依赖和测试均未再改变。
+交付文档HEAD同样触发完整CI，最终准确结论/运行链接记录于本[PR #2正文及checks](https://github.com/liuyanfeier/AStockSystem/pull/2)。
+本机通过不替代CI；不将进行中/失败标为成功。
+上批1032只是基线，不代表本批通过。旧重要回归未删/skip/减弱，网络禁止保留。
+CI以本PR head checks及准确日志为准；公开审查须读取实际改动/依赖/测试，不能据作者摘要独立PASS。
 
-聚焦合成回归37 passed（Research、容量、CLI）。业务源码aad5f52对应完整离线回归
-**1032 passed，1个既有fork弃用警告，1239.28秒**；未skip重要回归或关闭网络禁止。
-公开CI以[分支运行](https://github.com/liuyanfeier/AStockSystem/actions?query=branch%3Acodex%2Fresearch-v1)
-或PR checks核对准确head、状态和日志；未完成不等于通过，旧a00c7dd成功不能冒充新HEAD成功。
+完整供应商形状合成：10股/2指数、128交易日、沪深自然日/假日、涨跌平、拆分、
+停牌/断档、ST/限价、同日S/R日内事件、新上市30日、因子缺末日、零成交、迟到as-of及陈旧过滤。
+独立验算收益/60日均线/排除当日前高/同期基准/单位；单独重建snapshot和报告一致。
+HTTP/权限/重定向/超时/响应大小/字段/重复/未来日期/价格/秘密/截断、
+批准不匹配零调用、停止后未尝试恢复、stranded claim不重发均闭合Mock测试。
 
-1. 原子事务及中途失败不能部分导入；旧库拒绝迁移，锁先于连接。
-2. 精确原生身份、真实捕获/可知时间、自然日日历、单位与公司行为因子；
-   中间断档/末日缺失不能跨越；未知ST/停牌/限价不能成为交易资格。
-3. 原字节/证据保留；从原字节重推导比对DB，来源/事实/输出篡改失败；报告可重复且仅私有输出。
-4. 池内宽度的有效分母、同日期基准、短窗口和陈旧数据；筛选排除与空列表，不能虚构全市场/催化。
-5. 人工日志追加/更正/知识时间，已有逻辑/退出条件和复盘提醒；未推算持仓或自动交易。
-6. 新预算仅提案；不重放已消费失败/未知，不因软件通过扩大授权；外部历史/临时容量不遗漏。
+固定功能源码`89b2bc750c49d30afc037f2ba80e5f6b9219df09`实测（tracemalloc启用，合成128日，非供应商延迟）：
 
-doctor、v1/v2 contracts、identity/slice specs、统一23契约离线校验通过。
-作者本机自检：原155,655数据文件全hash不变；4个主要原DB同hash且无WAL。
-旧171源码基线中169项同字节；主CLI和菜单测试2项因新增业务入口按本批授权修改，
-原版本仍在a00c7dd及旧Git历史，未改旧pin清单或历史审查事实。
-23个实际运行pin及V1/V2冻结来源archive保持不变；没有把旧阶段根源码冻结扩大为新开发禁令。
-私有核验结果保留data/private/repository-governance/2026-10-12/，公开只含脱敏计数与方法；
-没有私有访问权限时不能把这些摘要写为独立数据验收。实际真实报告也不需要用户每批额外打包转交。
+| 股票数 | 导入 | 来源完整重推导+读取 | 特征 | 含完整核验分析 | 报告发布 | Python分析峰值 / 进程累计RSS峰值 |
+|---|---:|---:|---:|---:|---:|---:|
+| 10 | 1.1946s | 0.5347s | 0.0194s | 0.6014s | 0.0072s | 10.47MB / 194.12MB |
+| 100 | 10.8666s | 5.3093s | 0.4042s | 5.9640s | 0.0415s | 99.83MB / 480.51MB |
 
-## 缺口与下一批
+10/100股各自私有profile输出约3.42/16.17MB逻辑长度，包含原响应、manifest、Store和报告；
+不将100股性能或外推空间视为全市场实测。代码hash为
+`f8935d6f54751a4a0798a7b3c90480030771a699766efe61049f9be788e87c52`。
 
-最新连续120日及基准真实报告尚待预算批准/新输入；当前真实运行是历史三日样本，
-完整Market Regime、公司/催化、策略有效性、正式退出/组合风控及回测未完成。
-下一批优先补当次近期数据、验证默认配置候选，并核实候选公司与持仓退出逻辑。
-不把未知填零、不按成本价擅设止损/仓位、不为此重建庞大历史审批框架。
-源码和文档可按commit回滚；私有store/raw/报告与日志需整组备份，Git不能替代私有数据恢复。
+CLI实测在同一固定功能版本上完成：39个Mock响应全COMPLETE，经capture-status、capture-import、
+market、screen、report直接运行；默认20/60、观察池10股/2基准、4合成候选/6排除，
+报告重复发布与独立Store重建snapshot一致。合成人工POSITION经journal-add保存并关联该研究，
+后续报告显示原研究陈旧、复盘到期、缺风险计划、未确认及退出待核实；无真实用户持仓。
+旧真实5股3日bundle在独立验证Store用默认配置生成0筛选/5人工观察，原Research Store hash不变。
+本机私有报告可读；旧来源和模拟结果分别标识，未产生最新真实128日报告。
+
+同时修复旧日志新增默认字段的幂等兼容、关联报告hash核验、采集时钟回退下一请求前停止；各有回归；真实transport不接受测试时钟/节拍注入，人工零股后重开持仓重新关联原始逻辑。
+
+100股尚非日常瓶颈，故保留每次完整来源一致性核验，不引入缓存/双查询路径或重写Store。
+tracemalloc仅计Python分配；RSS包含原生DuckDB/Arrow且是进程累计峰值，不等于某阶段独立新增占用。
+私有来源/容量/恢复核验不能由公开Git独立验证；提供脱敏结果和方法，原字节、DB/日志/报告不提交。
+
+## 保留、迁移及下一步
+
+[CODE_MIGRATION](CODE_MIGRATION.md)记录复用原语及删除Research直接最终文件写入旧实现；
+旧Phase1/compat、消费账本、来源pin、原DB不改，不删除旧回归。
+新目录的临时.pending文件可能因kill遗留，不能成为最终原始对象或阻碍同字节恢复；
+本批不清理真实私有临时/历史数据。50GB目标、100GB上限及外部历史根盘点保留。
+
+下一步仅需要批准明确近期清单或提供可验证真实连续文件，开展Level B默认研究报告，
+再核实重点公司/催化和用户持仓逻辑。行业/主题、正式交易风险、策略样本外/成交验证、
+组合与业绩归因仍缺，不假称已完成闭环。人工事件文字风险计划不是启用风险参数。
+
+
+基准清单复查采用已保留且经physical_validate再次核验的000300.SH/market=SSE来源；
+新提案仍需精确验证000905.SH，不自动换成.CSI别名。同日不同S/R及日内时间事件分别保留，
+完全重复事件拒绝；YES表示当日停牌观察，不表示全天停牌或收盘后交易资格。
+修复/更正期间先前完整运行已被取代，其日志留存，不当最终验收；最终固定源码重跑全套1071通过。
+其中人为停止旧运行时触发了旧中断恢复测试失败，该运行不作为PASS，也不删除回归规避。
+
+## 本批保全与实际容量
+
+本机逐文件SHA256复核原盘点155,655个data文件：改变0、缺失0；原四库及基线历史库文件均同字节。
+旧data/phase1/compat/SQL及uv.lock相对本批基线无diff；公开改动凭据明文、编码及JSON解码检查无匹配。
+真实市场请求0、旧库SQL写入0、私有破坏性删除0、风险参数启用0、自动订单0。
+公开Git没有实际行情/持仓/个人报告/授权令牌；上述私有结果须有本机访问权才可独立复核。
+
+本机最终容量快照见[STORAGE_GOVERNANCE](STORAGE_GOVERNANCE.md)：6个确认根，
+329,006普通文件、1,882数据库；32,386,899,566逻辑字节、33,342,554,112去重inode文件blocks。
+包含旧项目外部工作目录8.20GB及本批保留pytest目录5.27GB逻辑，complete=true、错误0。
+blocks不解析APFS clone共享或目录开销，未确认外置/远端备份不当零；整体50GB目标/100GB上限。
+可再生测试目录仅列建议：日志/版本/失败现场保留、无进程持锁及精确批准后才清理。
+本批未执行私有删除，不能承诺已经释放空间。

@@ -7,7 +7,7 @@ from astock.paths import get_project_root
 from astock.research.core import encoded, private_path, read_json
 from astock.research.store import ResearchStore
 
-app = typer.Typer(help="Offline source-traceable observation research; no market fetching or orders.",
+app = typer.Typer(help="Source-traceable observation research; capture defaults to dry-run; no orders.",
                   add_completion=False, pretty_exceptions_enable=False)
 
 
@@ -106,4 +106,55 @@ def legacy_bundle(start: str = typer.Option(..., "--start"), end: str = typer.Op
         typer.echo(f"Retained-source bundle: {len(result['files'])} files; CURRENT_OBSERVATION; zero HTTP")
     except Exception:
         typer.echo("Retained-source adapter: FAIL (private evidence details suppressed)")
+        raise typer.Exit(1) from None
+
+
+@app.command('capture')
+def capture_command(plan: Path = typer.Option(Path('config/research/acquisition-proposal.json'), '--plan'),
+                    live: bool = typer.Option(False, '--live'),
+                    approval: Path | None = typer.Option(None, '--approval')) -> None:
+    """Show the exact bounded plan; --live additionally requires a matched human approval."""
+    from astock.research.acquisition import capture
+    try:
+        result = capture(get_project_root(), plan, live=live, approval_file=approval)
+        typer.echo(encoded(result).decode())
+        if result.get('stopped'):
+            raise typer.Exit(1)
+    except typer.Exit:
+        raise
+    except Exception:
+        typer.echo('Research capture: FAIL (safe summary; no implicit retries)')
+        raise typer.Exit(1) from None
+
+
+@app.command('capture-import')
+def capture_import(capture_dir: Path = typer.Option(..., '--capture-dir')) -> None:
+    """Validate retained complete responses and import directly into a private store."""
+    from astock.research.acquisition import disk_bytes, read_capture
+    from astock.research.core import digest, require
+    from astock.research.tushare import make_capture_bundle
+    try:
+        destination = private_path(get_project_root(), capture_dir)
+        plan, _ = read_capture(destination)
+        # Conservative peak allowance for pilot DB/retained bytes and metadata.
+        require(disk_bytes(destination) + plan.max_total_body_bytes + 32 * 1024**2 <= plan.max_added_disk_bytes,
+                'CAPTURE_IMPORT_PEAK_BUDGET')
+        manifest = make_capture_bundle(destination)
+        bundle = destination / f'{digest(manifest)}.bundle.json'
+        bid = ResearchStore(destination / 'research.duckdb').import_bundle(bundle)
+        require(disk_bytes(destination) <= plan.max_added_disk_bytes, 'CAPTURE_IMPORT_DISK_BUDGET')
+        typer.echo(f'CURRENT_OBSERVATION bundle={bid}; retained response adapter; no network')
+    except Exception:
+        typer.echo('Research capture import: FAIL (private details suppressed)')
+        raise typer.Exit(1) from None
+
+
+@app.command('capture-status')
+def capture_status_command(capture_dir: Path = typer.Option(..., '--capture-dir')) -> None:
+    """Read terminal states and never-issued member IDs without fetching or resetting."""
+    from astock.research.acquisition import capture_status
+    try:
+        typer.echo(encoded(capture_status(private_path(get_project_root(), capture_dir))).decode())
+    except Exception:
+        typer.echo('Research capture status: FAIL (safe summary only)')
         raise typer.Exit(1) from None
