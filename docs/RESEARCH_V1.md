@@ -43,8 +43,8 @@ uv run --offline --frozen astock research legacy-bundle \
 
 bundle JSON指定protocol=RESEARCH_INPUT_V1、purpose=CURRENT_OBSERVATION、window_start/end、
 universe、benchmarks、universe_scope（WATCHLIST或PROVIDER_SAMPLE）和files。
-每个file列path、sha256、dataset、format（csv/parquet）、source、retrieved_at、available_at、
-adapter（native-v1/tushare-v1）、明确成交单位，以及可选evidence原文件/hash。
+每个file列path、sha256、dataset、format（csv/parquet；原响应用json）、source、retrieved_at、available_at、
+adapter（native-v1/tushare-v1/tushare-response-v1）、明确成交单位，以及可选evidence原文件/hash。
 输入路径相对bundle目录或绝对路径；原字节校验后保留，重复主键/冲突拒绝，不悄悄合并。
 retrieved_at是实际来源观察时间；available_at不能早于它。未知发布时间不补成历史可用时间。
 
@@ -65,7 +65,7 @@ legacy adapter额外验证实际侧文件、DB登记及原始HTTP绑定。导入
 ## 业务输出与复现
 
 5表store管理版本、输入bundle、标准化观察、计算快照和人工日志；锁先于连接，导入SQL事务原子。
-原字节与侧证据按hash保存；每次分析从保留原字节独立重推导并比对DB观察，检测来源/事实篡改。
+原字节与侧证据按hash保存；文件先经临时写/校验/fsync再无覆盖原子发布；每次分析从保留原字节独立重推导并比对DB观察，检测来源/事实篡改。
 无新框架、服务或依赖。报告不依赖原输入路径仍存在，可恢复/迁移私有store及raw整组。
 
 Market Regime输出观察池趋势/涨跌/均线宽度、成交活跃比、波动、基准向量和有效分母。
@@ -88,18 +88,18 @@ uv run --offline --frozen astock research journal-add --event 私有事件.json
 ~~~
 
 事件包含event_id、kind（PLAN/POSITION/EXECUTION/EXIT/REVIEW）、code、event_at、recorded_at、
-thesis、invalidation、exit_conditions，以及可选research_report_id、shares、price_cny、review_due、
-notes、correction_of。POSITION必须有人工shares，零表示人工确认平仓快照。
+可选thesis、invalidation、exit_conditions、research_report_id、shares、price_cny、review_due、
+risk_plan（用户文本，非执行参数）、confirmed（默认false）、notes、correction_of；缺逻辑/计划会产生提醒。POSITION必须有人工shares，零表示人工确认平仓快照。
 事件ID相同内容可重复提交，冲突拒绝；更正另追加并绑定旧事件，不改旧记录。
-recorded_at不得早于事件发生；报告按两个时间过滤，显示原逻辑、退出条件、复盘到期和行情缺口。
+recorded_at不得早于事件发生；报告按两个时间过滤，显示最初持仓逻辑/研究版本、原研究陈旧、退出条件待核实、复盘到期、人工未确认及行情缺口。
 这些是人工提供记录，不是券商核对结果；EXECUTION/EXIT不自动推算当前仓位、现金、T+1可卖数量。
 未导入记录不等于用户没有持仓。组合预算/真实退出管理/业绩归因仍待后续实现。
 
 ## 获取近期连续行情
 
-[48请求预算](RESEARCH_ACQUISITION.md)和config/research/acquisition-proposal.json列出精确股票/指数、
+[39请求预算](RESEARCH_ACQUISITION.md)和config/research/acquisition-proposal.json列出精确股票/指数、
 窗口、字段、端点、尝试/容量上限与停止条件；execution_authorized=false。
-本批市场API调用0。当前CLI仅离线导入；用户批准预算后再实现/执行受限采集与状态合并，
+本批市场API调用0。当前CLI已实现默认dry-run采集和九接口状态适配；真实执行仍需用户匹配批准，
 无需复制Phase1审批体系，也不得沿用旧许可证或重放旧失败/未知消费。
 容量纳入仓库及已确认项目外历史工作目录，见[存储治理](STORAGE_GOVERNANCE.md)。
 
@@ -112,3 +112,40 @@ recorded_at不得早于事件发生；报告按两个时间过滤，显示原逻
 
 下一步补最新连续120日及两个指数，再生成满足默认观察配置的真实候选报告；
 随后核实候选公司/催化，完善持仓退出与复盘。暂不宣称完成完整Market Regime、策略或回测。
+
+
+## Research V1.1：原响应直接入库
+
+~~~bash
+uv run --offline --frozen astock research capture
+uv run --offline --frozen astock research capture-status --capture-dir data/private/research-v1/捕获目录
+uv run --offline --frozen astock research capture-import --capture-dir data/private/research-v1/捕获目录
+uv run --offline --frozen astock research report --store data/private/research-v1/捕获目录/research.duckdb \
+  --bundle 导入输出的bundleID --as-of 实际研究可知截止 --output reports/private/research-v1/当次观察
+~~~
+
+capture默认仅列计划/hash/预算，零HTTP、零消费文件。--live必须匹配私有人工批准、干净Git、
+当前implementation_hash、有效时间、绝对目的地和准确未尝试成员；无匹配批准不读凭据发请求。
+详情及一次可批准提案见[采集说明](RESEARCH_ACQUISITION.md)。status只读永久消费状态，
+UNKNOWN含无terminal的stranded claim；恢复不是重发，旧失败/未知不动。
+
+capture-import自动验证COMPLETE响应/回执/请求、生成bundle并导入同目录独立Store，
+不要求人工转CSV/Parquet。九类原JSON仅留必要原响应、谱系与DB观察；不再建Curated层。
+响应SourceFile新增request、calendar_exchange、evidence_grade；请求字段/单位按新研究合同验证。
+CSV/Parquet旧adapter仍兼容，未修改冻结Phase1合同。现存旧bundle/报告/日志不迁移或覆盖；
+新增manifest默认元数据可能产生新bundleID，原ID仍按原manifest读取核验。
+
+index_basic身份是INDEX、交易所UNKNOWN，保留provider_market/publisher；研究交易日历须另显式
+绑定且沪深自然日表一致。S/R与ST保留当日事件，绝不从稀疏缺席填NO；多个状态来源分别
+保留再按as-of合并，矛盾拒绝。完整来源重推导仍为每次查询默认，含DB主键一致性核验。
+USER_DECLARED只表示用户文件声明，LOCAL_CAPTURE_BOUND表示本地TLS采集和消费链绑定，
+非独立供应商数字签名；SYNTHETIC不能当真实行情。输入限当前观察用途。
+
+默认20/60配置在10股/2指数、128交易日合成供应商形状上验证，含拆分、假日、ST、停牌断档、
+新股30日、因子缺末日、零成交、晚到as-of/陈旧和筛选排除。指标有独立期望，不只验证重复性。
+候选增加Breakout/Pullback待研究Setup的状态/参考、相对落后或活跃下降反证；没有实盘入场价/
+仓位/止损。报告输出下一研究日跟踪、持仓原始研究与退出待核实，不擅自决定卖出。
+
+性能可用scripts/profile_research.py分别量导入、完整来源校验、特征、含校验分析、报告；
+支持10/100股合成输入，只写指定私有目录。RSS是进程累计峰值，Python峰值不含原生分配。
+没有测得需要Store重写的瓶颈；没有新增缓存/查询旁路或依赖。

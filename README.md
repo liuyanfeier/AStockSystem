@@ -70,3 +70,11 @@ src/、tests/、config/、sql/、docs/ 是版本资产；data/、private/、repo
 [AGENTS.md](AGENTS.md) 是长期开发规范。当前用户授权和项目宪章决定新任务；
 历史 Phase1 Prompt、审批与修复报告保留来源价值，不再自动主导业务路线。
 [旧总 REVIEW](AStockSystem_Trading_System_Review_v1.0.md) 保留为历史业务设计依据。
+
+
+Research V1.1支持九类供应商原JSON直接入库、连续窗口候选Setup观察和人工持仓复盘提醒。
+`uv run --offline --frozen astock research capture`默认只显示39请求待批准清单；
+`capture-import --capture-dir 私有捕获目录`离线转换/导入；报告仍走research report。
+真实新API未授权，128日默认20/60验证目前是合成软件验收，真实来源仍是既有5股3日样本。
+当前整批变更/验证与数据边界见[REVIEW](docs/REVIEW.md)，一次采集预算见
+[RESEARCH_ACQUISITION](docs/RESEARCH_ACQUISITION.md)。

@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from astock.research.core import digest, encoded, require
+from astock.research.publication import publish_bytes
 
 
 def display(value: object, *, percent: bool = False) -> str:
@@ -38,7 +39,10 @@ def markdown(snapshot: dict) -> str:
                       f"末日{display(f['last_date'])} 收盘{display(f['close'])}；连续{f['consecutive_sessions']}日；价格口径{f['price_basis']}",
                       f"1日收益{display(f['return_1'],percent=True)} / 窗口收益{display(f['window_return'],percent=True)} / 相对基准{display(f['relative_return'],percent=True)}",
                       f"均线{display(f['ma'])} / 前高{display(f['prior_high'])} / 平均成交额CNY{display(f['mean_amount_cny'])}",
+                      f"成交活跃比{display(f['activity_ratio'])}；日波动{display(f['volatility_daily'],percent=True)}；排序：{card.get('ranking_basis','窗口收益')}",
                       f"状态：ST={card['status']['st']}，停牌={card['status']['suspended']}；风险预算未设定；交易资格false。"])
+        for setup in card.get("setups", []):
+            lines.append(f"待研究Setup {setup['kind']}：{setup['state']}，参考{display(setup['reference'])}；{setup['condition']}")
         for title, key in (("入场观察条件", "entry_observation"), ("反面证据与风险", "counter_evidence"),
                            ("逻辑失效条件", "invalidation_conditions"), ("不交易条件", "no_trade_conditions")):
             lines.extend(["", f"**{title}**", ""] + [f"- {display(x)}" for x in card[key]])
@@ -49,11 +53,17 @@ def markdown(snapshot: dict) -> str:
     lines.extend(["", "## 私有持仓与退出跟踪", "", snapshot["journal"]["limitation"]])
     for h in snapshot["journal"]["positions"]:
         lines.extend(["", f"- {display(h['code'])}：人工持仓{h['shares']}股；来源事件{display(h['source_event'])}；复盘到期={h['review_overdue']}",
-                      f"  原始逻辑：{display(h['thesis'])}；失效：{display(h['invalidation'])}；退出观察：{display(h['exit_conditions'])}",
+                      f"  原始逻辑：{display(h.get('original_thesis',h['thesis']))}；失效：{display(h['invalidation'])}；退出观察：{display(h['exit_conditions'])}",
+                      f"  原始研究{display(h.get('original_research_report_id'))}；陈旧={display(h.get('research_stale'))}；退出条件={h.get('exit_condition_state','PENDING_VERIFICATION')}；人工确认={h.get('confirmed',False)}",
                       f"  行情日{display(h['price_date'])}；{'；'.join(h['gaps'])}"])
+    lines.extend(["", "待确认人工事件：" + display(", ".join(snapshot["journal"].get("pending_confirmation", [])) or "未导入/无待确认事件"),
+                  "", "## 下一研究日跟踪", "",
+                  "- 更新连续行情与来源时间；以新数据复算前高/均线、同日期基准及活跃度。",
+                  "- 核实候选ST/停复牌/限价与公告、基本面反面证据；当前缺口不构成交易许可。",
+                  "- 逐项复核持仓原始逻辑、用户退出观察条件、到期复盘和未确认事件。"])
     lines.extend(["", "## 来源与复现", "", f"参数hash：{snapshot['parameters_hash']}；日志hash：{snapshot['journal']['events_hash']}"])
     for f in snapshot["sources"]:
-        lines.append(f"- {display(f['dataset'])}：{display(f['source'])}；sha256={f['sha256']}；retrieved={f['retrieved_at']}；available={f['available_at']}；单位={f['volume_unit']}/{f['amount_unit']}")
+        lines.append(f"- {display(f['dataset'])}：{display(f['source'])}；sha256={f['sha256']}；retrieved={f['retrieved_at']}；available={f['available_at']}；单位={f['volume_unit']}/{f['amount_unit']}；来源等级={f.get('evidence_grade','USER_DECLARED')}")
     lines.extend(["", "基本面/行业主题/公告催化：UNKNOWN。真实来源与人工记录保存在私有目录；本报告不宣称历史PIT可回测。", ""])
     return "\n".join(lines)
 
@@ -61,14 +71,13 @@ def markdown(snapshot: dict) -> str:
 def publish(snapshot: dict, directory: Path) -> str:
     run_id = digest(snapshot)
     directory.mkdir(parents=True, exist_ok=True)
-    # Existing output is immutable and idempotent. A crash after one file is
-    # recoverable by republishing identical content; partial files fail verification.
+    # Each member becomes visible only after closed-byte validation and fsync.
+    # A crash between members is recovered by the same immutable publication.
     for name, body in (("snapshot.json", encoded(snapshot) + b"\n"), ("report.md", markdown(snapshot).encode())):
         path = directory / f"{run_id}.{name}"
         require(not path.is_symlink(), "REPORT_SYMLINK")
         if path.exists():
             require(path.read_bytes() == body, "REPORT_OUTPUT_CHANGED")
         else:
-            with path.open("xb") as stream:
-                stream.write(body)
+            publish_bytes(path, body)
     return run_id

@@ -59,3 +59,19 @@ Research V1 首批建立单一 query/import/report 路径和明确 consumers 清
 旧171源码pin基线的主CLI及菜单测试随业务入口改变，其余169项同字节；
 原CLI/test字节从a00c7dd可恢复，未改历史pin清单/审查。实际来源运行23pins与V1/V2兼容archive
 仍原字节，不把历史整体源码基线当新功能禁止修改代码的Gate。
+
+
+## Research V1.1实际变更
+
+| 能力 | 分类 | 本批验证/边界 |
+|---|---|---|
+| data.raw_writer.atomic_new_file | REUSE | 新publication薄包装，完整临时字节校验、fsync、无覆盖发布；冻结旧文件不改 |
+| Raw/报告直接最终open(xb) | DELETE（代码分支） | 被上述路径完全替换；写入失败、kill、报告双文件恢复及旧SQL回滚回归验证，无两套发布路径 |
+| raw_validation.strict_json / full_backfill_v1.secret_present | REUSE | 仅纯解码/秘密检查；不调用旧采集/审批/原SQL路径，旧pins不改 |
+| 旧48请求提案 | MIGRATE | 新研究独立39成员合同/日期/预算，旧版保存在Git；未执行两版提案，不沿用旧许可证 |
+| inputs/store/service/journal/features/screening/reports | KEEP + 扩展 | json原响应、来源等级、状态合并、证据/DB键核验、原始逻辑及待核实；单一分析路径 |
+| phase1/compat及重要回归 | KEEP | 来源读取/冻结兼容仍被依赖；不作批量删除，不以新研究验收改写旧事实 |
+
+没有新增服务、依赖、Curated副本、日常核验旁路或缓存框架。100股128日完整分析约5秒，
+未发现需要牺牲来源核验的瓶颈。新增纯研究合同仅用于当次CURRENT_OBSERVATION，不替代
+历史Phase1解码事实，也不修改既有历史消费账本。

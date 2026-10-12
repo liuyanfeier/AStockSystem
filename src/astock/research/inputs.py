@@ -29,11 +29,14 @@ class SourceFile(StrictModel):
     path: str
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     dataset: Literal["instruments", "calendar", "daily", "index_daily", "adj_factor", "status"]
-    format: Literal["parquet", "csv"]
+    format: Literal["parquet", "csv", "json"]
     source: str = Field(min_length=1)
     retrieved_at: AwareDatetime
     available_at: AwareDatetime
-    adapter: Literal["native-v1", "tushare-v1"] = "native-v1"
+    adapter: Literal["native-v1", "tushare-v1", "tushare-response-v1"] = "native-v1"
+    request: dict | None = None
+    calendar_exchange: Literal["SSE", "SZSE"] | None = None
+    evidence_grade: Literal["USER_DECLARED", "LOCAL_CAPTURE_BOUND", "SYNTHETIC"] = "USER_DECLARED"
     evidence: list[EvidenceFile] = Field(default_factory=list)
     # Units are explicit even for Tushare: native volume shares/amount CNY;
     # Tushare daily/index_daily volume lots of 100 shares, amount thousand CNY.
@@ -45,8 +48,14 @@ class SourceFile(StrictModel):
         require(self.available_at >= self.retrieved_at, "CAPTURE_TIME_BACKDATED")
         if self.dataset in {"daily", "index_daily"}:
             require(self.volume_unit is not None and self.amount_unit is not None, "UNITS_REQUIRED")
-            if self.adapter == "tushare-v1":
+            if self.adapter in {"tushare-v1", "tushare-response-v1"}:
                 require((self.volume_unit, self.amount_unit) == ("lots100", "thousand_CNY"), "TUSHARE_UNITS")
+        require((self.format == "json") == (self.adapter == "tushare-response-v1"), "RESPONSE_FORMAT_ADAPTER")
+        if self.adapter == "tushare-response-v1":
+            from astock.research.tushare import DATASETS, validate_member
+            require(self.request is not None, "RESPONSE_REQUEST_REQUIRED")
+            validate_member(self.request)
+            require(DATASETS[self.request["api"]] == self.dataset, "RESPONSE_DATASET")
         require(not any(s in self.source.lower() for s in ("token=", "password=", "api_key=")), "SECRET_SOURCE_URI")
         return self
 
@@ -81,7 +90,10 @@ def number(value: object, *, nullable: bool = False) -> float | None:
 
 
 def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
-    if spec.format == "parquet":
+    if spec.format == "json":
+        from astock.research.tushare import response_rows
+        rows = response_rows(spec, body)
+    elif spec.format == "parquet":
         rows = pq.read_table(io.BytesIO(body)).to_pylist()
     else:
         rows = pd.read_csv(io.BytesIO(body), dtype=str, keep_default_na=False).to_dict("records")
@@ -89,7 +101,7 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
     for raw in rows:
         # No suffix-based exchange/company inference. Tushare native identifier
         # is preserved exactly; identities must be declared by instruments input.
-        code = raw.get("ts_code") if spec.adapter == "tushare-v1" else raw.get("code")
+        code = raw.get("ts_code") if spec.adapter in {"tushare-v1", "tushare-response-v1"} else raw.get("code")
         if spec.dataset == "instruments":
             if code not in bundle.universe + bundle.benchmarks:
                 continue
@@ -97,10 +109,16 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
             require(kind in {"STOCK", "INDEX"}, "INSTRUMENT_KIND")
             exchange = raw.get("exchange") or "UNKNOWN"
             require(exchange in {"SSE", "SZSE", "BSE", "UNKNOWN"}, "EXCHANGE_UNKNOWN")
-            result.append(dict(code=code, name=raw.get("name") or None, exchange=exchange, kind=kind))
+            identity = dict(code=code, name=raw.get("name") or None, exchange=exchange, kind=kind)
+            if spec.adapter == "tushare-response-v1":
+                identity.update(calendar_exchange=raw.get("calendar_exchange") or exchange,
+                                identity_basis=raw["identity_basis"], provider_market=raw.get("market"),
+                                publisher=raw.get("publisher"), list_date=raw.get("list_date"),
+                                evidence_grade=spec.evidence_grade)
+            result.append(identity)
             continue
         if spec.dataset == "calendar":
-            d = day(raw.get("cal_date") if spec.adapter == "tushare-v1" else raw.get("date"))
+            d = day(raw.get("cal_date") if spec.adapter in {"tushare-v1", "tushare-response-v1"} else raw.get("date"))
             exchange = raw.get("exchange")
             require(exchange in {"SSE", "SZSE", "BSE"}, "CALENDAR_EXCHANGE")
             opened = raw.get("is_open")
@@ -109,7 +127,7 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
         else:
             if code not in bundle.universe + bundle.benchmarks:
                 continue
-            d = day(raw.get("trade_date") if spec.adapter == "tushare-v1" else raw.get("date"))
+            d = day(raw.get("trade_date") if spec.adapter in {"tushare-v1", "tushare-response-v1"} else raw.get("date"))
             row = dict(code=code, date=d.isoformat())
             if spec.dataset in {"daily", "index_daily"}:
                 for f in ("open", "high", "low", "close"):
@@ -117,7 +135,7 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
                 require(0 < row["low"] <= min(row["open"], row["close"]) <=
                         max(row["open"], row["close"]) <= row["high"], "OHLC_RELATION")
                 row["pre_close"] = number(raw.get("pre_close"), nullable=True)
-                volume = number(raw.get("vol") if spec.adapter == "tushare-v1" else raw.get("volume"))
+                volume = number(raw.get("vol") if spec.adapter in {"tushare-v1", "tushare-response-v1"} else raw.get("volume"))
                 amount = number(raw.get("amount"))
                 require(volume >= 0 and amount >= 0, "NEGATIVE_ACTIVITY")
                 row.update(volume=volume * (100 if spec.volume_unit == "lots100" else 1),
@@ -133,6 +151,9 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
                     v = raw.get(f)
                     require(v in {"UNKNOWN", "YES", "NO"}, "STATUS_ENUM")
                     row[f] = v
+                if spec.adapter == "tushare-response-v1":
+                    row["status_event"] = dict(api=spec.request["api"], suspend_type=raw.get("suspend_type"),
+                                               suspend_timing=raw.get("suspend_timing"), warning_type=raw.get("type"))
                 row["up_limit"] = number(raw.get("up_limit"), nullable=True)
                 row["down_limit"] = number(raw.get("down_limit"), nullable=True)
                 if row["up_limit"] is not None and row["down_limit"] is not None:
@@ -143,11 +164,15 @@ def records(spec: SourceFile, body: bytes, bundle: Bundle) -> list[dict]:
         RecordTimes(event_date=d, retrieved_at=spec.retrieved_at, available_at=spec.available_at,
                     availability_basis=AvailabilityBasis.OBSERVED_CAPTURE, time_precision=TimePrecision.SECOND)
         result.append(row)
+    if spec.adapter == "tushare-response-v1":
+        for row in result:
+            row.update(retrieved_at=spec.retrieved_at.isoformat(), available_at=spec.available_at.isoformat(),
+                       evidence_grade=spec.evidence_grade)
     return result
 
 
-def load_bundle(path: Path) -> tuple[Bundle, list[tuple[SourceFile, bytes, list[dict]]]]:
-    bundle = Bundle.model_validate(read_json(path))
+def load_bundle(path: Path, manifest: dict | None = None) -> tuple[Bundle, list[tuple[SourceFile, bytes, list[dict]]]]:
+    bundle = Bundle.model_validate(read_json(path) if manifest is None else manifest)
     inputs = []
     seen: dict[tuple, dict] = {}
     identities = {}
@@ -167,6 +192,8 @@ def load_bundle(path: Path) -> tuple[Bundle, list[tuple[SourceFile, bytes, list[
         parsed = records(spec, body, bundle)
         for row in parsed:
             key = (spec.dataset, row.get("code"), row.get("exchange") if spec.dataset == "calendar" else None, row.get("date"))
+            if spec.dataset == "status" and spec.adapter == "tushare-response-v1":
+                key = (*key[:3], (key[3], spec.sha256))
             require(key not in seen, "DUPLICATE_OR_CONFLICT")
             seen[key] = row
             if spec.dataset == "instruments":
@@ -184,16 +211,26 @@ def load_bundle(path: Path) -> tuple[Bundle, list[tuple[SourceFile, bytes, list[
     # Civil-day coverage proves holidays/weekends explicitly; weekdays are not
     # a trading calendar. Unknown exchange remains non-computable, not guessed.
     from datetime import timedelta
-    for exchange in {i["exchange"] for i in identities.values()} - {"UNKNOWN"}:
+    for exchange in {i.get("calendar_exchange", i["exchange"]) for i in identities.values()} - {"UNKNOWN"}:
         for offset in range((bundle.window_end - bundle.window_start).days + 1):
             require((exchange, (bundle.window_start + timedelta(days=offset)).isoformat()) in calendars,
                     "INCOMPLETE_CALENDAR")
     for (dataset, code, _, _), row in seen.items():
         if dataset in {"daily", "index_daily", "adj_factor", "status"}:
             require(code in identities, "UNDECLARED_IDENTITY")
+            if identities[code].get("list_date"):
+                require(day(row["date"]) >= day(identities[code]["list_date"]), "OBSERVATION_BEFORE_LISTING")
             expected_kind = "INDEX" if dataset == "index_daily" else "STOCK"
             require(identities[code]["kind"] == expected_kind, "PRICE_KIND")
-            exchange = identities[code]["exchange"]
+            exchange = identities[code].get("calendar_exchange", identities[code]["exchange"])
             if exchange != "UNKNOWN":
                 require((exchange, row["date"]) in open_sessions, "NON_SESSION_OBSERVATION")
+    from astock.research.tushare import merge_status
+    merge_status([r for spec, _, rows in inputs if spec.dataset == "status" for r in rows])
+    # Cross-market benchmarks use an explicitly declared research calendar ONLY
+    # when retained SSE and SZSE calendars agree throughout the requested window.
+    if any(i["kind"] == "INDEX" and i.get("calendar_exchange") for i in identities.values()):
+        by_exchange = {e: {r["date"]: r["is_open"] for spec, _, rows in inputs
+                          if spec.dataset == "calendar" for r in rows if r["exchange"] == e} for e in ("SSE", "SZSE")}
+        require(by_exchange["SSE"] and by_exchange["SSE"] == by_exchange["SZSE"], "BENCHMARK_CALENDAR_DISAGREEMENT")
     return bundle, inputs

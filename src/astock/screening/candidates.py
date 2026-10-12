@@ -49,11 +49,24 @@ def observation_card(stock: dict, status: dict | None, *, selection: str) -> dic
     elif stock["close"] is not None and (stock["close"] >= status["up_limit"] or stock["close"] <= status["down_limit"]):
         no_trade.append("收盘触及价格限制，不能假设下一交易日可成交")
     no_trade.extend(stock["gaps"])
+    setups = [dict(kind="Breakout", validated=False, reference=stock["prior_high"],
+                   state="ABOVE_PRIOR_HIGH" if stock["breakout"] is True else "OBSERVE_CROSS" if stock["prior_high"] is not None else "UNKNOWN",
+                   condition="跟踪后续收盘是否突破此前窗口前高及成交变化；重新计算参考，不据旧卡下单"),
+              dict(kind="Pullback", validated=False, reference=stock["ma"],
+                   state="ABOVE_MA" if stock["above_ma"] is True else "OBSERVE_RECLAIM" if stock["ma"] is not None else "UNKNOWN",
+                   condition="跟踪回踩均线后能否重新站上及相对表现；容忍区间和入场价格尚未研究批准")]
+    evidence = ["正价格趋势不能证明公司价值、催化持续或未来收益", "样本池选择偏差、短窗口噪声与行情陈旧风险", *stock["gaps"]]
+    if stock["relative_return"] is None:
+        evidence.append("缺少同期相对基准证据")
+    elif stock["relative_return"] < 0:
+        evidence.append("相同日期窗口跑输基准")
+    if stock["activity_ratio"] is not None and stock["activity_ratio"] < 1:
+        evidence.append("最新成交额低于前序平均，趋势缺乏成交扩张支持")
     return dict(code=stock["code"], name=stock["name"], selection=selection,
-                metrics=stock, status=status, trade_eligible=False, risk_budget=None,
+                metrics=stock, status=status, setups=setups, ranking_basis="窗口收益降序，同值按原生代码；非盈利能力评分", trade_eligible=False, risk_budget=None,
                 entry_observation=["待验证Breakout/Pullback假设：连续窗口证据充分后观察趋势、前高与成交变化",
                                    "触发仅产生研究提醒；入场价格、仓位及初始退出须另建计划并批准"],
-                counter_evidence=["正价格趋势不能证明公司价值、催化持续或未来收益", "样本池选择偏差、短窗口噪声与行情陈旧风险", *stock["gaps"]],
+                counter_evidence=evidence,
                 invalidation_conditions=["发现原始数据、证券身份或公司行为处理错误", "补充公告/财务证据推翻原投资假设",
                                          "持续跟踪时趋势/相对强弱反转；具体退出阈值尚未验证批准"],
                 no_trade_conditions=no_trade,

@@ -2,7 +2,7 @@
 
 2026-10-12。重置及统一Review批次已按用户提供的独立结论关闭：
 a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
-本批在codex/research-v1直接开发业务；不重开文档治理或全历史Phase1。
+Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；本批在codex/research-v1-1推进V1.1；不重开文档治理或全历史Phase1。
 当前整批版本、验收与验证见[REVIEW](REVIEW.md)。
 
 ## 实际可运行能力
@@ -19,7 +19,7 @@ a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
 | 仍未实现 | 行业/动态主题/催化核实、公司基本面业务、正式入场退出、组合风控、回测/业绩归因、告警 | 后续按具体业务补齐；不得根据涨幅虚构催化或风险预算 |
 
 CLI已支持`astock research import / legacy-bundle / market / screen / report / journal-add`。
-无live采集或券商命令；运行和输入契约见[RESEARCH_V1](RESEARCH_V1.md)。
+受限采集默认dry-run，live须匹配当前用户批准；无券商命令；运行和输入契约见[RESEARCH_V1](RESEARCH_V1.md)。
 原占位features/regime/screening/reports包已添加实际模块，不另建同名系统。
 旧risk/regime/universe/data_sources顶层YAML仍disabled，新观察参数仅在config/research/版本化。
 
@@ -36,8 +36,8 @@ CLI已支持`astock research import / legacy-bundle / market / screen / report /
 - 没有导入用户真实持仓/成交。日志能力由合成回归验证，不能据此宣称已接入真实账户。
 
 第一份真实历史样本观察报告已产生；最新连续120日候选报告尚缺近期输入。
-[采集预算](RESEARCH_ACQUISITION.md)已列48个固定请求、2指数、窗口/字段、端点、停止条件、
-96MiB总响应与256MiB新增磁盘上限，execution_authorized=false。本批市场API调用0。
+[采集预算](RESEARCH_ACQUISITION.md)更新为39个精确请求、2指数、截至10-12窗口/字段、端点、停止条件、
+78MiB总响应与256MiB新增磁盘上限，execution_authorized=false。本批市场API调用0。
 
 ## 旧数据与容量
 
@@ -54,3 +54,17 @@ CLI已支持`astock research import / legacy-bundle / market / screen / report /
 不把工程生成物遗漏，也不把其他股票项目自动算成本仓库。
 [STORAGE_GOVERNANCE](STORAGE_GOVERNANCE.md)记录口径、完整性和已确认范围；
 私有破坏性清理未执行，旧恢复/消费/审批数据保留。
+
+
+## Research V1.1本批增量
+
+已实现：九API原响应→六观察数据集→同一研究路径；默认dry-run/永久消费/首次异常停止，
+后续批准仅恢复未尝试；Raw与报告临时校验/fsync后原子无覆盖发布；来源等级/身份/日历/单位/
+稀疏状态冲突与知识时间。新CLI capture、capture-status、capture-import；旧研究入口仍可用。
+默认20/60配置离线合成128交易日有独立指标验证；Breakout/Pullback仅Setup观察，
+持仓保留最初逻辑/研究版本，退出待核实、陈旧/缺计划/到期及未确认提醒。
+缺投资逻辑记录可以先保存为未知并提醒补录，不以强制完整性让真实记录长期无处保存。
+
+Level A作者软件验收进行中，准确结果与对应受测版本见REVIEW；Level B真实最新128日仍未采集。
+旧5股3日真实报告/来源保存，没有新真实持仓数据或交易风险参数生效。此次合成128日和性能
+不能用于宣称最新真实选股已验收；后续批准一次近期预算即可进入实际数据业务验证。

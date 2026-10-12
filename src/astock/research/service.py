@@ -34,11 +34,15 @@ def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: Observ
     candidates, excluded = screen(stocks, parameters, market_day(cutoff))
     watch = sorted(set(watch or []))
     require(set(watch) <= set(manifest["universe"]), "WATCH_OUTSIDE_UNIVERSE")
-    status = {(r["code"], r["date"]): r for r in rows.get("status", [])}
+    from astock.research.tushare import merge_status
+    status = merge_status(rows.get("status", []))
     cards = [observation_card(s, status.get((s["code"], s["last_date"])), selection="程序筛选：" + "；".join(s["inclusion_reasons"])) for s in candidates]
     selected = {s["code"] for s in candidates}
     manual = [observation_card(calculated[c], status.get((c, calculated[c]["last_date"])), selection="人工指定的有限观察，未必通过程序筛选") for c in watch if c not in selected]
     limitations = ["用途CURRENT_OBSERVATION；当前采集历史值不可用作当时已知的回测输入", "没有经验证/用户批准的入场退出风险参数"]
+    limitations.extend(["来源等级USER_DECLARED仅文件声明；LOCAL_CAPTURE_BOUND为本地TLS采集/消费链绑定，非独立提供者签名；SYNTHETIC不是行情事实",
+                        "指数点位是价格指数；成交为该指数覆盖证券口径，不代表全市场资金流或指数本身可交易股数",
+                        "稀疏ST/停复牌缺席不证明正常；限价证据不保证成交"])
     stale = (market_day(cutoff) - end).days
     limitations.append(f"行情窗口截止距研究截止{stale}个自然日；报价日期不等于研究可知日期")
     if parameters.return_sessions < 20 or parameters.trend_sessions < 60:
@@ -56,5 +60,5 @@ def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: Observ
                   parameters_hash=digest(parameters.model_dump(mode="json")),
                   sources=manifest["files"], market=market_regime(stocks, benchmarks, manifest["universe_scope"]),
                   features=stocks, candidates=cards, manual_cards=manual, excluded=excluded,
-                  limitations=limitations, journal=journal_snapshot(store, as_of, calculated))
+                  limitations=limitations, journal=journal_snapshot(store, as_of, calculated, parameters.max_stale_calendar_days))
     return result
