@@ -74,7 +74,10 @@ def journal_snapshot(store: ResearchStore, as_of: str, instruments: dict, max_st
     for e in active:
         if e["kind"] == "POSITION":
             positions[e["code"]] = e
-            original.setdefault(e["code"], e)
+            if e["shares"] == 0:
+                original.pop(e["code"], None)
+            else:
+                original.setdefault(e["code"], e)
     reports = {}
     with warehouse_connection(store.path, read_only=True) as db:
         for event in active:

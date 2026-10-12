@@ -353,3 +353,25 @@ def test_clock_rollback_stops_before_next_claim(tmp_path):
     assert len(calls)==1
     states=capture_status(tmp_path/plan['destination'])['states']
     assert states==dict(COMPLETE=1,FAILED=0,UNKNOWN=0,UNATTEMPTED=38)
+
+
+def test_live_rejects_test_clock_override_without_transport(tmp_path):
+    from research_fixture import CAPTURED
+    plan=fixture_plan();p=tmp_path/'plan.json';p.write_bytes(encoded(plan))
+    approval=tmp_path/'approval.json';approval.write_bytes(encoded({}))
+    with pytest.raises(ResearchError,match='LIVE_TEST_OVERRIDE_REJECTED'):
+        capture(tmp_path,p,live=True,approval_file=approval,now=lambda:CAPTURED)
+    assert not (tmp_path/plan['destination']).exists()
+
+
+def test_manual_flat_then_reopen_starts_new_thesis(full_capture):
+    from astock.research.journal import append_event,journal_snapshot
+    plan,dest,bundle,store,bid,p=full_capture
+    path=dest/'cycle-event.json'
+    base=dict(kind='POSITION',code=plan['universe'][0],event_at=ASOF,recorded_at=ASOF,shares=100,thesis='old thesis')
+    for i,(shares,thesis) in enumerate(((100,'old thesis'),(0,'closed manually'),(50,'new thesis'))):
+        e={**base,'event_id':f'cycle-{i}','shares':shares,'thesis':thesis,
+           'event_at':f'2026-10-{13+i}T20:00:00+08:00','recorded_at':f'2026-10-{13+i}T20:00:00+08:00'}
+        path.write_bytes(encoded(e));append_event(store,path)
+    h=journal_snapshot(store,'2026-10-16T20:00:00+08:00',{})['positions'][0]
+    assert h['original_thesis']=='new thesis' and h['shares']==50

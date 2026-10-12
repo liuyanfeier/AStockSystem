@@ -168,6 +168,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
     clock = now or (lambda: datetime.now(timezone.utc))
     approval = read_json(approval_file)
     fixture = transport is not None
+    require(fixture or (now is None and sleep is time.sleep), 'LIVE_TEST_OVERRIDE_REJECTED')
     require(not fixture or isinstance(transport, httpx.MockTransport), 'MOCK_TRANSPORT_REQUIRED')
     require(set(approval) == {'protocol', 'plan_hash', 'destination', 'implementation_hash', 'authorized_by',
                              'approved_at', 'expires_at', 'member_ids', 'fixture_only', 'execution_authorized'}, 'APPROVAL_SHAPE')
