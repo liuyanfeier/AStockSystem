@@ -62,10 +62,17 @@ def validate_member(member: dict) -> None:
 def decode_response(body: bytes, member: dict) -> list[dict]:
     validate_member(member)
     value = strict_json(body)
-    require(isinstance(value, dict) and set(value) <= {'request_id', 'code', 'msg', 'data'}, 'PROVIDER_ENVELOPE')
+    require(isinstance(value, dict) and set(value) <= {'request_id', 'code', 'msg', 'detail', 'data'}, 'PROVIDER_ENVELOPE')
+    require(all(value.get(k) is None or isinstance(value[k], str) for k in ('msg', 'detail')),
+            'PROVIDER_METADATA_TYPE')
     require(type(value.get('code')) is int and value['code'] == 0, 'PROVIDER_ERROR')
     data = value.get('data')
-    require(isinstance(data, dict) and set(data) <= {'fields', 'items', 'has_more'}, 'PROVIDER_DATA')
+    require(isinstance(data, dict) and set(data) <= {'fields', 'items', 'has_more', 'count'}, 'PROVIDER_DATA')
+    # Actual responses contain count=0 even with nonempty items. It is retained
+    # metadata, NOT a row count/completeness assertion; inspect actual dates and
+    # rows, explicit has_more and the conservative cap instead.
+    require('count' not in data or type(data['count']) is int and data['count'] >= 0,
+            'PROVIDER_COUNT_TYPE')
     require(data.get('has_more', False) is False, 'PROVIDER_TRUNCATED')
     fields, items = data.get('fields'), data.get('items')
     require(isinstance(fields, list) and all(isinstance(f, str) for f in fields) and

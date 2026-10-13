@@ -91,3 +91,33 @@ def test_rejected_schema_bytes_are_preserved_without_admission(tmp_path):
     saved[0].write_bytes(body + b' ')
     with pytest.raises(ResearchError, match='CAPTURE_OBJECT_CHANGED'):
         read_capture(destination)
+
+
+def test_actual_optional_metadata_does_not_replace_item_rows():
+    from astock.research.tushare import decode_response
+    plan = fixture_plan()
+    member = plan['members'][0]
+    value = response(plan, member)
+    value['detail'] = 'SYNTHETIC_METADATA'
+    value['data']['count'] = 0  # real observed shape; count is not coverage
+    rows = decode_response(encoded(value), member)
+    assert len(rows) == 1 and rows[0]['ts_code'] == member['params']['ts_code']
+    value['data']['has_more'] = True
+    with pytest.raises(ResearchError, match='PROVIDER_TRUNCATED'):
+        decode_response(encoded(value), member)
+
+
+@pytest.mark.parametrize('field,value,code', [
+    ('detail', {}, 'PROVIDER_METADATA_TYPE'),
+    ('count', True, 'PROVIDER_COUNT_TYPE'),
+    ('count', -1, 'PROVIDER_COUNT_TYPE'),
+    ('count', '1', 'PROVIDER_COUNT_TYPE'),
+])
+def test_optional_metadata_remains_strict(field, value, code):
+    from astock.research.tushare import decode_response
+    plan = fixture_plan()
+    member = plan['members'][0]
+    payload = response(plan, member)
+    (payload if field == 'detail' else payload['data'])[field] = value
+    with pytest.raises(ResearchError, match=code):
+        decode_response(encoded(payload), member)
