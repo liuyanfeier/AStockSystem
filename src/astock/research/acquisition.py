@@ -95,20 +95,33 @@ def date_from(value: str) -> date:
 
 def payload_rows(plan: CapturePlan, member: dict, body: bytes, captured: str) -> list[dict]:
     api = member['api']
-    spec = SourceFile(path='unused', sha256=hashlib.sha256(body).hexdigest(), dataset=DATASETS[api],
+    v2 = plan.protocol == 'RESEARCH_CAPTURE_V2'
+    from astock.research.market_inputs import MarketSourceFile, MarketBundle
+    source_model = MarketSourceFile if v2 else SourceFile
+    spec = source_model(path='unused', sha256=hashlib.sha256(body).hexdigest(), dataset=DATASETS[api],
                       format='json', adapter='tushare-response-v1', request=member, source='capture validation',
                       retrieved_at=captured, available_at=captured,
                       calendar_exchange=plan.benchmark_calendars.get(member['params'].get('ts_code')),
                       volume_unit='lots100' if api in {'daily', 'index_daily'} else None,
                       amount_unit='thousand_CNY' if api in {'daily', 'index_daily'} else None)
-    bundle = Bundle(protocol='RESEARCH_INPUT_V1', purpose='CURRENT_OBSERVATION', window_start=plan.window_start,
-                    window_end=plan.window_end, universe=plan.universe, benchmarks=plan.benchmarks,
-                    universe_scope='WATCHLIST', files=[spec])
+    if v2:
+        decoded = decode_response(body, member)
+        universe = sorted({r['ts_code'] for r in decoded if r.get('ts_code') and r['ts_code'] not in plan.benchmarks})
+    else:
+        universe = plan.universe
+    bundle_model = MarketBundle if v2 else Bundle
+    bundle = bundle_model(protocol='RESEARCH_INPUT_V2' if v2 else 'RESEARCH_INPUT_V1', purpose='CURRENT_OBSERVATION', window_start=plan.window_start,
+                    window_end=plan.window_end, universe=universe or ['VALIDATION_ONLY'], benchmarks=plan.benchmarks,
+                    universe_scope='PROVIDER_SAMPLE' if v2 else 'WATCHLIST', files=[spec])
     parsed = records(spec, body, bundle)
+    if v2 and api == 'index_classify':
+        require({r['industry_code'] for r in parsed} == set(plan.industry_codes), 'CAPTURE_INDUSTRY_CLASSIFICATION_INCOMPLETE')
     if api == 'trade_cal':
         start, end = date_from(member['params']['start_date']), date_from(member['params']['end_date'])
         require(len(parsed) == (end - start).days + 1, 'CAPTURE_CALENDAR_INCOMPLETE')
-    if api in {'stock_basic', 'index_basic'}:
+    if api == 'stock_basic' and v2:
+        require(bool(parsed), 'CAPTURE_IDENTITY_INCOMPLETE')
+    elif api in {'stock_basic', 'index_basic'}:
         require(len(parsed) == 1 and parsed[0]['code'] == member['params']['ts_code'], 'CAPTURE_IDENTITY_INCOMPLETE')
     return parsed
 
@@ -136,7 +149,8 @@ def safe_exception_code(error: Exception) -> str:
 
 
 def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
-    plan = CapturePlan.model_validate(read_json(destination / 'plan.json'))
+    from astock.research.market_capture import parse_plan
+    plan = parse_plan(read_json(destination / 'plan.json'))
     receipts = []
     for member in plan.members:
         key = digest(member)
@@ -174,7 +188,8 @@ def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
 def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: Path | None = None,
             transport: httpx.MockTransport | None = None, token: SecretStr | None = None,
             now=None, sleep=time.sleep) -> dict:
-    plan = CapturePlan.model_validate(read_json(plan_file))
+    from astock.research.market_capture import parse_plan
+    plan = parse_plan(read_json(plan_file))
     public = plan.model_dump(mode='json')
     plan_hash = digest(public)
     if not live:
@@ -214,6 +229,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
         # Failed/unknown transfer sizes are unknowable: reserve their entire cap.
         charged = consumed * plan.max_body_bytes
         completed, stopped, failed, unknown = 0, None, 0, 0
+        previous_protocol_error, consecutive_protocol_errors = None, 0
         latest_observed = max([instant(plan.not_before), instant(approval['approved_at']),
                                *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
                                *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
@@ -233,6 +249,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 consumed += 1
                 charged += plan.max_body_bytes
                 state, code, body, captured, retained = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None, False
+                stage, fatal = 'transport', False
                 try:
                     with client.stream('POST', ENDPOINT, json=dict(api_name=member['api'], token=secret,
                                       params=member['params'], fields=','.join(member['fields']))) as response:
@@ -248,8 +265,10 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                     captured = instant(clock()).isoformat()
                     require(instant(captured) >= instant(claim['claimed_at']), 'CAPTURE_CLOCK_ROLLBACK')
                     require(not secret_present(body, secret), 'CAPTURE_SECRET')
+                    stage = 'publication'
                     publish_bytes(destination / f'{key}.response.json', body)
                     retained = True  # bounded, secret-free bytes survive a schema refusal
+                    stage = 'validation'
                     payload_rows(plan, member, body, captured)
                     state, code = 'COMPLETE', None
                 except Exception as error:
@@ -258,6 +277,8 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                         state, code = 'FAILED', str(error)
                     else:
                         code = safe_exception_code(error)
+                    fatal = (stage == 'publication' or isinstance(error, OSError) or
+                             not isinstance(error, (ResearchError, httpx.TransportError)))
                     # Native exception bodies can contain credential/request context: never retain them.
                 result = dict(member=member, claim_hash=hashlib.sha256(claim_path.read_bytes()).hexdigest(),
                               state=state, error=code, transport='MOCK' if fixture else 'HTTPS_TLS')
@@ -268,13 +289,22 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 if state != 'COMPLETE':
                     failed += int(state == 'FAILED')
                     unknown += int(state == 'UNKNOWN')
-                    if not approval.get('continue_on_error', False) or code in {
+                    protocol_error = isinstance(code, str) and (
+                        code.startswith(('PROVIDER_', 'RESPONSE_')) or
+                        code in {'NATIVE_CODE_REQUIRED', 'COMPRESSED_BODY_REJECTED'})
+                    consecutive_protocol_errors = (consecutive_protocol_errors + 1 if code == previous_protocol_error else 1) if protocol_error else 0
+                    previous_protocol_error = code if protocol_error else None
+                    if fatal or not approval.get('continue_on_error', False) or code in {
                             'CAPTURE_SECRET', 'CAPTURE_CLOCK_ROLLBACK', 'IMMUTABLE_OBJECT_CHANGED',
-                            'PUBLICATION_WRITE_CHANGED'}:
+                            'PUBLICATION_WRITE_CHANGED', 'PROVIDER_TRUNCATED', 'PROVIDER_CAP_OR_TRUNCATION'}:
                         stopped = state
+                        break
+                    if consecutive_protocol_errors >= 3:
+                        stopped = 'PROTOCOL_CIRCUIT'
                         break
                 else:
                     completed += 1
+                    previous_protocol_error, consecutive_protocol_errors = None, 0
                 latest_observed = max(claim_time, instant(captured)) if captured is not None else claim_time
                 if consumed < plan.maximum_requests:
                     sleep(plan.min_spacing_seconds)

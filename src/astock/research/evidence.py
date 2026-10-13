@@ -82,10 +82,10 @@ def capture_grade(spec: SourceFile, body: bytes, bundle: Bundle, proofs: dict[st
     claim_bytes, claim = role(CLAIM_KEYS)
     _, approval = role(APPROVAL_KEYS)
     _, result = role(RESULT_KEYS)
-    plans = [value for _, value in values if value.get("protocol") == "RESEARCH_CAPTURE_V1_1"]
+    plans = [value for _, value in values if value.get("protocol") in {"RESEARCH_CAPTURE_V1_1", "RESEARCH_CAPTURE_V2"}]
     require(len(plans) == 1, "CAPTURE_EVIDENCE_ROLES")
-    from astock.research.acquisition import CapturePlan
-    plan = CapturePlan.model_validate(plans[0])
+    from astock.research.market_capture import parse_plan
+    plan = parse_plan(plans[0])
     grade = validate_authority(plan, claim, approval)
     require(spec.evidence_grade == grade, "CAPTURE_GRADE_MISMATCH")
     require(result["state"] == "COMPLETE" and result["error"] is None and
@@ -99,8 +99,9 @@ def capture_grade(spec: SourceFile, body: bytes, bundle: Bundle, proofs: dict[st
             instant(spec.retrieved_at) == instant(result["retrieved_at"]) and
             instant(spec.available_at) >= instant(result["available_at"]), "CAPTURE_SOURCE_TIME_BINDING")
     require(bundle.purpose == plan.purpose and bundle.window_start == plan.window_start and
-            bundle.window_end == plan.window_end and bundle.universe == plan.universe and
-            bundle.benchmarks == plan.benchmarks and bundle.universe_scope == "WATCHLIST", "CAPTURE_SCOPE_BINDING")
+            bundle.window_end == plan.window_end and (bundle.universe == plan.universe if plan.protocol == 'RESEARCH_CAPTURE_V1_1' else
+             bundle.protocol == 'RESEARCH_INPUT_V2' and bundle.bse_calendar_reference == plan.bse_calendar_reference and bundle.universe_scope in {'CURRENT_A_SHARE_L', 'PROVIDER_SAMPLE'}) and
+            bundle.benchmarks == plan.benchmarks and (plan.protocol == 'RESEARCH_CAPTURE_V2' or bundle.universe_scope == "WATCHLIST"), "CAPTURE_SCOPE_BINDING")
     calendar = plan.benchmark_calendars.get(spec.request["params"].get("ts_code")) if spec.request["api"] == "index_basic" else None
     require(spec.calendar_exchange == calendar, "CAPTURE_CALENDAR_BINDING")
     return grade

@@ -4,7 +4,7 @@
 
 这是长期个人 A 股投资研究与交易决策系统。完整业务目标见
 [项目宪章](docs/PROJECT_CHARTER.md)，当前能力见 [CURRENT_STATE](docs/CURRENT_STATE.md)，
-下一步见 [ROADMAP](docs/ROADMAP.md) 和 [Research V1](docs/RESEARCH_V1.md)。
+下一步见 [ROADMAP](docs/ROADMAP.md)、[Research V2](docs/RESEARCH_V2.md)及原[Research V1契约](docs/RESEARCH_V1.md)。
 
 执行范围按当前用户明确授权确定，再依据宪章、当前任务与架构/契约实施。
 历史 Phase1 Prompt、审批、修复报告仅解释当时的工作和数据来源，不能自动成为新任务、
@@ -55,9 +55,11 @@ uv run --offline --frozen astock data contracts
 
 ## 秘密与公开仓库
 
-.env、原始市场数据、DB/WAL、实际许可、私密报告、资金/持仓/个人成交记录只存 ignored
+.env、原始市场数据、DB/WAL、实际许可、包含个人信息的私密报告、资金/持仓/个人成交记录只存 ignored
 data/private/、private/、data/ 或 reports/。不 force-add，不打印/提交 token，
-不持有券商凭据。公开材料仅放脱敏摘要。提交前检查路径、diff 及明文/编码/解码凭据。
+不持有券商凭据。按用户最新授权，真实业务研究报告、指标/候选/行业结论及验证摘要应同步提交到
+`docs/research/results/`，供GPT通过Git审查；发布前移除个人账户记录、私有路径、凭据及许可内容。
+公开报告注明真实/合成、代码/参数/as-of、来源hash及缺口，私有Raw不公开；不得仅提交“结果在本机”的占位说明。提交前检查路径、diff 及明文/编码/解码凭据。
 Git 只保护代码和文档，不替代私有数据备份。旧来源版本与消费事实的恢复不能通过 reset/retry 实现。
 
 ## 仓库内自包含交付与 Review

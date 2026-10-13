@@ -163,3 +163,33 @@ def capture_status_command(capture_dir: Path = typer.Option(..., '--capture-dir'
     except Exception:
         typer.echo('Research capture status: FAIL (safe summary only)')
         raise typer.Exit(1) from None
+
+
+@app.command('radar')
+def radar_command(bundle: str = typer.Option(..., '--bundle'), as_of: str = typer.Option(..., '--as-of'),
+                  store: Path = typer.Option(Path('data/private/research-v1/research.duckdb'), '--store'),
+                  parameters: Path = typer.Option(Path('config/research/observation-v1.json'), '--parameters'),
+                  output: Path = typer.Option(Path('reports/private/research-v1/radar'), '--output'),
+                  component: list[str] = typer.Option([], '--component'),
+                  revisions: Path | None = typer.Option(None, '--revisions'),
+                  public_output: Path | None = typer.Option(None, '--public-output')) -> None:
+    """Shared Store/features/screening, with market and current-industry breadth."""
+    from astock.features.market import ObservationParameters
+    from astock.research.service import analyze
+    from astock.reports.research import publish
+    try:
+        root = get_project_root()
+        research = store_at(store)
+        params = ObservationParameters.model_validate(read_json(parameters))
+        snapshot = analyze(research, bundle, as_of, params, radar=True, components=component,
+                           revisions=read_json(revisions) if revisions else None)
+        run = research.save_report(snapshot)
+        publish(snapshot, private_path(root, output, output=True))
+        if public_output:
+            from astock.research.public_results import publish_public
+            public_run = publish_public(snapshot, root, public_output)
+            typer.echo(f'Public business projection={public_run}; personal records excluded')
+        typer.echo(f'OBSERVATION_ONLY radar={run}; scope={snapshot["radar"]["scope"]}; zero market calls')
+    except Exception:
+        typer.echo('Research radar: FAIL (private details suppressed; no orders)')
+        raise typer.Exit(1) from None

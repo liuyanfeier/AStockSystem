@@ -1,0 +1,16 @@
+{
+  "scope": "feature calculation only, excludes SQL/Raw validation",
+  "implementation": "4e5768b before grouping",
+  "measurements": [
+    {
+      "stocks": 100,
+      "price_rows": 12800,
+      "seconds": 0.08226024999748915
+    },
+    {
+      "stocks": 500,
+      "price_rows": 64000,
+      "seconds": 1.4820024999789894
+    }
+  ]
+}

@@ -5,10 +5,33 @@ a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
 Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1在c9eb868独立Level A通过，CI1099 passed。
 按本次用户明确授权，PR #1以普通Merge合入main：95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693；
 文件树与已接受c9eb868一致，PR #2历史保留。新main CI成功：1099 passed、6 warnings；
-后续工作在codex/research-level-b，不重开文档治理或全历史Phase1。
+Level B后续已独立接受于edcc8f55071abd77ae1e415773bc000aa815601a，CI1121 passed。
+PR #3普通merge进入main 05479b523e3718d09e9b5b6b1773a3f318b1b0be；本批分支codex/research-v2。
 当前整批版本、验收与验证见[REVIEW](REVIEW.md)。
 
-## Level B真实20/60研究已运行，待独立Review
+## Research V2软件与真实业务分别验收
+
+已有可运行的当前上市池批量合同、SW2021一级行业、市场/板块广度、行业分布/扩散、候选集中度与
+前日跟踪，生成中文雷达MD/JSON。新协议兼容V1保留来源，五表Store不升级旧库。
+同一features/screen/service按证券分组；Store重复推导有限缓存每次仍验证原字节hash和SQL内容。
+来源更正/增量组合保留旧版本，冲突要求明确source选择；单日市场计划可运行，未获日更许可。
+
+真实业务报告、结构化结果与验证摘要按用户新要求脱敏入Git：[结果入口](research/results/2026-10-13-research-v2/README.md)。
+既有10股真实雷达240项旧指标一致、4候选保留；没有真实行业来源，行业排名/轮动UNKNOWN。
+完整31行业雷达为SYNTHETIC演示，不能宣称真实全市场/行业验收。真实新API0，旧106次尝试不变。
+[固定299请求/128日申请](RESEARCH_V2_ACQUISITION.md)尚待用户整批批准；不把上批试错许可延续到此批。
+P2已修复本地故障停、截断停及三次重复协议/提供者错误熔断；不记录原生异常秘密上下文。
+
+本地功能版本bcb2d86全套1160 passed；随后补足协议熔断范围/公开来源列表压缩，
+最终源码03da51e全部Research155 passed。精确最终HEAD全套CI见[REVIEW](REVIEW.md)和本批PR。
+本批14个确认根盘点：32,860,999,001逻辑字节、33,927,413,760去重inode文件blocks，
+361,446文件/1,914数据库，complete=true，含外部历史工作目录和本批生成/测试目录；
+保全155,655文件无改动/缺失，私有破坏性删除0。详细时点/口径见结果验证摘要。
+性能阶段实测：6000股/128日特征约1.16秒；1000股完整模拟258,473记录，冷验证约4.80秒、
+同对象重复约0.71秒。这两个口径分别测量，未宣称6000股全Store/真实供应商规模已实测。
+仍缺真实全市场/行业来源，财务/公告核实、交易策略验证、正式退出/组合风险与告警；不设仓位。
+
+## Level B真实20/60研究已独立接受
 
 用户随后明确批准本批正常试错采集，覆盖原首错停和本批重试边界；旧消费事实保留。
 累计106尝试：39 COMPLETE、66 FAILED、1 UNKNOWN；39唯一逻辑请求都有成功来源。
@@ -19,7 +42,7 @@ Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1�
 as-of晚于全部来源取得；只用于当前观察，不将现采历史值当历史PIT。
 未取得实际持仓数据，不能据日志空判断用户空仓。候选不是买卖信号，风险预算null，trade_eligible=false。
 
-私有BUSINESS_SUMMARY.md及逐证券质量报告在reports/private/research-v1/level-b-20261013-normal/。
+原完整报告继续私有保留；脱敏业务报告及250项核查见[Level B Git结果](research/results/2026-10-13-level-b/REPORT.md)。
 原首次UNKNOWN和所有失败不改写；新尝试各绑定当时版本及实际批准。
 必要修复包含安全继续、失败Raw保留、类型受控响应metadata、identity编码及互斥成功来源组合。
 聚焦122 passed；最终完整回归和精确HEAD CI见REVIEW及本批PR。
@@ -39,7 +62,7 @@ as-of晚于全部来源取得；只用于当前观察，不将现采历史值当
 | Screening / 候选报告 | 流动性/价格趋势/时效筛选、透明排序和排除理由、可复现私有Markdown/JSON | 未验证策略；候选卡含失效/不交易条件，trade_eligible恒false |
 | 私有日志与持仓 | PLAN/POSITION/EXECUTION/EXIT/REVIEW追加事件、更正、as-of过滤、人工持仓/退出逻辑/复盘到期 | 不与券商同步，不自动由成交推仓位/现金/可卖数量；无自动退出/风险参数 |
 | 旧可靠基础 | 原契约、身份/时点、受管数据库、冻结来源兼容、历史审计/重建及回归保留 | 旧机制软件通过不代表完整真实研究覆盖，失败/未知消费不重跑 |
-| 仍未实现 | 行业/动态主题/催化核实、公司基本面业务、正式入场退出、组合风控、回测/业绩归因、告警 | 后续按具体业务补齐；不得根据涨幅虚构催化或风险预算 |
+| 仍未实现 | 真实行业覆盖/动态主题/催化核实、公司基本面业务、正式入场退出、组合风控、回测/业绩归因、告警 | 后续按具体业务补齐；不得根据涨幅虚构催化或风险预算 |
 
 CLI已支持`astock research import / legacy-bundle / market / screen / report / journal-add`。
 受限采集默认dry-run，live须匹配当前用户批准；无券商命令；运行和输入契约见[RESEARCH_V1](RESEARCH_V1.md)。

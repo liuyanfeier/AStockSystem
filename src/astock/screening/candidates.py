@@ -7,7 +7,7 @@ from astock.features.market import ObservationParameters
 from astock.research.core import day
 
 
-def screen(stocks: list[dict], p: ObservationParameters, as_of: date) -> tuple[list[dict], list[dict]]:
+def screen(stocks: list[dict], p: ObservationParameters, as_of: date, *, limit: bool = True) -> tuple[list[dict], list[dict]]:
     included, excluded = [], []
     for stock in stocks:
         reasons = []
@@ -31,6 +31,8 @@ def screen(stocks: list[dict], p: ObservationParameters, as_of: date) -> tuple[l
     # No opaque composite score. Deterministic ranking by comparable return;
     # relative strength is only provided when SAME dates/basis benchmark exists.
     included.sort(key=lambda s: (-s["window_return"], s["code"]))
+    if not limit:
+        return included, excluded
     for stock in included[p.top_n:]:
         excluded.append(dict(code=stock["code"], reasons=["符合筛选但超出报告数量上限"]))
     return included[:p.top_n], excluded

@@ -163,6 +163,8 @@ def test_compressed_response_is_still_rejected_after_identity_request(tmp_path):
     def handler(member, count):
         return httpx.Response(200, headers={'content-encoding': 'gzip'}, stream=BytesStream(b'not read'))
     result, calls, destination = approved_mock(tmp_path, plan, handler, continue_on_error=True)
-    assert len(calls) == 39 and result['failed_this_run'] == 39
+    # Research V2 bounds repeated protocol refusals while keeping gzip rejection intact.
+    assert len(calls) == 3 and result['failed_this_run'] == 3
+    assert result['stopped'] == 'PROTOCOL_CIRCUIT' and result['unattempted'] == 36
     assert not list(destination.glob('*.response.json'))
     assert read_capture(destination)[1] == []

@@ -25,7 +25,8 @@ CONTRACTS = {
 }
 DATASETS = {'stock_basic': 'instruments', 'index_basic': 'instruments', 'trade_cal': 'calendar',
             'stk_limit': 'status', 'suspend_d': 'status', 'stock_st': 'status',
-            'daily': 'daily', 'index_daily': 'index_daily', 'adj_factor': 'adj_factor'}
+            'daily': 'daily', 'index_daily': 'index_daily', 'adj_factor': 'adj_factor',
+            'index_classify': 'industry_classification', 'index_member_all': 'industry_membership'}
 PARAMS = {
     'stock_basic': {'ts_code', 'list_status', 'exchange', 'market'},
     'index_basic': {'ts_code', 'market', 'publisher', 'symbol'},
@@ -35,14 +36,31 @@ PARAMS = {
 }
 
 
+V2_CONTRACTS = {**CONTRACTS,
+    'adj_factor': ('ts_code trade_date adj_factor', 10000),  # LOCAL ceiling, no documented numeric provider cap
+    'stock_basic': ('ts_code name exchange market list_date list_status curr_type', 6000),
+    'index_classify': ('index_code industry_name parent_code level industry_code is_pub src', 1000),
+    'index_member_all': ('l1_code l1_name l2_code l2_name l3_code l3_name ts_code name in_date out_date is_new', 2000)}
+V2_PARAMS = {**PARAMS, 'index_classify': {'level', 'src'}, 'index_member_all': {'l1_code', 'is_new'}}
+
+
+def market_member(api: str, params: dict) -> dict:
+    fields, cap = V2_CONTRACTS[api]
+    member = dict(api=api, params=params, fields=fields.split(), row_cap=cap, contract_version='RESEARCH_PROVIDER_V2')
+    validate_member(member)
+    return member
+
+
 def validate_member(member: dict) -> None:
-    require(set(member) == {'api', 'params', 'fields', 'row_cap'}, 'REQUEST_SHAPE')
+    v2 = member.get('contract_version') == 'RESEARCH_PROVIDER_V2'
+    require(set(member) == {'api', 'params', 'fields', 'row_cap'} | ({'contract_version'} if v2 else set()), 'REQUEST_SHAPE')
+    contracts, allowed = (V2_CONTRACTS, V2_PARAMS) if v2 else (CONTRACTS, PARAMS)
     api = member['api']
-    require(api in CONTRACTS, 'RESEARCH_API_UNKNOWN')
-    fields, cap = CONTRACTS[api]
+    require(api in contracts, 'RESEARCH_API_UNKNOWN')
+    fields, cap = contracts[api]
     require(member['fields'] == fields.split() and member['row_cap'] == cap, 'REQUEST_CONTRACT_CHANGED')
     params = member['params']
-    require(isinstance(params, dict) and bool(params) and set(params) <= PARAMS[api], 'REQUEST_PARAMS')
+    require(isinstance(params, dict) and bool(params) and set(params) <= allowed[api], 'REQUEST_PARAMS')
     require(all(isinstance(v, str) and v.strip() == v and v for v in params.values()), 'REQUEST_PARAM_TYPE')
     if 'start_date' in params or 'end_date' in params:
         require('start_date' in params and 'end_date' in params and day(params['start_date']) <= day(params['end_date']), 'REQUEST_WINDOW')
@@ -51,8 +69,16 @@ def validate_member(member: dict) -> None:
         require('start_date' not in params and 'end_date' not in params, 'REQUEST_DATE_AXES')
     if api == 'trade_cal':
         require(params.get('exchange') in {'SSE', 'SZSE'}, 'CALENDAR_REQUEST_EXCHANGE')
+    elif api == 'stock_basic' and v2:
+        require(set(params) == {'exchange', 'list_status'} and params['exchange'] in {'SSE', 'SZSE', 'BSE'} and params['list_status'] == 'L', 'CURRENT_POOL_REQUEST')
+    elif api == 'index_classify':
+        require(params == {'level': 'L1', 'src': 'SW2021'}, 'INDUSTRY_VERSION')
+    elif api == 'index_member_all':
+        require(set(params) == {'l1_code', 'is_new'} and params['is_new'] == 'Y', 'INDUSTRY_CURRENT_MEMBERS')
     elif api in {'stock_basic', 'index_basic', 'index_daily'}:
         require('ts_code' in params, 'EXACT_IDENTITY_REQUEST_REQUIRED')
+    if v2 and api in {'daily', 'adj_factor'}:
+        require(set(params) == {'trade_date'}, 'MARKET_DAY_BATCH_REQUIRED')
     if 'ts_code' in params:
         codes = params['ts_code'].split(',')
         require(len(set(codes)) == len(codes) and all(c and c.strip() == c for c in codes), 'REQUEST_CODES')
@@ -106,7 +132,11 @@ def decode_response(body: bytes, member: dict) -> list[dict]:
                 require(d == day(params['trade_date']), 'RESPONSE_DATE_OUTSIDE_REQUEST')
             if 'start_date' in params:
                 require(day(params['start_date']) <= d <= day(params['end_date']), 'RESPONSE_DATE_OUTSIDE_REQUEST')
-        key = (row.get('ts_code'), row.get('exchange'), event)
+        if member['api'] == 'index_classify':
+            require(row.get('level') == 'L1' and row.get('src') == 'SW2021' and all(isinstance(row.get(f), str) and row[f] for f in ('index_code', 'industry_name')), 'INDUSTRY_VERSION')
+        if member['api'] == 'index_member_all':
+            require(row.get('l1_code') == params['l1_code'] and row.get('is_new') == 'Y' and row.get('out_date') in (None, ''), 'INDUSTRY_MEMBERSHIP_SCOPE')
+        key = (row.get('index_code') if member['api'] == 'index_classify' else row.get('ts_code'), row.get('exchange'), event)
         if member['api'] == 'suspend_d':
             require(row.get('suspend_timing') is None or isinstance(row['suspend_timing'], str), 'SUSPENSION_TIMING_TYPE')
             key += (row.get('suspend_type'), row.get('suspend_timing'))
@@ -208,9 +238,18 @@ def make_capture_bundle(capture: Path, output: Path | None = None, *,
         if api in {'daily', 'index_daily'}:
             spec.update(volume_unit='lots100', amount_unit='thousand_CNY')
         files.append(spec)
-    bundle = dict(protocol='RESEARCH_INPUT_V1', purpose='CURRENT_OBSERVATION', window_start=plan.window_start.isoformat(),
-                  window_end=plan.window_end.isoformat(), universe=plan.universe, benchmarks=plan.benchmarks,
-                  universe_scope='WATCHLIST', files=files)
+    v2 = plan.protocol == 'RESEARCH_CAPTURE_V2'
+    if v2:
+        universe = sorted({r['ts_code'] for s in files if s['request']['api'] == 'stock_basic'
+                           for r in decode_response(Path(s['path']).read_bytes(), s['request'])})
+        full_pool = {s['request']['params']['exchange'] for s in files if s['request']['api'] == 'stock_basic'} == set(plan.markets)
+    else:
+        universe, full_pool = plan.universe, False
+    bundle = dict(protocol='RESEARCH_INPUT_V2' if v2 else 'RESEARCH_INPUT_V1', purpose='CURRENT_OBSERVATION', window_start=plan.window_start.isoformat(),
+                  window_end=plan.window_end.isoformat(), universe=universe, benchmarks=plan.benchmarks,
+                  universe_scope=('CURRENT_A_SHARE_L' if full_pool else 'PROVIDER_SAMPLE') if v2 else 'WATCHLIST', files=files)
+    if v2:
+        bundle['bse_calendar_reference'] = plan.bse_calendar_reference
     # Validate before publishing, so an incomplete capture cannot strand an
     # invalid final manifest. Later additive receipts get another immutable ID.
     target = output or capture / f"{digest(bundle)}.bundle.json"
