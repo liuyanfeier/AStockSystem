@@ -218,6 +218,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                                *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
                                *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
         with httpx.Client(transport=transport, verify=True, follow_redirects=False, trust_env=False,
+                          headers={'Accept-Encoding': 'identity'},
                           timeout=httpx.Timeout(30), limits=httpx.Limits(max_connections=1)) as client:
             for member in remaining:
                 claim_time = instant(clock())

@@ -110,6 +110,7 @@ def approved_mock(root,plan,handler=None, *, continue_on_error=None):
     approval_file=root/'approval.json';approval_file.write_bytes(encoded(approval))
     calls=[]
     def request(req):
+        assert req.headers['accept-encoding'] == 'identity'
         payload=__import__('json').loads(req.content)
         m=next(m for m in plan['members'] if m['api']==payload['api_name'] and m['params']==payload['params'])
         calls.append(m)

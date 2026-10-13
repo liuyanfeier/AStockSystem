@@ -121,3 +121,48 @@ def test_optional_metadata_remains_strict(field, value, code):
     (payload if field == 'detail' else payload['data'])[field] = value
     with pytest.raises(ResearchError, match=code):
         decode_response(encoded(payload), member)
+
+
+def split_plan(plan, members):
+    return {**plan, 'members': members, 'maximum_requests': len(members),
+            'maximum_attempts': len(members), 'max_total_body_bytes': len(members) * plan['max_body_bytes']}
+
+
+def test_combine_disjoint_successes_retains_each_attempt_proof(tmp_path):
+    plan = fixture_plan()
+    first, second = tmp_path / 'first', tmp_path / 'second'
+    first.mkdir(); second.mkdir()
+    _, _, identities = approved_mock(first, split_plan(plan, plan['members'][:12]), continue_on_error=True)
+    _, _, remaining = approved_mock(second, split_plan(plan, plan['members'][12:]), continue_on_error=True)
+    manifest = make_capture_bundle(remaining, supplemental_captures=[identities])
+    from astock.research.core import digest
+    assert len(manifest['files']) == 39
+    store = ResearchStore(remaining / 'research.duckdb')
+    bundle = store.import_bundle(remaining / f'{digest(manifest)}.bundle.json')
+    retained, rows = store.snapshot(bundle, ASOF)
+    assert len(rows['instruments']) == 12 and rows['daily']
+    assert all(f['evidence_grade'] == 'SYNTHETIC' and len(f['evidence']) == 4 for f in retained['files'])
+    with pytest.raises(ResearchError, match='CAPTURE_DUPLICATE_MEMBER'):
+        make_capture_bundle(remaining, supplemental_captures=[identities, identities])
+
+
+def test_combining_different_scopes_is_rejected(tmp_path):
+    plan = fixture_plan()
+    first, second = tmp_path / 'first', tmp_path / 'second'
+    first.mkdir(); second.mkdir()
+    _, _, a = approved_mock(first, split_plan(plan, plan['members'][:12]))
+    changed = split_plan(plan, plan['members'][12:])
+    changed['benchmark_calendars'] = {**plan['benchmark_calendars'], '000300.SH': 'SZSE'}
+    _, _, b = approved_mock(second, changed)
+    with pytest.raises(ResearchError, match='CAPTURE_MERGE_SCOPE'):
+        make_capture_bundle(b, supplemental_captures=[a])
+
+
+def test_compressed_response_is_still_rejected_after_identity_request(tmp_path):
+    plan = fixture_plan()
+    def handler(member, count):
+        return httpx.Response(200, headers={'content-encoding': 'gzip'}, stream=BytesStream(b'not read'))
+    result, calls, destination = approved_mock(tmp_path, plan, handler, continue_on_error=True)
+    assert len(calls) == 39 and result['failed_this_run'] == 39
+    assert not list(destination.glob('*.response.json'))
+    assert read_capture(destination)[1] == []

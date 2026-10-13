@@ -171,28 +171,37 @@ def merge_status(rows: list[dict]) -> dict[tuple[str, str], dict]:
     return result
 
 
-def make_capture_bundle(capture: Path, output: Path | None = None) -> dict:
+def make_capture_bundle(capture: Path, output: Path | None = None, *,
+                        supplemental_captures: list[Path] | None = None) -> dict:
     """Describe raw bytes directly; no duplicated curated CSV/Parquet staging."""
     from astock.research.acquisition import read_capture
     from astock.research.inputs import load_bundle
     plan, receipts = read_capture(capture)
+    retained = [(capture, receipt) for receipt in receipts]
+    scope = ('purpose', 'window_start', 'window_end', 'universe', 'benchmarks', 'benchmark_calendars')
+    for other in supplemental_captures or []:
+        other_plan, other_receipts = read_capture(other)
+        require(all(getattr(plan, key) == getattr(other_plan, key) for key in scope), 'CAPTURE_MERGE_SCOPE')
+        retained.extend((other, receipt) for receipt in other_receipts)
+    keys = [digest(receipt['member']) for _, receipt in retained]
+    require(len(keys) == len(set(keys)), 'CAPTURE_DUPLICATE_MEMBER')
     files = []
-    for receipt in receipts:
+    for origin, receipt in retained:
         member = receipt['member']
         api = member['api']
-        body = (capture / receipt['object']).read_bytes()
+        body = (origin / receipt['object']).read_bytes()
         require(hashlib.sha256(body).hexdigest() == receipt['sha256'], 'CAPTURE_OBJECT_CHANGED')
         decode_response(body, member)
-        spec = dict(path=str((capture / receipt['object']).absolute()), sha256=receipt['sha256'],
+        spec = dict(path=str((origin / receipt['object']).absolute()), sha256=receipt['sha256'],
                     dataset=DATASETS[api], format='json', adapter='tushare-response-v1',
                     source='Tushare research capture', retrieved_at=receipt['retrieved_at'],
                     available_at=receipt['available_at'], request=member,
                     evidence_grade='LOCAL_CAPTURE_BOUND' if receipt['transport'] == 'HTTPS_TLS' else 'SYNTHETIC',
-                    evidence=[dict(path=str((capture / receipt['receipt_file']).absolute()), sha256=receipt['receipt_hash']),
-                              dict(path=str((capture / 'plan.json').absolute()), sha256=hashlib.sha256((capture / 'plan.json').read_bytes()).hexdigest())])
-        claim_path = capture / f"{digest(member)}.claim.json"
+                    evidence=[dict(path=str((origin / receipt['receipt_file']).absolute()), sha256=receipt['receipt_hash']),
+                              dict(path=str((origin / 'plan.json').absolute()), sha256=hashlib.sha256((origin / 'plan.json').read_bytes()).hexdigest())])
+        claim_path = origin / f"{digest(member)}.claim.json"
         claim = read_json(claim_path)
-        for proof in (claim_path, capture / f"{claim['approval_hash']}.approval.json"):
+        for proof in (claim_path, origin / f"{claim['approval_hash']}.approval.json"):
             spec['evidence'].append(dict(path=str(proof.absolute()), sha256=hashlib.sha256(proof.read_bytes()).hexdigest()))
         if api == 'index_basic':
             spec['calendar_exchange'] = plan.benchmark_calendars[member['params']['ts_code']]
