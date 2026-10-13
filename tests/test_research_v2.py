@@ -267,3 +267,28 @@ def test_stale_candidate_counts_do_not_revive_old_prices(market):
     _,_,store,bid,_,_,p=market
     r=analyze(store,bid,'2026-10-25T20:00:00+08:00',p,radar=True)
     assert not r['candidates'] and r['radar']['candidate_tracking']['eligible_total']==0
+
+
+def test_neutral_breadth_and_missing_industry_not_false_alignment(market):
+    from astock.research.radar import attach_radar
+    _,_,store,bid,m,original,p=market
+    _,rows=store.snapshot(bid,ASOF)
+    r=deepcopy(original)
+    stocks=r['features']
+    for i,s in enumerate(stocks):
+        s['above_ma60']=i<5
+        s['return_20']=0
+        s['return20_dates']=stocks[0]['return20_dates']
+    benchmarks=r['market']['benchmarks']
+    for b in benchmarks:b['above_ma60']=False
+    previous={s['code']:deepcopy(s) for s in stocks}
+    attach_radar(r,m,rows,stocks,benchmarks,previous,p)
+    assert r['radar']['market']['metrics']['above_ma60']['ratio']==.5
+    assert r['radar']['index_breadth_alignment']=='UNKNOWN'
+    assert r['radar']['trend']=='MIXED_OR_UNKNOWN'  # 100% flat is not contraction.
+    for s in stocks:
+        if s['code'] in {'SYNTHETIC-0','SYNTHETIC-3','SYNTHETIC-4','SYNTHETIC-5'}:s['return_20']=.1
+    next(s for s in stocks if s['code']=='SYNTHETIC-0')['return_20']=None
+    attach_radar(r,m,rows,stocks,benchmarks,previous,p)
+    bank=next(i for i in r['radar']['industries'] if i['code']=='801780.SI')
+    assert bank['diffusion']=='INSUFFICIENT_COVERAGE'

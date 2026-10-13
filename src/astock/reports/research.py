@@ -96,7 +96,7 @@ def radar_markdown(snapshot: dict) -> str:
     tracking = radar['candidate_tracking']
     synthetic = 'SYNTHETIC' in radar['actual_source_grades']
     alignment = {'ALIGNED':'方向一致','DIVERGENT':'方向分歧','UNKNOWN':'证据不足'}[radar['index_breadth_alignment']]
-    trend = {'EXPANDING':'20日上涨个股占有效样本多数','CONTRACTING':'20日下跌/非上涨个股占有效样本多数','MIXED_OR_UNKNOWN':'20日宽度持平或证据不足'}[radar['trend']]
+    trend = {'EXPANDING':'20日上涨个股占有效样本多数','CONTRACTING':'20日下跌个股占有效样本多数','MIXED_OR_UNKNOWN':'20日涨跌均未占多数或证据不足'}[radar['trend']]
     lines = ['# AStockSystem 每日市场与行业雷达', '',
              'SYNTHETIC · 合成软件演示，不能回答真实市场现状' if synthetic else '真实来源的当前观察 · 非交易指令', '',
              f"研究as-of：{snapshot['as_of']}；行情窗口：{snapshot['window_start']} → {snapshot['window_end']}",

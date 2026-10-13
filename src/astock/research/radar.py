@@ -105,7 +105,7 @@ def attach_radar(report, manifest, rows, stocks, benchmarks, previous, parameter
         trend = b['metrics']['above_ma60']['ratio']
         direction = ('STRONG' if returns['median'] > 0 and trend is not None and trend > .5 else
                      'WEAK' if returns['median'] < 0 and trend is not None and trend < .5 else 'MIXED') if returns['median'] is not None else 'UNKNOWN'
-        diffusion = ('BROAD' if len(strong) > len(valid)/2 else 'NARROW_LEADERS' if strong else 'NO_POSITIVE_MEMBERS') if valid else 'UNKNOWN'
+        diffusion = ('INSUFFICIENT_COVERAGE' if len(valid)<len(group) else 'BROAD' if len(strong) > len(valid)/2 else 'NARROW_LEADERS' if strong else 'NO_POSITIVE_MEMBERS') if valid else 'UNKNOWN'
         industries.append(dict(code=code, name=classification['name'], breadth=b, change=changes(b,pb),
                                median_return20_change=delta, change_denominator=len(common),
                                return20_window_dates=valid[0]['return20_dates'] if valid and len({tuple(s['return20_dates']) for s in valid})==1 else None, strength=direction, change_label='RISING' if delta is not None and delta>0 else 'FALLING' if delta is not None and delta<0 else 'UNCHANGED' if delta==0 else 'UNKNOWN',
@@ -125,13 +125,13 @@ def attach_radar(report, manifest, rows, stocks, benchmarks, previous, parameter
     advancing = current['metrics']['return_20']['up_ratio']
     index_directions = [b['above_ma60'] for b in benchmarks if b.get('above_ma60') is not None]
     breadth_direction = current['metrics']['above_ma60']['ratio']
-    alignment = ('ALIGNED' if all(x == (breadth_direction > .5) for x in index_directions) else 'DIVERGENT') if index_directions and breadth_direction is not None else 'UNKNOWN'
+    alignment = ('ALIGNED' if all(x == (breadth_direction > .5) for x in index_directions) else 'DIVERGENT') if index_directions and breadth_direction is not None and breadth_direction != .5 else 'UNKNOWN'
     full = manifest['universe_scope'] == 'CURRENT_A_SHARE_L' and len(stocks)==len(manifest['universe']) and all(s['last_date'] == manifest['window_end'] for s in stocks)
     # Absence remains visible even when all three identity partitions succeeded.
     report['radar'] = dict(scope='CURRENT_POOL_WITH_GAPS' if manifest['universe_scope']=='CURRENT_A_SHARE_L' and not full else 'CURRENT_POOL_PRICE_COVERED' if full else 'LIMITED_SAMPLE',
                            actual_source_grades=sorted({f.get('evidence_grade','USER_DECLARED') for f in manifest['files']}),
                            market=current, source_coverage=source_coverage(manifest, rows), previous_market=prior, daily_change=changes(current,prior), boards=boards,
-                           index_breadth_alignment=alignment, trend='EXPANDING' if advancing is not None and advancing>.5 else 'CONTRACTING' if advancing is not None and advancing<.5 else 'MIXED_OR_UNKNOWN',
+                           index_breadth_alignment=alignment, trend='EXPANDING' if advancing is not None and advancing>.5 else 'CONTRACTING' if current['metrics']['return_20']['down_ratio'] is not None and current['metrics']['return_20']['down_ratio']>.5 else 'MIXED_OR_UNKNOWN',
                            industries=industries, industry_coverage=industry_audit,
                            candidate_tracking=dict(eligible_total=len(current_codes), displayed=len(report['candidates']), omitted=len(current_codes)-len(report['candidates']),
                                                    new=sorted(current_codes-old_codes), continued=sorted(current_codes&old_codes), left=sorted(old_codes-current_codes),
