@@ -214,6 +214,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
         # Failed/unknown transfer sizes are unknowable: reserve their entire cap.
         charged = consumed * plan.max_body_bytes
         completed, stopped, failed, unknown = 0, None, 0, 0
+        previous_protocol_error, consecutive_protocol_errors = None, 0
         latest_observed = max([instant(plan.not_before), instant(approval['approved_at']),
                                *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
                                *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
@@ -233,6 +234,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 consumed += 1
                 charged += plan.max_body_bytes
                 state, code, body, captured, retained = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None, False
+                stage, fatal = 'transport', False
                 try:
                     with client.stream('POST', ENDPOINT, json=dict(api_name=member['api'], token=secret,
                                       params=member['params'], fields=','.join(member['fields']))) as response:
@@ -248,8 +250,10 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                     captured = instant(clock()).isoformat()
                     require(instant(captured) >= instant(claim['claimed_at']), 'CAPTURE_CLOCK_ROLLBACK')
                     require(not secret_present(body, secret), 'CAPTURE_SECRET')
+                    stage = 'publication'
                     publish_bytes(destination / f'{key}.response.json', body)
                     retained = True  # bounded, secret-free bytes survive a schema refusal
+                    stage = 'validation'
                     payload_rows(plan, member, body, captured)
                     state, code = 'COMPLETE', None
                 except Exception as error:
@@ -258,6 +262,8 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                         state, code = 'FAILED', str(error)
                     else:
                         code = safe_exception_code(error)
+                    fatal = (stage == 'publication' or isinstance(error, OSError) or
+                             not isinstance(error, (ResearchError, httpx.TransportError)))
                     # Native exception bodies can contain credential/request context: never retain them.
                 result = dict(member=member, claim_hash=hashlib.sha256(claim_path.read_bytes()).hexdigest(),
                               state=state, error=code, transport='MOCK' if fixture else 'HTTPS_TLS')
@@ -268,13 +274,22 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 if state != 'COMPLETE':
                     failed += int(state == 'FAILED')
                     unknown += int(state == 'UNKNOWN')
-                    if not approval.get('continue_on_error', False) or code in {
+                    protocol_error = code in {'PROVIDER_ENVELOPE', 'PROVIDER_DATA', 'PROVIDER_FIELDS',
+                                             'PROVIDER_METADATA_TYPE', 'PROVIDER_COUNT_TYPE',
+                                             'PROVIDER_TRUNCATED', 'PROVIDER_CAP_OR_TRUNCATION'}
+                    consecutive_protocol_errors = (consecutive_protocol_errors + 1 if code == previous_protocol_error else 1) if protocol_error else 0
+                    previous_protocol_error = code if protocol_error else None
+                    if fatal or not approval.get('continue_on_error', False) or code in {
                             'CAPTURE_SECRET', 'CAPTURE_CLOCK_ROLLBACK', 'IMMUTABLE_OBJECT_CHANGED',
                             'PUBLICATION_WRITE_CHANGED'}:
                         stopped = state
                         break
+                    if consecutive_protocol_errors >= 3:
+                        stopped = 'PROTOCOL_CIRCUIT'
+                        break
                 else:
                     completed += 1
+                    previous_protocol_error, consecutive_protocol_errors = None, 0
                 latest_observed = max(claim_time, instant(captured)) if captured is not None else claim_time
                 if consumed < plan.maximum_requests:
                     sleep(plan.min_spacing_seconds)
