@@ -289,9 +289,9 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 if state != 'COMPLETE':
                     failed += int(state == 'FAILED')
                     unknown += int(state == 'UNKNOWN')
-                    protocol_error = code in {'PROVIDER_ERROR', 'PROVIDER_ENVELOPE', 'PROVIDER_DATA', 'PROVIDER_FIELDS',
-                                             'PROVIDER_METADATA_TYPE', 'PROVIDER_COUNT_TYPE',
-                                             'PROVIDER_TRUNCATED', 'PROVIDER_CAP_OR_TRUNCATION'}
+                    protocol_error = isinstance(code, str) and (
+                        code.startswith(('PROVIDER_', 'RESPONSE_')) or
+                        code in {'NATIVE_CODE_REQUIRED', 'COMPRESSED_BODY_REJECTED'})
                     consecutive_protocol_errors = (consecutive_protocol_errors + 1 if code == previous_protocol_error else 1) if protocol_error else 0
                     previous_protocol_error = code if protocol_error else None
                     if fatal or not approval.get('continue_on_error', False) or code in {

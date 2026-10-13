@@ -10,12 +10,22 @@ def public_snapshot(snapshot: dict) -> dict:
                'parameters','parameters_hash','market','features','candidates','manual_cards','excluded',
                'limitations','radar','composition'}
     result = deepcopy({k:v for k,v in snapshot.items() if k in allowed})
+    # Intern repeated provenance vectors without dropping any business metric or source.
+    # A full-market JSON must not repeat the same daily source hashes thousands of times.
+    source_hash_sets = {}
+    for feature in result.get('features', []):
+        hashes = sorted(set(feature.pop('source_hashes', [])))
+        key = digest(hashes)
+        source_hash_sets[key] = hashes
+        feature['source_hash_set_id'] = key
+    result['source_hash_sets'] = source_hash_sets
     sources = []
     for source in snapshot['sources']:
         s = {k:v for k,v in source.items() if k not in {'path','evidence'}}
         s['evidence_hashes'] = [e['sha256'] for e in source.get('evidence',[])]
         sources.append(s)
     result.update(sources=sources, publication=dict(private_snapshot_hash=digest(snapshot),
+                  protocol='RESEARCH_PUBLIC_V2', source_lineage='features reference source_hash_sets; cards retain hashes',
                   personal_records_included=False, raw_included=False,
                   evidence_limit='业务数值/来源hash可审查；没有私有Raw/许可访问权时不能独立证明供应商真实性'))
     # Never publish actual positions or manual notes/event ids, even if the account seems empty.

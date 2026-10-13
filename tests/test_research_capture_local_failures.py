@@ -56,3 +56,23 @@ def test_permission_errors_are_bounded(tmp_path):
         return httpx.Response(200,stream=BytesStream(encoded(dict(code=-2002,msg='SYNTHETIC permission',data=None))))
     result,calls,_=approved_mock(tmp_path,fixture_plan(),handler,continue_on_error=True)
     assert len(calls)==3 and result['stopped']=='PROTOCOL_CIRCUIT'
+
+
+@pytest.mark.parametrize('code', ['PROVIDER_ROW_SHAPE', 'PROVIDER_NUMERIC_TYPE'])
+def test_validation_protocol_errors_are_bounded(tmp_path, monkeypatch, code):
+    from astock.research import acquisition
+    from astock.research.core import ResearchError
+    def reject(*args):
+        raise ResearchError(code)
+    monkeypatch.setattr(acquisition, 'payload_rows', reject)
+    result, calls, destination = approved_mock(tmp_path, fixture_plan(), continue_on_error=True)
+    assert len(calls) == 3 and result['stopped'] == 'PROTOCOL_CIRCUIT' and result['unattempted'] == 36
+    assert result['failed_this_run'] == 3 and len(list(destination.glob('*.response.json'))) == 3
+
+
+def test_repeated_compressed_responses_are_bounded(tmp_path):
+    def handler(member, count):
+        return httpx.Response(200, headers={'content-encoding': 'gzip'}, stream=BytesStream(b'SYNTHETIC'))
+    result, calls, destination = approved_mock(tmp_path, fixture_plan(), handler, continue_on_error=True)
+    assert len(calls) == 3 and result['stopped'] == 'PROTOCOL_CIRCUIT' and result['unattempted'] == 36
+    assert result['failed_this_run'] == 3 and not list(destination.glob('*.response.json'))
