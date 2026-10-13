@@ -1,0 +1,638 @@
+{
+  "benchmark_calendars": {
+    "000300.SH": "SSE",
+    "000905.SH": "SSE"
+  },
+  "benchmarks": [
+    "000300.SH",
+    "000905.SH"
+  ],
+  "destination": "data/private/research-v1/capture-20261012-v1-1",
+  "endpoint": "https://api.tushare.pro",
+  "execution_authorized": false,
+  "expected_min_sessions": 120,
+  "max_added_disk_bytes": 268435456,
+  "max_body_bytes": 2097152,
+  "max_total_body_bytes": 81788928,
+  "maximum_attempts": 39,
+  "maximum_requests": 39,
+  "members": [
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "stock_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "exchange",
+        "market",
+        "list_date",
+        "list_status"
+      ],
+      "params": {
+        "list_status": "L",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "index_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "market",
+        "publisher"
+      ],
+      "params": {
+        "market": "SSE",
+        "ts_code": "000300.SH"
+      },
+      "row_cap": 8000
+    },
+    {
+      "api": "index_basic",
+      "fields": [
+        "ts_code",
+        "name",
+        "market",
+        "publisher"
+      ],
+      "params": {
+        "market": "SSE",
+        "ts_code": "000905.SH"
+      },
+      "row_cap": 8000
+    },
+    {
+      "api": "trade_cal",
+      "fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "exchange": "SSE",
+        "start_date": "20260401"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "trade_cal",
+      "fields": [
+        "exchange",
+        "cal_date",
+        "is_open",
+        "pretrade_date"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "exchange": "SZSE",
+        "start_date": "20260401"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ,000002.SZ,000333.SZ,002415.SZ,300750.SZ,600000.SH,600036.SH,600519.SH,601318.SH,601899.SH"
+      },
+      "row_cap": 6000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "adj_factor",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "adj_factor"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000002.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000333.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "002415.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "300750.SZ"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600000.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600036.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "600519.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601318.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "stk_limit",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "up_limit",
+        "down_limit"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "601899.SH"
+      },
+      "row_cap": 5800
+    },
+    {
+      "api": "suspend_d",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "suspend_timing",
+        "suspend_type"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000001.SZ,000002.SZ,000333.SZ,002415.SZ,300750.SZ,600000.SH,600036.SH,600519.SH,601318.SH,601899.SH"
+      },
+      "row_cap": 5000
+    },
+    {
+      "api": "stock_st",
+      "fields": [
+        "ts_code",
+        "name",
+        "trade_date",
+        "type",
+        "type_name"
+      ],
+      "params": {
+        "trade_date": "20261012"
+      },
+      "row_cap": 1000
+    },
+    {
+      "api": "index_daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000300.SH"
+      },
+      "row_cap": 2000
+    },
+    {
+      "api": "index_daily",
+      "fields": [
+        "ts_code",
+        "trade_date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "pre_close",
+        "vol",
+        "amount"
+      ],
+      "params": {
+        "end_date": "20261012",
+        "start_date": "20260401",
+        "ts_code": "000905.SH"
+      },
+      "row_cap": 2000
+    }
+  ],
+  "min_spacing_seconds": 1.25,
+  "not_before": "2026-10-13T09:30:00+08:00",
+  "protocol": "RESEARCH_CAPTURE_V1_1",
+  "purpose": "CURRENT_OBSERVATION",
+  "redirects": 0,
+  "retries": 0,
+  "universe": [
+    "000001.SZ",
+    "000002.SZ",
+    "000333.SZ",
+    "002415.SZ",
+    "300750.SZ",
+    "600000.SH",
+    "600036.SH",
+    "600519.SH",
+    "601318.SH",
+    "601899.SH"
+  ],
+  "window_end": "2026-10-12",
+  "window_start": "2026-04-01"
+}
