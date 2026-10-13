@@ -98,16 +98,19 @@ class BytesStream(httpx.SyncByteStream):
     def __iter__(self):yield self.body
 
 
-def approved_mock(root,plan,handler=None):
+def approved_mock(root,plan,handler=None, *, continue_on_error=None):
     destination=root/plan['destination']
     plan_file=root/'plan.json';plan_file.write_bytes(encoded(plan))
     remaining=[digest(m) for m in plan['members'] if not (destination/f'{digest(m)}.claim.json').exists()]
     approval=dict(protocol='RESEARCH_CAPTURE_APPROVAL_V1_1',plan_hash=digest(plan),destination=str(destination.resolve()),
                   implementation_hash=implementation_hash(),authorized_by='SYNTHETIC_TEST',approved_at='2026-10-13T00:00:00+00:00',
                   expires_at='2026-10-14T00:00:00+00:00',member_ids=remaining,fixture_only=True,execution_authorized=True)
+    if continue_on_error is not None:
+        approval['continue_on_error'] = continue_on_error
     approval_file=root/'approval.json';approval_file.write_bytes(encoded(approval))
     calls=[]
     def request(req):
+        assert req.headers['accept-encoding'] == 'identity'
         payload=__import__('json').loads(req.content)
         m=next(m for m in plan['members'] if m['api']==payload['api_name'] and m['params']==payload['params'])
         calls.append(m)

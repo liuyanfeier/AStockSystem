@@ -1,8 +1,15 @@
 # Research V1：实际业务入口
 
-2026-10-12。已实现离线主路径：真实文件 → 独立 Research Store → Market Regime /
+2026-10-13。已实现离线主路径：真实文件 → 独立 Research Store → Market Regime /
 Screening → 私有候选观察报告。用途固定 CURRENT_OBSERVATION，输出 OBSERVATION_ONLY。
 不启动全历史 Phase1，不连接券商、不产生订单，不擅自设置交易风险参数。
+
+本批真实连续128日默认20/60已运行，4候选/6排除；质量与复核见REVIEW。
+正常试错授权只覆盖本批：默认采集仍dry-run，旧首错停批准继续兼容，不扩大历史数据用途。
+需要组合不同修复批次的互不重复成功来源时，capture-import可重复指定--include-capture；
+每个来源保留自己的采集证明，失败Raw不进入研究计算。
+实际业务总结、250项直接Raw检查及保留Raw重建结果仅存reports/private/research-v1/level-b-20261013-normal/。
+下方三日样本是早期使用说明，不能替代最新已验证的连续来源。
 
 ## 立即运行
 
@@ -99,7 +106,8 @@ recorded_at不得早于事件发生；报告按两个时间过滤，显示最初
 
 [39请求预算](RESEARCH_ACQUISITION.md)和config/research/acquisition-proposal.json列出精确股票/指数、
 窗口、字段、端点、尝试/容量上限与停止条件；execution_authorized=false。
-本批市场API调用0。当前CLI已实现默认dry-run采集和九接口状态适配；真实执行仍需用户匹配批准，
+原2026-10-12软件批市场API调用0；2026-10-13经用户另行批准的第一次尝试已UNKNOWN停止，
+未尝试38，完整响应0，最新状态见[CURRENT_STATE](CURRENT_STATE.md)。CLI默认dry-run和九接口状态适配；后续真实执行需新的匹配批准，
 无需复制Phase1审批体系，也不得沿用旧许可证或重放旧失败/未知消费。
 容量纳入仓库及已确认项目外历史工作目录，见[存储治理](STORAGE_GOVERNANCE.md)。
 

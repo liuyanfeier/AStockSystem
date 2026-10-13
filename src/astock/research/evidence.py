@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 CLAIM_KEYS = {"plan_hash", "member", "claimed_at", "approval_hash"}
 APPROVAL_KEYS = {"protocol", "plan_hash", "destination", "implementation_hash", "authorized_by",
                  "approved_at", "expires_at", "member_ids", "fixture_only", "execution_authorized"}
+CONTINUING_APPROVAL_KEYS = APPROVAL_KEYS | {"continue_on_error"}
 RESULT_KEYS = {"member", "claim_hash", "state", "error", "transport", "object", "sha256",
                "retrieved_at", "available_at"}
 
@@ -30,7 +31,9 @@ def validate_authority(plan: CapturePlan, claim: dict, approval: dict) -> str:
     Historical implementation hashes remain historical pins, not the running hash.
     Relocating retained evidence does not alter the recorded execution destination.
     """
-    require(set(claim) == CLAIM_KEYS and set(approval) == APPROVAL_KEYS, "CAPTURE_AUTHORITY_SHAPE")
+    require(set(claim) == CLAIM_KEYS and set(approval) in (APPROVAL_KEYS, CONTINUING_APPROVAL_KEYS), "CAPTURE_AUTHORITY_SHAPE")
+    require("continue_on_error" not in approval or type(approval["continue_on_error"]) is bool,
+            "CAPTURE_CONTINUATION_POLICY")
     plan_hash = digest(plan.model_dump(mode="json"))
     member_ids = [digest(member) for member in plan.members]
     ids = approval["member_ids"]
@@ -72,7 +75,8 @@ def capture_grade(spec: SourceFile, body: bytes, bundle: Bundle, proofs: dict[st
         values.append((value, decoded))
     # Identify roles by their strict schemas, independent of filenames or list order.
     def role(keys: set[str]) -> tuple[bytes, dict]:
-        matches = [(raw, value) for raw, value in values if set(value) == keys]
+        matches = [(raw, value) for raw, value in values if set(value) == keys or
+                   keys == APPROVAL_KEYS and set(value) == CONTINUING_APPROVAL_KEYS]
         require(len(matches) == 1, "CAPTURE_EVIDENCE_ROLES")
         return matches[0]
     claim_bytes, claim = role(CLAIM_KEYS)

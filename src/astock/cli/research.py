@@ -118,7 +118,7 @@ def capture_command(plan: Path = typer.Option(Path('config/research/acquisition-
     try:
         result = capture(get_project_root(), plan, live=live, approval_file=approval)
         typer.echo(encoded(result).decode())
-        if result.get('stopped'):
+        if result.get('stopped') or result.get('failed_this_run', 0) or result.get('unknown_this_run', 0):
             raise typer.Exit(1)
     except typer.Exit:
         raise
@@ -128,18 +128,23 @@ def capture_command(plan: Path = typer.Option(Path('config/research/acquisition-
 
 
 @app.command('capture-import')
-def capture_import(capture_dir: Path = typer.Option(..., '--capture-dir')) -> None:
+def capture_import(capture_dir: Path = typer.Option(..., '--capture-dir'),
+                   include_capture: list[Path] = typer.Option([], '--include-capture')) -> None:
     """Validate retained complete responses and import directly into a private store."""
     from astock.research.acquisition import disk_bytes, read_capture
     from astock.research.core import digest, require
     from astock.research.tushare import make_capture_bundle
     try:
         destination = private_path(get_project_root(), capture_dir)
+        supplemental = [private_path(get_project_root(), p) for p in include_capture]
         plan, _ = read_capture(destination)
         # Conservative peak allowance for pilot DB/retained bytes and metadata.
         require(disk_bytes(destination) + plan.max_total_body_bytes + 32 * 1024**2 <= plan.max_added_disk_bytes,
                 'CAPTURE_IMPORT_PEAK_BUDGET')
-        manifest = make_capture_bundle(destination)
+        require(sum(disk_bytes(p) for p in supplemental) + disk_bytes(destination) +
+                plan.max_total_body_bytes + 32 * 1024**2 <= plan.max_added_disk_bytes,
+                'CAPTURE_MERGED_IMPORT_PEAK_BUDGET')
+        manifest = make_capture_bundle(destination, supplemental_captures=supplemental)
         bundle = destination / f'{digest(manifest)}.bundle.json'
         bid = ResearchStore(destination / 'research.duckdb').import_bundle(bundle)
         require(disk_bytes(destination) <= plan.max_added_disk_bytes, 'CAPTURE_IMPORT_DISK_BUDGET')

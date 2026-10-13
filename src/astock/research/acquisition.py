@@ -122,6 +122,19 @@ def disk_bytes(destination: Path) -> int:
     return total
 
 
+def safe_exception_code(error: Exception) -> str:
+    """Fixed categories only: exception messages can contain tokens/request bodies."""
+    for kind, code in ((httpx.TimeoutException, 'TRANSPORT_TIMEOUT'),
+                       (httpx.ConnectError, 'TRANSPORT_CONNECT_ERROR'),
+                       (httpx.RemoteProtocolError, 'TRANSPORT_REMOTE_PROTOCOL_ERROR'),
+                       (httpx.TransportError, 'TRANSPORT_ERROR'),
+                       (httpx.StreamConsumed, 'CAPTURE_STREAM_CONSUMED'),
+                       (OSError, 'CAPTURE_OS_ERROR')):
+        if isinstance(error, kind):
+            return code
+    return 'CAPTURE_INTERNAL_ERROR'
+
+
 def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
     plan = CapturePlan.model_validate(read_json(destination / 'plan.json'))
     receipts = []
@@ -146,12 +159,13 @@ def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
         require(r['member'] == member and r['claim_hash'] == hashlib.sha256(claim.read_bytes()).hexdigest(), 'CAPTURE_RESULT_CHANGED')
         require(r['state'] in {'COMPLETE', 'FAILED', 'UNKNOWN'}, 'CAPTURE_STATE')
         require(r['transport'] == ('MOCK' if a['fixture_only'] else 'HTTPS_TLS'), 'CAPTURE_TRANSPORT_BINDING')
+        if r['state'] == 'COMPLETE' or 'object' in r:
+            require(r['object'] == f'{key}.response.json', 'CAPTURE_OBJECT_PATH')
+            path = destination / r['object']
+            require(path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == r['sha256'], 'CAPTURE_OBJECT_CHANGED')
+            require(instant(r['available_at']) >= instant(r['retrieved_at']) >= instant(c['claimed_at']), 'CAPTURE_TIME_ORDER')
         if r['state'] != 'COMPLETE':
-            continue
-        require(r['object'] == f'{key}.response.json', 'CAPTURE_OBJECT_PATH')
-        path = destination / r['object']
-        require(path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == r['sha256'], 'CAPTURE_OBJECT_CHANGED')
-        require(instant(r['available_at']) >= instant(r['retrieved_at']) >= instant(c['claimed_at']), 'CAPTURE_TIME_ORDER')
+            continue  # retain rejected bytes for diagnosis, never admit them as COMPLETE
         payload_rows(plan, member, path.read_bytes(), r['retrieved_at'])
         receipts.append({**r, 'receipt_file': terminal.name, 'receipt_hash': hashlib.sha256(terminal.read_bytes()).hexdigest()})
     return plan, receipts
@@ -172,8 +186,10 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
     fixture = transport is not None
     require(fixture or (now is None and sleep is time.sleep), 'LIVE_TEST_OVERRIDE_REJECTED')
     require(not fixture or isinstance(transport, httpx.MockTransport), 'MOCK_TRANSPORT_REQUIRED')
-    require(set(approval) == {'protocol', 'plan_hash', 'destination', 'implementation_hash', 'authorized_by',
-                             'approved_at', 'expires_at', 'member_ids', 'fixture_only', 'execution_authorized'}, 'APPROVAL_SHAPE')
+    from astock.research.evidence import APPROVAL_KEYS, CONTINUING_APPROVAL_KEYS
+    require(set(approval) in (APPROVAL_KEYS, CONTINUING_APPROVAL_KEYS), 'APPROVAL_SHAPE')
+    require('continue_on_error' not in approval or type(approval['continue_on_error']) is bool,
+            'CAPTURE_CONTINUATION_POLICY')
     require(approval['protocol'] == 'RESEARCH_CAPTURE_APPROVAL_V1_1' and approval['plan_hash'] == plan_hash and
             approval['destination'] == str(destination) and approval['implementation_hash'] == implementation_hash() and
             approval['execution_authorized'] is True and approval['fixture_only'] is fixture and
@@ -197,11 +213,12 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
         consumed = sum((destination / f'{digest(m)}.claim.json').exists() for m in plan.members)
         # Failed/unknown transfer sizes are unknowable: reserve their entire cap.
         charged = consumed * plan.max_body_bytes
-        completed, stopped = 0, None
+        completed, stopped, failed, unknown = 0, None, 0, 0
         latest_observed = max([instant(plan.not_before), instant(approval['approved_at']),
                                *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
                                *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
         with httpx.Client(transport=transport, verify=True, follow_redirects=False, trust_env=False,
+                          headers={'Accept-Encoding': 'identity'},
                           timeout=httpx.Timeout(30), limits=httpx.Limits(max_connections=1)) as client:
             for member in remaining:
                 claim_time = instant(clock())
@@ -215,7 +232,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 publish_bytes(claim_path, encoded(claim))  # irrevocable UNKNOWN BEFORE transport
                 consumed += 1
                 charged += plan.max_body_bytes
-                state, code, body, captured = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None
+                state, code, body, captured, retained = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None, False
                 try:
                     with client.stream('POST', ENDPOINT, json=dict(api_name=member['api'], token=secret,
                                       params=member['params'], fields=','.join(member['fields']))) as response:
@@ -231,26 +248,36 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                     captured = instant(clock()).isoformat()
                     require(instant(captured) >= instant(claim['claimed_at']), 'CAPTURE_CLOCK_ROLLBACK')
                     require(not secret_present(body, secret), 'CAPTURE_SECRET')
-                    payload_rows(plan, member, body, captured)
                     publish_bytes(destination / f'{key}.response.json', body)
+                    retained = True  # bounded, secret-free bytes survive a schema refusal
+                    payload_rows(plan, member, body, captured)
                     state, code = 'COMPLETE', None
                 except Exception as error:
                     from astock.research.core import ResearchError
                     if isinstance(error, ResearchError):
                         state, code = 'FAILED', str(error)
+                    else:
+                        code = safe_exception_code(error)
                     # Native exception bodies can contain credential/request context: never retain them.
                 result = dict(member=member, claim_hash=hashlib.sha256(claim_path.read_bytes()).hexdigest(),
                               state=state, error=code, transport='MOCK' if fixture else 'HTTPS_TLS')
-                if state == 'COMPLETE':
+                if retained:
                     result.update(object=f'{key}.response.json', sha256=hashlib.sha256(body).hexdigest(),
                                   retrieved_at=captured, available_at=captured)
                 publish_bytes(destination / f'{key}.result.json', encoded(result))
                 if state != 'COMPLETE':
-                    stopped = state
-                    break
-                latest_observed = instant(captured)
-                completed += 1
-                if completed < len(remaining):
+                    failed += int(state == 'FAILED')
+                    unknown += int(state == 'UNKNOWN')
+                    if not approval.get('continue_on_error', False) or code in {
+                            'CAPTURE_SECRET', 'CAPTURE_CLOCK_ROLLBACK', 'IMMUTABLE_OBJECT_CHANGED',
+                            'PUBLICATION_WRITE_CHANGED'}:
+                        stopped = state
+                        break
+                else:
+                    completed += 1
+                latest_observed = max(claim_time, instant(captured)) if captured is not None else claim_time
+                if consumed < plan.maximum_requests:
                     sleep(plan.min_spacing_seconds)
         return dict(mode='MOCK' if fixture else 'LIVE', plan_hash=plan_hash, complete_this_run=completed,
+                    failed_this_run=failed, unknown_this_run=unknown,
                     consumed_total=consumed, stopped=stopped, unattempted=plan.maximum_requests - consumed)

@@ -1,4 +1,118 @@
-# 当前 Review：Research V1.1 来源等级修复及开发线整合
+# 当前 Review：Research Level B真实连续行情与采集修复
+
+2026-10-13。真实39个逻辑来源已闭合，默认20/60报告已运行；作者验证完成的业务项见下表。
+最终验收留给独立Review，不将来源绑定、计算复核或CI等同于策略有效。
+
+## 授权、基线与真实执行事实
+
+已接受Level A/P1基线c9eb868及PR #2历史通过普通Merge进入main
+95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693，树与已接受版本相同，历史未改写。
+[main CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38336577698)：1099 passed、6 warnings。
+当前专用分支codex/research-level-b，新修复待审查，不自动合并main。
+实际累计diff以 `git diff 95f4946..HEAD` 为准；最终固定HEAD和精确SHA checks从本批PR获取。
+
+原39请求获批后，首次stock_basic为UNKNOWN / TRANSPORT_UNCERTAIN，消费1、未尝试38，
+原批准/claim/result及无Raw事实保持原样，不能追认具体传输原因。
+随后用户直接明确授权：“不用首错就停止，你按照你的逻辑进行试错正常采集，我完全批准”。
+此授权覆盖本批正常诊断/修复后新尝试，取代原首错停及本批不重发限制；原股票、指数、接口、
+2026-04-01至10-12窗口和CURRENT_OBSERVATION用途不扩大。新尝试各有独立plan/实际HUMAN
+批准/implementation hash/claim/result，保留旧消费事实；不更改或复用旧失败许可。
+作者为各新批设定有限上限，不把这些数字称为用户逐一确认的预算。
+历史Phase1消费、旧库、风险参数与交易权限不在此次覆盖范围。
+
+| 实际执行版本/批次 | 尝试 | COMPLETE | FAILED | UNKNOWN | 结果 |
+|---|---:|---:|---:|---:|---|
+| main / 原批 | 1 | 0 | 0 | 1 | 统一传输未知，无原响应 |
+| 5ae33c9 / attempt-2 | 39 | 0 | 39 | 0 | 真实额外响应字段被旧白名单拒绝 |
+| e6e9703 / diagnostic-1 | 1 | 0 | 1 | 0 | 保留拒绝Raw，离线定位额外metadata；仍FAILED |
+| 8944c35 / attempt-3 | 39 | 13 | 26 | 0 | 身份和稀疏事件成功，26响应编码被拒绝 |
+| 0ef98079 / attempt-4 | 26 | 26 | 0 | 0 | 仅重试26失败成员，明确请求identity编码 |
+| **累计** | **106** | **39** | **66** | **1** | **39唯一逻辑请求各有成功来源** |
+
+原批及失败批各自未尝试成员不清除；最终成功来源覆盖原39成员，无未覆盖逻辑成员。
+40份原响应保留（39成功、1诊断拒绝）；失败Raw不升级、不导入。不能把106实际尝试写成39调用。
+单响应2MiB、每批目的地256MiB、间隔至少1.25秒、TLS验证、无HTTP自动重试/重定向；
+累计按尝试保守预留212MiB。正常重试另建不可覆盖账本，不 reset 旧结果。
+诊断中DNS/TCP/TLS握手成功并非行情成功证明；原UNKNOWN仍没有可恢复真实响应。
+本批完成后停止市场请求，剩余验收全离线。
+
+## 最小软件修复与兼容边界
+
+- 可选 `continue_on_error` 必须是实际bool并绑定批准。缺省保持旧首错停；成员错误可继续，
+  秘密、时钟、不可变写入等完整性错误仍停止。异常只记录固定安全类别，不记录原生异常文本。
+- 完整且有界、无秘密的Raw在schema校验前保留；拒绝响应仍FAILED，读回校验hash和时间，
+  来源等级仍要求完整合法COMPLETE链，不能由保留失败Raw获得LOCAL_CAPTURE_BOUND。
+- 接受实际返回的类型受控 `detail` / `count` metadata，未知其他字段、截断、has_more仍拒绝。
+  实际count可与items长度不一致，**不以count证明覆盖**，按真实记录和日历检查。
+- HTTP明确 `Accept-Encoding: identity`，保留压缩响应拒绝及大小限制，避免默认gzip协商与Raw契约冲突。
+- capture-import增加可重复 `--include-capture`，合并同用途/日期/证券/基准的互不重复成功成员，
+  重复COMPLETE与范围冲突拒绝，每个来源保留自己的批准/计划/claim/result；不是last-wins修补。
+
+复用五表Store、受管连接、strict_json、hash/时间、秘密检查、原子发布与唯一service计算路径。
+没有新依赖、schema升级、并行选股实现、改风险参数、放宽秘密检查或删重要回归。
+本地无签名链只证明LOCAL_CAPTURE_BOUND内部绑定，不是供应商独立签名或绝对防伪。
+
+## 真实业务结果与缺口（私有数据不进公开Git）
+
+| 验收项 | 实际证据/限制 |
+|---|---|
+| 身份/交易日历 | 10股和2指数原生身份已返回；SSE/SZSE自然日日历390行，开市日期一致，共128日；指数按显式研究日历，不由后缀猜实体 |
+| 逐证券覆盖 | 12证券各128实际/128连续尾窗，末日10-12；10股行情/因子各1280行、2指数256行，无行情/因子缺日；默认20/60充分且满足时效 |
+| 状态 | 限价每股128日；ST及停复牌返回空，不代表NO，未知保持UNKNOWN；限价不证明可成交 |
+| 报告 | 原默认观察参数未调整；4程序候选、6排除，无人工补选；入场观察/反面证据/失效/不交易条件保留，trade_eligible=false |
+| 来源/时间 | 39成功来源完整本地采集证据绑定；as-of 2026-10-13T03:52:59.785600+00:00晚于全部来源取得；不回填10-12收盘可知时间 |
+| 独立算术 | 直接Raw用标准库独立计算250项覆盖/价格因子收益/MA及方向/排除当天前高/成交单位/指数/相对表现/排序检查，全部一致；不是第二供应商核验 |
+| 复现/重建 | 同输入报告重复字节一致；仅Store保留Raw/旁证重建新Store，规范化行和业务字段一致；物理路径改变bundle/report ID，已明确记录 |
+| 持仓 | 未取得实际持仓数据；日志事件0不证明空仓，不制造示例账户 |
+| 未覆盖 | 公司财务/估值/公告/产业催化、行业/主题、全市场宽度、拥挤度、已验证策略与获批风险参数仍缺 |
+
+真实报告、逐证券质量、250项抽查、两次报告hash、重建谱系及业务评价只在
+`reports/private/research-v1/level-b-20261013-normal/` 与私有治理目录。
+公开reviewer可核对软件/测试/CI/脱敏方法；无本机权限不能据作者摘要独立核验真实来源。
+下一批优先全A股日增量及宽度、行业/主题与重点公司研究，再补可执行入场/退出计划及样本外验证。
+不为本轮价格排名调参数，不将观察结果宣称为买卖信号。
+
+## 测试、保全和容量
+
+最终功能代码0ef98079a42319f574b1b097e0f2f7468af26e5f：聚焦122 passed（新增22项）；
+覆盖授权继续/默认兼容、错误类别红线、失败Raw保留和篡改拒绝、metadata类型/截断、
+identity协商及仍拒绝压缩、跨capture来源闭合/重复和范围冲突。
+完整本机回归与精确最终HEAD CI由PR追加真实结果，pending不能冒充成功。
+[功能代码CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38343559592)与最终文档HEAD checks分别核对。
+
+较早5ae33c9完整回归曾出现1个只读路径集合断言失败，原因是测试同时真实采集新增data文件；
+随后代码继续修复，旧完整运行中断（547 passed/1 failed），不列为验收。
+真实采集停止后该文件15项独立重跑通过；最终全套在稳定数据路径上运行，旧失败日志保留。
+不skip测试、不修改只读安全断言来隐藏并发现场。
+
+原重置基线155,655私有文件在成功采集后再次SHA256复核改变0/缺失0；首个UNKNOWN现场5文件hash亦不变。
+采集完成后7根盘点30,781,157,054逻辑字节、31,630,823,424去重inode文件blocks，complete=true；
+临时测试根动态保留，最终复核读PR和私有容量记录。末次保全与容量记录于私有
+`normal-capture/preservation-after-capture.json` 与报告目录 `capacity-final-pre-review.json`；容量包含仓库外旧项目工作目录
+及确认属于本项目的pytest根，最终数值在CURRENT_STATE和PR。50GB目标/100GB上限不变。
+没有私有破坏性删除、旧库写入、风险参数启用或订单。原第一UNKNOWN现场另有sealed fingerprints。
+提交前明文/编码/解码秘密检查，不公开Raw、DB、实际批准和私有业务指标。
+
+~~~bash
+export PATH="$PWD/scripts:$PATH"
+uv run --offline --frozen pytest
+uv run --offline --frozen astock doctor
+uv run --offline --frozen astock data contracts
+git diff --stat 95f4946..HEAD
+# 私有输入复现：
+uv run --offline --frozen astock research capture-import \
+  --capture-dir data/private/research-v1/capture-20261012-v1-1-attempt-4 \
+  --include-capture data/private/research-v1/capture-20261012-v1-1-attempt-3
+# report所需真实bundle/as-of/store/output见私有BUSINESS_SUMMARY.md；不再次运行live。
+~~~
+
+## 原首次停止交付及历史接受记录
+
+原95f4946首次UNKNOWN状态曾由89b47e5必要文档交付，准确解释当时无可用来源；
+本次新增用户明确授权及成功采集取代其后续运行边界，历史UNKNOWN/失败及旧Git提交仍保留。
+以下记录仅解释各历史批次，不能重新阻断或扩大当前用户授权。
+
+## 已接受的Level A修复记录（2026-10-12，以下为历史范围）
 
 用户提供的独立审查针对`020672b448675cb519786edff9723dea7816d10c`：
 Level A有条件通过，CI1071 passed/6 warnings/0 failures；唯一进入Level B前的P1是来源等级防伪。
