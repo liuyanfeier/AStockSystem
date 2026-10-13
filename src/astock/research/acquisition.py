@@ -159,12 +159,13 @@ def read_capture(destination: Path) -> tuple[CapturePlan, list[dict]]:
         require(r['member'] == member and r['claim_hash'] == hashlib.sha256(claim.read_bytes()).hexdigest(), 'CAPTURE_RESULT_CHANGED')
         require(r['state'] in {'COMPLETE', 'FAILED', 'UNKNOWN'}, 'CAPTURE_STATE')
         require(r['transport'] == ('MOCK' if a['fixture_only'] else 'HTTPS_TLS'), 'CAPTURE_TRANSPORT_BINDING')
+        if r['state'] == 'COMPLETE' or 'object' in r:
+            require(r['object'] == f'{key}.response.json', 'CAPTURE_OBJECT_PATH')
+            path = destination / r['object']
+            require(path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == r['sha256'], 'CAPTURE_OBJECT_CHANGED')
+            require(instant(r['available_at']) >= instant(r['retrieved_at']) >= instant(c['claimed_at']), 'CAPTURE_TIME_ORDER')
         if r['state'] != 'COMPLETE':
-            continue
-        require(r['object'] == f'{key}.response.json', 'CAPTURE_OBJECT_PATH')
-        path = destination / r['object']
-        require(path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == r['sha256'], 'CAPTURE_OBJECT_CHANGED')
-        require(instant(r['available_at']) >= instant(r['retrieved_at']) >= instant(c['claimed_at']), 'CAPTURE_TIME_ORDER')
+            continue  # retain rejected bytes for diagnosis, never admit them as COMPLETE
         payload_rows(plan, member, path.read_bytes(), r['retrieved_at'])
         receipts.append({**r, 'receipt_file': terminal.name, 'receipt_hash': hashlib.sha256(terminal.read_bytes()).hexdigest()})
     return plan, receipts
@@ -230,7 +231,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 publish_bytes(claim_path, encoded(claim))  # irrevocable UNKNOWN BEFORE transport
                 consumed += 1
                 charged += plan.max_body_bytes
-                state, code, body, captured = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None
+                state, code, body, captured, retained = 'UNKNOWN', 'TRANSPORT_UNCERTAIN', b'', None, False
                 try:
                     with client.stream('POST', ENDPOINT, json=dict(api_name=member['api'], token=secret,
                                       params=member['params'], fields=','.join(member['fields']))) as response:
@@ -246,8 +247,9 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                     captured = instant(clock()).isoformat()
                     require(instant(captured) >= instant(claim['claimed_at']), 'CAPTURE_CLOCK_ROLLBACK')
                     require(not secret_present(body, secret), 'CAPTURE_SECRET')
-                    payload_rows(plan, member, body, captured)
                     publish_bytes(destination / f'{key}.response.json', body)
+                    retained = True  # bounded, secret-free bytes survive a schema refusal
+                    payload_rows(plan, member, body, captured)
                     state, code = 'COMPLETE', None
                 except Exception as error:
                     from astock.research.core import ResearchError
@@ -258,7 +260,7 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                     # Native exception bodies can contain credential/request context: never retain them.
                 result = dict(member=member, claim_hash=hashlib.sha256(claim_path.read_bytes()).hexdigest(),
                               state=state, error=code, transport='MOCK' if fixture else 'HTTPS_TLS')
-                if state == 'COMPLETE':
+                if retained:
                     result.update(object=f'{key}.response.json', sha256=hashlib.sha256(body).hexdigest(),
                                   retrieved_at=captured, available_at=captured)
                 publish_bytes(destination / f'{key}.result.json', encoded(result))

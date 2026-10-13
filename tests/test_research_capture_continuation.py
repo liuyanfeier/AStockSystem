@@ -73,3 +73,21 @@ def test_continuing_mode_still_stops_on_credential_in_response(tmp_path):
     result, calls, destination = approved_mock(tmp_path, plan, handler, continue_on_error=True)
     assert len(calls) == 1 and result['stopped'] == 'FAILED' and result['unattempted'] == 38
     assert not list(destination.glob('*.response.json'))
+
+
+def test_rejected_schema_bytes_are_preserved_without_admission(tmp_path):
+    plan = fixture_plan()
+    body = encoded({'code': 0, 'unexpected': 'SYNTHETIC_PROVIDER_METADATA'})
+    def handler(member, count):
+        return httpx.Response(200, stream=BytesStream(body))
+    result, _, destination = approved_mock(tmp_path, plan, handler)
+    assert result['complete_this_run'] == 0 and result['failed_this_run'] == 1
+    _, receipts = read_capture(destination)
+    assert receipts == []
+    saved = list(destination.glob('*.response.json'))
+    assert len(saved) == 1 and saved[0].read_bytes() == body
+    with pytest.raises(Exception):
+        make_capture_bundle(destination)
+    saved[0].write_bytes(body + b' ')
+    with pytest.raises(ResearchError, match='CAPTURE_OBJECT_CHANGED'):
+        read_capture(destination)
