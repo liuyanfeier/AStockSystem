@@ -1,50 +1,31 @@
-# 当前Review：Research V2市场与行业雷达
+# 当前Review：PR #4后采集熔断与公开隐私修复
 
-用户授权本批普通软件开发、离线/既有真实来源只读研究、测试、PR/CI与一次完整采集方案；
-新真实市场采集、破坏性私有删除、交易风险授权仍需明确批准。
-用户另外明确要求真实业务报告入Git，覆盖旧“全部研究报告私有”规则；Raw/许可/个人账户仍不公开。
+用户明确授权：核对并普通merge已接受PR #4，集中修复P1/P2、官方文档只读核对、离线准备、测试、提交/新PR和精确HEAD CI。**新真实Tushare请求未获授权，本批为0**；不修改原106消费、删除私有数据、设定风险参数或交易。
 
-## 基线、验收与变更
+## 基线与实际变更
 
-已独立接受PR #3 head edcc8f55071abd77ae1e415773bc000aa815601a，核对相同head的CI成功（1121 passed）后，
-按本次任务普通merge进入main 05479b523e3718d09e9b5b6b1773a3f318b1b0be。
-本批codex/research-v2；累计diff：`git diff 05479b5..HEAD`，最终固定HEAD从本批PR head取得。
-不改写历史，不自动合并本批PR；旧106尝试/源字节保持，本批真实新市场API0。
+PR #4固定head d5feb9f1420dc071b70137ab4768e2268f36891b 已由用户提供独立ACCEPT，1164 passed。
+执行前核对：本地clean、head精确一致、PR open/mergeable、main仍为05479b5，精确head的push CI成功（run38378924067）。
+按本次授权普通merge为main **80675e04ab4f645506d111b04dbb8bbfbc7df01f**，历史保留、无force push。
+新修复分支 `codex/research-capture-safety`；累计diff：`git diff 80675e0..HEAD`。
+本批最终审查SHA从新PR head取得，不把旧PR CI替代新HEAD CI。
+[已接受V2交付记录](https://github.com/liuyanfeier/AStockSystem/blob/d5feb9f1420dc071b70137ab4768e2268f36891b/docs/REVIEW.md)保留。
 
-验收以可解释日报为主，要求来源、连续窗口、分母、板块/行业扩散、集中度与观察/退出准备。
-**完整行业雷达软件可运行；真实全市场/行业未验收，因299请求尚未获授权。**
+- P1：HTTP401/403/429立即停；连续三次相同HTTP错误熔断；连续三次传输错误（允许连接/DNS/超时交替）熔断。成功响应重置计数；无自动重试。显式continue允许单次临时故障继续。
+- 既有I/O、内部未知、发布、秘密、时钟、不可变对象、截断及行限立即停不降级；补足超2MiB的立即停。claim/FAILED/UNKNOWN保持不可变，安全日志只记数字HTTP状态或固定错误类别。
+- P2：默认移除人工观察卡和整个Journal；来源字段使用明确白名单，自由来源描述/请求扩展不公开。public协议升至RESEARCH_PUBLIC_V2_1；不修改私有完整snapshot、Store或历史报告。
+- 没有新增依赖、schema、平台、调度器或重试框架。Research Store与V2业务算法保持。
+- [新业务投影与复现](research/results/2026-10-13-capture-safety/README.md)：真实10股全部市场/特征/radar及4候选一致；299闭合Mock完成。合成行业不冒充真实业务。
 
-| 变更 | 实际实现/入口 | 重要边界 |
-|---|---|---|
-| Git业务交付 | [结果目录](research/results/2026-10-13-research-v2/README.md)、public_results白名单 | 已提交完整业务数值和观察卡；不以“都在本机”替代；个人日志不发布 |
-| P2修复 | acquisition + local_failures回归 | I/O、未知内部/发布/完整性错误立即停；截断/满cap停；三次同类协议/提供者拒绝熔断；旧消费不reset |
-| V2批量与当前池 | market_capture/market_inputs + versioned Tushare合同 | 三交易所真实源闭合；CNY/L/上市日/market，BSE显式参考日历；V1 dump/hash不变 |
-| 市场/行业日报 | 同一service/features/screen，research/radar，`research radar` | 默认20/60不调参；有效分母、5板块、SW2021 L1等权/中位数；仅描述无仓位 |
-| 增量/修订 | increment.compose、`radar --component --revisions` | 新bundle追加、旧报告保留；冲突显式source选择，完整日历复验；不同因子vintage披露 |
-| 性能 | 一次代码/交易所分组，bounded Store expectation cache | 每次仍检查Raw hash/SQL；新as-of/代码/Store重新推导；非永久可信缓存 |
-| 采集方案 | [固定299请求申请](RESEARCH_V2_ACQUISITION.md)、config/research/market-v2-proposal.json | 128日，598MiB响应预留、2GiB新增盘上限；真实新请求0 |
+## 验证与审查入口
 
-[设计/运行口径](RESEARCH_V2.md)，[最小迁移记录](CODE_MIGRATION.md#research-v2实际迁移2026-10-13)。
-旧Level B完整Review见[此前edcc8f5的Git版本](https://github.com/liuyanfeier/AStockSystem/blob/edcc8f55071abd77ae1e415773bc000aa815601a/docs/REVIEW.md)，原私有报告/失败账本保留，不复制为巨大archive。
-
-## 实际验证
-
-本地完整功能版本bcb2d862334b24b26bc6c31a89f9ce76131d7df1：1160 passed、1 warning、1299.48s。
-随后两项边界修复（协议熔断范围、公开JSON来源列表压缩）固定源码
-03da51eb20f5986b622e9199d9353feb36753f17：全部Research155 passed、88.12s。
-最终HEAD全套以对应CI检查为准；两次本地结果不冒充同一受测版本。
-闭合299 Mock均COMPLETE；独立数值验证拆股、5/20/60、分母/新股/缺口、行业等权/集中度、
-top-N全量分开、前日/as-of、source/池伪造拒绝、无文档分页拒绝、单日增量/更正与旧报告复现。
-本批240项真实原指标一致，真实4候选保留，未虚构行业/调参。
-
-早期新增测试曾将Pydantic封装后的ValueError误期望为ResearchError，已正常修正异常类型期待，
-仍检查确切拒绝语义；没有跳过失败、删除重要测试或关闭安全验证。
-完整回归期间补足单日增量计划，并在业务报告复核修正50%中性宽度不误判一致、行业缺样本不宣称扩散；
-旧完整运行主动中断，不列为通过；修复后重跑全套成功。
-最终扩展熔断后，原gzip测试预期“失败完39次”与新P2范围冲突，已更新为三次失败后停止，
-保留压缩响应拒绝、无Raw/无准入与36未尝试断言；其余Research154项在修正前已通过。
-最终全套/受测代码版本、保全/容量与CI以[验证摘要](research/results/2026-10-13-research-v2/VALIDATION.md)
-和PR的精确head checks为准，pending不能冒充成功；作者结果不是独立Review PASS。
+源码修复提交 **bbb302e7910bc14d8d01c5cf98a74387de9e8450**。针对性测试72 passed（41.39s）；第一次针对性运行中继续编辑源码导致code hash变化，两项缓存/旧报告复现测试失败；冻结源码后完整重跑上述72项通过，没有删除或跳过测试。
+同一冻结源码完整本地回归 **1175 passed、1 warning、1307.20s**；warning为既有多线程fork弃用提示。最终HEAD全套以新PR对应的CI为准，PR描述固定精确SHA和实际CI链接/结果；旧SHA成功不能替代最终HEAD。
+Doctor PASS、12 contracts PASS；默认capture dry-run market_requests=0。
+新测试覆盖299计划持久401/403/429、500/503、连接/交替超时熔断、成功重置、body/disk cap，以及人工观察/私人来源/Journal的JSON+Markdown反例。
+保全155655文件changed=0/missing=0；秘密违规0；15根容量32,736,449,871逻辑字节、33,761,505,280去重inode文件blocks，complete=true。
+[完整验证摘要](research/results/2026-10-13-capture-safety/VALIDATION.md)记录口径与私有证据局限。
+已接受的全部重要回归与安全检查保留；作者验证不是独立Review PASS。
 
 ~~~bash
 export PATH="$PWD/scripts:$PATH"
@@ -52,13 +33,17 @@ uv run --offline --frozen pytest
 uv run --offline --frozen astock doctor
 uv run --offline --frozen astock data contracts
 uv run --offline --frozen astock research capture --plan config/research/market-v2-proposal.json
-# 上条仅dry-run，无HTTP；--live不能在未批299范围时执行。
-git diff --stat 05479b5..HEAD
+# 最后一条是离线dry-run；未经批准不能添加--live。
+git diff --stat 80675e0..HEAD
 ~~~
 
-## 下一批与恢复
+## 固定采集申请与未完成业务
 
-先审查本批代码/报告/具体请求；若用户批准299请求，再固定干净版本执行、导入并输出真实市场/行业雷达。
-不把合成行业成功称现实验收，不把LOCAL_CAPTURE_BOUND称独立供应商认证；reviewer若无私有Raw注明限制。
-当前计划截止2026-10-12，超过时效需要更新一次明确整批明细再批准，不暗中顺延。
-真正后续重点是公司基本面/公告、候选计划、退出与复盘；没有新全历史Phase1、删除私有源、改风险预算或订单。
+[准确方案/合同验收点](RESEARCH_V2_ACQUISITION.md)：保留2026-04-01—2026-10-12、128交易日、299请求、2MiB单响应/598MiB预留/2GiB目的地；没有暗中增加10月13日。批准与执行时不能称此方案为当天最新窗口。
+plan hash：`16e127efb7d920e9df8b5eb653bf52a6f2a261174f15b51900fb5ef6b1e87855`；
+implementation hash：`d8e4b225e7e45ac0c77531ced03af8e3f4d826794e88eba1d1a0d18deaaed778`。
+没有实际许可，目的地未创建；实际HUMAN许可须绑定上述hash、逐项成员、canonical目的地、有效期和continue策略。
+官方index_classify输出src与输入src语义存在歧义；保留严格版本检查，实际不匹配不准入，列为首份真实响应验收点；未做接口权限探测。
+
+真实全市场/31行业业务尚未验收。取得准确整批授权后直接采集、导入既有Store、生成中文日报/JSON及公开投影。
+失败/UNKNOWN不重写；被消费成员的重新请求与扩大范围另需明确许可。下一业务为基本面/公告催化与候选退出计划，不重开全历史Phase1。
