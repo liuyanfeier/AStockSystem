@@ -118,7 +118,7 @@ def capture_command(plan: Path = typer.Option(Path('config/research/acquisition-
     try:
         result = capture(get_project_root(), plan, live=live, approval_file=approval)
         typer.echo(encoded(result).decode())
-        if result.get('stopped'):
+        if result.get('stopped') or result.get('failed_this_run', 0) or result.get('unknown_this_run', 0):
             raise typer.Exit(1)
     except typer.Exit:
         raise
