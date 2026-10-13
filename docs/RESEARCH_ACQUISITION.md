@@ -1,13 +1,25 @@
-# Research V1.1：近期行情采集计划与消费状态
+# Research：近期采集计划、正常试错及不可变消费
 
-2026-10-13。软件入口默认dry-run。本文件和机器清单是**提案，不是执行授权**。
-用户已另行批准原39成员清单，私有真实许可绑定plan/implementation/目的地/成员及两小时有效期。
-执行于main 95f4946；第一成员stock_basic(000001.SZ)为UNKNOWN / TRANSPORT_UNCERTAIN，
-COMPLETE=0、FAILED=0、UNKNOWN=1、UNATTEMPTED=38，首次异常已停止，没有完整原响应。
-未重发UNKNOWN或继续剩余成员；停止后剩余38须新授权，本文件不授予恢复许可。
-具体传输原因及供应商权限不能据UNKNOWN认定。最新验收见[REVIEW](REVIEW.md)。
-以下仍保留准确原计划和工程合同；官方网页核对与MockTransport测试不算真实行情采集。
-旧48请求提案由Git保存；新清单不修改任何旧消费账本、冻结合同或来源pin。
+2026-10-13。默认仍dry-run；机器proposal不是运行许可。
+原39成员获批后首次UNKNOWN现场已保留。用户随后明确批准本批正常试错采集，
+覆盖原首错停止及本批重试限制；新尝试采用新的精确plan/HUMAN批准/implementation/目的地，
+不清除或复用旧消费。原窗口、证券、接口及用途不扩大，不涉及旧Phase1重放。
+累计106尝试：39 COMPLETE、66 FAILED、1 UNKNOWN，39逻辑成员均已有成功来源。
+正常诊断/修复细节及各批执行版本见[REVIEW](REVIEW.md)。所有市场请求现已结束。
+
+旧批准不含continue_on_error时仍首错停；新批准的可选实际bool允许成员错误继续，
+秘密/时钟/不可变写入等错误仍停止。HTTP不自动重试，每批每成员只消费一次。
+需要正常重试时必须有当前用户授权，新账本另行保留且指明来源，不 reset 历史结果。
+失败Raw如完整有界且无秘密可保留，但不得升格或导入；成功來源须完整COMPLETE证据。
+CLI capture-import可重复--include-capture，仅合并相同研究范围中不重复的成功成员。
+
+响应允许类型受控detail/count metadata，不以count认定覆盖；实际覆盖由返回日期/行及日历核验。
+传输明确Accept-Encoding: identity，压缩响应仍拒绝，TLS/尺寸/秘密检查不降级。
+当前成功bundle的39来源为LOCAL_CAPTURE_BOUND本地链绑定，不是供应商独立签名。
+
+以下是原批准39请求的准确计划及默认工程边界；首错停/39总尝试/单一目的地条款
+在本次新用户授权覆盖的正常试错批次内已被上述规则替代，原39版本记录不被改写。
+新批有限预算及目的地逐一随实际plan/批准保存在私有目录，不能把文件当未来运行许可。
 
 ## 一次批准的准确范围
 
@@ -96,7 +108,7 @@ capture-import仅读取COMPLETE；身份/日历缺失则尚不能导入，行情
 证据等级区分USER_DECLARED、LOCAL_CAPTURE_BOUND和SYNTHETIC；本地TLS绑定不是供应商数字签名。
 等级授予须完整计划/批准/claim/COMPLETE回执/原JSON语义一致，不能只校验manifest自报hash。
 Store重建从保留对象复核同一链，Mock固定SYNTHETIC。P1独立修复Review与用户最终清单批准
-已实际完成，但原批首次异常已停止；PR合并及Level A工程通过不自动授予后续运行许可。
+已实际完成，后续用户正常试错授权已执行，原停止消费不改写；PR合并及Level A工程通过不自动授予未来运行许可。
 
 ## 全A股日常增量：下一步可落地方案
 

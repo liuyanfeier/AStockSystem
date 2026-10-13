@@ -1,8 +1,15 @@
 # Research V1：实际业务入口
 
-2026-10-12。已实现离线主路径：真实文件 → 独立 Research Store → Market Regime /
+2026-10-13。已实现离线主路径：真实文件 → 独立 Research Store → Market Regime /
 Screening → 私有候选观察报告。用途固定 CURRENT_OBSERVATION，输出 OBSERVATION_ONLY。
 不启动全历史 Phase1，不连接券商、不产生订单，不擅自设置交易风险参数。
+
+本批真实连续128日默认20/60已运行，4候选/6排除；质量与复核见REVIEW。
+正常试错授权只覆盖本批：默认采集仍dry-run，旧首错停批准继续兼容，不扩大历史数据用途。
+需要组合不同修复批次的互不重复成功来源时，capture-import可重复指定--include-capture；
+每个来源保留自己的采集证明，失败Raw不进入研究计算。
+实际业务总结、250项直接Raw检查及保留Raw重建结果仅存reports/private/research-v1/level-b-20261013-normal/。
+下方三日样本是早期使用说明，不能替代最新已验证的连续来源。
 
 ## 立即运行
 

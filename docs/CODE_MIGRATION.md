@@ -82,3 +82,16 @@ REUSE：strict_json、CapturePlan、hash/时间和保留来源原语；增加小
 DELETE：records直接复制manifest自报LOCAL_CAPTURE_BOUND等级的旧授予行为，替换为统一链验证。
 MIGRATE：外部capture路径读取与Store保留hash路径均输入同一核验函数；无schema升级、旧库改写或第二套业务计算。
 NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证券遍历优化；本批不执行或提前宣称通过。
+
+## Research Level B真实试点
+
+| 能力 | 分类 | 迁移和验证 |
+|---|---|---|
+| 原Store/service/features/regime/screen/report/journal | KEEP | 真实默认20/60及250项Raw抽查、保留Raw重建，不建立平行选股实现 |
+| TLS与原子发布/秘密/来源链原语 | REUSE | 可选已授权继续及失败Raw保留，失败不得成为COMPLETE证据 |
+| 固定拒绝detail/count、默认gzip协商、只读单capture bundle | MIGRATE | 类型受控metadata/显式identity/同范围互不重复成功来源组合，旧分支直接替换，无schema迁移 |
+| 旧批准无continue_on_error | KEEP | 默认首错停兼容；可选bool必须合法绑定实际授权 |
+| 根据自报count认定完整、原异常文本记录、失败Raw升格 | DEPRECATE / 禁止 | 实际日期/行/日历、固定安全错误类别、完整合法COMPLETE链分别验证 |
+| 全市场遍历成本/行业催化/实际持仓复盘 | NEEDS_VERIFICATION | 本批10股实测不等于数千股或完整业务验证；下一批按研究价值推进 |
+
+本批不删除历史数据处理代码/重要回归，不改旧消费账本；无新依赖或风险参数生效。
