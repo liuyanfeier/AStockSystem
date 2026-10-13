@@ -99,7 +99,8 @@ recorded_at不得早于事件发生；报告按两个时间过滤，显示最初
 
 [39请求预算](RESEARCH_ACQUISITION.md)和config/research/acquisition-proposal.json列出精确股票/指数、
 窗口、字段、端点、尝试/容量上限与停止条件；execution_authorized=false。
-本批市场API调用0。当前CLI已实现默认dry-run采集和九接口状态适配；真实执行仍需用户匹配批准，
+原2026-10-12软件批市场API调用0；2026-10-13经用户另行批准的第一次尝试已UNKNOWN停止，
+未尝试38，完整响应0，最新状态见[CURRENT_STATE](CURRENT_STATE.md)。CLI默认dry-run和九接口状态适配；后续真实执行需新的匹配批准，
 无需复制Phase1审批体系，也不得沿用旧许可证或重放旧失败/未知消费。
 容量纳入仓库及已确认项目外历史工作目录，见[存储治理](STORAGE_GOVERNANCE.md)。
 

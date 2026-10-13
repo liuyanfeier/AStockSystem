@@ -1,4 +1,91 @@
-# 当前 Review：Research V1.1 来源等级修复及开发线整合
+# 当前 Review：Research Level B首次采集已UNKNOWN停止
+
+## 当前结论与授权范围
+
+2026-10-13。用户提供的独立结论接受Level A及P1，固定c9eb868344ce990ed96d9fdf900bb636e6931880，
+CI1099 passed、6 warnings。按本次明确授权，核对main旧c1a9ef7、PR #1固定head/成功checks/无冲突后，
+采用普通Merge合入main：95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693。
+两个parent分别是旧main与接受的c9eb868，合并文件树与c9eb868完全相同，
+重置a00c7dd、Research V1、V1.1、P1及PR #2合并b4e9caa历史完整；不squash/rebase/reset。
+[新main CI](https://github.com/liuyanfeier/AStockSystem/actions/runs/38336577698)成功：
+1099 passed、6 warnings、2261.55s；doctor及后续合同/规格步骤均成功。
+
+用户另行回复“批准这批39次真实采集”，准确批准上一条预检固定清单及两小时有效期。
+私有RESEARCH_CAPTURE_APPROVAL_V1_1绑定HUMAN/fixture_only=false/实际记录时间、目的地、39个顺序成员及：
+
+- plan_hash：cd2a28d7aa497a3b6991ba2881912181da65e4021bed3c15ae3965d051489db7。
+- implementation_hash：9421f665ebfd15ee6783706cea583ab577cf0a497f87ec37f22ee6d618b2056b。
+- 执行Git SHA：95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693，工作树干净。
+
+计划不改：10股/2指数、2026-04-01至10-12、CURRENT_OBSERVATION；39请求/39尝试，
+单响应2MiB、总78MiB、新磁盘256MiB、间隔>=1.25s，重试/重定向0、首错停。
+唯一目的地data/private/research-v1/capture-20261012-v1-1，执行前不存在、消费0。
+本机凭据YES，实际积分/代码权限未通过额外探针确认。
+只读官方文档核对盘后及次日盘前更新时间，未改日期，不把更新窗口当真实覆盖。
+
+## 真实执行结果与业务阻断
+
+既有capture --live入口执行一次，永久claim先于传输。第1成员
+stock_basic(ts_code=000001.SZ,list_status=L)终态UNKNOWN，error=TRANSPORT_UNCERTAIN。
+COMPLETE=0、FAILED=0、UNKNOWN=1、UNATTEMPTED=38；已消费尝试1，计费预留2MiB，
+真实响应文件0、可验证COMPLETE回执0。UNKNOWN不证明供应商收到请求或拒绝权限；
+HTTPS_TLS是本次选用transport标识，无COMPLETE不能据此宣称TLS连接或采集成功。
+执行代码只记录统一传输错误、不保留原生异常类型/文本，不能事后认定DNS、连接、TLS或超时原因。
+
+首错停止后未重发、重命名/清除消费、换路径复用许可、追加诊断网络请求或续发38成员。
+现有许可不能用于停止后续跑；剩余成员必须新授权，已消费UNKNOWN永不重发。
+离线CA文件/TLS上下文及构造请求检查通过（未发送，仅占位凭据）；这不验证真实主机连通或API权限。
+capture-status复核批准/plan/claim/result绑定；capture-import正常拒绝无COMPLETE来源，
+无bundle、新Research Store或报告。该失败是数据缺失的正确拒绝，不绕过契约或填合成行情。
+
+| Level B业务项 | 当前证据 |
+|---|---|
+| 10股/2指数身份、实际交易日历 | 未取得本批完整来源；不能确认128日期望或精确指数身份 |
+| 行情、因子、成交和状态质量 | 无COMPLETE响应，逐证券有效日/连续尾窗/末日/覆盖仍无法验收 |
+| 默认20/60真实分析、候选/排除、指标抽样复核 | 本批未生成，不能用合成或旧5股3日代替 |
+| Store保留Raw重建、两次报告一致 | 尚无可合法导入输入，未执行真实验收 |
+| 用户真实持仓/成交 | 未取得实际持仓数据，不推断空仓、不制作示例持仓 |
+
+Level B没有完成，不宣称策略、真实市场覆盖或数据准入通过。最小下一步是对同一provider主机
+另行批准不含HTTP/凭据的有限DNS/连接/TLS诊断，或提供可验证的连续真实文件。
+不能直接重跑原命令；解决连通性后也需要处理已消费成员缺身份及剩余38的新授权。
+旧已保留5股3日可继续有限历史观察，但不能满足此次默认20/60业务目标。
+已离线重新验证旧bundle，含000001.SZ/SZSE/STOCK身份，等级USER_DECLARED；
+后续是否能作为组合输入须核对旧时点/用途及冲突，不提升等级或补造此次stock_basic成功回执。
+后续采集应只记安全的异常类别以改善诊断，不能泄漏异常正文/凭据；本批未改已授权运行实现。
+
+## 离线验证、保全与交付边界
+
+main代码上关键回归100 passed、48.14s；Python3.12.14/uv0.12.21、doctor PASS、12合同PASS。
+旧重要回归未删/skip/减弱。没有源码、测试、依赖、配置或schema变更；本批后续diff仅必要状态文档。
+main精确SHA完整CI结论见上方链接；后续文档HEAD checks独立核对，不能冒用前一SHA成功。
+
+容量覆盖仓库、已确认仓库外历史工作目录及项目测试根，共6根、无盘点错误：
+32,255,763,156逻辑字节，33,143,857,152去重inode文件blocks；执行前可用磁盘170,981,777,408字节。
+文件blocks不解析APFS clone共享或目录开销；未知远端/外置备份不当零。整体50GB目标/100GB上限保留。
+停止现场11,217字节，claim/result/许可均私有，无完整Raw。逐文件SHA256复核原盘点155,655文件，
+改变0、缺失0；停止现场5个文件另保存hash，后续文档更新不得改写消费事实。
+旧库写入、私有破坏性删除、风险参数启用与订单均0。原UNKNOWN真实事实不可改写。
+
+复核命令（全部离线，不包含live重跑）：
+
+~~~bash
+export PATH="$PWD/scripts:$PATH"
+uv run --offline --frozen astock research capture-status --capture-dir data/private/research-v1/capture-20261012-v1-1
+uv run --offline --frozen astock research capture-import --capture-dir data/private/research-v1/capture-20261012-v1-1
+# import预期失败：本批无COMPLETE来源；不产生新store。
+uv run --offline --frozen pytest tests/test_research_capture_evidence.py tests/test_research_v1_1.py tests/test_research_v1.py tests/test_research_publication.py tests/test_cli.py
+uv run --offline --frozen astock doctor
+uv run --offline --frozen astock data contracts
+git diff --stat 95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693..HEAD
+~~~
+
+私有preflight/实际授权/终态/诊断/保全和准备报告在data/private/repository-governance/2026-10-13/research-level-b/；
+公开Git不提交真实来源、授权JSON、凭据或个人记录。公开reviewer可核对代码/diff/CI与脱敏状态，
+没有本机权限不能据作者摘要独立核实私有消费或宣布Level B通过。
+无软件变更不另建重复PR，交付固定文档HEAD；执行SHA与后续状态SHA分别记录。
+
+## 已接受的Level A修复记录（2026-10-12，以下为历史范围）
 
 用户提供的独立审查针对`020672b448675cb519786edff9723dea7816d10c`：
 Level A有条件通过，CI1071 passed/6 warnings/0 failures；唯一进入Level B前的P1是来源等级防伪。
