@@ -1,8 +1,10 @@
-# Research V2 首批真实采集申请（尚未授权）
+# Research V2 首批真实采集方案（已授权，首个UNKNOWN后停止）
 
 机器可执行的固定请求：[market-v2-proposal.json](../config/research/market-v2-proposal.json)。
-CURRENT_OBSERVATION；新真实请求0；旧Level B的106次尝试许可不延续到此批。
-软件dry-run与299请求闭合Mock已运行，真实行情/行业权限尚未探测。
+CURRENT_OBSERVATION；本轮直接用户消息明确授权本固定299方案及首错停。
+执行main 8ab3a7c、干净Git、两个批准hash精确匹配；首个SSE stock_basic连接错误，
+1 UNKNOWN、298未尝试、0 Raw/回执，本批停止。旧Level B的106次消费不变。
+许可来源和实际结果见[本批Review](REVIEW.md)；供应商行情/行业权限与返回格式尚未真实验证。
 
 ## 精确范围与预算
 
@@ -81,4 +83,12 @@ BSE行情/因子/行业覆盖实测后单独披露，缺域仍UNKNOWN。
 
 已检测身份/日历非空、日期边界、原生代码、重复/冲突、has_more和严格小于cap；provider count不替代完整性。
 任何与上述合同不匹配的响应留作拒绝证据，不导入；无法真实验收的域保持UNKNOWN。正常工程修复可连续处理，
-但重发已消费成员或增加接口/日期需要新的准确授权，不使用此未授权proposal测试权限。
+但重发已消费成员或增加接口/日期需要新的准确授权；本次已停止，不用原许可发起额外权限探测。
+
+## 首错停止后的恢复提案（未授权）
+
+[market-v2-recovery-proposal.json](../config/research/market-v2-recovery-proposal.json)只改变新目的地为
+`data/private/research-v1/market-v2-20261013-002`；原299成员、日期、接口、预算和生产实现均不变。
+它包含**1个已UNKNOWN成员的显式新批次重新请求，以及原298个未尝试成员**，不是仅298次。
+原001目录及UNKNOWN不重写。新计划hash见当前REVIEW，execution_authorized=false；本轮原授权不延续。
+下一轮需用户明确批准这个新方案及联网执行环境；不增加诊断HTTP、购买权限或自动重试。

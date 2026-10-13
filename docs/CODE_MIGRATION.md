@@ -118,3 +118,11 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 | acquisition故障路径 | MIGRATE | 数字HTTP安全分类、认证/限流立即停、三次HTTP/传输熔断；原消费/保护保留 |
 | public_results | MIGRATE | RESEARCH_PUBLIC_V2_1，移除人工观察/Journal，来源白名单与固定描述；旧私有报告不改 |
 | 旧报告/原106消费 | KEEP | 历史输出保留；新公开投影追加，不改真实执行事实 |
+
+## PR #5收尾与首次真实全市场尝试（2026-10-13）
+
+| 范围 | 状态 | 实际迁移 |
+|---|---|---|
+| 旧进程死亡回归的多线程fork | MIGRATE | 仅测试改为新Python解释器；保留os._exit、durable claim、无call/回执和拒绝重发断言；生产实现hash不变 |
+| Research Store/radar/响应合同/安全保护 | KEEP | 无HTTP响应，无法据此确认合同或权限错误，不修改生产实现 |
+| 原106消费/新增UNKNOWN/保护历史文件 | KEEP | 追加独立失败事实与公开停采投影；不覆盖、删除或重置 |
