@@ -140,11 +140,15 @@ def test_public_whitelist_and_cli(market,monkeypatch,tmp_path):
     root,_,store,bid,_,report,_=market
     fake=deepcopy(report)
     fake['journal']['positions']=[dict(code='PRIVATE_ACCOUNT_SECURITY',shares=12345678,thesis='PRIVATE_NOTE')]
+    fake['manual_cards'] = [dict(code='PRIVATE_MANUAL_CHOICE', note='PRIVATE_MANUAL_NOTE')]
+    fake['sources'][0]['source'] = '/Users/private/account-123 PRIVATE_THESIS'
     published=public_snapshot(fake)
     body=encoded(published)
     assert b'PRIVATE_NOTE' not in body and b'PRIVATE_ACCOUNT_SECURITY' not in body and b'/Users/' not in body
     assert all('path' not in f and 'evidence' not in f for f in published['sources'])
     assert publish_public(fake,tmp_path,Path('docs/research/results/test'))
+    for output in (tmp_path/'docs/research/results/test').iterdir():
+        assert b'PRIVATE_' not in output.read_bytes() and b'/Users/' not in output.read_bytes()
     with pytest.raises(ResearchError):publish_public(fake,tmp_path,Path('reports/private/test'))
     import astock.cli.research as commands
     monkeypatch.setattr(commands,'get_project_root',lambda:root)

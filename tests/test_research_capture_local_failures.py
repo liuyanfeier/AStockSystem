@@ -76,3 +76,72 @@ def test_repeated_compressed_responses_are_bounded(tmp_path):
     result, calls, destination = approved_mock(tmp_path, fixture_plan(), handler, continue_on_error=True)
     assert len(calls) == 3 and result['stopped'] == 'PROTOCOL_CIRCUIT' and result['unattempted'] == 36
     assert result['failed_this_run'] == 3 and not list(destination.glob('*.response.json'))
+
+
+@pytest.mark.parametrize('status,attempts,stop', [
+    (401, 1, 'FAILED'), (403, 1, 'FAILED'), (429, 1, 'FAILED'),
+    (500, 3, 'HTTP_CIRCUIT'), (503, 3, 'HTTP_CIRCUIT'),
+])
+def test_full_market_http_refusal_cannot_consume_299(tmp_path, status, attempts, stop):
+    from market_fixture import plan
+    from astock.research.acquisition import capture_status
+    def handler(member, count):
+        return httpx.Response(status, stream=BytesStream(b'SYNTHETIC_TEST_TOKEN_12345 private response'))
+    result, calls, destination = approved_mock(tmp_path, plan(), handler, continue_on_error=True)
+    assert len(calls) == attempts and result['stopped'] == stop
+    assert result['unattempted'] == 299 - attempts
+    assert capture_status(destination)['states']['FAILED'] == attempts
+    assert len(list(destination.glob('*.claim.json'))) == attempts
+    assert not list(destination.glob('*.response.json'))
+    for receipt in destination.glob('*.result.json'):
+        assert f'HTTP_{status}'.encode() in receipt.read_bytes()
+        assert b'SYNTHETIC_TEST_TOKEN_12345' not in receipt.read_bytes()
+
+
+@pytest.mark.parametrize('mixed', [False, True])
+def test_full_market_transport_outage_is_bounded(tmp_path, mixed):
+    from market_fixture import plan
+    from astock.research.acquisition import capture_status
+    def handler(member, count):
+        error = httpx.ReadTimeout if mixed and count == 2 else httpx.ConnectError
+        raise error('SYNTHETIC_TEST_TOKEN_12345 DNS/private host')
+    result, calls, destination = approved_mock(tmp_path, plan(), handler, continue_on_error=True)
+    assert len(calls) == 3 and result['stopped'] == 'TRANSPORT_CIRCUIT'
+    assert result['unattempted'] == 296 and result['unknown_this_run'] == 3
+    assert capture_status(destination)['states']['UNKNOWN'] == 3
+    assert len(list(destination.glob('*.claim.json'))) == 3
+    assert all(b'SYNTHETIC_TEST_TOKEN_12345' not in p.read_bytes() for p in destination.glob('*.result.json'))
+
+
+def test_success_resets_http_and_transport_counters(tmp_path):
+    plan = fixture_plan()
+    def handler(member, count):
+        if count in {1, 2, 4, 5}:
+            return httpx.Response(503)
+        if count in {7, 8, 10, 11}:
+            raise httpx.ConnectError('SYNTHETIC private')
+        return httpx.Response(200, stream=BytesStream(encoded(response(plan, member))))
+    result, calls, _ = approved_mock(tmp_path, plan, handler, continue_on_error=True)
+    assert len(calls) == 39 and result['stopped'] is None
+    assert result['complete_this_run'] == 31
+
+
+def test_body_cap_stops_continuation_without_publishing_partial_raw(tmp_path):
+    plan = fixture_plan()
+    def handler(member, count):
+        return httpx.Response(200, stream=BytesStream(b'x' * (plan['max_body_bytes'] + 1)))
+    result, calls, destination = approved_mock(tmp_path, plan, handler, continue_on_error=True)
+    assert len(calls) == 1 and result['stopped'] == 'FAILED'
+    assert not list(destination.glob('*.response.json'))
+
+
+def test_destination_budget_blocks_call_before_claim(tmp_path, monkeypatch):
+    from astock.research import acquisition
+    from astock.research.core import ResearchError
+    from market_fixture import plan
+    p = plan()
+    monkeypatch.setattr(acquisition, 'disk_bytes', lambda _: p['max_added_disk_bytes'])
+    calls = []
+    with pytest.raises(ResearchError, match='CAPTURE_DISK_BUDGET'):
+        approved_mock(tmp_path, p, lambda member, count: calls.append(member), continue_on_error=True)
+    assert not calls and not list((tmp_path / p['destination']).glob('*.claim.json'))
