@@ -9,7 +9,8 @@
 - [长期项目宪章 V2](docs/PROJECT_CHARTER.md)：完整业务目标。
 - [当前状态](docs/CURRENT_STATE.md)：已有软件、真实数据与缺口。
 - [业务路线](docs/ROADMAP.md) · [架构与迁移](docs/ARCHITECTURE.md)。
-- [Research V1 开发入口](docs/RESEARCH_V1.md)：下一批直接建设候选观察报告。
+- [Research V2 市场与行业雷达](docs/RESEARCH_V2.md) · [原Research V1契约](docs/RESEARCH_V1.md)。
+- [Git内真实业务报告与合成样例](docs/research/results/2026-10-13-research-v2/README.md)。
 - [代码迁移清单](docs/CODE_MIGRATION.md) · [存储治理](docs/STORAGE_GOVERNANCE.md)。
 - [历史证据索引](docs/HISTORY.md) · [本次清理记录](docs/REPOSITORY_RESET.md)。
 - [当前 Review 入口](docs/REVIEW.md)：交付范围、提交基线、验证证据及未完成项。
@@ -17,14 +18,15 @@
 
 ## 当前能做什么
 
-已有独立 Research Store、真实文件导入、连续窗口验证、池内 Market Regime、可解释 Screening、
-候选观察卡和私有持仓/交易日志的最小记录能力；沿用可靠契约、来源和受管数据库基础。
-已从保留的真实三日行情生成报告；默认长窗口筛选不满足，最新连续行情仍待采集授权。
-行业/催化/公司研究、正式入场退出、组合风控、策略验证和回测尚未完成。
+已有独立Research Store、来源链/用途/连续窗口检查、默认20/60候选卡、私有持仓/交易日志，
+以及按供应商当前池和申万2021一级行业生成市场宽度、行业扩散、板块差异和前日变化的雷达。
+沿用同一features/screen/service；未引入第二套数据平台。
 
-本地已保留真实样本与历史执行账本，但不是最新完整研究数据库。旧演练和 RAW49 已停止，
-不能重试；新统一 store 尚无生产 facts。历史全量准入阻断与当前观察用途需分别判断，
-Research V1 已获离线真实来源导入新store授权；没有新市场采集、旧库写入或交易许可。
+已有10股/2指数128日真实报告，4候选/6排除；雷达复算仍是有限样本，真实行业来源未采集。
+完整行业雷达当前只有合成软件验收，不能称真实全市场通过。业务报告已脱敏提交Git供GPT Review，
+Raw/DB、实际许可、账户与持仓/个人成交仍私有。新[299请求方案](docs/RESEARCH_V2_ACQUISITION.md)
+尚未获批，当前新增真实市场API调用0。行业真实覆盖、公司研究/催化、正式交易计划/退出、
+组合风控和策略验证仍须逐步建设，不自动下单、不继承旧全历史许可。
 
 ## 本机运行
 
@@ -59,7 +61,8 @@ uv run --offline --frozen astock research journal-add --event 私有人工记录
 
 输入schema、保留来源adapter与复现见[Research V1](docs/RESEARCH_V1.md)。
 报告存 reports/private/research-v1/，行情不足就缺项或空列表，观察卡不生成订单。
-[近期连续行情预算](docs/RESEARCH_ACQUISITION.md)仍待用户批准，当前所有命令离线。
+原10股窗口已真实采集并独立接受；新[全市场预算](docs/RESEARCH_V2_ACQUISITION.md)待批准。
+雷达运行、增量来源与Git业务输出见[Research V2](docs/RESEARCH_V2.md)。
 
 ## 仓库边界
 

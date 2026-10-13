@@ -1,0 +1,32 @@
+{
+  "disk_bytes": 90238499,
+  "features": [
+    {
+      "price_rows": 12800,
+      "seconds": 0.019792875042185187,
+      "stocks": 100
+    },
+    {
+      "price_rows": 64000,
+      "seconds": 0.09653987502679229,
+      "stocks": 500
+    },
+    {
+      "price_rows": 768000,
+      "seconds": 1.1682721249526367,
+      "stocks": 6000
+    }
+  ],
+  "import_seconds": 39.161295084049925,
+  "manifest_seconds": 7.131323916022666,
+  "mock_capture_seconds": 30.328970666974783,
+  "normalized_rows": 258473,
+  "radar_seconds_after_snapshot": 1.6259995420696214,
+  "repeated_verified_snapshot_seconds": 0.7146375409793109,
+  "scope": "SYNTHETIC; feature calculation excludes SQL/Raw unless store measurements listed",
+  "store_stocks": 1000,
+  "verified_snapshot_seconds": 4.804996624938212,
+  "measurement_source_sha": "4ce99a845e316fe31710382013f74b19cf6f39c6",
+  "measurement_code_hash": "9d73df75650795317dec86c6b52915c95a6faa04ddb4ccb15ed02272642628e6",
+  "later_changes": "Neutral breadth/industry-coverage labels corrected after measurement; no Store/features performance rewrite."
+}

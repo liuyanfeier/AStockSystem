@@ -4,7 +4,7 @@
 
 这是长期个人 A 股投资研究与交易决策系统。完整业务目标见
 [项目宪章](docs/PROJECT_CHARTER.md)，当前能力见 [CURRENT_STATE](docs/CURRENT_STATE.md)，
-下一步见 [ROADMAP](docs/ROADMAP.md) 和 [Research V1](docs/RESEARCH_V1.md)。
+下一步见 [ROADMAP](docs/ROADMAP.md)、[Research V2](docs/RESEARCH_V2.md)及原[Research V1契约](docs/RESEARCH_V1.md)。
 
 执行范围按当前用户明确授权确定，再依据宪章、当前任务与架构/契约实施。
 历史 Phase1 Prompt、审批、修复报告仅解释当时的工作和数据来源，不能自动成为新任务、

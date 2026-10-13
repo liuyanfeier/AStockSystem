@@ -95,3 +95,17 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 | 全市场遍历成本/行业催化/实际持仓复盘 | NEEDS_VERIFICATION | 本批10股实测不等于数千股或完整业务验证；下一批按研究价值推进 |
 
 本批不删除历史数据处理代码/重要回归，不改旧消费账本；无新依赖或风险参数生效。
+
+
+## Research V2实际迁移（2026-10-13）
+
+| 能力 | 处理 | 验证与边界 |
+|---|---|---|
+| 五表Research Store、features/screen/service、观察卡/私有日志 | REUSE | 同一业务路径，旧指标/候选不变，不新增并行平台 |
+| V1输入/计划/响应与本地采集证据 | KEEP | 旧dump/hash按旧协议，真实保留来源仍可验证，不重写旧消费 |
+| 市场池/行业输入、批量请求 | MIGRATE | 显式V2扩展，CURRENT池三分区来源闭合；旧逐股模式仍用于读取原试点，不再是全市场默认 |
+| 逐股重复扫描全部行情 | DELETE（实现分支替换） | service一次分组，features共享；旧无索引扫描调用已移除，测试覆盖数值/缺口 |
+| 每次同对象全Raw推导 | MIGRATE | 有界同版本缓存；每次Raw hash/SQL检查，冷启动/as-of改变重推导；不关闭保护 |
+| 补丁覆盖同日来源、自动last-wins | 不引入 | 新bundle追加；冲突显式选择，旧报告复现；因子不同vintage披露 |
+| 完整私有报告→GPT不可见 | MIGRATE | public_results白名单输出Git业务报告，个人日志/Raw/许可仍私有 |
+| 历史Phase1与冻结compat | KEEP / DEPRECATE | 本批不重构，不删除真实来源/回归，不借此开启全历史采集 |
