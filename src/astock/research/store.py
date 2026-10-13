@@ -5,7 +5,7 @@ import hashlib
 from pathlib import Path
 
 from astock.data.warehouse_lock import warehouse_connection, warehouse_lock
-from astock.research.core import digest, encoded, instant, read_json, require
+from astock.research.core import code_fingerprint, digest, encoded, instant, read_json, require
 from astock.research.inputs import Bundle, SourceFile, load_bundle, records
 from astock.research.publication import publish_bytes
 
@@ -28,12 +28,15 @@ def observation_key(spec: SourceFile, row: dict) -> str:
         values.append(spec.sha256)
         if row.get("event_key"):
             values.append(row["event_key"])
+    if spec.dataset in {'industry_classification', 'industry_membership'}:
+        values.append(row['industry_code'])
     return digest(values)
 
 
 class ResearchStore:
     def __init__(self, path: Path):
         self.path = path.absolute()
+        self._derived_cache = None
         require(not self.path.is_symlink(), "STORE_SYMLINK")
 
     def _check(self, db) -> None:
@@ -109,9 +112,10 @@ class ResearchStore:
 
     def _verify_sources(self, manifest: dict) -> None:
         require(not (self.path.parent / "raw").is_symlink(), "RAW_DIRECTORY_SYMLINK")
-        for f in [item for file in manifest["files"] for item in [file, *file.get("evidence", [])]]:
-            p = self.path.parent / "raw" / f["sha256"]
-            require(p.is_file() and not p.is_symlink() and hashlib.sha256(p.read_bytes()).hexdigest() == f["sha256"],
+        hashes = {item["sha256"] for file in manifest["files"] for item in [file, *file.get("evidence", [])]}
+        for checksum in hashes:
+            p = self.path.parent / "raw" / checksum
+            require(p.is_file() and not p.is_symlink() and hashlib.sha256(p.read_bytes()).hexdigest() == checksum,
                     "RETAINED_SOURCE_CHANGED")
 
     def snapshot(self, bundle_id: str, as_of: str) -> tuple[dict, dict]:
@@ -125,21 +129,33 @@ class ResearchStore:
             self._verify_sources(manifest)
             rows = db.execute("SELECT dataset,record_key,source_hash,payload FROM research_observation WHERE bundle_id=? AND available_at<=? ORDER BY dataset,record_key",
                               [bundle_id, instant(as_of)]).fetchall()
-        # Re-derive normalized observations from retained source bytes. This also
-        # supplies an independent rebuild path without touching original stores.
-        bundle = Bundle.model_validate(manifest)
-        expected = []
-        for item in manifest["files"]:
-            spec = SourceFile.model_validate(item)
-            body = (self.path.parent / "raw" / spec.sha256).read_bytes()
-            proofs = {p.sha256: (self.path.parent / "raw" / p.sha256).read_bytes() for p in spec.evidence}
-            # Verify even sources later than as_of; invalid grades cannot hide in
-            # a retained manifest. Original capture paths need not still exist.
-            from astock.research.evidence import capture_grade
-            capture_grade(spec, body, bundle, proofs)
-            if instant(spec.available_at) <= instant(as_of):
-                expected.extend((spec.dataset, observation_key(spec, r), spec.sha256, encoded(r).decode())
-                                for r in records(spec, body, bundle, evidence_bodies=proofs))
+        signature = (bundle_id, instant(as_of).isoformat(), code_fingerprint())
+        if self._derived_cache and self._derived_cache[0] == signature:
+            expected = self._derived_cache[1]
+        else:
+            # Re-derive normalized observations from retained source bytes. This also
+            # supplies an independent rebuild path without touching original stores.
+            from astock.research.market_inputs import parse_bundle, parse_source
+            bundle = parse_bundle(manifest)
+            verified_inputs = []
+            expected = []
+            for item in manifest["files"]:
+                spec = parse_source(item)
+                body = (self.path.parent / "raw" / spec.sha256).read_bytes()
+                proofs = {p.sha256: (self.path.parent / "raw" / p.sha256).read_bytes() for p in spec.evidence}
+                # Verify even sources later than as_of; invalid grades cannot hide in
+                # a retained manifest. Original capture paths need not still exist.
+                normalized = records(spec, body, bundle, evidence_bodies=proofs)
+                verified_inputs.append((spec, body, normalized))
+                if instant(spec.available_at) <= instant(as_of):
+                    expected.extend((spec.dataset, observation_key(spec, r), spec.sha256, encoded(r).decode())
+                                    for r in normalized)
+            if bundle.protocol == 'RESEARCH_INPUT_V2':
+                from astock.research.inputs import validate_market_inputs
+                validate_market_inputs(bundle, verified_inputs)
+            expected = tuple(sorted(expected))
+            # Bounded to one 256MiB encoded expectation; larger snapshots remain uncached.
+            self._derived_cache = (signature, expected) if sum(len(r[3].encode())+128 for r in expected) <= 256*1024**2 else None
         require(sorted(rows) == sorted(expected), "STORED_OBSERVATIONS_CHANGED")
         result: dict[str, list] = {}
         for dataset, _, source_hash, payload in rows:

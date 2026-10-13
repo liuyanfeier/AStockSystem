@@ -30,9 +30,11 @@ class ObservationParameters(StrictModel):
 
 
 def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
-             calendar: list[dict], end: date, p: ObservationParameters) -> dict:
+             calendar: list[dict], end: date, p: ObservationParameters, *, radar: bool = False) -> dict:
     sessions = sorted(day(r["date"]) for r in calendar
                       if r["exchange"] == identity.get("calendar_exchange", identity["exchange"]) and r["is_open"] == 1 and day(r["date"]) <= end)
+    if radar and identity.get('list_date'):
+        sessions = [d for d in sessions if d >= day(identity['list_date'])]
     data = {day(r["date"]): r for r in prices if r["code"] == code and day(r["date"]) <= end}
     factor = {day(r["date"]): r["adj_factor"] for r in factors if r["code"] == code}
     f = dict(code=code, name=identity.get("name"), exchange=identity["exchange"],
@@ -41,6 +43,12 @@ def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
              window_return=None, ma=None, above_ma=None, mean_amount_cny=None,
              activity_ratio=None, volatility_daily=None, prior_high=None,
              breakout=None, relative_return=None, return_window_dates=None, price_basis="UNKNOWN", gaps=[], source_hashes=[])
+    if radar:
+        f.update(return_5=None, return_20=None, ma20=None, above_ma20=None, ma60=None, above_ma60=None,
+                 prior_low20=None, new_high20=None, new_low20=None, amount_today_cny=None,
+                 amount_change_1=None, provider_market=identity.get('provider_market'),
+                 list_date=identity.get('list_date'), list_status=identity.get('list_status'),
+                 calendar_basis=identity.get('calendar_basis'), return5_dates=None, return20_dates=None)
     if not sessions:
         f["gaps"].append("交易日历/交易所身份不可用，不能认定连续窗口")
         return f
@@ -56,9 +64,10 @@ def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
     if not tail:
         f["gaps"].append("最后交易日行情缺失；不以前一日冒充当日")
         return f
+    tail_dates = {r["date"] for r in tail}
     f.update(last_date=tail[-1]["date"], close=tail[-1]["close"],
-             source_hashes=sorted({r["source_hash"] for r in tail} |
-                                  {r["source_hash"] for r in factors if r["code"] == code and r["date"] in {t["date"] for t in tail}} |
+             source_hashes=sorted({h for r in tail for h in r.get("component_sources", [r["source_hash"]])} |
+                                  {r["source_hash"] for r in factors if r["code"] == code and r["date"] in tail_dates} |
                                   {r["source_hash"] for r in calendar if r["exchange"] == identity.get("calendar_exchange", identity["exchange"])} |
                                   ({identity["source_hash"]} if identity.get("source_hash") else set())))
     needed = max(p.return_sessions + 1, p.trend_sessions, p.breakout_sessions + 1, p.activity_sessions)
@@ -76,7 +85,25 @@ def features(code: str, identity: dict, prices: list[dict], factors: list[dict],
     else:
         adjusted = None
         f["gaps"].append("复权因子缺失；不计算可能跨公司行为的价格收益/趋势")
+    if radar:
+        f['amount_today_cny'] = tail[-1]['amount']
+        if len(tail) >= 2 and tail[-2]['amount'] > 0:
+            f['amount_change_1'] = tail[-1]['amount'] / tail[-2]['amount'] - 1
     if adjusted is not None:
+        if radar:
+            for period in (5, 20):
+                if len(adjusted) >= period + 1:
+                    f[f'return_{period}'] = adjusted[-1] / adjusted[-period - 1] - 1
+                    f[f'return{period}_dates'] = [r['date'] for r in tail[-period - 1:]]
+            for period in (20, 60):
+                if len(adjusted) >= period:
+                    f[f'ma{period}'] = float(np.mean(adjusted[-period:]))
+                    f[f'above_ma{period}'] = adjusted[-1] > f[f'ma{period}']
+            if len(tail) >= 21:
+                prior = tail[-21:-1]
+                highs = [r['high'] if identity['kind'] == 'INDEX' else r['high'] * factor[day(r['date'])] / factor[day(tail[-1]['date'])] for r in prior]
+                lows = [r['low'] if identity['kind'] == 'INDEX' else r['low'] * factor[day(r['date'])] / factor[day(tail[-1]['date'])] for r in prior]
+                f.update(new_high20=adjusted[-1] > max(highs), prior_low20=min(lows), new_low20=adjusted[-1] < min(lows))
         if len(adjusted) >= 2:
             f["return_1"] = adjusted[-1] / adjusted[-2] - 1
         if len(adjusted) >= p.return_sessions + 1:

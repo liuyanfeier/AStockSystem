@@ -10,19 +10,38 @@ from astock.screening.candidates import observation_card, screen
 
 
 def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: ObservationParameters,
-            watch: list[str] | None = None) -> dict:
+            watch: list[str] | None = None, *, radar: bool = False,
+            components: list[str] | None = None, revisions: dict | None = None) -> dict:
     cutoff = instant(as_of)
-    manifest, rows = store.snapshot(bundle_id, as_of)
+    if components:
+        from astock.research.increment import compose
+        manifest, rows = compose(store, [bundle_id, *components], as_of, revisions or {})
+        bundle_id = digest(dict(components=[bundle_id, *components], revisions=revisions or {}))
+    else:
+        manifest, rows = store.snapshot(bundle_id, as_of)
     end = day(manifest["window_end"])
     require(end <= market_day(cutoff), "REPORT_BEFORE_WINDOW_END")
     identities = {r["code"]: r for r in rows.get("instruments", [])}
     codes = manifest["universe"] + manifest["benchmarks"]
+    from collections import defaultdict
+    grouped = {dataset: defaultdict(list) for dataset in ('daily', 'index_daily', 'adj_factor', 'calendar')}
+    for dataset, groups in grouped.items():
+        for row in rows.get(dataset, []):
+            groups[row['exchange'] if dataset == 'calendar' else row['code']].append(row)
+    stock_codes = set(manifest["universe"])
     calculated = {}
+    previous_calculated = {}
     for code in codes:
-        kind = "STOCK" if code in manifest["universe"] else "INDEX"
+        kind = "STOCK" if code in stock_codes else "INDEX"
         identity = identities.get(code, dict(code=code, name=None, kind=kind, exchange="UNKNOWN"))
-        calculated[code] = features(code, identity, rows.get("daily" if kind == "STOCK" else "index_daily", []),
-                                    rows.get("adj_factor", []), rows.get("calendar", []), end, parameters)
+        prices = grouped['daily' if kind == 'STOCK' else 'index_daily'][code]
+        factors = grouped['adj_factor'][code]
+        calendar = grouped['calendar'][identity.get('calendar_exchange', identity['exchange'])]
+        calculated[code] = features(code, identity, prices, factors, calendar, end, parameters, radar=radar)
+        if radar:
+            days = sorted(day(r['date']) for r in calendar if r['is_open'] == 1 and day(r['date']) < end)
+            previous_calculated[code] = features(code, identity, prices, factors, calendar, days[-1] if days else end,
+                                               parameters, radar=True)
     benchmarks = [calculated[c] for c in manifest["benchmarks"]]
     stocks = [calculated[c] for c in manifest["universe"]]
     # The first explicitly declared benchmark is the reference; require equal
@@ -61,4 +80,10 @@ def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: Observ
                   sources=manifest["files"], market=market_regime(stocks, benchmarks, manifest["universe_scope"]),
                   features=stocks, candidates=cards, manual_cards=manual, excluded=excluded,
                   limitations=limitations, journal=journal_snapshot(store, as_of, calculated, parameters.max_stale_calendar_days))
+    if radar:
+        from astock.research.radar import attach_radar
+        attach_radar(result, manifest, rows, stocks, benchmarks, previous_calculated, parameters)
+        if components:
+            result['composition'] = manifest['composition']
+            result['limitations'].append('增量复权因子来自多个采集版本；回溯修订需另作来源版本检查，不能宣称所有历史因子同一vintage。冲突需明确来源选择。')
     return result

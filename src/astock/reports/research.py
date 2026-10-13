@@ -16,6 +16,12 @@ def display(value: object, *, percent: bool = False) -> str:
 
 
 def markdown(snapshot: dict) -> str:
+    if 'radar' in snapshot:
+        return radar_markdown(snapshot)
+    return observation_markdown(snapshot)
+
+
+def observation_markdown(snapshot: dict) -> str:
     params, market = snapshot["parameters"], snapshot["market"]
     lines = ["# AStockSystem 候选观察报告", "", "OBSERVATION_ONLY · 不生成订单 · 不代表已验证策略", "",
              f"研究可知截止：{snapshot['as_of']}；行情窗口：{snapshot['window_start']} → {snapshot['window_end']}",
@@ -81,3 +87,51 @@ def publish(snapshot: dict, directory: Path) -> str:
         else:
             publish_bytes(path, body)
     return run_id
+
+
+
+def radar_markdown(snapshot: dict) -> str:
+    radar = snapshot['radar']
+    m = radar['market']['metrics']
+    tracking = radar['candidate_tracking']
+    synthetic = 'SYNTHETIC' in radar['actual_source_grades']
+    alignment = {'ALIGNED':'方向一致','DIVERGENT':'方向分歧','UNKNOWN':'证据不足'}[radar['index_breadth_alignment']]
+    trend = {'EXPANDING':'20日上涨个股占有效样本多数','CONTRACTING':'20日下跌/非上涨个股占有效样本多数','MIXED_OR_UNKNOWN':'20日宽度持平或证据不足'}[radar['trend']]
+    lines = ['# AStockSystem 每日市场与行业雷达', '',
+             'SYNTHETIC · 合成软件演示，不能回答真实市场现状' if synthetic else '真实来源的当前观察 · 非交易指令', '',
+             f"研究as-of：{snapshot['as_of']}；行情窗口：{snapshot['window_start']} → {snapshot['window_end']}",
+             f"范围：{radar['scope']}；证券池{radar['market']['pool_count']}只；来源等级{','.join(radar['actual_source_grades'])}",
+             '', '## 今日市场结论', '', f'{trend}；指数60日趋势与个股60日宽度{alignment}。',
+             '覆盖与指标缺失见分母；当前队列复算的前日变化不等于历史PIT复盘。缺财务/公告核实、可成交性与批准的风险预算，候选继续仅作观察。',
+             '', '## 市场关键指标', '', '| 指标 | 值/数量 | 有效分母 | 缺失 |', '|---|---:|---:|---:|']
+    for field,label in [('return_1','单日'),('return_5','5日'),('return_20','20日')]:
+        b = m[field]
+        lines.append(f"| {label}上涨/下跌/平盘 | {b['up']}/{b['down']}/{b['flat']} | {b['denominator']} | {b['excluded']} |")
+    for field,label in [('above_ma20','MA20以上'),('above_ma60','MA60以上'),('new_high20','收盘超过前20日最高价'),('new_low20','收盘低于前20日最低价')]:
+        b=m[field];lines.append(f"| {label} | {b['count']}（{display(b['ratio'],percent=True)}） | {b['denominator']} | {b['excluded']} |")
+    a=m['amount_cny'];lines.extend([f"| 当日样本成交额CNY | {display(a['total'])} | {a['denominator']} | {a['excluded']} |",
+                                  f"| 成交额日变化中位数 | {display(m['amount_change_1']['median'],percent=True)} | {m['amount_change_1']['denominator']} | {m['amount_change_1']['excluded']} |",
+                                  '', f"排除原因（可重叠）：{radar['market']['exclusion_reasons']}", '', '板块比较来自供应商market，制度差异不构成统一涨跌停成交假设。', ''])
+    for board in radar['boards']:
+        b=board['breadth'];metric=b['metrics']['above_ma60']
+        lines.append(f"- {board['exchange']} / {board['board']}：池{b['pool_count']}，MA60以上{metric['count']}/{metric['denominator']}，全部合格候选{board['candidate_count']}")
+    lines.extend(['','## 行业强弱与变化','',radar['industry_coverage']['basis'],
+                  f"当前池分类{radar['industry_coverage']['classified_current_pool']}只；缺分类{len(radar['industry_coverage']['missing_current_pool'])}只。",'',
+                  '| 行业 | 20日中位数/有效样本 | 强弱/变化 | 扩散 | 合格候选 | 同期相对基准中位数 |', '|---|---|---|---|---:|---|'])
+    ordered=sorted(radar['industries'],key=lambda i:(i['breadth']['metrics']['return_20_distribution']['median'] is None, -(i['breadth']['metrics']['return_20_distribution']['median'] or 0),i['code']))
+    for industry in ordered:
+        d=industry['breadth']['metrics']['return_20_distribution']
+        lines.append(f"| {industry['name']} | {display(d['median'],percent=True)} / {d['denominator']}（池{industry['breadth']['pool_count']}） | {industry['strength']}/{industry['change_label']}（中位数变化{display(industry['median_return20_change'],percent=True)}） | {industry['diffusion']} | {industry['candidate_count']} | {display(industry['relative_benchmark_median'],percent=True)}（n={industry['relative_denominator']}） |")
+    if not ordered:lines.append('行业来源未提供，不能推断行业排名或轮动。')
+    lines.extend(['','等权个股统计不是市值加权行业指数。BROAD表示有效20日上涨个股占多数；NARROW_LEADERS表示有上涨龙头但多数未涨。', '',
+                  f"合格候选{tracking['eligible_total']}，显示{tracking['displayed']}，排序遗漏{tracking['omitted']}。",
+                  f"新出现{tracking['new']}；持续{tracking['continued']}；退出{tracking['left']}。",tracking['comparison_basis'], '',
+                  f"前日MA60以上数量变化{radar['daily_change']['above_ma60']['count_change']}，分母当前/前日{radar['daily_change']['above_ma60']['denominator_now']}/{radar['daily_change']['above_ma60']['denominator_previous']}。", '', '## 候选所属行业', ''])
+    for card in snapshot['candidates']:
+        lines.append(f"- {card['code']} {card['name']}：{card['industry']['name'] if card.get('industry') else '行业UNKNOWN'}；20日相对行业中位数{display(card.get('relative_industry_return20'),percent=True)}；MA60={display(card['metrics'].get('ma60'))}")
+    # Reuse the complete V1 cards, source trail and manual-exit flow.
+    business = observation_markdown(snapshot)
+    business = business.replace('# AStockSystem 候选观察报告', '## 候选证据、观察条件与下一研究日跟踪',1)
+    business = business.replace('基本面/行业主题/公告催化：UNKNOWN。', '基本面/动态主题/公告催化：UNKNOWN；稳定行业证据见上表。')
+    lines.extend(['', business])
+    return '\n'.join(lines)

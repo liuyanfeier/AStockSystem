@@ -36,3 +36,23 @@ def test_three_identical_protocol_errors_open_circuit(tmp_path):
     assert len(calls) == 3 and result['stopped'] == 'PROTOCOL_CIRCUIT' and result['unattempted'] == 36
     assert len(list(destination.glob('*.claim.json'))) == 3
     assert len(list(destination.glob('*.response.json'))) == 3
+
+
+@pytest.mark.parametrize('truncated', [True, False])
+def test_continuation_cannot_consume_rest_after_truncation(tmp_path,truncated):
+    from research_fixture import response
+    plan=fixture_plan()
+    def handler(member,count):
+        value=response(plan,member)
+        if truncated:value['data']['has_more']=True
+        else:value['data']['items']*=member['row_cap']
+        return httpx.Response(200,stream=BytesStream(encoded(value)))
+    result,calls,_=approved_mock(tmp_path,plan,handler,continue_on_error=True)
+    assert len(calls)==1 and result['stopped']=='FAILED' and result['unattempted']==38
+
+
+def test_permission_errors_are_bounded(tmp_path):
+    def handler(member,count):
+        return httpx.Response(200,stream=BytesStream(encoded(dict(code=-2002,msg='SYNTHETIC permission',data=None))))
+    result,calls,_=approved_mock(tmp_path,fixture_plan(),handler,continue_on_error=True)
+    assert len(calls)==3 and result['stopped']=='PROTOCOL_CIRCUIT'
