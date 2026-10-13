@@ -6,8 +6,14 @@ Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1�
 按本次用户明确授权，PR #1以普通Merge合入main：95f49467133e89ca78ab0cb5ccbf6c6f7b0a1693；
 文件树与已接受c9eb868一致，PR #2历史保留。新main CI成功：1099 passed、6 warnings；
 Level B后续已独立接受于edcc8f55071abd77ae1e415773bc000aa815601a，CI1121 passed。
-PR #3普通merge进入main 05479b523e3718d09e9b5b6b1773a3f318b1b0be；本批分支codex/research-v2。
-当前整批版本、验收与验证见[REVIEW](REVIEW.md)。
+PR #3普通merge进入main 05479b5；PR #4已在d5feb9f独立ACCEPT，CI1164 passed，
+按本次授权普通merge进入main 80675e04ab4f645506d111b04dbb8bbfbc7df01f。
+本批修复分支codex/research-capture-safety：HTTP认证/限流立即停、三次服务/传输错误熔断；
+公开投影默认移除人工观察和Journal，自由来源说明不公开。新真实API0，299方案仍未获许可。
+本批源码bbb302e完整回归1175 passed、1 warning；Doctor/12 contracts PASS。
+本批15根最终盘点32,736,449,871逻辑字节、33,761,505,280文件blocks，complete=true；
+保全155655文件无改动/缺失，秘密违规0、私有破坏性删除0。见[验证摘要](research/results/2026-10-13-capture-safety/VALIDATION.md)。
+当前整批版本、验收与最终精确HEAD CI见[REVIEW](REVIEW.md)与修复PR。
 
 ## Research V2软件与真实业务分别验收
 
@@ -20,11 +26,11 @@ PR #3普通merge进入main 05479b523e3718d09e9b5b6b1773a3f318b1b0be；本批分�
 既有10股真实雷达240项旧指标一致、4候选保留；没有真实行业来源，行业排名/轮动UNKNOWN。
 完整31行业雷达为SYNTHETIC演示，不能宣称真实全市场/行业验收。真实新API0，旧106次尝试不变。
 [固定299请求/128日申请](RESEARCH_V2_ACQUISITION.md)尚待用户整批批准；不把上批试错许可延续到此批。
-P2已修复本地故障停、截断停及三次重复协议/提供者错误熔断；不记录原生异常秘密上下文。
+此前已具备本地故障停、截断停及三次重复协议/提供者错误熔断；本批补足HTTP/传输熔断与公开人工观察隐私。
 
-本地功能版本bcb2d86全套1160 passed；随后补足协议熔断范围/公开来源列表压缩，
-最终源码03da51e全部Research155 passed。精确最终HEAD全套CI见[REVIEW](REVIEW.md)和本批PR。
-本批14个确认根盘点：32,860,999,001逻辑字节、33,927,413,760去重inode文件blocks，
+已接受PR #4的历史验证时点：本地功能版本bcb2d86全套1160 passed；随后补足协议熔断范围/公开来源列表压缩，
+其源码03da51e全部Research155 passed，最终d5feb9f CI1164 passed。当前修复受测版本见[REVIEW](REVIEW.md)。
+PR #4结束时14个确认根盘点：32,860,999,001逻辑字节、33,927,413,760去重inode文件blocks，
 361,446文件/1,914数据库，complete=true，含外部历史工作目录和本批生成/测试目录；
 保全155,655文件无改动/缺失，私有破坏性删除0。详细时点/口径见结果验证摘要。
 性能阶段实测：6000股/128日特征约1.16秒；1000股完整模拟258,473记录，冷验证约4.80秒、

@@ -2,8 +2,9 @@
 
 import copy
 import json
-import os
 import shutil
+import subprocess
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
@@ -103,15 +104,40 @@ def test_crash_boundary_consumes_once_and_stops_other_member(tmp_path,stage):
 
 def test_process_death_after_durable_claim_no_network_or_new_attempt(tmp_path):
     state=stopped(tmp_path);store=state[4]
-    pid=os.fork()
-    if pid==0:
-        with warehouse_connection(store/'capture.duckdb') as db:
-            capture(db,state,fault=lambda stage:os._exit(73) if stage=='after_claim' else None)
-        os._exit(74)
-    _,status=os.waitpid(pid,0);assert os.waitstatus_to_exitcode(status)==73
+    payload=tmp_path/'child-state.json'
+    payload.write_text(json.dumps(dict(base=state[0],app=state[1],review=state[2],
+        human=state[3],store=str(store),wall=state[-1].wall.isoformat(),
+        mono=state[-1].mono)))
+    # DuckDB owns native threads: exec a fresh interpreter rather than forking
+    # its initialized runtime. Rebase only this mock clock after authorization.
+    child=r'''
+import json, os, socket, sys
+from pathlib import Path
+from datetime import datetime
+sys.path.insert(0, str(Path(sys.argv[1]) / 'tests'))
+from test_capture_continuation_v3 import capture, Clock, warehouse_connection
+data=json.loads(Path(sys.argv[2]).read_text())
+clock=Clock();clock.wall=max(clock.wall,datetime.fromisoformat(data['wall']))
+clock.mono=data['mono']
+state=(data['base'],data['app'],data['review'],data['human'],Path(data['store']),clock)
+def deny(*args,**kwargs):
+    raise AssertionError('child must not reach transport')
+socket.socket.connect=deny;socket.create_connection=deny;socket.getaddrinfo=deny
+with warehouse_connection(state[4]/'capture.duckdb') as db:
+    capture(db,state,handler=deny,
+            fault=lambda stage:os._exit(73) if stage=='after_claim' else None)
+os._exit(74)
+'''
+    result=subprocess.run([sys.executable,'-c',child,str(ROOT),str(payload)],
+                          capture_output=True,text=True,timeout=120)
+    assert result.returncode==73,result.stderr
     with warehouse_connection(store/'capture.duckdb') as db:
-        with pytest.raises(ValueError):capture(db,state,1,handler=lambda r:pytest.fail('no send'))
+        for index in (0,1):
+            with pytest.raises(ValueError):capture(db,state,index,handler=lambda r:pytest.fail('no send'))
         assert db.execute('SELECT count(*) FROM continuation_attempt').fetchone()[0]==1
+        assert db.execute('SELECT state FROM continuation_event').fetchall()==[('CLAIMED',)]
+        assert db.execute('SELECT count(*) FROM continuation_receipt').fetchone()[0]==0
+        assert run.rowsets(db)==state[0]['legacy_rows']
 
 
 def test_new_unknown_safe_error_and_no_retry_or_later_member(tmp_path):

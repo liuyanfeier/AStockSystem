@@ -230,6 +230,8 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
         charged = consumed * plan.max_body_bytes
         completed, stopped, failed, unknown = 0, None, 0, 0
         previous_protocol_error, consecutive_protocol_errors = None, 0
+        previous_http_error, consecutive_http_errors = None, 0
+        consecutive_transport_errors = 0
         latest_observed = max([instant(plan.not_before), instant(approval['approved_at']),
                                *[instant(read_json(p)['claimed_at']) for p in destination.glob('*.claim.json')],
                                *[instant(r['retrieved_at']) for r in read_capture(destination)[1]]])
@@ -253,7 +255,8 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 try:
                     with client.stream('POST', ENDPOINT, json=dict(api_name=member['api'], token=secret,
                                       params=member['params'], fields=','.join(member['fields']))) as response:
-                        require(response.status_code == 200, 'HTTP_STATUS')
+                        # Only the numeric status is safe to retain; never response text.
+                        require(response.status_code == 200, f'HTTP_{response.status_code}')
                         chunks, size = [], 0
                         # Raw transfer cap prevents compressed-body amplification bypass.
                         require(response.headers.get('content-encoding', 'identity') == 'identity', 'COMPRESSED_BODY_REJECTED')
@@ -294,10 +297,23 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                         code in {'NATIVE_CODE_REQUIRED', 'COMPRESSED_BODY_REJECTED'})
                     consecutive_protocol_errors = (consecutive_protocol_errors + 1 if code == previous_protocol_error else 1) if protocol_error else 0
                     previous_protocol_error = code if protocol_error else None
+                    http_error = isinstance(code, str) and code.startswith('HTTP_')
+                    consecutive_http_errors = (consecutive_http_errors + 1 if code == previous_http_error else 1) if http_error else 0
+                    previous_http_error = code if http_error else None
+                    transport_error = isinstance(code, str) and code.startswith('TRANSPORT_')
+                    # DNS, connection and timeout failures may alternate during an outage.
+                    consecutive_transport_errors = consecutive_transport_errors + 1 if transport_error else 0
                     if fatal or not approval.get('continue_on_error', False) or code in {
                             'CAPTURE_SECRET', 'CAPTURE_CLOCK_ROLLBACK', 'IMMUTABLE_OBJECT_CHANGED',
-                            'PUBLICATION_WRITE_CHANGED', 'PROVIDER_TRUNCATED', 'PROVIDER_CAP_OR_TRUNCATION'}:
+                            'PUBLICATION_WRITE_CHANGED', 'PROVIDER_TRUNCATED', 'PROVIDER_CAP_OR_TRUNCATION',
+                            'CAPTURE_BODY_CAP', 'HTTP_401', 'HTTP_403', 'HTTP_429'}:
                         stopped = state
+                        break
+                    if consecutive_http_errors >= 3:
+                        stopped = 'HTTP_CIRCUIT'
+                        break
+                    if consecutive_transport_errors >= 3:
+                        stopped = 'TRANSPORT_CIRCUIT'
                         break
                     if consecutive_protocol_errors >= 3:
                         stopped = 'PROTOCOL_CIRCUIT'
@@ -305,6 +321,8 @@ def capture(root: Path, plan_file: Path, *, live: bool = False, approval_file: P
                 else:
                     completed += 1
                     previous_protocol_error, consecutive_protocol_errors = None, 0
+                    previous_http_error, consecutive_http_errors = None, 0
+                    consecutive_transport_errors = 0
                 latest_observed = max(claim_time, instant(captured)) if captured is not None else claim_time
                 if consumed < plan.maximum_requests:
                     sleep(plan.min_spacing_seconds)

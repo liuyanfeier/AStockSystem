@@ -56,18 +56,22 @@ def observation_markdown(snapshot: dict) -> str:
     lines.extend(["", "## 筛选排除记录", ""])
     for item in snapshot["excluded"]:
         lines.append(f"- {display(item['code'])}：{'；'.join(item['reasons'])}")
-    lines.extend(["", "## 私有持仓与退出跟踪", "", snapshot["journal"]["limitation"]])
-    for h in snapshot["journal"]["positions"]:
-        lines.extend(["", f"- {display(h['code'])}：人工持仓{h['shares']}股；来源事件{display(h['source_event'])}；复盘到期={h['review_overdue']}",
-                      f"  原始逻辑：{display(h.get('original_thesis',h['thesis']))}；失效：{display(h['invalidation'])}；退出观察：{display(h['exit_conditions'])}",
-                      f"  原始研究{display(h.get('original_research_report_id'))}；陈旧={display(h.get('research_stale'))}；退出条件={h.get('exit_condition_state','PENDING_VERIFICATION')}；人工确认={h.get('confirmed',False)}",
-                      f"  行情日{display(h['price_date'])}；{'；'.join(h['gaps'])}"])
-    lines.extend(["", "待确认人工事件：" + display(", ".join(snapshot["journal"].get("pending_confirmation", [])) or "未导入/无待确认事件"),
-                  "", "## 下一研究日跟踪", "",
+    if "journal" in snapshot:
+        lines.extend(["", "## 私有持仓与退出跟踪", "", snapshot["journal"]["limitation"]])
+        for h in snapshot["journal"]["positions"]:
+            lines.extend(["", f"- {display(h['code'])}：人工持仓{h['shares']}股；来源事件{display(h['source_event'])}；复盘到期={h['review_overdue']}",
+                          f"  原始逻辑：{display(h.get('original_thesis',h['thesis']))}；失效：{display(h['invalidation'])}；退出观察：{display(h['exit_conditions'])}",
+                          f"  原始研究{display(h.get('original_research_report_id'))}；陈旧={display(h.get('research_stale'))}；退出条件={h.get('exit_condition_state','PENDING_VERIFICATION')}；人工确认={h.get('confirmed',False)}",
+                          f"  行情日{display(h['price_date'])}；{'；'.join(h['gaps'])}"])
+        lines.extend(["", "待确认人工事件：" + display(", ".join(snapshot["journal"].get("pending_confirmation", [])) or "未导入/无待确认事件")])
+    lines.extend(["", "## 下一研究日跟踪", "",
                   "- 更新连续行情与来源时间；以新数据复算前高/均线、同日期基准及活跃度。",
                   "- 核实候选ST/停复牌/限价与公告、基本面反面证据；当前缺口不构成交易许可。",
                   "- 逐项复核持仓原始逻辑、用户退出观察条件、到期复盘和未确认事件。"])
-    lines.extend(["", "## 来源与复现", "", f"参数hash：{snapshot['parameters_hash']}；日志hash：{snapshot['journal']['events_hash']}"])
+    hashes = f"参数hash：{snapshot['parameters_hash']}"
+    if "journal" in snapshot:
+        hashes += f"；日志hash：{snapshot['journal']['events_hash']}"
+    lines.extend(["", "## 来源与复现", "", hashes])
     for f in snapshot["sources"]:
         lines.append(f"- {display(f['dataset'])}：{display(f['source'])}；sha256={f['sha256']}；retrieved={f['retrieved_at']}；available={f['available_at']}；单位={f['volume_unit']}/{f['amount_unit']}；来源等级={f.get('evidence_grade','USER_DECLARED')}")
     lines.extend(["", "基本面/行业主题/公告催化：UNKNOWN。真实来源与人工记录保存在私有目录；本报告不宣称历史PIT可回测。", ""])

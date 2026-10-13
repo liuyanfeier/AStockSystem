@@ -109,3 +109,12 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 | 补丁覆盖同日来源、自动last-wins | 不引入 | 新bundle追加；冲突显式选择，旧报告复现；因子不同vintage披露 |
 | 完整私有报告→GPT不可见 | MIGRATE | public_results白名单输出Git业务报告，个人日志/Raw/许可仍私有 |
 | 历史Phase1与冻结compat | KEEP / DEPRECATE | 本批不重构，不删除真实来源/回归，不借此开启全历史采集 |
+
+## PR #4后最小修复（2026-10-13）
+
+| 范围 | 状态 | 实际迁移 |
+|---|---|---|
+| Research V2/Store/radar | KEEP | 采用已接受PR #4；不新建框架/schema |
+| acquisition故障路径 | MIGRATE | 数字HTTP安全分类、认证/限流立即停、三次HTTP/传输熔断；原消费/保护保留 |
+| public_results | MIGRATE | RESEARCH_PUBLIC_V2_1，移除人工观察/Journal，来源白名单与固定描述；旧私有报告不改 |
+| 旧报告/原106消费 | KEEP | 历史输出保留；新公开投影追加，不改真实执行事实 |
