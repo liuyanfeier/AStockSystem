@@ -129,7 +129,8 @@ def capture_command(plan: Path = typer.Option(Path('config/research/acquisition-
 
 @app.command('capture-import')
 def capture_import(capture_dir: Path = typer.Option(..., '--capture-dir'),
-                   include_capture: list[Path] = typer.Option([], '--include-capture')) -> None:
+                   include_capture: list[Path] = typer.Option([], '--include-capture'),
+                   benchmark_bundle: Path | None = typer.Option(None, '--benchmark-bundle')) -> None:
     """Validate retained complete responses and import directly into a private store."""
     from astock.research.acquisition import disk_bytes, read_capture
     from astock.research.core import digest, require
@@ -144,7 +145,8 @@ def capture_import(capture_dir: Path = typer.Option(..., '--capture-dir'),
         require(sum(disk_bytes(p) for p in supplemental) + disk_bytes(destination) +
                 plan.max_total_body_bytes + 32 * 1024**2 <= plan.max_added_disk_bytes,
                 'CAPTURE_MERGED_IMPORT_PEAK_BUDGET')
-        manifest = make_capture_bundle(destination, supplemental_captures=supplemental)
+        manifest = make_capture_bundle(destination, supplemental_captures=supplemental,
+                                       benchmark_bundle=private_path(get_project_root(), benchmark_bundle) if benchmark_bundle else None)
         bundle = destination / f'{digest(manifest)}.bundle.json'
         bid = ResearchStore(destination / 'research.duckdb').import_bundle(bundle)
         require(disk_bytes(destination) <= plan.max_added_disk_bytes, 'CAPTURE_IMPORT_DISK_BUDGET')

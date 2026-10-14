@@ -98,10 +98,22 @@ def capture_grade(spec: SourceFile, body: bytes, bundle: Bundle, proofs: dict[st
     require(instant(result["available_at"]) >= instant(result["retrieved_at"]) >= instant(claim["claimed_at"]) and
             instant(spec.retrieved_at) == instant(result["retrieved_at"]) and
             instant(spec.available_at) >= instant(result["available_at"]), "CAPTURE_SOURCE_TIME_BINDING")
+    # A retained index identity does not depend on the stock cohort. Reuse only
+    # this metadata role; window, benchmarks, calendar and the full capture chain
+    # remain bound below. Stock identities/prices cannot inherit this exception.
+    benchmark_identity_reuse = (plan.protocol == 'RESEARCH_CAPTURE_V1_1' and
+                                bundle.protocol == 'RESEARCH_INPUT_V2' and
+                                spec.request['api'] == 'index_basic' and
+                                spec.request['params']['ts_code'] in bundle.benchmarks and
+                                bundle.universe_scope in {'CURRENT_A_SHARE_L', 'PROVIDER_SAMPLE'})
+    scope_matches = (bundle.universe == plan.universe or benchmark_identity_reuse
+                     if plan.protocol == 'RESEARCH_CAPTURE_V1_1' else
+                     bundle.protocol == 'RESEARCH_INPUT_V2' and
+                     bundle.bse_calendar_reference == plan.bse_calendar_reference and
+                     bundle.universe_scope in {'CURRENT_A_SHARE_L', 'PROVIDER_SAMPLE'})
     require(bundle.purpose == plan.purpose and bundle.window_start == plan.window_start and
-            bundle.window_end == plan.window_end and (bundle.universe == plan.universe if plan.protocol == 'RESEARCH_CAPTURE_V1_1' else
-             bundle.protocol == 'RESEARCH_INPUT_V2' and bundle.bse_calendar_reference == plan.bse_calendar_reference and bundle.universe_scope in {'CURRENT_A_SHARE_L', 'PROVIDER_SAMPLE'}) and
-            bundle.benchmarks == plan.benchmarks and (plan.protocol == 'RESEARCH_CAPTURE_V2' or bundle.universe_scope == "WATCHLIST"), "CAPTURE_SCOPE_BINDING")
+            bundle.window_end == plan.window_end and scope_matches and
+            bundle.benchmarks == plan.benchmarks and (plan.protocol == 'RESEARCH_CAPTURE_V2' or bundle.universe_scope == "WATCHLIST" or benchmark_identity_reuse), "CAPTURE_SCOPE_BINDING")
     calendar = plan.benchmark_calendars.get(spec.request["params"].get("ts_code")) if spec.request["api"] == "index_basic" else None
     require(spec.calendar_exchange == calendar, "CAPTURE_CALENDAR_BINDING")
     return grade

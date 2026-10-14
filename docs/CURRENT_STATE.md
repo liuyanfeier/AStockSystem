@@ -1,5 +1,25 @@
 # 当前状态
 
+2026-10-14真实002结果：用户明确批准299固定请求/continue_on_error=true；正常网络权限下执行完毕。
+**299尝试，297成功、2失败、0 UNKNOWN、0未尝试**。失败仅CSI index_basic空响应，Raw/FAILED不改；
+离线复用旧两指数身份完整证据，新增最小兼容边界与8回归，无新HTTP。
+真实全池5574、31行业归属全覆盖、128日价格/因子；末日已上市5573、价格5561，1只窗口后上市/12只缺价格。
+默认20/60合格1347、展示10，新增134/延续1213/退出468；观察资格变化不是交易指令。
+[首份真实全市场日报/JSON](research/results/2026-10-14-real-market-v2/REPORT.md)及
+[108项Raw独立数值/同输入与新Store重建](research/results/2026-10-14-real-market-v2/VALIDATION.md)已入Git。
+实际执行D8 hash保留；离线新版13a0110b…不承接原采集许可，299已全消费。旧106及001UNKNOWN保持。
+下一步进入公司基本面/公告催化与交易/退出研究；当前行情仅到10月12日，风险预算与交易权限继续未设。
+
+以下002“待批准”与001停采为各历史时点记录，当前实际状态以上述新结果及REVIEW为准。
+
+2026-10-14更新：PR #6已按用户独立ACCEPT普通合并为main7961e02。
+同机网络对照定位默认受限进程TCP失败，正常网络权限下DNS/TCP/TLS及HTTPX certifi验证成功；
+当前无需代理或生产代码修改，trust_env=False/verify=True保持。
+本批市场API/业务HTTP0；002完整299成员dry-run和原hash复核通过，目的地尚未创建。
+**002仍待明确整批授权**；批准后采用continue_on_error=true、有限失败继续/系统性熔断，每成员一次。
+[诊断与最终清单](research/results/2026-10-14-network-recovery/VALIDATION.md)。
+以下001首错停及原软件/数据记录保持为历史事实。
+
 2026-10-13。重置及统一Review批次已按用户提供的独立结论关闭：
 a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
 Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1在c9eb868独立Level A通过，CI1099 passed。

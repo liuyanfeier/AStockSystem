@@ -202,7 +202,8 @@ def merge_status(rows: list[dict]) -> dict[tuple[str, str], dict]:
 
 
 def make_capture_bundle(capture: Path, output: Path | None = None, *,
-                        supplemental_captures: list[Path] | None = None) -> dict:
+                        supplemental_captures: list[Path] | None = None,
+                        benchmark_bundle: Path | None = None) -> dict:
     """Describe raw bytes directly; no duplicated curated CSV/Parquet staging."""
     from astock.research.acquisition import read_capture
     from astock.research.inputs import load_bundle
@@ -239,6 +240,25 @@ def make_capture_bundle(capture: Path, output: Path | None = None, *,
             spec.update(volume_unit='lots100', amount_unit='thousand_CNY')
         files.append(spec)
     v2 = plan.protocol == 'RESEARCH_CAPTURE_V2'
+    if benchmark_bundle is not None:
+        require(v2, 'BENCHMARK_REUSE_V2_ONLY')
+        original, _ = load_bundle(benchmark_bundle)
+        require(original.purpose == plan.purpose and original.window_start == plan.window_start and
+                original.window_end == plan.window_end and original.benchmarks == plan.benchmarks,
+                'BENCHMARK_REUSE_SCOPE')
+        present = {s['request']['params']['ts_code'] for s in files if s['request']['api'] == 'index_basic'}
+        for spec in original.files:
+            if spec.request and spec.request['api'] == 'index_basic' and spec.request['params']['ts_code'] not in present:
+                require(spec.evidence_grade in {'LOCAL_CAPTURE_BOUND', 'SYNTHETIC'} and len(spec.evidence) == 4,
+                        'BENCHMARK_REUSE_EVIDENCE')
+                # Resolve locations only; keep hashes, times, native identity and
+                # authority bytes unchanged. The destination bundle revalidates them.
+                source = spec.model_dump(mode='json')
+                source['path'] = str((benchmark_bundle.parent / source['path']).absolute())
+                for proof in source['evidence']:
+                    proof['path'] = str((benchmark_bundle.parent / proof['path']).absolute())
+                files.append(source)
+                present.add(spec.request['params']['ts_code'])
     if v2:
         universe = sorted({r['ts_code'] for s in files if s['request']['api'] == 'stock_basic'
                            for r in decode_response(Path(s['path']).read_bytes(), s['request'])})
