@@ -1,0 +1,9 @@
+{
+  "version": "RESEARCH_COST_TRIAGE_V1",
+  "size": 16,
+  "maximum_per_industry": 3,
+  "extreme_return20": 0.5,
+  "not_extended_return20": 0.1,
+  "representative_codes": ["601811.SH", "301190.SZ", "688137.SH", "605058.SH", "600036.SH", "000002.SZ", "920779.BJ", "601872.SH"],
+  "note": "研究样本分配与风险核查启发式，未经收益验证；不是交易参数或买入评级，不调整原20/60筛选。代表公司来自本批明确的公开研究范围，不读取个人watch或Journal。"
+}

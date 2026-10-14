@@ -195,3 +195,31 @@ def radar_command(bundle: str = typer.Option(..., '--bundle'), as_of: str = type
     except Exception:
         typer.echo('Research radar: FAIL (private details suppressed; no orders)')
         raise typer.Exit(1) from None
+
+
+@app.command('company')
+def company_command(market: Path = typer.Option(..., '--market'),
+                    memberships: Path = typer.Option(..., '--memberships'),
+                    catalog: Path = typer.Option(..., '--catalog'),
+                    documents: Path = typer.Option(..., '--documents'),
+                    policy: Path = typer.Option(Path('config/research/company-priority-v1.json'), '--policy'),
+                    output: Path = typer.Option(..., '--output')) -> None:
+    """Build sourced company cards from an existing fixed market snapshot; zero HTTP/orders."""
+    from astock.company.models import ResearchCatalog
+    from astock.company.workflow import build, publish, shortlist, verify_documents
+    from astock.research.core import require
+    try:
+        root = get_project_root().resolve()
+        target = output.absolute()
+        require(not any(p.is_symlink() for p in (target, *target.parents)), 'COMPANY_OUTPUT_SYMLINK')
+        require(target.resolve().is_relative_to(root / 'docs/research/results'), 'COMPANY_PUBLIC_OUTPUT_PATH')
+        require(documents.resolve().is_relative_to(root / 'data/private/research-v3'), 'COMPANY_PRIVATE_DOCUMENT_PATH')
+        snapshot = read_json(market)
+        evidence = ResearchCatalog.model_validate(read_json(catalog))
+        selection = shortlist(snapshot, read_json(memberships), read_json(policy))
+        report = build(snapshot, selection, evidence, documents)
+        run = publish(report, target)
+        typer.echo(f'COMPANY_OBSERVATION_ONLY run={run}; cards={len(report["cards"])}; no HTTP/orders')
+    except Exception:
+        typer.echo('Company research: FAIL (safe details only; no HTTP/orders)')
+        raise typer.Exit(1) from None
