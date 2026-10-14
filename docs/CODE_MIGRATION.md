@@ -140,3 +140,8 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 本批Research V3：新增`company/`为KEEP（轻量证据/公司卡/条件化草案），ResearchStore、features/screen、
 publication与Journal为REUSE，全部只读复用既有真实窗口。原V2实现与回归未替换或删除；没有双轨价格/行业计算、
 新DB或旧数据迁移。`catalysts/`原为空命名骨架，本批实际催化研究统一在company层，不能将空骨架称已实现。
+## Decision Loop V0
+
+新增decision层复用Journal五表、features/radar和compose；没有替换旧采集/历史解码或新建行情实现。
+LinkedResearchStore只读链接组件，后续日更不复制旧窗口。portfolio/backtest旧目录仍为空占位，
+本批小型组合观察和合成实验位于decision，不宣称完整组合/回测系统完成；未来迁移保持单一生产实现。

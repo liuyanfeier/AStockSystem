@@ -224,3 +224,67 @@ def company_command(market: Path = typer.Option(..., '--market'),
     except Exception:
         typer.echo('Company research: FAIL (safe details only; no HTTP/orders)')
         raise typer.Exit(1) from None
+
+
+@app.command('decision-close')
+def decision_close(run: Path = typer.Option(..., '--run'),
+                   previous: Path = typer.Option(..., '--previous'),
+                   latest: Path = typer.Option(..., '--latest'),
+                   documents: Path = typer.Option(..., '--documents'),
+                   baseline_market: Path = typer.Option(..., '--baseline-market'),
+                   bundle: str = typer.Option(..., '--bundle'),
+                   store: Path = typer.Option(..., '--store'),
+                   journal_store: Path = typer.Option(..., '--journal-store'),
+                   output: Path = typer.Option(..., '--output'),
+                   parameters: Path = typer.Option(Path('config/research/observation-v1.json'), '--parameters'),
+                   component: list[str] = typer.Option([], '--component'),
+                   component_store: list[Path] = typer.Option([], '--component-store'),
+                   revisions: Path | None = typer.Option(None, '--revisions'),
+                   position_scope: Path | None = typer.Option(None, '--position-scope'),
+                   public_output: Path | None = typer.Option(None, '--public-output')) -> None:
+    """Repeatable offline close: verified market + research changes + private manual journal."""
+    from astock.features.market import ObservationParameters
+    from astock.decision.models import RunInput, PositionScope
+    from astock.decision.increment import market_context
+    from astock.decision.workflow import compare, persist, verified_catalog
+    from astock.decision.portfolio import portfolio_report
+    from astock.decision.report import publish_private, publish_public
+    from astock.research.core import require
+    try:
+        root = get_project_root().resolve()
+        instruction = RunInput.model_validate(read_json(run))
+        from datetime import datetime, timezone
+        from astock.research.core import instant
+        require(instruction.mode=='OFFLINE_SIMULATION' or instant(instruction.observed_at)<=datetime.now(timezone.utc), 'DECISION_REAL_OBSERVATION_IN_FUTURE')
+        mode_dir = 'real' if instruction.mode == 'REAL_EVIDENCE' else 'simulated'
+        allowed_journal = root/'data/private/research-v1/decision-loop-v0'/mode_dir
+        require(private_path(root,journal_store).is_relative_to(allowed_journal), 'DECISION_JOURNAL_MODE_PATH')
+        require(documents.resolve().is_relative_to(root/'data/private/research-v3'), 'DECISION_DOCUMENT_PATH')
+        require(not any(p.is_symlink() for p in (documents.absolute(),*documents.absolute().parents)), 'DECISION_DOCUMENT_SYMLINK')
+        require(len(component)==len(component_store), 'DECISION_COMPONENT_STORE_COUNT')
+        require(len(set(component))==len(component), 'DECISION_DUPLICATE_COMPONENT')
+        owners = {b:store_at(p) for b,p in zip(component,component_store)}
+        market,members = market_context(store_at(store),bundle,instruction.observed_at,
+                                       ObservationParameters.model_validate(read_json(parameters)),component,owners,
+                                       read_json(revisions) if revisions else None)
+        old = verified_catalog(read_json(previous),documents)
+        new = verified_catalog(read_json(latest),documents)
+        from astock.company.workflow import verified_market_context
+        baseline=read_json(baseline_market)
+        baseline_owner=owners.get(baseline['bundle_id'],store_at(store))
+        verified_market_context(baseline,baseline_owner)
+        report = compare(instruction,old,new,market,members,baseline)
+        journal = store_at(journal_store)
+        destination = private_path(root,output,output=True)
+        scope = PositionScope.model_validate(read_json(private_path(root,position_scope))) if position_scope else None
+        require(scope is None or scope.mode == ('USER_MANUAL' if instruction.mode=='REAL_EVIDENCE' else 'SIMULATED'), 'DECISION_SIMULATED_ACCOUNT_BOUNDARY')
+        journal.initialize()
+        portfolio=portfolio_report(journal,market,report,scope)
+        persist(report,journal,destination/'events')
+        report['portfolio']=portfolio
+        key=publish_private(report,destination)
+        if public_output:publish_public(report,root,public_output)
+        typer.echo(f'DECISION_LOOP_V0 mode={instruction.mode}; run={key}; no HTTP/orders; private portfolio separated')
+    except Exception:
+        typer.echo('Decision close: FAIL (private details suppressed; no HTTP/orders)')
+        raise typer.Exit(1) from None
