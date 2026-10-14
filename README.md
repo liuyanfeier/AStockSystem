@@ -88,3 +88,9 @@ Research V1.1支持九类供应商原JSON直接入库、连续窗口候选Setup�
 历史V1.1试点之后已完成真实128日样本与当前全市场雷达；实际覆盖和未来许可边界以上述当前状态为准。
 当前整批变更/验证与数据边界见[REVIEW](docs/REVIEW.md)，一次采集预算见
 [RESEARCH_ACQUISITION](docs/RESEARCH_ACQUISITION.md)。
+# 当前主线：Decision Loop V0
+
+真实市场/行业与8家公司研究已形成起点；当前补持续判断、持仓退出、组合风险和复盘。
+[三案例决策报告](docs/research/results/2026-10-14-decision-loop-v0/README.md)、
+[收盘命令与边界](docs/DECISION_LOOP_V0.md)、[当前状态](docs/CURRENT_STATE.md)。
+行情仍截至2026-10-12；真实持仓未知、风险参数未授权、无真实订单。

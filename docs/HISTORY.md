@@ -1,5 +1,12 @@
 # 历史设计、来源与审查索引
 
+## 已结束Research阶段
+
+- Research V2：[PR #7](https://github.com/liuyanfeier/AStockSystem/pull/7)与[真实市场/31行业](research/results/2026-10-14-real-market-v2/REPORT.md)；真实行情到10月12日，策略盈利未验证。
+- Research V3：[PR #8](https://github.com/liuyanfeier/AStockSystem/pull/8)与[8家公司研究](research/results/2026-10-14-company-v3/README.md)。用户告知固定3dec084独立ACCEPT，普通merge0159d72；作为Decision Loop起点。
+- 原累计状态：[3dec084 CURRENT_STATE](https://github.com/liuyanfeier/AStockSystem/blob/3dec08495e0ea4f9b19427b868e5878ad1c81e1d/docs/CURRENT_STATE.md)、[旧ROADMAP](https://github.com/liuyanfeier/AStockSystem/blob/3dec08495e0ea4f9b19427b868e5878ad1c81e1d/docs/ROADMAP.md)。保存当时消费/缺口，旧“没有真实行业/公司研究”等不再代表当前能力。
+- 原13日45请求：config/research/market-increment-20261013-proposal.json及V3离线摘要，未执行；当前活动方案为Decision Loop固定13–14日49请求，不叠加许可。
+
 历史资料解释已发生的开发、来源、授权和消费，不是当前待执行任务。
 新任务依据用户当前授权、[宪章](PROJECT_CHARTER.md)、[当前状态](CURRENT_STATE.md)
 与 [路线](ROADMAP.md)。旧 Phase1C.2 CLOSED、R2 LOCKED、作者 REVIEW_READY、

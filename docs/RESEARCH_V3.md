@@ -1,5 +1,8 @@
 # Research V3：公司、催化与条件化决策 MVP
 
+本阶段已接受并普通合并PR #8；当前主线为[Decision Loop V0](DECISION_LOOP_V0.md)。
+下述45请求仅保留原未执行单日方案的历史说明，当前唯一活动方案为Decision Loop的13–14日49请求。
+
 在已有真实Research V2上分配研究成本，不增加历史行情平台或交易权限。
 当前交付：[简明决策摘要](research/results/2026-10-14-company-v3/DECISION_BRIEF.md)、
 [8家公司/完整证据与复现](research/results/2026-10-14-company-v3/README.md)。

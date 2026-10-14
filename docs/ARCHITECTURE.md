@@ -66,3 +66,9 @@ Research Store、Features、Regime、Screening、报告及人工日志已在Rese
 Research V3在既有Raw→ResearchStore→Market Radar上增加`company/`离线层：
 验证固定市场投影、行业归属→有限研究分配→来源/财务/催化目录→公司卡/简明摘要/条件化退出。
 无新Store表、数据平台或订单路径；公司研究不改旧采集代码或来源事实，JSON目录与原始PDF分别公开/私有保留。
+## Decision Loop V0
+
+真实市场Store只读 → 有限公司证据版本/初始计划 → 指标检查与证据差异 → 四类研究状态
+→ 专用小型私有Journal Store追加PLAN/REVIEW/EXIT → 私有组合与白名单中文摘要。
+真实/模拟记录分目录，账户完整性/现金/时效不足保持UNKNOWN，不产生订单。
+行情增量用LinkedResearchStore复用原compose链接来源，不复制旧窗口或建设新数据平台。
