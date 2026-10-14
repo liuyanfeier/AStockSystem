@@ -1,0 +1,19 @@
+{
+  "protocol": "COMPANY_RESEARCH_REPRODUCTION_V1",
+  "company_code_hash": "c8e7f6f44830c5cb408fff321ec009ef0673f786ef9b4ed116a502ed18f69012",
+  "code_files": {
+    "src/astock/cli/research.py": "bc8d4dbf088cd20a1dc96b7f489c99bb19490bbd2bccb9822fdf7c9a3c77a405",
+    "src/astock/company/__init__.py": "07d52057d1b718fcac87e8c25ae78f9f08c487fa8519578cecc358a9ac8d1a10",
+    "src/astock/company/models.py": "7833cb8d9405389c44e891377cad4a0cf77b364ed5d2f0d15f3b497085fdbf32",
+    "src/astock/company/render.py": "a65a74fe65482764253ed4790b7c650eae45cbd923c4f13480f5a9abb08c1c39",
+    "src/astock/company/workflow.py": "398a57d96ab4c195e2f1738bc89f35c9574e91a55269a132e799eb5d407dff5c"
+  },
+  "report_hash": "ad6a1736d2a2de860e4fbf8e2caab2b064fb58e320cf7e7aacadda350c921bf9",
+  "catalog_hash": "8e468a6c0c5c8c31ff9223182811fd7e8e1107ae02439843bc4cf91e786080e0",
+  "market_snapshot_hash": "0d235e75a112e3e3a03da497c51fd550ea3551e9c80d3f247dd92a5e363db9ef",
+  "parameters_hash": "364279d3342502e58035674036c24c28a453bec96c14d39d44f0cc330ae986e3",
+  "policy_hash": "c2a0557f289e013241c53e845485ab5700859bff5f930719db0b47c217513a2d",
+  "same_inputs_same_bytes": true,
+  "code_version": "以本PR最终HEAD与上述文件hash为准；未含私有Raw",
+  "independent_pdf_check_script_sha256": "0d6d1ffb4170be319208db2521a6037d423603b623f7e99559e27680f491527c"
+}

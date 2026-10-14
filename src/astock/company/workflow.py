@@ -129,6 +129,16 @@ def arithmetic(figure: dict) -> dict:
         return result
     if start:
         from astock.research.core import day
+        current_start, prior_start = day(start), day(old_start)
+        current_end, prior_end = day(figure['period_end']), day(figure['comparison_period_end'])
+        leap_end = current_end.month == prior_end.month == 2 and {current_end.day, prior_end.day} <= {28, 29}
+        if (current_start.year - prior_start.year != 1
+                or (current_start.month, current_start.day) != (prior_start.month, prior_start.day)
+                or current_end.year - prior_end.year != 1
+                or current_end.month != prior_end.month
+                or current_end.day != prior_end.day and not leap_end):
+            result['validation'] = 'INCOMPARABLE_PERIODS'
+            return result
         now_length = (day(figure['period_end']) - day(start)).days
         old_length = (day(figure['comparison_period_end']) - day(old_start)).days
         if abs(now_length - old_length) > 2:

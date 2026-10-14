@@ -157,3 +157,11 @@ def test_today_disclosure_can_be_observed_without_fabricating_intraday_release()
     x['sources'][0]['published_on']='2026-10-14'
     valid=ResearchCatalog.model_validate(x)
     assert valid.sources[0].available_at == valid.sources[0].retrieved_at
+
+
+def test_similar_length_different_season_or_two_year_base_is_not_yoy():
+    x=ResearchCatalog.model_validate(catalog_input()).companies[0].financials[0].model_dump(mode='json')
+    x.update(comparison_period_start='2025-07-01',comparison_period_end='2025-12-31')
+    assert arithmetic(x)['validation']=='INCOMPARABLE_PERIODS'
+    x.update(comparison_period_start='2024-01-01',comparison_period_end='2024-06-30')
+    assert arithmetic(x)['validation']=='INCOMPARABLE_PERIODS'
