@@ -8,12 +8,16 @@ Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1�
 Level B后续已独立接受于edcc8f55071abd77ae1e415773bc000aa815601a，CI1121 passed。
 PR #3普通merge进入main 05479b5；PR #4已在d5feb9f独立ACCEPT，CI1164 passed，
 按本次授权普通merge进入main 80675e04ab4f645506d111b04dbb8bbfbc7df01f。
-本批修复分支codex/research-capture-safety：HTTP认证/限流立即停、三次服务/传输错误熔断；
-公开投影默认移除人工观察和Journal，自由来源说明不公开。新真实API0，299方案仍未获许可。
-本批源码bbb302e完整回归1175 passed、1 warning；Doctor/12 contracts PASS。
-本批15根最终盘点32,736,449,871逻辑字节、33,761,505,280文件blocks，complete=true；
-保全155655文件无改动/缺失，秘密违规0、私有破坏性删除0。见[验证摘要](research/results/2026-10-13-capture-safety/VALIDATION.md)。
-当前整批版本、验收与最终精确HEAD CI见[REVIEW](REVIEW.md)与修复PR。
+PR #5的P1/P2已由用户提供独立ACCEPT（固定27ed313）；原PR CI进程死亡测试失败，
+仅以29c30b1修复测试隔离：独立Python进程、重新基准化模拟时钟，保留真实进程死亡与不可重发断言。
+本地1175 passed；新SHA的push/PR CI各1175 passed、5 warnings，普通merge进入main
+8ab3a7c6e84a25d645e29085fd9757dbfabc12c4。生产采集实现hash仍为已批准d8e4b225…。
+本轮用户明确授权固定299方案；实际执行采用首错停，第一个SSE stock_basic连接错误成为UNKNOWN：
+**1尝试、0 COMPLETE、0 FAILED、1 UNKNOWN、298未尝试、0 Raw/回执**。本批停止，没有重发或诊断HTTP。
+未取得新股票、行业、日历或行情来源，未导入新Store，未计算全市场雷达或候选；供应商权限/格式未验证。
+原106次消费及391相关文件hash不变，155655历史保护文件无改动/缺失。
+[停采事实与验证](research/results/2026-10-13-market-v2-first-attempt/REPORT.md)和[当前REVIEW](REVIEW.md)
+记录授权来源、实际预算、容量及恢复边界；下一批须另批明确清单，不重置当前UNKNOWN。
 
 ## Research V2软件与真实业务分别验收
 
@@ -24,8 +28,9 @@ PR #3普通merge进入main 05479b5；PR #4已在d5feb9f独立ACCEPT，CI1164 pas
 
 真实业务报告、结构化结果与验证摘要按用户新要求脱敏入Git：[结果入口](research/results/2026-10-13-research-v2/README.md)。
 既有10股真实雷达240项旧指标一致、4候选保留；没有真实行业来源，行业排名/轮动UNKNOWN。
-完整31行业雷达为SYNTHETIC演示，不能宣称真实全市场/行业验收。真实新API0，旧106次尝试不变。
-[固定299请求/128日申请](RESEARCH_V2_ACQUISITION.md)尚待用户整批批准；不把上批试错许可延续到此批。
+完整31行业雷达为SYNTHETIC演示，不能宣称真实全市场/行业验收。旧106次尝试不变。
+[固定299请求/128日方案](RESEARCH_V2_ACQUISITION.md)已获本轮直接用户授权，首个连接UNKNOWN后停止；
+本批未取得新响应。旧Level B的试错许可没有延续到本批，当前不自动恢复。
 此前已具备本地故障停、截断停及三次重复协议/提供者错误熔断；本批补足HTTP/传输熔断与公开人工观察隐私。
 
 已接受PR #4的历史验证时点：本地功能版本bcb2d86全套1160 passed；随后补足协议熔断范围/公开来源列表压缩，
