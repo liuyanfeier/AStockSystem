@@ -1,54 +1,68 @@
-# 当前Review：002真实全A股市场与行业雷达
+# 当前Review：Research V3 公司研究与条件化决策 MVP
 
-## 授权、基线与累计diff
+## 范围、基线与实际diff
 
-实际用户明确：“批准002固定299请求，continue_on_error=true”。指向前一交付的单一准确清单；
-私有保留实际消息/逐成员许可/计划与消费证据，没有额外造人工/GPT审批事实。
-PR #6已按独立ACCEPT普通merge为main7961e02e091e7ab91e3fdf034ba7da0f9d2c48cb。
-同机对照定位受限进程TCP失败，正常网络权限DNS/TCP/TLS及HTTPX certifi验证成功，无代理改造，
-trust_env=False/verify=True保持。[诊断证据](research/results/2026-10-14-network-recovery/VALIDATION.md)。
+本批直接用户任务授权：核对/普通merge已接受PR #7；用现有真实V2形成10–20只分散研究样本，
+完成至少8家公司基本面/催化卡、条件化入场/退出草案和简明摘要；允许有限公开合法只读来源。
+不授权新的Tushare/付费API、权限购买、私有破坏性删除或真实订单。日更清单仅提案。
+没有制造额外人工/GPT审批记录。PR #7固定ec1ec949c384a984e6cfab8e66c4207b83e13118、
+两套1183 CI和main基线均核对后普通Merge为18eb7325d23da345a7edf00e131e98434210b251。
 
-实际执行固定HEAD0275a63a72dda95f19c4f9eb7df3575ebee4aa7b、干净Git，生产执行hash D8和002 plan hash精确匹配。
-分支codex/research-network-recovery，PR基线7961e02；累计实际diff：git diff 7961e02..HEAD。
-包含网络证据、最小离线指数身份复用及边界测试、真实全市场MD/JSON/数值验证和必要状态记录。
-修复提交68c94e144d5fbdf245547c2b0146ca7835915d8b只在299调用结束后完成；不改已执行历史。
-最终固定HEAD/CI从PR head和检查读取，旧成功不冒充新HEAD。
+专用分支codex/research-v3-company，累计diff：`git diff 18eb7325d23da345a7edf00e131e98434210b251..HEAD`。
+14b8344新增轻量模块；304adfe交付8真实公司研究和45请求提案；e1434b2补财务同比季节/年份反例，
+实际报告字节保持相同。最终审查SHA从本PR head读取；测试受测SHA与最终文档HEAD区分，不使用旧CI冒充。
 
-## 真实业务成果
+## 实际业务成果
 
-[第一份全A股市场与行业雷达](research/results/2026-10-14-real-market-v2/REPORT.md)、
-[完整验证/复现](research/results/2026-10-14-real-market-v2/VALIDATION.md)、
-[18股独立Raw算术](research/results/2026-10-14-real-market-v2/NUMERICAL_CHECK.json)已入Git，完整MD/JSON链接在报告。
+[简明决策摘要](research/results/2026-10-14-company-v3/DECISION_BRIEF.md)、
+[8家公司/完整JSON/来源与复现](research/results/2026-10-14-company-v3/README.md)、
+[101项原表复核](research/results/2026-10-14-company-v3/NUMERICAL_CHECK.json)、
+[公司代码/输入/结果Hash](research/results/2026-10-14-company-v3/REPRODUCTION.json)已入Git。
 
-实际299尝试：297 COMPLETE/2 FAILED/0 UNKNOWN/0未尝试；continue策略正常完成，无熔断/隐式重试。
-两份CSI index_basic空返回，保存Raw及FAILED；没有重发。其他三市场、31行业、128日行情/因子、指数行情均成功。
-当前池5574（SSE2320/SZSE2905/BSE349），31行业归属覆盖全部池；另340池外行业成员不并入当前池。
-末日已上市5573、有效价格5561、缺12、1只窗口后上市；20日有效5519、MA60有效5440。
-20日下跌占71.61%，MA60上方41.97%；银行扩散较广，传媒有效样本相对强但2只缺20日指标。
-默认20/60筛选1347合格、展示10；前日复算新增134/延续1213/退出468，不解释为买卖指令。
-行业扩散/板块/质量分母和候选反面/失效/不交易条件完整；风险参数未设定、交易资格false。
+- 固定10月12日价格、原20/60资格1347不调参；16只分层研究样本、每行业最多3只，5574只保留资格/容量审计。
+  强行业/强股、温和涨幅、弱行业异常强、极端上涨、ST/质量与代表样本明确区别；资格不等于研究优先或可交易。
+- 深研新华文轩、善水科技、近岸蛋白、澳弘电子、招商银行、万科A、武汉蓝电、招商轮船，覆盖三市场/五板块/八行业。
+  每家均有2025年报、2026一季报和半年报来源。31份PDF（12直接披露、19原始文档镜像），101指标原单位/期间/比较区间/定位。
+- 分开FACT/INFERENCE/HYPOTHESIS/UNKNOWN。文轩/澳弘利润下降，近岸亏损及AI/RNA收入占比限制，
+  善水回款风险、招行息差/拨备、万科持续经营重大不确定性、设备与航运周期等进入反面证据。
+  管理层原因不是独立产业认证，价格上涨不是催化。
+- 交易计划只是人工审核草案；入场前、不能交易、观察退出、逻辑失效、趋势/风控复核、实际执行分别记录。
+  仓位、止损%、目标收益、风险预算和期限null，trade_eligible=false，无订单或持仓推断。
 
-原2份指数身份具备真实旧采集4项证据。新增可选benchmark_bundle/CLI --benchmark-bundle，完整旧输入先验证，
-只补缺少的index_basic；同用途/窗口/基准/日历及原authority/time/raw校验保持。仅V1→V2指数身份不绑定股票队列，
-旧股票身份/价格仍拒绝跨池，用户声明身份拒绝补缺。旧Native market=SSE和来源时间不改，002失败不升级。
-实际执行implementation hash `d8e4b225e7e45ac0c77531ced03af8e3f4d826794e88eba1d1a0d18deaaed778`；
-离线修复新hash `13a0110b7a28a4d7d1ce62df6bd5820f560b0b154731fa74c2a0ba05beb48d5e`，不冒充原许可匹配新版。
-002 plan hash `2006eb17e875ff65043d9fe6c6f919b33b05acb19426eaf71a3000ad7b20caf1`未改。
-当前299预算全部消费，未来真实请求须另批准确清单和匹配实现，不延续旧许可。
+## 实现与时间/隐私边界
 
-## 验证与边界
+新增`company/`证据模型/有限成本分配/报告层，无新DB、采集平台、调度器、RAG或并行价格计算。
+CLI先经既有Raw→Store→service复算匹配固定公有投影，再读真实行业归属；不能靠用户自报membership Hash。
+Source只声明保留字节与披露/镜像路径，不授予Tushare的LOCAL_CAPTURE_BOUND或提供方签名。
+引用须同公司、来源可用且不晚于as-of；UNKNOWN不能当FACT推断依据，无源肯定数字拒绝。
+财务同比比较相同财季/一年间隔，负基数与百分比只用绝对变化，银行CFO不作为制造业盈利评分。
 
-相关64 passed，含8新增边界回归；Doctor、12/v2九合同PASS。全量本地回归在源码68c94e1上1183 passed、1 warning（1396.86s）；最终HEAD CI由PR记录，不用旧1175冒充。
-18股/5板块/12行业，108项直接Raw独立数值通过；同输入重复报告、独立新Store重建报告digest一致。
-独立DB使用同一adapter；Raw/许可私有，GPT可审查公开算法/指标/hash，但不能据公开摘要独立证明供应商真实性。
-155655保护文件无改动/缺失；原106关联391文件、001五文件、新002消费/Raw899文件交付前hash复核；原库写入/私有删除/订单0。
-新目的地+完整私有结果约1.026GB（含独立重建），小于2GiB；全部确认根实际盘点口径见VALIDATION，包含外部历史目录。
-公开白名单不发布Raw、许可、个人Journal/持仓/成交、手工观察或绝对路径；源描述不直传。
+公司研究as-of为2026-10-14T07:17:45.808876+00:00，市场窗口仍止10月12日。
+来源披露日、实际取得、可用时间分别保存；没有精确发布时刻就不虚构，不能回填为10月12日系统已知。
+镜像显示日保守使用，原站精确发布时刻未核实。Hash不是签名，也不证明全部财报真实或会计质量通过。
+公开仅构造的公司/市场事实与研究结果，不读取个人watch/Journal/账户备注；私密字段、绝对路径与凭据不能进入结果。
+PDF、原件、失败连接、许可与个人日志私有。GPT可审算法与公开出处，没有私有Raw时不能据作者自检宣称提供方真实性独立通过。
 
-真实覆盖通过本地用途检查，独立Review待GPT；当前上市池/行业有幸存者与非PIT限制，128日价格不是当时已知信息。
-行情只到10月12日，不追加最近日期；限价/稀疏状态、公告财务、可成交性与风险参数仍有缺口。
-CALENDAR_UNKNOWN诊断对1只窗口后上市也触发，不据此虚构日历来源失败；报告明确说明。
-本批完成首次可信全市场/行业当前观察闭环。下一批优先Fundamental & Catalyst Research V1及候选交易/退出计划，
-不继续无限扩展全历史数据平台，不自动下单。
+## 验证、容量与剩余工作
 
-[上一批Review](https://github.com/liuyanfeier/AStockSystem/blob/0275a63a72dda95f19c4f9eb7df3575ebee4aa7b/docs/REVIEW.md)保留历史诊断与审批边界。
+[本批实际验证记录](research/results/2026-10-14-company-v3/VALIDATION.md)记录受测版本、本地完整回归、CI链接与保全。
+目前已完成52项相关回归；最终财季反例的20项公司测试通过；31文档Hash/前页原生代码、40引用页码、
+101项本期/比较值和单位独立复核，8家主要H1表及银行年度单位页视觉核验。
+首轮完整回归14b8344：1199 passed/1 failed/1 warning；失败是作者在目录盘点期间移动生成目录导致，保留原日志，
+未改保护断言。稳定布局的完整304adfe全量已1202 passed、1 warning；最终季节修复另有20项针对性与同报告复现，
+最终HEAD两套CI链接/实际结果在[本PR #8](https://github.com/liuyanfeier/AStockSystem/pull/8)验证记录与Checks同步。
+
+旧V2所有业务字段与code hash只读复算一致；公司报告重复字节一致。155655历史保护文件、原106关联391文件、
+001五文件、002消费/Raw899文件及原/rebuild两个Store字节复核不变。原库写入/市场API/付费API/私有删除/订单0。
+15个确认根盘点complete=true：逻辑36.170GB、inode文件blocks 37.195GB、349837文件/1845数据库，
+含仓库外历史工作目录与测试/临时根；31份PDF约63.482MB。仍按50GB目标/100GB上限，准确时点/口径见VALIDATION。
+
+[唯一单日未授权方案](RESEARCH_V3.md)：2026-10-13、45请求/45尝试、2MiB/响应、90MiB总响应、目的地新增1GiB。
+含新Store复用旧窗口成本；新SSE指数身份请求不绕过旧窗口约束，不重发002失败CSI成员或更改旧消费。
+计划Hash/新版implementation hash、完整成员与未创建目的地在[离线摘要](research/results/2026-10-14-company-v3/INCREMENT_PROPOSAL.json)，
+execution_authorized=false，尚未HTTP。新授权须匹配该实际清单和实现，不继承002许可。
+
+剩余：竞争/客户/产业与政策独立证据、完整债务附注、最新未穷尽公告、统一估值与交易参数/可成交性验证。
+下一步先研究这些问题与用户可审核的退出逻辑，不继续无限扩充历史数据基础设施。本批作者交付，等待GPT独立Review。
+
+[上一批Review/实际V2事实](https://github.com/liuyanfeier/AStockSystem/blob/ec1ec949c384a984e6cfab8e66c4207b83e13118/docs/REVIEW.md)保留。

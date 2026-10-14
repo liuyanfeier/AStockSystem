@@ -1,0 +1,2958 @@
+{
+  "protocol": "COMPANY_RESEARCH_V1",
+  "as_of": "2026-10-14T07:17:45.808876+00:00",
+  "sources": [
+    {
+      "id": "000002-H1-summary",
+      "code": "000002.SZ",
+      "title": "000002-H1-summary 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-08-28/1225521950.PDF",
+      "published_on": "2026-08-28",
+      "retrieved_at": "2026-10-14T06:54:35.186510+00:00",
+      "available_at": "2026-10-14T06:54:35.186510+00:00",
+      "sha256": "7009ddb75e6202d39ad8f771b7e60950a5071ee00f9ebb3066759d423b1c3c7b",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "000002-forecast",
+      "code": "000002.SZ",
+      "title": "000002-forecast 公司原始披露",
+      "url": "https://disc.static.szse.cn/disc/disk03/finalpage/2026-07-11/95124718-7ee7-4de0-9c0b-b80ef9125461.PDF",
+      "published_on": "2026-07-11",
+      "retrieved_at": "2026-10-14T07:07:26.797713+00:00",
+      "available_at": "2026-10-14T07:07:26.797713+00:00",
+      "sha256": "7e4b7aa8737fb78dbd7c701ce740fee8624fff54399a55037399eb9bfa096bc6",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "000002-ndbg-mirror",
+      "code": "000002.SZ",
+      "title": "万科A：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESZ_STOCK/2026/2026-4/2026-04-01/12053173.PDF",
+      "published_on": "2026-04-01",
+      "retrieved_at": "2026-10-14T07:10:02.598647+00:00",
+      "available_at": "2026-10-14T07:10:02.598647+00:00",
+      "sha256": "b2befc9da2a9e09c798702c351e6af65a4b148e32baa07737b941edc2caf1eba",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "000002-yjdbg-mirror",
+      "code": "000002.SZ",
+      "title": "万科A：2026年一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESZ_STOCK/2026/2026-4/2026-04-30/12286532.PDF",
+      "published_on": "2026-04-30",
+      "retrieved_at": "2026-10-14T07:10:04.353451+00:00",
+      "available_at": "2026-10-14T07:10:04.353451+00:00",
+      "sha256": "4d49af4d1483d7600ab17cc42ada6f032b169ab58c36c230f1a998e75ee180c2",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "301190-H1-summary",
+      "code": "301190.SZ",
+      "title": "301190-H1-summary 公司原始披露",
+      "url": "https://disc.static.szse.cn/disc/disk03/finalpage/2026-08-25/0a29127c-ac51-429a-8a80-5e91854b6b47.PDF",
+      "published_on": "2026-08-25",
+      "retrieved_at": "2026-10-14T06:40:59.625371+00:00",
+      "available_at": "2026-10-14T06:40:59.625371+00:00",
+      "sha256": "345d44705cb3f1a03273f9bf1e4a04bfdb0eb02b527112221c31a29ee23fa8b9",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "301190-forecast",
+      "code": "301190.SZ",
+      "title": "301190-forecast 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-07-20/1225431445.pdf",
+      "published_on": "2026-07-20",
+      "retrieved_at": "2026-10-14T06:41:02.282821+00:00",
+      "available_at": "2026-10-14T06:41:02.282821+00:00",
+      "sha256": "f2f751ff8746b0e3545865e5c0c1f0f16247ef8b891204375c141616efe6d81e",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "301190-ndbg-mirror",
+      "code": "301190.SZ",
+      "title": "善水科技：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESZ_STOCK/2026/2026-4/2026-04-28/12226509.PDF",
+      "published_on": "2026-04-28",
+      "retrieved_at": "2026-10-14T07:09:47.177880+00:00",
+      "available_at": "2026-10-14T07:09:47.177880+00:00",
+      "sha256": "bfb1be1a2a122180c79a2e32129a3d03103937d3d77fb76825639695e953c0f9",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "301190-yjdbg-mirror",
+      "code": "301190.SZ",
+      "title": "善水科技：2026年一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESZ_STOCK/2026/2026-4/2026-04-28/12226531.PDF",
+      "published_on": "2026-04-28",
+      "retrieved_at": "2026-10-14T07:09:47.995035+00:00",
+      "available_at": "2026-10-14T07:09:47.995035+00:00",
+      "sha256": "336615e0ad129e2c96409c1b0dd5f74ecd724be078c0c6c4014520492233e431",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "600036-H1-summary",
+      "code": "600036.SH",
+      "title": "600036-H1-summary 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-08-29/1225530235.PDF",
+      "published_on": "2026-08-29",
+      "retrieved_at": "2026-10-14T06:54:33.472193+00:00",
+      "available_at": "2026-10-14T06:54:33.472193+00:00",
+      "sha256": "3033cb5b4076d49af677cc161f039c5437bba5ba8bf6d9bf4678e9f459baf81c",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "REVIEWED_NOT_AUDITED"
+    },
+    {
+      "id": "600036-ndbg-mirror",
+      "code": "600036.SH",
+      "title": "招商银行：2025年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-3/2026-03-28/12032892.PDF",
+      "published_on": "2026-03-28",
+      "retrieved_at": "2026-10-14T07:09:51.221067+00:00",
+      "available_at": "2026-10-14T07:09:51.221067+00:00",
+      "sha256": "abe612a273468072b176dd51ea460c1e1596f8ca729cbc6db3fa28ba9a57ea79",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "600036-yjdbg-mirror",
+      "code": "600036.SH",
+      "title": "招商银行：2026年第一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-29/12246948.PDF",
+      "published_on": "2026-04-29",
+      "retrieved_at": "2026-10-14T07:10:02.123748+00:00",
+      "available_at": "2026-10-14T07:10:02.123748+00:00",
+      "sha256": "2802004753a3bf4899ebebd55a8bd80d0704390cb791775d528565009d99802d",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "601811-H1-mirror",
+      "code": "601811.SH",
+      "title": "601811-H1-mirror 公司原始披露",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-8/2026-08-27/12547993.PDF",
+      "published_on": "2026-08-27",
+      "retrieved_at": "2026-10-14T06:56:39.605288+00:00",
+      "available_at": "2026-10-14T06:56:39.605288+00:00",
+      "sha256": "27c977a4cd05b4b1c0abd307202ea8f5557ce268c51597e36934793693cb9f25",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "601811-investor",
+      "code": "601811.SH",
+      "title": "601811-investor 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-09-15/1225562526.PDF",
+      "published_on": "2026-09-15",
+      "retrieved_at": "2026-10-14T06:41:01.594364+00:00",
+      "available_at": "2026-10-14T06:41:01.594364+00:00",
+      "sha256": "0e935c01ecbcd92a6c2dc105bc1b87c3689a28153b9f23f75e86872eb7e1c7a9",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "601811-ndbg-mirror",
+      "code": "601811.SH",
+      "title": "新华文轩：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-3/2026-03-27/12024245.PDF",
+      "published_on": "2026-03-27",
+      "retrieved_at": "2026-10-14T07:09:45.104201+00:00",
+      "available_at": "2026-10-14T07:09:45.104201+00:00",
+      "sha256": "3e60bef5179567b69a489700c1ebd4b92c610e83b3c15c0dc1114ff30651ab68",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "601811-risk",
+      "code": "601811.SH",
+      "title": "601811-risk 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-09-24/1225579777.PDF",
+      "published_on": "2026-09-24",
+      "retrieved_at": "2026-10-14T06:56:40.027291+00:00",
+      "available_at": "2026-10-14T06:56:40.027291+00:00",
+      "sha256": "111feb1ab6071e61ceaef40a579dc051286643ee6076d701ca9c99bb16705799",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "601811-yjdbg-mirror",
+      "code": "601811.SH",
+      "title": "新华文轩：2026年第一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-30/12279860.PDF",
+      "published_on": "2026-04-30",
+      "retrieved_at": "2026-10-14T07:09:46.738734+00:00",
+      "available_at": "2026-10-14T07:09:46.738734+00:00",
+      "sha256": "fa4200563d06b4417ba28d85fa6878b81c5f480e81faa459e219bc76bf519e79",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "601872-H1",
+      "code": "601872.SH",
+      "title": "601872-H1 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-08-31/1225535203.PDF",
+      "published_on": "2026-08-31",
+      "retrieved_at": "2026-10-14T06:54:34.853375+00:00",
+      "available_at": "2026-10-14T06:54:34.853375+00:00",
+      "sha256": "43a4fb464c4061500be7b2e8b3895ff4da2a07c7cd0c9be51ec4030aee4da097",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "601872-ndbg-mirror",
+      "code": "601872.SH",
+      "title": "招商轮船：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-3/2026-03-27/12023996.PDF",
+      "published_on": "2026-03-27",
+      "retrieved_at": "2026-10-14T07:10:06.734885+00:00",
+      "available_at": "2026-10-14T07:10:06.734885+00:00",
+      "sha256": "3fe6f99980f9f0c2ac241e2f826660141d118af2fe53eafab49e146ef9464a18",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "601872-yjdbg-mirror",
+      "code": "601872.SH",
+      "title": "招商轮船：2026年第一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-25/12199299.PDF",
+      "published_on": "2026-04-25",
+      "retrieved_at": "2026-10-14T07:10:07.557940+00:00",
+      "available_at": "2026-10-14T07:10:07.557940+00:00",
+      "sha256": "100c343d2b3bf63aded3e8199755c0ca8c45a6d82c61d5cc8fd1a7036aa25a57",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "605058-H1-action",
+      "code": "605058.SH",
+      "title": "605058-H1-action 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-08-28/1225519544.PDF",
+      "published_on": "2026-08-28",
+      "retrieved_at": "2026-10-14T06:54:34.743288+00:00",
+      "available_at": "2026-10-14T06:54:34.743288+00:00",
+      "sha256": "96e777de67cee967c3f56550d5cb39ca5ae3c7846222d283aaed750b169697d2",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "605058-ndbg-mirror",
+      "code": "605058.SH",
+      "title": "澳弘电子：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-16/12092770.PDF",
+      "published_on": "2026-04-16",
+      "retrieved_at": "2026-10-14T07:09:50.099540+00:00",
+      "available_at": "2026-10-14T07:09:50.099540+00:00",
+      "sha256": "f70bb99d9bbacb4ed70fe7773b433a04585eae936cb151a9130ace118b6913e5",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "605058-risk",
+      "code": "605058.SH",
+      "title": "605058-risk 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-09-18/1225569325.PDF",
+      "published_on": "2026-09-18",
+      "retrieved_at": "2026-10-14T06:56:40.765496+00:00",
+      "available_at": "2026-10-14T06:56:40.765496+00:00",
+      "sha256": "eeddd6485e5b9c07536632215f1387f0776e0bf14c4e1cf1e773f0e69d576063",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "605058-yjdbg-mirror",
+      "code": "605058.SH",
+      "title": "澳弘电子：2026年一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-28/12208139.PDF",
+      "published_on": "2026-04-28",
+      "retrieved_at": "2026-10-14T07:09:50.826807+00:00",
+      "available_at": "2026-10-14T07:09:50.826807+00:00",
+      "sha256": "a02ae762775cef07786520ba35a3209d116c09cdea137181804b3e74a6223766",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "605058-zqbg-mirror",
+      "code": "605058.SH",
+      "title": "澳弘电子：2026年半年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-8/2026-08-28/12559224.PDF",
+      "published_on": "2026-08-28",
+      "retrieved_at": "2026-10-14T07:10:07.882093+00:00",
+      "available_at": "2026-10-14T07:10:07.882093+00:00",
+      "sha256": "45e1e3d5725297b90edde8155c8ced3c05b6c1a6009617adc0c43180cccd9a38",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "688137-H1",
+      "code": "688137.SH",
+      "title": "688137-H1 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-08-28/1225522137.PDF",
+      "published_on": "2026-08-28",
+      "retrieved_at": "2026-10-14T06:54:34.432119+00:00",
+      "available_at": "2026-10-14T06:54:34.432119+00:00",
+      "sha256": "aea20e8ec81a02c26e2c1b57c453c146b301870f5eef09a52a2174a71cc7a500",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "688137-ndbg-mirror",
+      "code": "688137.SH",
+      "title": "近岸蛋白：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-29/12259267.PDF",
+      "published_on": "2026-04-29",
+      "retrieved_at": "2026-10-14T07:09:48.559277+00:00",
+      "available_at": "2026-10-14T07:09:48.559277+00:00",
+      "sha256": "131235ab74e877d4772968b8a26d7abb6a6f2b4ea0ff4d9a856fef56eb077ec6",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "688137-risk",
+      "code": "688137.SH",
+      "title": "688137-risk 公司原始披露",
+      "url": "https://static.cninfo.com.cn/finalpage/2026-10-08/1225595332.PDF",
+      "published_on": "2026-10-08",
+      "retrieved_at": "2026-10-14T07:07:26.119964+00:00",
+      "available_at": "2026-10-14T07:07:26.119964+00:00",
+      "sha256": "12101954b8ae27fe5d0e71b79dd7b8eaa7de9935dbb8c41e525efca8d02cb4cf",
+      "hosting": "DISCLOSURE_PLATFORM",
+      "publication_basis": "DISCLOSURE_PLATFORM_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNKNOWN"
+    },
+    {
+      "id": "688137-yjdbg-mirror",
+      "code": "688137.SH",
+      "title": "近岸蛋白：2026年第一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSESH_STOCK/2026/2026-4/2026-04-29/12259247.PDF",
+      "published_on": "2026-04-29",
+      "retrieved_at": "2026-10-14T07:09:49.521045+00:00",
+      "available_at": "2026-10-14T07:09:49.521045+00:00",
+      "sha256": "be7a2f636b5617e8e5526cd1deb326f019036d3393c88ea58fc665b58293ad2a",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "920779-H1-mirror",
+      "code": "920779.BJ",
+      "title": "920779-H1-mirror 公司原始披露",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSEBJ_STOCK/2026/2026-8/2026-08-20/12511594.PDF",
+      "published_on": "2026-08-20",
+      "retrieved_at": "2026-10-14T06:56:38.315903+00:00",
+      "available_at": "2026-10-14T06:56:38.315903+00:00",
+      "sha256": "f44cef1295a9a72b31c16b49d7dd16f122ad147bf6c9b1f5ba83a6e6fcc24039",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    },
+    {
+      "id": "920779-ndbg-mirror",
+      "code": "920779.BJ",
+      "title": "武汉蓝电：2025年年度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSEBJ_STOCK/2026/2026-3/2026-03-20/12008627.PDF",
+      "published_on": "2026-03-20",
+      "retrieved_at": "2026-10-14T07:10:04.931339+00:00",
+      "available_at": "2026-10-14T07:10:04.931339+00:00",
+      "sha256": "c736cfdc24c62e41c09a27243d31b12e21ca51a7cb5174c14a08455b301471d6",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "AUDITED"
+    },
+    {
+      "id": "920779-yjdbg-mirror",
+      "code": "920779.BJ",
+      "title": "武汉蓝电：2026年一季度报告",
+      "url": "https://file.finance.sina.com.cn/211.154.219.97:9494/MRGG/CNSEBJ_STOCK/2026/2026-4/2026-04-29/12281795.PDF",
+      "published_on": "2026-04-29",
+      "retrieved_at": "2026-10-14T07:10:06.048290+00:00",
+      "available_at": "2026-10-14T07:10:06.048290+00:00",
+      "sha256": "5da89ad97a242422173d7c6d865f509ffc9e1ab66db4040319582c8480d0d235",
+      "hosting": "DOCUMENT_MIRROR",
+      "publication_basis": "MIRROR_ANNOUNCEMENT_DAY",
+      "state": "RETRIEVED",
+      "audit": "UNAUDITED"
+    }
+  ],
+  "companies": [
+    {
+      "code": "601811.SH",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "公司以出版、发行和教育服务为主；教材教辅需求与四川区域教育服务是重要经营基础。",
+          "references": [
+            {
+              "source_id": "601811-H1-mirror",
+              "locator": "PDF第9页"
+            },
+            {
+              "source_id": "601811-H1-mirror",
+              "locator": "PDF第7页，经营情况"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "5006515922.52",
+          "comparison_value": "5527429426.93",
+          "reported_change_percent": "-9.42",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第6页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "654469883.53",
+          "comparison_value": "856544756.92",
+          "reported_change_percent": "-23.59",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第6页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "316747849.00",
+          "comparison_value": "620729893.04",
+          "reported_change_percent": "-48.97",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第6页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "11731677466.92",
+          "comparison_value": "12328513892.29",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601811-ndbg-mirror",
+            "locator": "PDF第6页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "1568450497.66",
+          "comparison_value": "1544856196.33",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601811-ndbg-mirror",
+            "locator": "PDF第6页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "1508458892.06",
+          "comparison_value": "1772478831.63",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601811-ndbg-mirror",
+            "locator": "PDF第6页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "2483727454.06",
+          "comparison_value": "2487814739.84",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601811-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "257182132.87",
+          "comparison_value": "259864121.11",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601811-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "-170871911.15",
+          "comparison_value": "238660866.05",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601811-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_cash",
+          "name": "货币资金",
+          "value": "9119102156.20",
+          "comparison_value": "8813294996.91",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第32页，货币资金"
+          }
+        },
+        {
+          "id": "H1_receivables",
+          "name": "应收账款",
+          "value": "1791523982.36",
+          "comparison_value": "1631558313.21",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第32页，应收账款"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债合计",
+          "value": "7867518685.39",
+          "comparison_value": "7793582360.02",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "601811-H1-mirror",
+            "locator": "PDF第34页，合并资产负债表 负债合计"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "risk_notice",
+          "kind": "FACT",
+          "text": "9月披露异常波动和情绪过热风险，声明主营业务未涉及新技术新产业，未有应披露而未披露重大事项；这是公司自查声明，不是外部保证。",
+          "references": [
+            {
+              "source_id": "601811-risk",
+              "locator": "PDF第2页"
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "2026H1收入、归母利润和经营现金流均同比下降，原表数值见财务表。",
+          "references": [
+            {
+              "source_id": "601811-H1-mirror",
+              "locator": "PDF第6页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "出版发行业务与现金储备提供研究基础，但不足以证明当前价格合理。",
+          "supports": [
+            "business",
+            "results"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "risk_notice"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "20日涨幅与收入、利润和回款下降背离；应先解释经营增量，不能把传媒行情当公司催化。",
+          "supports": [
+            "results",
+            "risk_notice"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "风险观察",
+      "priority_reason": "行业强、价格强，但经营转弱且公司风险提示明确；优先排除叙事误读，暂不追高。",
+      "next_checks": [
+        "下一份实际披露财报：教材教辅销量、毛利率和现金回款是否改善",
+        "核实投资者交流后的经营变化与新增合同原件，不将未披露传闻视为催化"
+      ],
+      "thesis_invalidations": [
+        "未来披露继续显示收入和盈利恶化，不能支持经营改善假设",
+        "已提出的公司新业务/重大合同叙事被公告否认或无法核实"
+      ]
+    },
+    {
+      "code": "301190.SZ",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "染料及农药/医药中间体相关精细化工生产；公司披露氯代吡啶系列募投产能有序释放。",
+          "references": [
+            {
+              "source_id": "301190-forecast",
+              "locator": "PDF第1页"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "477183801.71",
+          "comparison_value": "305197837.40",
+          "reported_change_percent": "56.35",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "301190-H1-summary",
+            "locator": "PDF第2页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "85159773.14",
+          "comparison_value": "47776730.67",
+          "reported_change_percent": "78.25",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "301190-H1-summary",
+            "locator": "PDF第2页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "38508875.97",
+          "comparison_value": "-65986760.17",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "301190-H1-summary",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "770434525.41",
+          "comparison_value": "504617322.62",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "301190-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "71886233.85",
+          "comparison_value": "52954946.94",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "301190-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "-146250662.98",
+          "comparison_value": "-77323208.77",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "301190-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "206107176.71",
+          "comparison_value": "127745007.11",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "301190-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "37959873.56",
+          "comparison_value": "16775409.00",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "301190-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "-50979416.17",
+          "comparison_value": "-56155239.27",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "301190-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "2238986520.75",
+          "comparison_value": "2308970044.04",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "301190-H1-summary",
+            "locator": "PDF第2页，总资产"
+          }
+        },
+        {
+          "id": "H1_equity",
+          "name": "归母净资产",
+          "value": "1997382503.99",
+          "comparison_value": "1942982100.90",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "301190-H1-summary",
+            "locator": "PDF第2页，归母净资产"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "capacity",
+          "kind": "FACT",
+          "text": "公司将H1业绩增长归因于氯代吡啶产量、销量增长和规模效应；该原因来自管理层披露，尚未由客户/产业独立核验。",
+          "references": [
+            {
+              "source_id": "301190-forecast",
+              "locator": "PDF第1页"
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "H1归母盈利增长且经营现金流转正；2025全年经营现金流为负，2026Q1仍为负。",
+          "references": [
+            {
+              "source_id": "301190-H1-summary",
+              "locator": "PDF第2页"
+            },
+            {
+              "source_id": "301190-ndbg-mirror",
+              "locator": "PDF第8页，年度主要会计数据"
+            },
+            {
+              "source_id": "301190-yjdbg-mirror",
+              "locator": "PDF第2页，一季度主要会计数据"
+            }
+          ]
+        },
+        {
+          "id": "cash_history",
+          "kind": "FACT",
+          "text": "2025年度和2026一季度经营现金流与正利润背离，见两份原表。",
+          "references": [
+            {
+              "source_id": "301190-yjdbg-mirror",
+              "locator": "PDF第2页"
+            },
+            {
+              "source_id": "301190-ndbg-mirror",
+              "locator": "PDF第8页，年度主要会计数据"
+            },
+            {
+              "source_id": "301190-yjdbg-mirror",
+              "locator": "PDF第2页，一季度主要会计数据"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "产能释放和盈利增长具备披露基础，值得核查产品销量、价差与现金回款持续性。",
+          "supports": [
+            "capacity",
+            "results"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "capacity"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "20日涨幅很大且行业弱；H1现金流低于净利润，全年/Q1回款压力未能由半年转正单独消除。",
+          "supports": [
+            "results",
+            "cash_history"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_cash",
+          "kind": "UNKNOWN",
+          "text": "H1完整资产负债表及最新现金受限、债务和应收账龄未在本次摘要核查中逐项验证。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "风险观察",
+      "priority_reason": "增长可核实，价格已经大幅先行；优先验证现金转化与氯代吡啶供需，研究优先不等于追涨。",
+      "next_checks": [
+        "下一次财报同时核对氯代吡啶销量/毛利和应收款、票据回款",
+        "取得产品价格、客户需求和产能利用的独立产业证据"
+      ],
+      "thesis_invalidations": [
+        "销量增长没有带来持续现金回款，或应收/存货明显恶化",
+        "产品价差、利用率或安全环保事故推翻规模效应增长假设"
+      ]
+    },
+    {
+      "code": "688137.SH",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "为生命科学研究及生物医药提供重组蛋白、靶点及因子蛋白、诊断原料与酶及试剂相关产品。",
+          "references": [
+            {
+              "source_id": "688137-H1",
+              "locator": "PDF第12页"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "78496109.52",
+          "comparison_value": "72094559.14",
+          "reported_change_percent": "8.88",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第9页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "-29204508.82",
+          "comparison_value": "-24223570.82",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第9页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "-22755776.15",
+          "comparison_value": "-14083452.43",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第9页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "146439493.07",
+          "comparison_value": "127555134.78",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "688137-ndbg-mirror",
+            "locator": "PDF第10页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "-77783391.56",
+          "comparison_value": "-54416282.10",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "688137-ndbg-mirror",
+            "locator": "PDF第10页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "-13362008.60",
+          "comparison_value": "13315815.89",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "688137-ndbg-mirror",
+            "locator": "PDF第10页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "37246747.90",
+          "comparison_value": "33444619.29",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "688137-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "-10604367.75",
+          "comparison_value": "-11808403.41",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "688137-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "-14079183.09",
+          "comparison_value": "-13275293.49",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "688137-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_cash",
+          "name": "货币资金",
+          "value": "734346939.64",
+          "comparison_value": "711099853.70",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第96页，货币资金"
+          }
+        },
+        {
+          "id": "H1_receivables",
+          "name": "应收账款",
+          "value": "61261555.52",
+          "comparison_value": "61767798.67",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第96页，应收账款"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "2138882878.48",
+          "comparison_value": "2151548647.40",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第9页，总资产"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债合计",
+          "value": "140356905.38",
+          "comparison_value": "116826383.69",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "688137-H1",
+            "locator": "PDF第98页，合并资产负债表 负债合计"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "2025全年、2026Q1和H1归母均亏损；H1亏损较上年同期扩大，经营现金流为负。",
+          "references": [
+            {
+              "source_id": "688137-H1",
+              "locator": "PDF第9页"
+            },
+            {
+              "source_id": "688137-ndbg-mirror",
+              "locator": "PDF第10页，年度主要会计数据"
+            },
+            {
+              "source_id": "688137-yjdbg-mirror",
+              "locator": "PDF第1页，一季度主要会计数据"
+            }
+          ]
+        },
+        {
+          "id": "theme",
+          "kind": "FACT",
+          "text": "10月8日风险公告披露：RNA疫苗药物相关产品2025年收入占产品收入11.38%；AI湿实验/数据包业务H1收入占整体不足2%，商业兑现不确定。",
+          "references": [
+            {
+              "source_id": "688137-risk",
+              "locator": "PDF第3页"
+            }
+          ]
+        },
+        {
+          "id": "valuation",
+          "kind": "FACT",
+          "text": "公司风险公告引用9月30日市销率TTM为73.37；仅是该历史日/公司公告口径，不作为10月12日或当前估值。",
+          "references": [
+            {
+              "source_id": "688137-risk",
+              "locator": "PDF第3页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "收入增长与蛋白/酶业务提供继续核查的技术基础，但需要证明商业转化和盈利。",
+          "supports": [
+            "business",
+            "results"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "results"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "亏损扩大、现金流负，AI/RNA收入占比有限；价格快速上涨不能证明新业务已规模盈利。",
+          "supports": [
+            "results",
+            "theme",
+            "valuation"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "风险观察",
+      "priority_reason": "极端上涨与小规模亏损企业叠加，首先核查主题收入占比和估值口径，不产生追高计划。",
+      "next_checks": [
+        "下一份财报核实新业务收入占比、研发费用和现金消耗",
+        "任何AI/RNA订单或客户验证应有原始合同/公告，而不是概念文章"
+      ],
+      "thesis_invalidations": [
+        "新业务收入和商业化验证不支持所设增长假设",
+        "持续亏损或现金消耗加速，且没有可信的改善来源"
+      ]
+    },
+    {
+      "code": "605058.SH",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "主营PCB研发生产销售，覆盖单/双面、多层和HDI，终端包括家电、汽车电子、新能源电源及工控。",
+          "references": [
+            {
+              "source_id": "605058-H1-action",
+              "locator": "PDF第1页"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "773046191.88",
+          "comparison_value": "673738421.76",
+          "reported_change_percent": "14.74",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第5页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "66302104.66",
+          "comparison_value": "80746743.97",
+          "reported_change_percent": "-17.89",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第5页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "132430125.79",
+          "comparison_value": "173928330.34",
+          "reported_change_percent": "-23.86",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第5页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "1348017173.99",
+          "comparison_value": "1293004000.87",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "605058-ndbg-mirror",
+            "locator": "PDF第7页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "152445949.05",
+          "comparison_value": "141498579.04",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "605058-ndbg-mirror",
+            "locator": "PDF第7页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "414817803.27",
+          "comparison_value": "273299638.91",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "605058-ndbg-mirror",
+            "locator": "PDF第7页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "358800374.29",
+          "comparison_value": "338048302.63",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "605058-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "33097544.74",
+          "comparison_value": "36618662.83",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "605058-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "27359295.60",
+          "comparison_value": "52632384.89",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "605058-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_equity",
+          "name": "归母净资产",
+          "value": "1798538700.11",
+          "comparison_value": "1815972444.41",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第6页，归母净资产"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "3718464080.60",
+          "comparison_value": "3668059731.68",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第6页，总资产"
+          }
+        },
+        {
+          "id": "H1_cash",
+          "name": "货币资金",
+          "value": "1387907403.12",
+          "comparison_value": "963528398.46",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第47页，合并资产负债表 货币资金"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债合计",
+          "value": "1919925380.49",
+          "comparison_value": "1852087287.27",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "605058-zqbg-mirror",
+            "locator": "PDF第49页，合并资产负债表 负债合计"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "capacity",
+          "kind": "FACT",
+          "text": "公司披露HDI技改项目竣工投产、泰国基地进入部分客户认证和批量生产阶段；产能落地不等同于利润兑现。",
+          "references": [
+            {
+              "source_id": "605058-H1-action",
+              "locator": "PDF第2页"
+            }
+          ]
+        },
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "H1收入增长，但归母、扣非利润和经营现金流下降；汇兑损益为披露的盈利影响因素。",
+          "references": [
+            {
+              "source_id": "605058-zqbg-mirror",
+              "locator": "PDF第6页"
+            }
+          ]
+        },
+        {
+          "id": "risk_notice",
+          "kind": "FACT",
+          "text": "9月风险公告指出连续涨停、价格偏离基本面和情绪过热风险。",
+          "references": [
+            {
+              "source_id": "605058-risk",
+              "locator": "PDF第1页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "产线和客户认证进展可作为后续订单/毛利验证点，需区分产能、收入和盈利。",
+          "supports": [
+            "capacity",
+            "results"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "capacity"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "电子行业较弱而个股涨幅很大；利润与现金流下降，不宜以新产能叙事忽略汇率和原料压力。",
+          "supports": [
+            "results",
+            "risk_notice"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "风险观察",
+      "priority_reason": "价格/行业背离与建设进展并存；先查泰国和HDI项目的新增利润、外币风险，再考虑观察触发。",
+      "next_checks": [
+        "下一份披露拆分HDI/泰国收入、毛利、利用率与订单兑现",
+        "核实汇兑风险、原材料压力及应收账款质量"
+      ],
+      "thesis_invalidations": [
+        "产能投产未能改善扣非盈利或现金回款",
+        "新客户认证/订单假设未兑现，或汇兑及原料压力持续侵蚀利润"
+      ]
+    },
+    {
+      "code": "600036.SH",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "全国性商业银行，零售与批发金融并重；研究资产质量、息差和资本，不套制造业现金流质量评分。",
+          "references": [
+            {
+              "source_id": "600036-H1-summary",
+              "locator": "PDF第15页，零售与批发金融业务"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "178181",
+          "comparison_value": "169969",
+          "reported_change_percent": "4.83",
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "76445",
+          "comparison_value": "74930",
+          "reported_change_percent": "2.02",
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "304611",
+          "comparison_value": "134461",
+          "reported_change_percent": "126.54",
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "337532",
+          "comparison_value": "337488",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "600036-ndbg-mirror",
+            "locator": "PDF第14页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "150181",
+          "comparison_value": "148391",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "600036-ndbg-mirror",
+            "locator": "PDF第14页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "451457",
+          "comparison_value": "447023",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "600036-ndbg-mirror",
+            "locator": "PDF第14页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "86940",
+          "comparison_value": "83751",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "600036-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "37852",
+          "comparison_value": "37286",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "600036-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "125849",
+          "comparison_value": "95026",
+          "reported_change_percent": null,
+          "unit": "CNY_MILLION",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "600036-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_npl",
+          "name": "不良贷款率",
+          "value": "0.94",
+          "comparison_value": "0.94",
+          "unit": "PERCENT",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第5页，不良贷款率"
+          }
+        },
+        {
+          "id": "H1_provision",
+          "name": "拨备覆盖率",
+          "value": "385.10",
+          "comparison_value": "391.79",
+          "unit": "PERCENT",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第5页，拨备覆盖率"
+          }
+        },
+        {
+          "id": "H1_cet1",
+          "name": "核心一级资本充足率（高级法）",
+          "value": "14.07",
+          "comparison_value": "14.16",
+          "unit": "PERCENT",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第5页，核心一级资本充足率（高级法）"
+          }
+        },
+        {
+          "id": "H1_bps",
+          "name": "普通股每股净资产",
+          "value": "45.40",
+          "comparison_value": "43.43",
+          "unit": "CNY_PER_SHARE",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第4页，普通股每股净资产"
+          }
+        },
+        {
+          "id": "H1_nim",
+          "name": "净息差（净利息收益率）",
+          "value": "1.83",
+          "comparison_value": "1.88",
+          "unit": "PERCENT",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "600036-H1-summary",
+            "locator": "PDF第5页，补充财务比率"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "2026H1营业收入与归母利润增长，不良率较年末持平，净息差同比下降、拨备覆盖率较年末下降。",
+          "references": [
+            {
+              "source_id": "600036-H1-summary",
+              "locator": "PDF第5页"
+            },
+            {
+              "source_id": "600036-H1-summary",
+              "locator": "PDF第3页，主要会计数据"
+            }
+          ]
+        },
+        {
+          "id": "cash_basis",
+          "kind": "FACT",
+          "text": "季度报告指出经营现金流增加包含贷款少增及待清算款项流入，不能把CFO/净利润高直接视为银行盈利质量改善。",
+          "references": [
+            {
+              "source_id": "600036-yjdbg-mirror",
+              "locator": "PDF第2页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "收入/盈利与稳定不良率提供继续研究依据；行业扩散强，个股未显著急涨。",
+          "supports": [
+            "results",
+            "business"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "results"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "息差及拨备下降需要与信用成本、贷款迁徙和资本约束一起看，不能据稳定不良率排除潜在信用风险。",
+          "supports": [
+            "results",
+            "cash_basis"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "继续重点研究",
+      "priority_reason": "作为强银行行业中的温和价格样本，优先核实资产质量与盈利结构；不是买入评级。",
+      "next_checks": [
+        "下一份披露：净息差、不良生成、关注贷款、拨备及资本充足情况",
+        "复核零售/地产暴露和非息收入可持续性，估值与分红使用一致普通股口径"
+      ],
+      "thesis_invalidations": [
+        "不良迁徙、信用成本或拨备不足推翻稳定资产质量假设",
+        "息差持续下行且非息收入不能缓冲盈利，或资本约束恶化"
+      ]
+    },
+    {
+      "code": "000002.SZ",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "房地产开发及相关资产经营为主，并有物业服务、租赁住宅等经营业务；应优先研究债务与流动性而非低价反弹。",
+          "references": [
+            {
+              "source_id": "000002-H1-summary",
+              "locator": "PDF第12页，收入构成"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "70169108549.07",
+          "comparison_value": "105323304409.14",
+          "reported_change_percent": "-33.38",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "-14951268522.50",
+          "comparison_value": "-11946573688.12",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "494766013.42",
+          "comparison_value": "-3038704592.78",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "233432768960.43",
+          "comparison_value": "343176440712.96",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "000002-ndbg-mirror",
+            "locator": "PDF第10页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "-88556470495.64",
+          "comparison_value": "-49478429211.96",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "000002-ndbg-mirror",
+            "locator": "PDF第10页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "-988124860.96",
+          "comparison_value": "3799847632.35",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "000002-ndbg-mirror",
+            "locator": "PDF第11页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "28927889365.26",
+          "comparison_value": "37994649925.08",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "000002-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "-5952156227.34",
+          "comparison_value": "-6246208543.03",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "000002-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "-2163425441.93",
+          "comparison_value": "-5792568806.59",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "000002-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "959761482723.02",
+          "comparison_value": "1020622831532.86",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，总资产"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债总额",
+          "value": "743955250505.51",
+          "comparison_value": "784762773496.17",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，负债总额"
+          }
+        },
+        {
+          "id": "H1_net_debt_ratio",
+          "name": "净负债率",
+          "value": "135.40",
+          "comparison_value": "123.48",
+          "unit": "PERCENT",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "000002-H1-summary",
+            "locator": "PDF第3页，净负债率"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "2025全年及2026H1归母大额亏损；H1净负债率较年末上升，收入下降。",
+          "references": [
+            {
+              "source_id": "000002-H1-summary",
+              "locator": "PDF第3页"
+            },
+            {
+              "source_id": "000002-ndbg-mirror",
+              "locator": "PDF第10页，年度主要会计数据"
+            },
+            {
+              "source_id": "000002-yjdbg-mirror",
+              "locator": "PDF第2页，一季度主要会计数据"
+            }
+          ]
+        },
+        {
+          "id": "debt",
+          "kind": "FACT",
+          "text": "7月业绩预告称10支公开债券获持有人同意展期，并说明经营指标尚无实质改善、债务和流动性承压；该时点展期不是全部债务已解决。",
+          "references": [
+            {
+              "source_id": "000002-forecast",
+              "locator": "PDF第2页"
+            }
+          ]
+        },
+        {
+          "id": "audit_uncertainty",
+          "kind": "FACT",
+          "text": "2025年报重要提示披露：德勤出具无保留意见，但附持续经营重大不确定性段落；无保留意见不代表没有偿债或持续经营风险。",
+          "references": [
+            {
+              "source_id": "000002-ndbg-mirror",
+              "locator": "PDF第2页，重要提示；第98-99页相关说明"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "债券展期与持续经营业务提供风险处置研究线索，但不足以形成困境反转结论。",
+          "supports": [
+            "debt",
+            "business"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "results"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "价格反弹与大额亏损、较高净负债率及持续经营重大不确定性背离；展期不等于偿债风险消失。",
+          "supports": [
+            "results",
+            "debt",
+            "audit_uncertainty"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_audit",
+          "kind": "UNKNOWN",
+          "text": "已核实年报持续经营重大不确定性段落的存在；最新偿债、完整审计附注及全部展期附件未完成独立尽调，不能宣称风险解除。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "风险观察",
+      "priority_reason": "作为公司风险与技术反弹背离的对照样本，优先核实偿债和审计持续经营事项，不以成本价或低股价抄底。",
+      "next_checks": [
+        "核实最新各笔债券展期条款、现金受限、到期有息债务与新增减值",
+        "复核年报/半年报审计或审阅意见及持续经营披露，不以价格反弹代替偿债证据"
+      ],
+      "thesis_invalidations": [
+        "实质违约、展期条件未履行或现金流不能支持运营与交付",
+        "追加减值或亏损继续侵蚀净资产，推翻可信偿债/经营改善假设"
+      ]
+    },
+    {
+      "code": "920779.BJ",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "电池测试设备研发生产销售，面向电池材料、研究机构及产业客户；北交所样本，规模较小。",
+          "references": [
+            {
+              "source_id": "920779-H1-mirror",
+              "locator": "PDF第6页"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "78767571.20",
+          "comparison_value": "73684430.50",
+          "reported_change_percent": "6.90",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "22109541.53",
+          "comparison_value": "29584986.31",
+          "reported_change_percent": "-25.27",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "19538580.01",
+          "comparison_value": "30549764.79",
+          "reported_change_percent": "-36.04",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "167901805.58",
+          "comparison_value": "175365684.96",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "920779-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "62805847.96",
+          "comparison_value": "73597778.82",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "920779-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "63618598.93",
+          "comparison_value": "75614172.26",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "920779-ndbg-mirror",
+            "locator": "PDF第8页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "32471535.96",
+          "comparison_value": "27241638.72",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "920779-yjdbg-mirror",
+            "locator": "PDF第3页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "8910493.03",
+          "comparison_value": "11526595.69",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "920779-yjdbg-mirror",
+            "locator": "PDF第3页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "-577205.81",
+          "comparison_value": "5803204.32",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "920779-yjdbg-mirror",
+            "locator": "PDF第3页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_gross_margin",
+          "name": "毛利率",
+          "value": "55.59",
+          "comparison_value": "57.98",
+          "unit": "PERCENT",
+          "period_end": "2026-06-30",
+          "period_start": "2026-01-01",
+          "comparison_period_end": "2025-06-30",
+          "comparison_period_start": "2025-01-01",
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，毛利率"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债总额",
+          "value": "88252185.55",
+          "comparison_value": "94850764.38",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，负债总额"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "553080876.62",
+          "comparison_value": "591528431.93",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第8页，总资产"
+          }
+        },
+        {
+          "id": "H1_cash",
+          "name": "货币资金",
+          "value": "244974028.08",
+          "comparison_value": "393010292.65",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "920779-H1-mirror",
+            "locator": "PDF第33页，合并资产负债表 货币资金"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "H1收入温和增长，但归母利润、经营现金流和毛利率下降。",
+          "references": [
+            {
+              "source_id": "920779-H1-mirror",
+              "locator": "PDF第8页"
+            }
+          ]
+        },
+        {
+          "id": "capital",
+          "kind": "FACT",
+          "text": "半年报披露已于7月注销13200股回购股份，并完成相应注册资本变更；数量很小，不推断大幅盈利增厚。",
+          "references": [
+            {
+              "source_id": "920779-H1-mirror",
+              "locator": "PDF第7页"
+            }
+          ]
+        },
+        {
+          "id": "receivable_gap",
+          "kind": "FACT",
+          "text": "公司对前五名应收账款客户使用代称，未公开具体名称，原因是客户保密协议；客户核查有明确局限。",
+          "references": [
+            {
+              "source_id": "920779-H1-mirror",
+              "locator": "PDF第4页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "收入仍增长且负债占资产较低，可研究测试设备需求和产品升级。",
+          "supports": [
+            "business",
+            "results"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "results"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "电力设备行业弱而股价较强，毛利/净利下滑；规模、流动性和客户透明度需要额外核查。",
+          "supports": [
+            "results",
+            "receivable_gap"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "普通跟踪",
+      "priority_reason": "覆盖北交所与设备行业背离，优先验证需求及客户回款；不能据较低负债忽略业务盈利下降。",
+      "next_checks": [
+        "下一份财报：大功率产品结构、验收/回款、毛利率和研发投入",
+        "核查原始公告中的项目进度以及匿名客户导致的尽调边界"
+      ],
+      "thesis_invalidations": [
+        "收入扩张无法扭转毛利与盈利下降，或应收回款恶化",
+        "电池设备需求/验收与产品升级假设没有可核验订单或客户证据"
+      ]
+    },
+    {
+      "code": "601872.SH",
+      "profile": [
+        {
+          "id": "business",
+          "kind": "FACT",
+          "text": "航运集团，业务覆盖油轮、干散货、LNG、集装箱及滚装；盈利受运价、航线和船队结构影响。",
+          "references": [
+            {
+              "source_id": "601872-H1",
+              "locator": "PDF第12页，主营业务"
+            }
+          ]
+        }
+      ],
+      "financials": [
+        {
+          "id": "H1_revenue",
+          "name": "2026H1 营业收入",
+          "value": "19651214045.35",
+          "comparison_value": "12584631566.78",
+          "reported_change_percent": "56.15",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第7页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "H1_parent_profit",
+          "name": "2026H1 归属母公司/本行股东净利润",
+          "value": "6959500459.03",
+          "comparison_value": "2124568286.95",
+          "reported_change_percent": "227.57",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第7页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "H1_cfo",
+          "name": "2026H1 经营现金流净额",
+          "value": "8130580091.03",
+          "comparison_value": "3526386301.93",
+          "reported_change_percent": "130.56",
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-06-30",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-06-30",
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第7页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "FY_revenue",
+          "name": "2025FY 营业收入",
+          "value": "28177211131.95",
+          "comparison_value": "25799279395.20",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601872-ndbg-mirror",
+            "locator": "PDF第9页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "FY_parent_profit",
+          "name": "2025FY 归属母公司/本行股东净利润",
+          "value": "6012096267.97",
+          "comparison_value": "5107447941.27",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601872-ndbg-mirror",
+            "locator": "PDF第9页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "FY_cfo",
+          "name": "2025FY 经营现金流净额",
+          "value": "9054927611.30",
+          "comparison_value": "8476220586.11",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "comparison_period_start": "2024-01-01",
+          "comparison_period_end": "2024-12-31",
+          "reference": {
+            "source_id": "601872-ndbg-mirror",
+            "locator": "PDF第9页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "Q1_revenue",
+          "name": "2026Q1 营业收入",
+          "value": "8556013852.97",
+          "comparison_value": "5595174511.35",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601872-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 营业收入"
+          }
+        },
+        {
+          "id": "Q1_parent_profit",
+          "name": "2026Q1 归属母公司/本行股东净利润",
+          "value": "2763413437.55",
+          "comparison_value": "865440837.28",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601872-yjdbg-mirror",
+            "locator": "PDF第1页，主要会计数据表 归属母公司/本行股东净利润"
+          }
+        },
+        {
+          "id": "Q1_cfo",
+          "name": "2026Q1 经营现金流净额",
+          "value": "3313933943.69",
+          "comparison_value": "1380071379.09",
+          "reported_change_percent": null,
+          "unit": "CNY",
+          "period_start": "2026-01-01",
+          "period_end": "2026-03-31",
+          "comparison_period_start": "2025-01-01",
+          "comparison_period_end": "2025-03-31",
+          "reference": {
+            "source_id": "601872-yjdbg-mirror",
+            "locator": "PDF第2页，主要会计数据表 经营现金流净额"
+          }
+        },
+        {
+          "id": "H1_assets",
+          "name": "总资产",
+          "value": "90727367410.94",
+          "comparison_value": "82054880078.89",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第7页，总资产"
+          }
+        },
+        {
+          "id": "H1_equity",
+          "name": "归母净资产",
+          "value": "46837656450.55",
+          "comparison_value": "43005621793.17",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "period_start": null,
+          "comparison_period_end": "2025-12-31",
+          "comparison_period_start": null,
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第7页，归母净资产"
+          }
+        },
+        {
+          "id": "H1_cash",
+          "name": "货币资金",
+          "value": "7887837826.63",
+          "comparison_value": "4720914663.10",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第58页，合并资产负债表 货币资金"
+          }
+        },
+        {
+          "id": "H1_liabilities",
+          "name": "负债合计",
+          "value": "43120672175.56",
+          "comparison_value": "38300086642.94",
+          "unit": "CNY",
+          "period_end": "2026-06-30",
+          "comparison_period_end": "2025-12-31",
+          "reference": {
+            "source_id": "601872-H1",
+            "locator": "PDF第60页，合并资产负债表 负债合计"
+          }
+        }
+      ],
+      "events": [
+        {
+          "id": "results",
+          "kind": "FACT",
+          "text": "H1收入、归母和扣非利润、经营现金流显著增加，见原表；管理层将VLCC高运价列为现金增加的重要原因。",
+          "references": [
+            {
+              "source_id": "601872-H1",
+              "locator": "PDF第26页"
+            },
+            {
+              "source_id": "601872-H1",
+              "locator": "PDF第7页，主要会计数据"
+            }
+          ]
+        },
+        {
+          "id": "cycle",
+          "kind": "FACT",
+          "text": "公司披露新船接收、造船投入与长期借款增加；同时期利润增长不保证运价持续。",
+          "references": [
+            {
+              "source_id": "601872-H1",
+              "locator": "PDF第26页"
+            }
+          ]
+        }
+      ],
+      "support": [
+        {
+          "id": "support",
+          "kind": "INFERENCE",
+          "text": "盈利和现金流同步增长，比单纯价格上涨更有研究依据，适合核查运价和船队经营。",
+          "supports": [
+            "results",
+            "business"
+          ]
+        },
+        {
+          "id": "forward_hypothesis",
+          "kind": "HYPOTHESIS",
+          "text": "若下一份实际披露能同时支持经营逻辑与风险改善，则值得继续承担研究成本；当前未确认。",
+          "supports": [
+            "results"
+          ]
+        }
+      ],
+      "counter": [
+        {
+          "id": "counter",
+          "kind": "INFERENCE",
+          "text": "高运价具有周期性，造船与债务投入增加；不能把半年盈利简单年化为稳定收益。",
+          "supports": [
+            "results",
+            "cycle"
+          ]
+        }
+      ],
+      "unknowns": [
+        {
+          "id": "unknown_latest",
+          "kind": "UNKNOWN",
+          "text": "未穷尽截至研究日全部公告；三季报是否已披露及新增合同/政策受益需要逐项原件核查，不能宣称没有风险。"
+        },
+        {
+          "id": "unknown_valuation",
+          "kind": "UNKNOWN",
+          "text": "没有完成统一股本、TTM及净资产调整的估值复算；不输出目标价、预期收益率或虚构胜率。"
+        },
+        {
+          "id": "unknown_risk",
+          "kind": "UNKNOWN",
+          "text": "用户风险预算、仓位、集中度和交易/退出阈值未批准；交易当日ST/停复牌/限价及新行情未取得。"
+        },
+        {
+          "id": "unknown_competition",
+          "kind": "UNKNOWN",
+          "text": "竞争地位、主要客户/竞品与产业政策受益尚未进行独立交叉核验；公司经营声明不等同于外部证明。"
+        }
+      ],
+      "status": "继续重点研究",
+      "priority_reason": "作为中等行业中的强股/基本面改善对照，优先验证盈利周期、分业务驱动和资本开支。",
+      "next_checks": [
+        "核对下一份财报的VLCC/散货分业务盈利、运价和经营现金流",
+        "交叉核实最新运价原始指数、航线风险与造船资本开支承诺"
+      ],
+      "thesis_invalidations": [
+        "运价/有效运力变化导致扣非盈利和现金回款明显恶化",
+        "航线风险、燃油或船队投入/债务推翻预期自由现金流逻辑"
+      ]
+    }
+  ]
+}

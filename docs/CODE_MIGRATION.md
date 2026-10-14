@@ -136,3 +136,7 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 | tests/test_research_benchmark_reuse.py | KEEP | 8回归覆盖合法补缺、旧文件不改、缺回执/错误窗口基准日历/旧股票越界/用户声明身份拒绝和V1兼容 |
 
 所有真实采集在修复前D8实现完成；离线新版13a0110b…不承接已消费许可。旧失败、Raw、Store及历史代码没有删除/覆盖。
+
+本批Research V3：新增`company/`为KEEP（轻量证据/公司卡/条件化草案），ResearchStore、features/screen、
+publication与Journal为REUSE，全部只读复用既有真实窗口。原V2实现与回归未替换或删除；没有双轨价格/行业计算、
+新DB或旧数据迁移。`catalysts/`原为空命名骨架，本批实际催化研究统一在company层，不能将空骨架称已实现。

@@ -62,3 +62,7 @@ Research Store、Features、Regime、Screening、报告及人工日志已在Rese
 主入口是宪章、CURRENT_STATE、ROADMAP、本文、RESEARCH_V1。历史工作流通过 HISTORY 导航，
 旧状态不自动扩大/阻断新授权。代码仓库只保存源码、契约和脱敏摘要；真实行情、实际许可、
 候选研究、持仓、成交和日志进入私有目录。Git 与数据备份分别管理。
+
+Research V3在既有Raw→ResearchStore→Market Radar上增加`company/`离线层：
+验证固定市场投影、行业归属→有限研究分配→来源/财务/催化目录→公司卡/简明摘要/条件化退出。
+无新Store表、数据平台或订单路径；公司研究不改旧采集代码或来源事实，JSON目录与原始PDF分别公开/私有保留。

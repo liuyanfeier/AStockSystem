@@ -1,0 +1,26 @@
+{
+  "added_disk_bytes": 1073741824,
+  "api_counts": {
+    "adj_factor": 1,
+    "daily": 1,
+    "index_basic": 2,
+    "index_classify": 1,
+    "index_daily": 2,
+    "index_member_all": 31,
+    "stock_basic": 3,
+    "stock_st": 1,
+    "suspend_d": 1,
+    "trade_cal": 2
+  },
+  "attempts": 45,
+  "destination_exists": false,
+  "execution_authorized": false,
+  "implementation_hash": "f725d6ca00224ff5a40a26ae8bc6db93ac5685ec44c19bce15f4cce6f6ae7ea9",
+  "limits": "每成员1次，无自动重试；有限失败继续，既有系统性熔断和本地立即停止保护",
+  "max_body_bytes": 2097152,
+  "plan_hash": "ec26dc8c8c09762d6e2d1ff35abeb9cdfa974785c745c9a7c8c22e596e65c947",
+  "requests": 45,
+  "total_body_bytes": 94371840,
+  "window_end": "2026-10-13",
+  "window_start": "2026-10-13"
+}
