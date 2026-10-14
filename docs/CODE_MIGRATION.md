@@ -126,3 +126,13 @@ NEEDS_VERIFICATION：Level B真实39采集与最新20/60观察报告、数千证
 | 旧进程死亡回归的多线程fork | MIGRATE | 仅测试改为新Python解释器；保留os._exit、durable claim、无call/回执和拒绝重发断言；生产实现hash不变 |
 | Research Store/radar/响应合同/安全保护 | KEEP | 无HTTP响应，无法据此确认合同或权限错误，不修改生产实现 |
 | 原106消费/新增UNKNOWN/保护历史文件 | KEEP | 追加独立失败事实与公开停采投影；不覆盖、删除或重置 |
+
+## 002实际行业雷达后的最小兼容修复
+
+| 范围 | 处置 | 验证与迁移边界 |
+|---|---|---|
+| research/tushare.make_capture_bundle、cli capture-import | REUSE/MIGRATE | 可选已验证benchmark_bundle，仅缺少的指数身份；不新建Store或采集平台 |
+| research/evidence.capture_grade | KEEP/MIGRATE | V1指数身份进入V2可不绑定旧股票队列；用途/窗口/基准/日历/完整4证据不放松；股票来源不能借此跨池 |
+| tests/test_research_benchmark_reuse.py | KEEP | 8回归覆盖合法补缺、旧文件不改、缺回执/错误窗口基准日历/旧股票越界/用户声明身份拒绝和V1兼容 |
+
+所有真实采集在修复前D8实现完成；离线新版13a0110b…不承接已消费许可。旧失败、Raw、Store及历史代码没有删除/覆盖。

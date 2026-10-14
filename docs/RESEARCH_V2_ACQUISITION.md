@@ -107,3 +107,11 @@ implementation hash `d8e4b225e7e45ac0c77531ced03af8e3f4d826794e88eba1d1a0d18deaa
 新许可采用continue_on_error=true，按上文已有熔断实现；不沿用001的首错停政策。
 每成员一次、无自动重试，不在001重发；002的SSE新请求明确纳入新批次授权。
 当前用户只授权工程与诊断，**002未签发许可，不执行市场API**。窗口固定，不因授权后日期变化自动加成员。
+
+## 2026-10-14实际002执行完成
+
+当前用户直接明确批准固定299/continue_on_error=true；正常网络权限、执行HEAD0275a63、原D8/hash2006匹配。
+299已消费：297成功、2失败、0 UNKNOWN、0未尝试；仅两份CSI指数身份空结果，Raw/FAILED保留，不重发。
+[真实5574股/31行业报告与完整验收](research/results/2026-10-14-real-market-v2/REPORT.md)。
+离线新版用旧已验证的同窗口指数身份补缺，implementation hash变为13a0110b…，与原执行D8明确分开。
+没有改计划、补发或延长日期；此批许可已消费完，不能授权新版或下一批真实API。

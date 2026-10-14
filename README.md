@@ -10,7 +10,7 @@
 - [当前状态](docs/CURRENT_STATE.md)：已有软件、真实数据与缺口。
 - [业务路线](docs/ROADMAP.md) · [架构与迁移](docs/ARCHITECTURE.md)。
 - [Research V2 市场与行业雷达](docs/RESEARCH_V2.md) · [原Research V1契约](docs/RESEARCH_V1.md)。
-- [Git内真实业务报告与合成样例](docs/research/results/2026-10-13-research-v2/README.md)。
+- [真实全A股/31行业业务报告](docs/research/results/2026-10-14-real-market-v2/REPORT.md) · [此前真实样本与合成示例](docs/research/results/2026-10-13-research-v2/README.md)。
 - [代码迁移清单](docs/CODE_MIGRATION.md) · [存储治理](docs/STORAGE_GOVERNANCE.md)。
 - [历史证据索引](docs/HISTORY.md) · [本次清理记录](docs/REPOSITORY_RESET.md)。
 - [当前 Review 入口](docs/REVIEW.md)：交付范围、提交基线、验证证据及未完成项。
@@ -22,11 +22,13 @@
 以及按供应商当前池和申万2021一级行业生成市场宽度、行业扩散、板块差异和前日变化的雷达。
 沿用同一features/screen/service；未引入第二套数据平台。
 
-已有10股/2指数128日真实报告，4候选/6排除；雷达复算仍是有限样本，真实行业来源未采集。
-完整行业雷达当前只有合成软件验收，不能称真实全市场通过。业务报告已脱敏提交Git供GPT Review，
-Raw/DB、实际许可、账户与持仓/个人成交仍私有。新[299请求方案](docs/RESEARCH_V2_ACQUISITION.md)
-尚未获批，当前新增真实市场API调用0。行业真实覆盖、公司研究/催化、正式交易计划/退出、
-组合风控和策略验证仍须逐步建设，不自动下单、不继承旧全历史许可。
+2026-10-14已按用户授权完成002固定299请求：297成功、2失败、0 UNKNOWN、0未尝试。
+真实当前池5574股、31行业、128日行情；末日已上市5573、有效价格5561，缺口明确披露。
+两份CSI指数身份空返回保留FAILED，离线复用旧已验证的两指数身份，不重发。
+默认20/60筛选1347合格，程序排序展示10；18股108项Raw独立数值与新Store重建通过。
+完整中文日报/JSON已脱敏入Git供GPT Review；Raw/DB、实际许可及个人记录继续私有。
+这批299预算已全部消费，未来新请求需要准确新授权。下一步优先公司基本面/公告催化、交易与退出计划；
+组合风险和策略验证继续逐步建设，不自动下单、不继承旧全历史许可。
 
 ## 本机运行
 
@@ -61,7 +63,7 @@ uv run --offline --frozen astock research journal-add --event 私有人工记录
 
 输入schema、保留来源adapter与复现见[Research V1](docs/RESEARCH_V1.md)。
 报告存 reports/private/research-v1/，行情不足就缺项或空列表，观察卡不生成订单。
-原10股窗口已真实采集并独立接受；新[全市场预算](docs/RESEARCH_V2_ACQUISITION.md)待批准。
+原10股窗口及旧来源保留；[全市场002方案](docs/RESEARCH_V2_ACQUISITION.md)已执行完毕，不自动滚动采集。
 雷达运行、增量来源与Git业务输出见[Research V2](docs/RESEARCH_V2.md)。
 
 ## 仓库边界
@@ -78,6 +80,6 @@ src/、tests/、config/、sql/、docs/ 是版本资产；data/、private/、repo
 Research V1.1支持九类供应商原JSON直接入库、连续窗口候选Setup观察和人工持仓复盘提醒。
 `uv run --offline --frozen astock research capture`默认只显示39请求待批准清单；
 `capture-import --capture-dir 私有捕获目录`离线转换/导入；报告仍走research report。
-真实新API未授权，128日默认20/60验证目前是合成软件验收，真实来源仍是既有5股3日样本。
+历史V1.1试点之后已完成真实128日样本与当前全市场雷达；实际覆盖和未来许可边界以上述当前状态为准。
 当前整批变更/验证与数据边界见[REVIEW](docs/REVIEW.md)，一次采集预算见
 [RESEARCH_ACQUISITION](docs/RESEARCH_ACQUISITION.md)。
