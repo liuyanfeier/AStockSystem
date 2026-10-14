@@ -99,7 +99,7 @@ def public_projection(report: dict) -> dict:
                       'simulation_event':{k:check['simulation_event'][k] for k in ('code','criterion_id','state','available_at','provenance')}}
                      if 'simulation_event' in check else {**check,'reason':(check.get('latest') or check.get('previous') or {}).get('name',check['metric_id'])+'检查','explanation':'基于已披露指标的有限检查'}
                      for check in card['checks']]
-        if card.get('manual_action') and card['manual_action'].get('provenance')!='OFFLINE_SIMULATION_NOT_USER_ACTION':
+        if card.get('queue_end_from_personal_action') or card.get('manual_action') and card['manual_action'].get('provenance')!='OFFLINE_SIMULATION_NOT_USER_ACTION':
             c.update(state='PRIVATE_ACTION_WITHHELD',state_text='人工观察队列操作不公开')
         result['cards'].append(c)
     result['publication'] = dict(personal_records_included=False, raw_included=False,

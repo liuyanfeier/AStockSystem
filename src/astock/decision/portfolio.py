@@ -32,7 +32,7 @@ def portfolio_report(store, market: dict, decisions: dict, scope: PositionScope 
         code = p['code']; f = prices.get(code); card = cards.get(code)
         fresh = bool(f and f.get('last_date') == decisions['required_market_date'] and f.get('close') is not None)
         value = Decimal(str(f['close'])) * p['shares'] if f and f.get('close') is not None else None
-        state = card['state'] if card else 'UNKNOWN'
+        state = card['hypothesis_state'] if card else 'UNKNOWN'
         rows.append(dict(code=code, shares=p['shares'], confirmed=p['confirmed'], mode=scope.mode,
                          indicative_value_cny=str(value) if value is not None else None,
                          price_date=f.get('last_date') if f else None, price_fresh=fresh,

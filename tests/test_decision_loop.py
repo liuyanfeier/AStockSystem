@@ -217,3 +217,26 @@ def test_close_cli_rejects_invalid_real_observation_before_events(tmp_path,monke
           '--output',str(tmp_path/'reports/private/research-v1/test'),'--position-scope',str(scope)]
     result=CliRunner().invoke(app,args)
     assert result.exit_code==1 and 'private details suppressed' in result.output and not journal.exists()
+
+
+def test_unresolved_event_and_end_watch_survive_next_day_without_reset(tmp_path):
+    _,old,new,run,market=inputs();run['mode']='OFFLINE_SIMULATION'
+    run['simulation_events']=[dict(code='600036.SH',criterion_id='growth',state='INVALIDATION_REVIEW',explanation='模拟逻辑失效',available_at=run['observed_at'],provenance='OFFLINE_SIMULATION_NOT_DISCLOSURE')]
+    store=ResearchStore(tmp_path/'loop.duckdb')
+    first=compare(RunInput.model_validate(run),old,new,market);persist(first,store,tmp_path/'events')
+    run['observed_at']='2026-10-14T04:00:00+00:00';run['simulation_events']=[]
+    follow=compare(RunInput.model_validate(run),old,new,market);persist(follow,store,tmp_path/'events')
+    assert follow['cards'][0]['state']=='INVALIDATION_REVIEW' and follow['cards'][0]['checks'][0]['carried_from_observation']
+    run['observed_at']='2026-10-14T05:00:00+00:00'
+    run['review_actions']=[dict(code='600036.SH',action='END_WATCH',reason='模拟结束',recorded_at=run['observed_at'],confirmed=True,provenance='OFFLINE_SIMULATION_NOT_USER_ACTION')]
+    ended=compare(RunInput.model_validate(run),old,new,market);persist(ended,store,tmp_path/'events')
+    run['observed_at']='2026-10-14T06:00:00+00:00';run['review_actions']=[]
+    last=compare(RunInput.model_validate(run),old,new,market);persist(last,store,tmp_path/'events')
+    assert last['cards'][0]['state']=='END_WATCH' and last['cards'][0]['hypothesis_state']=='INVALIDATION_REVIEW'
+    assert len(journal_snapshot(store,last['as_of'],{})['events'])==6  # stable PLAN, 4 REVIEW, one simulated EXIT
+
+
+def test_old_initial_plan_cannot_be_redefined_with_same_creation_time(tmp_path):
+    store=ResearchStore(tmp_path/'loop.duckdb');r=report();persist(r,store,tmp_path/'events')
+    r['as_of']='2026-10-14T04:00:00+00:00';r['cards'][0]['plan']['thesis']='改写过去判断'
+    with pytest.raises(ValueError,match='DECISION_INITIAL_PLAN_REDEFINED'):persist(r,store,tmp_path/'events')

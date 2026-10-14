@@ -193,6 +193,8 @@ def attach_prior_observations(report: dict, store) -> None:
     for card in report['cards']:
         matching=[]
         for key,old in candidates:
+            if old.get('protocol')=='DECISION_INITIAL_PLAN_V0' and old.get('mode')==report['mode'] and old['plan']['code']==card['code'] and old['as_of']==card['plan']['created_at']:
+                require(old['plan']==card['plan'],'DECISION_INITIAL_PLAN_REDEFINED')
             if old.get('protocol')!='DECISION_LOOP_REPORT_V0' or old.get('mode')!=report['mode'] or instant(old['as_of'])>=instant(report['as_of']):continue
             for prior in old['cards']:
                 if prior['code']==card['code'] and prior['plan']==card['plan']:
@@ -203,6 +205,30 @@ def attach_prior_observations(report: dict, store) -> None:
         newest=[r for r in matching if r[0]==latest_time]
         require(len(newest)==1,'DECISION_AMBIGUOUS_PRIOR_OBSERVATION')
         _,key,old,prior=newest[0]
+        prior_checks={c['id']:c for c in prior['checks']}
+        same_facts=fact_signature(card)==fact_signature(prior)
+        acknowledgement=bool(card.get('manual_action') and card['manual_action']['action']=='ACKNOWLEDGE_CHANGED_EVIDENCE')
+        if not acknowledgement:
+            for check in card['checks']:
+                before=prior_checks.get(check['id'])
+                if before and check['state']=='SUPPORTED' and 'simulation_event' not in check and (
+                        before['state']=='INVALIDATION_REVIEW' or same_facts and before['state'] in ('UNKNOWN','CHALLENGED')):
+                    check.update({k:v for k,v in before.items() if k not in ('id','metric_id','reason')})
+                    check.update(carried_from_observation=key,explanation='没有新证据/明确复核解除上次未决条件，保留原判断')
+            states={c['state'] for c in card['checks']}
+            card['hypothesis_state']='INVALIDATION_REVIEW' if 'INVALIDATION_REVIEW' in states else 'CHALLENGED' if 'CHALLENGED' in states else 'UNKNOWN' if 'UNKNOWN' in states else 'SUPPORTED_BY_CURRENT_CHECKS'
+            if card['state']!='END_WATCH':
+                if 'INVALIDATION_REVIEW' in states:card['state']='INVALIDATION_REVIEW'
+                elif states & {'UNKNOWN','CHALLENGED'}:card['state']='WAIT_EVIDENCE'
+        if prior['state']=='END_WATCH':
+            card['state']='END_WATCH'
+            card['queue_end_from_personal_action']=bool(prior.get('queue_end_from_personal_action') or
+                    prior.get('manual_action') and prior['manual_action']['provenance']=='USER_MANUAL')
+        card['state_text']=STATES[card['state']]
+        if card['state']!='CONTINUE_WATCH' and card['state_text'] not in card['no_trade_reasons']:
+            card['no_trade_reasons'].append(card['state_text'])
+        if card['state']=='END_WATCH':card['priority']='已结束观察；重启需新研究计划'
+        elif card['state']=='INVALIDATION_REVIEW':card['priority']='优先复核'
         prior_price={k:prior['price'].get(k) for k in ('last_date','close','return_20','above_ma60')}
         current_price={k:card['price'].get(k) for k in prior_price}
         changes=[]
@@ -210,11 +236,18 @@ def attach_prior_observations(report: dict, store) -> None:
         if prior_price!=current_price:changes.append(dict(type='PRICE_OBSERVATION',previous=prior_price,latest=current_price))
         if prior.get('technical_eligible')!=card.get('technical_eligible'):
             changes.append(dict(type='TECHNICAL_QUALIFICATION',previous=prior.get('technical_eligible'),latest=card.get('technical_eligible')))
-        prior_checks={c['id']:c for c in prior['checks']}
         for check in card['checks']:
             before=prior_checks.get(check['id'])
-            if before!=check:changes.append(dict(type='CRITERION',id=check['id'],previous=before,latest=check))
+            semantic=lambda c:{k:v for k,v in (c or {}).items() if k not in ('carried_from_observation','explanation')}
+            if semantic(before)!=semantic(check):changes.append(dict(type='CRITERION',id=check['id'],previous=before,latest=check))
         card['previous_observation']=dict(report_id=key,as_of=old['as_of'],catalog_hash=old['latest_catalog_hash'],
                                           state=prior['state'],price=prior_price,
                                           personal_action_included=bool(prior.get('manual_action') and prior['manual_action']['provenance']=='USER_MANUAL'))
         card['changes_since_prior']=changes
+
+
+def fact_signature(card: dict) -> str:
+    research=card['latest_research']
+    facts=[s for section in ('profile','events','support','counter','unknowns') for s in research[section] if s['kind']=='FACT']
+    return digest(dict(financials=research['financials'],facts=facts,
+                       sources={s['id']:s['sha256'] for s in card['sources']}))

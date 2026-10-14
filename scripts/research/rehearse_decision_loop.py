@@ -88,7 +88,7 @@ def main():
     for scenario in ('real','simulated-baseline','simulated','simulated-end'):
         run=RunInput.model_validate(read_json(CONFIG/f'{scenario}-run.json'))
         mode='real' if scenario=='real' else 'simulated'
-        working=PRIVATE/mode/'v3'
+        working=PRIVATE/mode/'v4'
         loop=ResearchStore(working/'journal.duckdb')
         report=compare(run,previous,latest,market,members)
         review_id=persist(report,loop,working/'events')
