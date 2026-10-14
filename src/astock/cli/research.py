@@ -199,14 +199,14 @@ def radar_command(bundle: str = typer.Option(..., '--bundle'), as_of: str = type
 
 @app.command('company')
 def company_command(market: Path = typer.Option(..., '--market'),
-                    memberships: Path = typer.Option(..., '--memberships'),
+                    store: Path = typer.Option(..., '--store'),
                     catalog: Path = typer.Option(..., '--catalog'),
                     documents: Path = typer.Option(..., '--documents'),
                     policy: Path = typer.Option(Path('config/research/company-priority-v1.json'), '--policy'),
                     output: Path = typer.Option(..., '--output')) -> None:
     """Build sourced company cards from an existing fixed market snapshot; zero HTTP/orders."""
     from astock.company.models import ResearchCatalog
-    from astock.company.workflow import build, publish, shortlist, verify_documents
+    from astock.company.workflow import build, publish, shortlist, verified_market_context
     from astock.research.core import require
     try:
         root = get_project_root().resolve()
@@ -216,7 +216,8 @@ def company_command(market: Path = typer.Option(..., '--market'),
         require(documents.resolve().is_relative_to(root / 'data/private/research-v3'), 'COMPANY_PRIVATE_DOCUMENT_PATH')
         snapshot = read_json(market)
         evidence = ResearchCatalog.model_validate(read_json(catalog))
-        selection = shortlist(snapshot, read_json(memberships), read_json(policy))
+        members = verified_market_context(snapshot, store_at(store))
+        selection = shortlist(snapshot, members, read_json(policy))
         report = build(snapshot, selection, evidence, documents)
         run = publish(report, target)
         typer.echo(f'COMPANY_OBSERVATION_ONLY run={run}; cards={len(report["cards"])}; no HTTP/orders')

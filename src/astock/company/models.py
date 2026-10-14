@@ -20,9 +20,9 @@ class Source(Strict):
     published_on: date | None
     retrieved_at: str
     sha256: str | None = Field(default=None, pattern=r'^[0-9a-f]{64}$')
-    hosting: Literal['DISCLOSURE_PLATFORM', 'ISSUER', 'DOCUMENT_MIRROR']
+    hosting: Literal['DISCLOSURE_PLATFORM', 'DOCUMENT_MIRROR']
     state: Literal['RETRIEVED', 'UNAVAILABLE']
-    # End of publication day conservatively avoids inventing an intraday release time.
+    # Local availability is observed retrieval, not an invented publication timestamp.
     available_at: str | None
     publication_basis: Literal['DISCLOSURE_PLATFORM_DAY', 'MIRROR_ANNOUNCEMENT_DAY'] = 'DISCLOSURE_PLATFORM_DAY'
     audit: Literal['AUDITED', 'REVIEWED_NOT_AUDITED', 'UNAUDITED', 'UNKNOWN']
@@ -47,7 +47,7 @@ class Source(Strict):
             from datetime import datetime, time
             from zoneinfo import ZoneInfo
             require(self.published_on is not None, 'COMPANY_PUBLICATION_UNKNOWN')
-            end = datetime.combine(self.published_on, time.max, ZoneInfo('Asia/Shanghai'))
+            end = datetime.combine(self.published_on, time.min, ZoneInfo('Asia/Shanghai'))
             require(instant(self.available_at) >= max(instant(end), instant(self.retrieved_at)), 'COMPANY_PUBLICATION_DAY_BOUNDARY')
         return self
 
@@ -120,8 +120,8 @@ class Company(Strict):
 class ResearchCatalog(Strict):
     protocol: Literal['COMPANY_RESEARCH_V1']
     as_of: str
-    sources: list[Source]
-    companies: list[Company]
+    sources: list[Source] = Field(max_length=100)
+    companies: list[Company] = Field(max_length=20)
 
     @model_validator(mode='after')
     def research_time_and_dependencies(self):

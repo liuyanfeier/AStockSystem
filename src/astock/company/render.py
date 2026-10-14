@@ -34,6 +34,8 @@ def card_markdown(card: dict, report: dict) -> str:
         source = sources[ref['source_id']] if ref else None
         link = f"[{ref['source_id']} · {ref['locator']}]({source['url']})" if ref else 'UNKNOWN'
         period = (figure['period_start'] or '余额日') + ' → ' + figure['period_end']
+        if figure['comparison_period_end']:
+            period += '；对比 ' + (figure['comparison_period_start'] or '余额日') + ' → ' + figure['comparison_period_end']
         lines.append(f"|{figure['name']}|{figure['value'] or ('0' if figure['value'] == '0' else 'UNKNOWN')}|{figure['comparison_value'] if figure['comparison_value'] is not None else '—'}|{figure['unit']}|{period}|{link}|")
     lines += ['', '口径：ASBE合并为主，母公司数字另标；不把半年EPS年化、不自动生成PE/目标价。百分比指标差额用百分点；负基数只算绝对变化。', '']
     for check in card['financial_checks']:
@@ -76,7 +78,7 @@ def brief_markdown(report: dict) -> str:
     extreme = [c['name'] for c in report['cards'] if 'EXTREME_RISE_RISK' in c['allocation']['tags']]
     lines += ['', f"**暂不追高：** {'、'.join(extreme)}。大幅上涨需业务增量、估值和成交证据；当前不具备经审核的追高计划。", '',
               '**近期关注：** 下一份实际披露的三季报、盈利/现金流背离、资产减值及偿债、异常波动公告和已宣布项目的兑现情况。计划事件不等于已发生催化。', '',
-              '**本周工作：** 优先复核招行资产质量和航运盈利驱动；检查文轩/澳弘经营与价格背离；对善水、近岸及万科解决现金回款、亏损和偿债风险。补齐年度/季度原表与独立行业证据，再讨论交易草案。', '',
+              '**本周工作：** 优先复核招行资产质量和航运盈利驱动；检查文轩/澳弘经营与价格背离；对善水、近岸及万科解决现金回款、亏损和偿债风险。深入核查年度/季度风险附注与独立行业证据，再讨论交易草案。', '',
               '**不交易条件：** 未取得新行情与ST/停复牌/限价证据，重大风险未决，无法清楚写出逻辑失效条件，或用户风险预算/集中度/退出参数未批准。当前全部公司只产生观察与人工审核草案。', '',
               '**时点与缺口：** 财报期间、披露日、取得时间分别保存；10月14日的研究不能冒充10月12日历史已知结论。有限来源未穷尽全部公告；未经核实的主题叙事、最新财报及估值保持UNKNOWN。', '',
               '完整事实/推断/假设/未知、原表定位、Hash、筛出与降级理由、条件化入场/退出见各公司卡、[research.json](research.json)及[SHORTLIST.json](SHORTLIST.json)。', '']

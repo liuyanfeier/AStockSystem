@@ -12,6 +12,17 @@ from astock.research.publication import publish_bytes
 from astock.screening.candidates import observation_card, screen
 
 
+def verified_market_context(snapshot: dict, store) -> list[dict]:
+    """Reuse the established Raw→Store→report path, not self-declared member hashes."""
+    from astock.research.service import analyze
+    from astock.research.public_results import public_snapshot
+    parameters = ObservationParameters.model_validate(snapshot['parameters'])
+    regenerated = public_snapshot(analyze(store, snapshot['bundle_id'], snapshot['as_of'], parameters, radar=True))
+    require(digest(regenerated) == digest(snapshot), 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
+    _, rows = store.snapshot(snapshot['bundle_id'], snapshot['as_of'])
+    return [{k: r[k] for k in ('code', 'industry_code', 'source_hash')} for r in rows['industry_membership']]
+
+
 def shortlist(snapshot: dict, memberships: list[dict], policy: dict) -> dict:
     require(snapshot['purpose'] == 'CURRENT_OBSERVATION', 'COMPANY_MARKET_PURPOSE')
     require(10 <= policy['size'] <= 20 and 1 <= policy['maximum_per_industry'] <= 3, 'COMPANY_SHORTLIST_BOUND')
@@ -174,6 +185,7 @@ def build(snapshot: dict, selection: dict, catalog: ResearchCatalog, documents: 
     for company in catalog.companies:
         f = prices[company.code]
         card = observation_card(f, None, selection=chosen[company.code]['allocation_reason'])
+        card['no_trade_conditions'] = [s.replace('公告、基本面、行业/主题及竞争预期未核实', '有限财务/公告已核查；竞争预期、产业证据与最新风险尚未完整核实') for s in card['no_trade_conditions']]
         figures = [v.model_dump(mode='json') for v in company.financials]
         statements = [*company.profile, *company.events, *company.support, *company.counter, *company.unknowns]
         refs = {r.source_id for s in statements for r in s.references}

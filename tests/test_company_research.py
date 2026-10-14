@@ -133,3 +133,27 @@ def test_public_private_text_and_immutable_output(tmp_path):
     r['cards'][0]['research']['priority_reason']='研究'
     publish(r,tmp_path/'out');r['cards'][0]['research']['priority_reason']='changed'
     with pytest.raises(ValueError,match='IMMUTABLE_OBJECT_CHANGED'):publish(r,tmp_path/'out')
+
+
+def test_market_membership_comes_from_verified_store_not_self_hash(monkeypatch):
+    from astock.company.workflow import verified_market_context
+    import astock.research.service as service
+    import astock.research.public_results as public
+    s,m,p=market_input()
+    class Store:
+        def snapshot(self, bundle, as_of):
+            return {}, {'industry_membership':m}
+    monkeypatch.setattr(service,'analyze',lambda *a,**kw: deepcopy(s))
+    monkeypatch.setattr(public,'public_snapshot',lambda x:x)
+    assert verified_market_context(s,Store())==m
+    changed=deepcopy(s);changed['features'][0]['close']=100
+    monkeypatch.setattr(service,'analyze',lambda *a,**kw:changed)
+    with pytest.raises(ValueError,match='COMPANY_MARKET_REPRODUCTION_MISMATCH'):
+        verified_market_context(s,Store())
+
+
+def test_today_disclosure_can_be_observed_without_fabricating_intraday_release():
+    x=catalog_input()
+    x['sources'][0]['published_on']='2026-10-14'
+    valid=ResearchCatalog.model_validate(x)
+    assert valid.sources[0].available_at == valid.sources[0].retrieved_at

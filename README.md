@@ -9,6 +9,7 @@
 - [长期项目宪章 V2](docs/PROJECT_CHARTER.md)：完整业务目标。
 - [当前状态](docs/CURRENT_STATE.md)：已有软件、真实数据与缺口。
 - [业务路线](docs/ROADMAP.md) · [架构与迁移](docs/ARCHITECTURE.md)。
+- [Research V3 公司/催化与条件化决策](docs/RESEARCH_V3.md) · [简明研究摘要](docs/research/results/2026-10-14-company-v3/DECISION_BRIEF.md)。
 - [Research V2 市场与行业雷达](docs/RESEARCH_V2.md) · [原Research V1契约](docs/RESEARCH_V1.md)。
 - [真实全A股/31行业业务报告](docs/research/results/2026-10-14-real-market-v2/REPORT.md) · [此前真实样本与合成示例](docs/research/results/2026-10-13-research-v2/README.md)。
 - [代码迁移清单](docs/CODE_MIGRATION.md) · [存储治理](docs/STORAGE_GOVERNANCE.md)。
@@ -29,6 +30,10 @@
 完整中文日报/JSON已脱敏入Git供GPT Review；Raw/DB、实际许可及个人记录继续私有。
 这批299预算已全部消费，未来新请求需要准确新授权。下一步优先公司基本面/公告催化、交易与退出计划；
 组合风险和策略验证继续逐步建设，不自动下单、不继承旧全历史许可。
+
+Research V3已在固定真实截面上形成16只分散研究短名单、8份公司卡、101项有原表定位的财务数字，
+含基本面、催化、反面证据、UNKNOWN和条件化入场/退出草案。31份公开披露原始文档保持私有，
+必要财务事实、来源URL/Hash与简明日报进入Git。未新增Tushare请求，单日45请求方案只是未授权提案。
 
 ## 本机运行
 
