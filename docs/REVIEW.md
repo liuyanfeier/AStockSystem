@@ -66,3 +66,8 @@ ROADMAP/CURRENT_STATE已改为当前能力，旧累计描述通过HISTORY索引�
 运行实现87b3bc471a1f82ee04357d5563030c4b94c5756f本地完整回归：1234 passed、1 warning，1319.02秒。
 之后自查补同计划观察结束/未决状态跨日延续及禁止重写初始计划，57项相关反例通过；最终HEAD完整CI另核验。
 未把前一SHA的全量结果冒充后续SHA的本地全量结果。
+
+跨日修复运行SHA57388143cf263d6fba3b1069fce6e4f314822d2e本地完整回归：1236 passed、1 warning，1273.64秒。
+最新Doctor PASS、v2九合同PASS；原Store字节与31文档Hash再次核验不变。最终文档HEAD完整CI以[PR #9](https://github.com/liuyanfeier/AStockSystem/pull/9)验证记录/Checks为准，提交时尚在运行，不提前宣称成功。
+
+测试后同一盘点范围15根逻辑42.172GB、文件blocks43.399GB，428555文件/2386数据库；增量主要包含完整回归临时产物，不是新增真实数据或清空旧目录。
