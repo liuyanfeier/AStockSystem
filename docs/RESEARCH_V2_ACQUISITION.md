@@ -92,3 +92,18 @@ BSE行情/因子/行业覆盖实测后单独披露，缺域仍UNKNOWN。
 它包含**1个已UNKNOWN成员的显式新批次重新请求，以及原298个未尝试成员**，不是仅298次。
 原001目录及UNKNOWN不重写。新计划hash见当前REVIEW，execution_authorized=false；本轮原授权不延续。
 下一轮需用户明确批准这个新方案及联网执行环境；不增加诊断HTTP、购买权限或自动重试。
+
+## 2026-10-14网络恢复与002最终核对（待明确授权）
+
+[诊断证据与完整复核](research/results/2026-10-14-network-recovery/VALIDATION.md)：同机正常网络权限下
+DNS/TCP443/TLS及HTTPX certifi验证成功；默认受限进程TCP errno9。无需代理/生产代码改动，
+保持trust_env=False、verify=True。未来真实采集需正常网络权限；本轮业务HTTP/市场API0。
+
+002 dry-run完整299成员通过，除目的地外与001解析计划完全一致，目录未创建。
+plan hash `2006eb17e875ff65043d9fe6c6f919b33b05acb19426eaf71a3000ad7b20caf1`；
+implementation hash `d8e4b225e7e45ac0c77531ced03af8e3f4d826794e88eba1d1a0d18deaaed778`，无变化。
+2026-04-01—2026-10-12、三市场/31行业/两指数、299最大尝试、2MiB/598MiB/2GiB，
+目的地data/private/research-v1/market-v2-20261013-002。
+新许可采用continue_on_error=true，按上文已有熔断实现；不沿用001的首错停政策。
+每成员一次、无自动重试，不在001重发；002的SSE新请求明确纳入新批次授权。
+当前用户只授权工程与诊断，**002未签发许可，不执行市场API**。窗口固定，不因授权后日期变化自动加成员。

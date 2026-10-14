@@ -1,5 +1,13 @@
 # 当前状态
 
+2026-10-14更新：PR #6已按用户独立ACCEPT普通合并为main7961e02。
+同机网络对照定位默认受限进程TCP失败，正常网络权限下DNS/TCP/TLS及HTTPX certifi验证成功；
+当前无需代理或生产代码修改，trust_env=False/verify=True保持。
+本批市场API/业务HTTP0；002完整299成员dry-run和原hash复核通过，目的地尚未创建。
+**002仍待明确整批授权**；批准后采用continue_on_error=true、有限失败继续/系统性熔断，每成员一次。
+[诊断与最终清单](research/results/2026-10-14-network-recovery/VALIDATION.md)。
+以下001首错停及原软件/数据记录保持为历史事实。
+
 2026-10-13。重置及统一Review批次已按用户提供的独立结论关闭：
 a00c7dd544a331fe42c319a1c8ab9826027b988d，对应CI成功、1008 passed。
 Research V1已按用户独立结论ACCEPT：1a81338、CI1032 passed；V1.1及P1在c9eb868独立Level A通过，CI1099 passed。
