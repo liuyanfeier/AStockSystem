@@ -1,0 +1,24 @@
+{
+  "logical_bytes": 36170460272,
+  "unique_file_allocated_bytes": 37195182080,
+  "complete": true,
+  "requested_roots": 15,
+  "counted_roots": 15,
+  "target_bytes": 50000000000,
+  "ceiling_bytes": 100000000000,
+  "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+  "known_loose_tmp_files": {
+    "files": 67,
+    "logical_bytes": 1065622,
+    "allocated_bytes": 1249280
+  },
+  "roots_count": 15,
+  "files": 349837,
+  "databases": 1845,
+  "external_historical_work_directory_included": true,
+  "private_deletions": 0,
+  "scope": "代码仓库/私有数据/生成结果/外部历史目录/pytest和已识别临时根；不等同于整台Mac全部文件",
+  "pdf_files": 31,
+  "pdf_bytes": 63482395,
+  "inventoried_at": "2026-10-14T08:35:22.094243+00:00"
+}

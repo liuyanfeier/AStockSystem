@@ -1,0 +1,46 @@
+{
+  "security": {
+    "files_scanned": 522,
+    "secret_violations": 0,
+    "privacy_violations": 0,
+    "preservation": {
+      "old106": 391,
+      "001": 5,
+      "002": 899
+    },
+    "original_and_rebuilt_store_bytes_unchanged": true,
+    "report_hash": "ad6a1736d2a2de860e4fbf8e2caab2b064fb58e320cf7e7aacadda350c921bf9",
+    "market_api_requests": 0,
+    "paid_api_requests": 0,
+    "private_deletions": 0,
+    "orders": 0
+  },
+  "original_history": {
+    "protected_files": 155655,
+    "changed": 0,
+    "missing": 0
+  },
+  "market_reproduction": {
+    "checks": {
+      "market": true,
+      "features": true,
+      "candidates": true,
+      "excluded": true,
+      "limitations": true,
+      "radar": true,
+      "parameters": true,
+      "parameters_hash": true,
+      "source_hash_sets": true,
+      "sources": true,
+      "window_end": true,
+      "window_start": true,
+      "bundle_id": true,
+      "as_of": true
+    },
+    "business_identical": true,
+    "old_code_hash": "08bf843c265521fea513bf518ac34929bac970a36de1793b6afc0864cd378a0f",
+    "new_code_hash": "08bf843c265521fea513bf518ac34929bac970a36de1793b6afc0864cd378a0f",
+    "seconds": 31.5369002079824,
+    "purpose": "READ_ONLY_ORIGINAL_STORE_NO_REPORT_SAVE"
+  }
+}
