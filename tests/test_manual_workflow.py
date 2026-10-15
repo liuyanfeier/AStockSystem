@@ -321,3 +321,20 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     assert len(final.report['manual_records']) == 3
     assert sha256(source_path.read_bytes()).hexdigest() == before
     assert all(not c['trade_eligible'] and c['order'] is None for c in final.report['cards'])
+
+
+def test_renderer_change_publishes_a_new_pair_and_preserves_old_bytes(workspace, monkeypatch):
+    from astock.decision import report as publication
+    root, _, profile, _ = workspace
+    first = close(workspace)
+    original = first.json_path.read_bytes(), first.markdown_path.read_bytes()
+    output = root / profile['output']
+    render = publication.markdown
+    monkeypatch.setattr(publication, 'renderer_fingerprint', lambda: 'f' * 64)
+    monkeypatch.setattr(publication, 'markdown', lambda r: render(r) + '\n合成渲染升级')
+    changed = deepcopy(first.report)
+    key = publication.publish_private(changed, output)
+    assert key != first.report_id
+    assert (first.json_path.read_bytes(), first.markdown_path.read_bytes()) == original
+    assert (output / f'{key}.md').read_text().endswith('合成渲染升级')
+    assert publication.publish_private(changed, output) == key

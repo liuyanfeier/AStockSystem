@@ -1,5 +1,6 @@
 """Short action-oriented private report and an explicit corporate-only public projection."""
 from pathlib import Path
+from hashlib import sha256
 
 from astock.research.core import digest, encoded, require
 from astock.research.publication import publish_bytes
@@ -67,8 +68,15 @@ def markdown(report: dict, *, public: bool = False) -> str:
     return '\n'.join(lines)
 
 
+def renderer_fingerprint() -> str:
+    return sha256(Path(__file__).read_bytes()).hexdigest()
+
+
 def publish_private(report: dict, output: Path) -> str:
     output.mkdir(parents=True, exist_ok=True)
+    # Rendering can evolve while the research observation remains unchanged.
+    # Bind that version before addressing the pair; never overwrite old Markdown.
+    report['renderer_hash'] = renderer_fingerprint()
     key = digest(report)
     publish_bytes(output/f'{key}.json', encoded(report)+b'\n')
     publish_bytes(output/f'{key}.md', markdown(report).encode())
@@ -81,6 +89,8 @@ def public_projection(report: dict) -> dict:
     allowed = {'protocol','mode','as_of','window_end','required_market_date','market_snapshot_hash',
                'previous_catalog_hash','latest_catalog_hash','run_input_hash','market','market_fresh','limitation'}
     result = {k:report[k] for k in allowed}
+    if 'renderer_hash' in report:
+        result['renderer_hash'] = report['renderer_hash']
     fields = {'code','name','industry_code','state','state_text','hypothesis_state','checks','evidence_changes','sources','previous_sources','price','technical_eligible',
               'previous_catalog_hash','latest_catalog_hash','no_new_disclosures','review_overdue',
               'evidence_refresh_due','next_actions','no_trade_reasons','trade_eligible','risk_budget','position_limit','order'}
