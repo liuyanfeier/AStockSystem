@@ -47,7 +47,7 @@ def portfolio_report(store, market: dict, decisions: dict, scope: PositionScope 
     complete = scope.complete_positions_confirmed and all(r['confirmed'] for r in rows)
     current = all(r['price_fresh'] for r in rows)
     # Empty declared snapshots only prove flat when the user explicitly confirms completeness.
-    account_known = complete and current and total is not None and scope.cash_confirmed
+    account_known = complete and current and total is not None and scope.cash_confirmed and not journal['unreconciled_trades']
     assets = total + scope.cash_cny if account_known else None
     sector_values = {}
     for r in rows:

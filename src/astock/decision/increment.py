@@ -17,11 +17,12 @@ class LinkedResearchStore(ResearchStore):
 def market_context(primary, bundle: str, as_of: str, parameters, components=None, owners=None, revisions=None):
     from astock.research.increment import compose
     from astock.research.service import analyze
-    from astock.research.public_results import public_snapshot
+    from astock.decision.snapshots import MarketSnapshot
     store = LinkedResearchStore(primary, owners or {})
     members = components or []
-    snapshot = public_snapshot(analyze(store, bundle, as_of, parameters, radar=True,
-                                       components=members, revisions=revisions or {}))
+    snapshot = MarketSnapshot.from_analysis(analyze(
+        store, bundle, as_of, parameters, radar=True, components=members,
+        revisions=revisions or {}, include_journal=False)).model_dump(mode='json')
     if members:
         _, rows = compose(store, [bundle,*members], as_of, revisions or {})
     else:

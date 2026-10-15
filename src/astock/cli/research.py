@@ -228,11 +228,21 @@ def company_command(market: Path = typer.Option(..., '--market'),
 
 @app.command('daily')
 def daily_command(profile: Path = typer.Option(..., '--profile'),
-                  check: bool = typer.Option(False, '--check')) -> None:
+                  check: bool = typer.Option(False, '--check'),
+                  observed_at: str | None = typer.Option(None, '--observed-at'),
+                  observe_now: bool = typer.Option(False, '--observe-now'),
+                  market_date: str | None = typer.Option(None, '--market-date')) -> None:
     """Run the existing offline close from one profile; no implicit dates or HTTP."""
-    from astock.decision.daily import load_daily_profile
+    from datetime import datetime, timezone
+    from astock.decision.daily import DailyObservation, load_daily_profile
+    from astock.decision.application import run_close
     try:
-        resolved, instruction = load_daily_profile(get_project_root(), profile)
+        if observed_at and observe_now or bool(observed_at or observe_now) != bool(market_date):
+            raise ValueError('OBSERVATION_DATE_PAIR_REQUIRED')
+        observation = DailyObservation(
+            observed_at=datetime.now(timezone.utc) if observe_now else observed_at,
+            required_market_date=market_date) if observed_at or observe_now else None
+        resolved, instruction = load_daily_profile(get_project_root(), profile, observation)
     except Exception:
         typer.echo('日常配置检查失败：请检查配置版本、路径、文件和真实/模拟模式；未运行收盘流程。')
         raise typer.Exit(1) from None
@@ -240,8 +250,14 @@ def daily_command(profile: Path = typer.Option(..., '--profile'),
     if check:
         typer.echo('配置检查通过；仅读取配置和路径，尚未核验行情内容；未创建Journal或报告。')
         return
-    decision_close(**resolved.close_options())
-    typer.echo('离线研究摘要已生成；未获取新行情，固定旧输入不代表当日更新。')
+    try:
+        result = run_close(get_project_root(), resolved, observation)
+        typer.echo(f'DECISION_LOOP_V0 mode={result.report["mode"]}; run={result.report_id}; no HTTP/orders; private portfolio separated')
+        typer.echo('中文简报：' + str(result.markdown_path.relative_to(get_project_root())))
+        typer.echo('离线研究摘要已生成；未获取新行情，数据是否陈旧以报告截止日为准。')
+    except Exception:
+        typer.echo('日常研究运行失败（私有细节已隐藏）；未获取行情或产生订单。')
+        raise typer.Exit(1) from None
 
 
 @app.command('decision-close')
@@ -261,48 +277,26 @@ def decision_close(run: Path = typer.Option(..., '--run'),
                    position_scope: Path | None = typer.Option(None, '--position-scope'),
                    public_output: Path | None = typer.Option(None, '--public-output')) -> None:
     """Repeatable offline close: verified market + research changes + private manual journal."""
-    from astock.features.market import ObservationParameters
-    from astock.decision.models import RunInput, PositionScope
-    from astock.decision.increment import market_context
-    from astock.decision.workflow import compare, persist, verified_catalog
-    from astock.decision.portfolio import portfolio_report
-    from astock.decision.report import publish_private, publish_public
+    from astock.decision.daily import DailyComponent, DailyProfile
+    from astock.decision.application import run_close
+    from astock.decision.report import publish_public
     from astock.research.core import require
     try:
         root = get_project_root().resolve()
-        instruction = RunInput.model_validate(read_json(run))
-        from datetime import datetime, timezone
-        from astock.research.core import instant
-        require(instruction.mode=='OFFLINE_SIMULATION' or instant(instruction.observed_at)<=datetime.now(timezone.utc), 'DECISION_REAL_OBSERVATION_IN_FUTURE')
-        mode_dir = 'real' if instruction.mode == 'REAL_EVIDENCE' else 'simulated'
-        allowed_journal = root/'data/private/research-v1/decision-loop-v0'/mode_dir
-        require(private_path(root,journal_store).is_relative_to(allowed_journal), 'DECISION_JOURNAL_MODE_PATH')
-        require(documents.resolve().is_relative_to(root/'data/private/research-v3'), 'DECISION_DOCUMENT_PATH')
-        require(not any(p.is_symlink() for p in (documents.absolute(),*documents.absolute().parents)), 'DECISION_DOCUMENT_SYMLINK')
         require(len(component)==len(component_store), 'DECISION_COMPONENT_STORE_COUNT')
-        require(len(set(component))==len(component), 'DECISION_DUPLICATE_COMPONENT')
-        owners = {b:store_at(p) for b,p in zip(component,component_store)}
-        market,members = market_context(store_at(store),bundle,instruction.observed_at,
-                                       ObservationParameters.model_validate(read_json(parameters)),component,owners,
-                                       read_json(revisions) if revisions else None)
-        old = verified_catalog(read_json(previous),documents)
-        new = verified_catalog(read_json(latest),documents)
-        from astock.company.workflow import verified_market_context
-        baseline=read_json(baseline_market)
-        baseline_owner=owners.get(baseline['bundle_id'],store_at(store))
-        verified_market_context(baseline,baseline_owner)
-        report = compare(instruction,old,new,market,members,baseline)
-        journal = store_at(journal_store)
-        destination = private_path(root,output,output=True)
-        scope = PositionScope.model_validate(read_json(private_path(root,position_scope))) if position_scope else None
-        require(scope is None or scope.mode == ('USER_MANUAL' if instruction.mode=='REAL_EVIDENCE' else 'SIMULATED'), 'DECISION_SIMULATED_ACCOUNT_BOUNDARY')
-        journal.initialize()
-        portfolio=portfolio_report(journal,market,report,scope)
-        persist(report,journal,destination/'events')
-        report['portfolio']=portfolio
-        key=publish_private(report,destination)
-        if public_output:publish_public(report,root,public_output)
-        typer.echo(f'DECISION_LOOP_V0 mode={instruction.mode}; run={key}; no HTTP/orders; private portfolio separated')
+        request = DailyProfile(protocol='DAILY_PROFILE_V1', run=run, previous=previous, latest=latest,
+                               documents=documents, baseline_market=baseline_market, bundle=bundle, store=store,
+                               journal_store=journal_store, output=output, parameters=parameters,
+                               components=[DailyComponent(bundle=b, store=p) for b,p in zip(component,component_store)],
+                               revisions=revisions, position_scope=position_scope)
+        result = run_close(root, request)
+        if public_output:
+            publish_public(result.report, root, public_output)
+        typer.echo(f'DECISION_LOOP_V0 mode={result.report["mode"]}; run={result.report_id}; no HTTP/orders; private portfolio separated')
     except Exception:
         typer.echo('Decision close: FAIL (private details suppressed; no HTTP/orders)')
         raise typer.Exit(1) from None
+
+
+from astock.cli.manual import record_command
+app.command('record')(record_command)

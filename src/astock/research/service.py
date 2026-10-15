@@ -11,7 +11,8 @@ from astock.screening.candidates import observation_card, screen
 
 def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: ObservationParameters,
             watch: list[str] | None = None, *, radar: bool = False,
-            components: list[str] | None = None, revisions: dict | None = None) -> dict:
+            components: list[str] | None = None, revisions: dict | None = None,
+            include_journal: bool = True) -> dict:
     cutoff = instant(as_of)
     if components:
         from astock.research.increment import compose
@@ -79,7 +80,9 @@ def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: Observ
                   parameters_hash=digest(parameters.model_dump(mode="json")),
                   sources=manifest["files"], market=market_regime(stocks, benchmarks, manifest["universe_scope"]),
                   features=stocks, candidates=cards, manual_cards=manual, excluded=excluded,
-                  limitations=limitations, journal=journal_snapshot(store, as_of, calculated, parameters.max_stale_calendar_days))
+                  limitations=limitations)
+    if include_journal:
+        result['journal'] = journal_snapshot(store, as_of, calculated, parameters.max_stale_calendar_days)
     if radar:
         from astock.research.radar import attach_radar
         attach_radar(result, manifest, rows, stocks, benchmarks, previous_calculated, parameters)

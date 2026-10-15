@@ -17,10 +17,32 @@ def verified_market_context(snapshot: dict, store) -> list[dict]:
     from astock.research.service import analyze
     from astock.research.public_results import public_snapshot
     parameters = ObservationParameters.model_validate(snapshot['parameters'])
-    regenerated = public_snapshot(analyze(store, snapshot['bundle_id'], snapshot['as_of'], parameters, radar=True))
-    require(digest(regenerated) == digest(snapshot), 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
+    regenerated = public_snapshot(analyze(store, snapshot['bundle_id'], snapshot['as_of'], parameters,
+                                         radar=True, include_journal=False))
+    if digest(regenerated) != digest(snapshot):
+        # Old published results include the old engine and private-snapshot hashes.
+        # Preserve that exact original anchor, then verify every business field with
+        # the current engine. Never replace old metadata with new execution claims.
+        from copy import deepcopy
+        import json
+        from astock.data.warehouse_lock import warehouse_connection
+        key = snapshot.get('publication', {}).get('private_snapshot_hash')
+        require(key is not None and hasattr(store, 'path'), 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
+        with warehouse_connection(store.path, read_only=True) as db:
+            row = db.execute('SELECT snapshot FROM research_report WHERE id=?', [key]).fetchone()
+        require(row is not None, 'COMPANY_MARKET_ORIGINAL_ANCHOR_REQUIRED')
+        original = json.loads(row[0])
+        require(digest(original) == key and digest(public_snapshot(original)) == digest(snapshot),
+                'COMPANY_MARKET_ORIGINAL_ANCHOR_CHANGED')
+        def business(value):
+            result = deepcopy(value)
+            result.pop('code_hash', None)
+            result.get('publication', {}).pop('private_snapshot_hash', None)
+            return result
+        require(digest(business(regenerated)) == digest(business(snapshot)),
+                'COMPANY_MARKET_REPRODUCTION_MISMATCH')
     _, rows = store.snapshot(snapshot['bundle_id'], snapshot['as_of'])
-    return [{k: r[k] for k in ('code', 'industry_code', 'source_hash')} for r in rows['industry_membership']]
+    return [{k: r[k] for k in ('code', 'industry_code', 'source_hash')} for r in rows.get('industry_membership', [])]
 
 
 def shortlist(snapshot: dict, memberships: list[dict], policy: dict) -> dict:

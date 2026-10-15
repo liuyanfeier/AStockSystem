@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field
+from pydantic import AwareDatetime, Field
 
 from astock.company.models import Strict
 from astock.decision.models import PositionScope, RunInput
@@ -13,6 +13,11 @@ from astock.research.core import instant, private_path, read_json, require
 class DailyComponent(Strict):
     bundle: str = Field(min_length=1, max_length=128)
     store: Path
+
+
+class DailyObservation(Strict):
+    observed_at: AwareDatetime
+    required_market_date: str | None = None
 
 
 class DailyProfile(Strict):
@@ -60,13 +65,20 @@ def json_input(root: Path, value: Path) -> Path:
     return path
 
 
-def load_daily_profile(root: Path, path: Path) -> tuple[DailyProfile, RunInput]:
+def load_daily_profile(root: Path, path: Path,
+                       observation: DailyObservation | None = None) -> tuple[DailyProfile, RunInput]:
     """Preflight is read-only; configuration validity is not market-data readiness."""
     root = root.resolve()
     path = json_input(root, path)
     require(path.is_relative_to(root / "config") or path.is_relative_to(root / "data/private"),
             "DAILY_PROFILE_LOCATION")
     profile = DailyProfile.model_validate(read_json(path))
+    return resolve_daily_profile(root, profile, observation)
+
+
+def resolve_daily_profile(root: Path, profile: DailyProfile,
+                          observation: DailyObservation | None = None) -> tuple[DailyProfile, RunInput]:
+    root = root.resolve()
     values = profile.model_dump()
     for name in ("run", "previous", "latest", "baseline_market", "parameters"):
         values[name] = json_input(root, getattr(profile, name))
@@ -76,7 +88,12 @@ def load_daily_profile(root: Path, path: Path) -> tuple[DailyProfile, RunInput]:
     if values["position_scope"] is not None:
         private_path(root, values["position_scope"])
 
-    instruction = RunInput.model_validate(read_json(values["run"]))
+    raw_instruction = read_json(values["run"])
+    if observation:
+        raw_instruction = {**raw_instruction, 'observed_at': observation.observed_at.isoformat()}
+        if observation.required_market_date is not None:
+            raw_instruction['required_market_date'] = observation.required_market_date
+    instruction = RunInput.model_validate(raw_instruction)
     require(instruction.mode == "OFFLINE_SIMULATION" or
             instant(instruction.observed_at) <= datetime.now(timezone.utc),
             "DAILY_FUTURE_REAL_OBSERVATION")

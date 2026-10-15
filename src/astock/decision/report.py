@@ -47,7 +47,18 @@ def markdown(report: dict, *, public: bool = False) -> str:
     lines += ['', 'E. 到期复盘或退出检查', '']
     for card in report['cards']:
         lines += [f"- {card['name']}：{'已到期，需人工复核' if card['review_overdue'] else '未到期'}；{card['plan']['review_due']}（程序提出的研究复核日期）。"]
-    lines += ['', 'F. 今日人工动作', '', '先补新行情与交易状态；核对重大公告。逻辑失效只触发人工检查，真实卖出另记实际成交。',
+    lines += ['', 'F. 今日人工动作', '']
+    if not public:
+        records = sorted(report.get('manual_records', []), key=lambda r: (r['recorded_at'], r['receipt_id']))
+        for item in records[-10:]:
+            detail = item['note'] if item['kind'] == 'NOTE' else (
+                f"持仓快照 {item['shares']}股" if item['kind'] == 'POSITION' else
+                f"{item['side']} 已成交 {item['shares']}股，成交价 {item['price_cny']}元；" +
+                (f"明确补录成交后 {item['remaining_shares']}股" if item['remaining_shares'] is not None else '成交后持仓未核对'))
+            lines.append(f"- {item['code']}：{detail}；事实时间 {item['event_at']}；录入 {item['recorded_at']}（{item['mode']}）。")
+        if report.get('pending_position_reconciliation'):
+            lines.append('待核对成交后持仓：' + '、'.join(report['pending_position_reconciliation']) + '；已阅不解除此待办。')
+    lines += ['', '先补新行情与交易状态；核对重大公告。逻辑失效只触发人工检查，真实卖出另记实际成交。',
               '有真实持仓时请在私有Journal确认快照、原逻辑与复盘；没有提供持仓时保持未知。', '',
               'G. 数据截止与未覆盖事项', '', report['limitation'],
               '估值、竞争、现金/完整持仓、风险参数、最新公告完整性及策略收益仍未验证。', '']

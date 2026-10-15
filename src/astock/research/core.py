@@ -51,7 +51,8 @@ def code_fingerprint() -> str:
     package = Path(__file__).resolve().parents[1]
     files = [*package.joinpath("research").glob("*.py"), package / "features/market.py",
              package / "regime/market.py", package / "screening/candidates.py",
-             package / "reports/research.py"]
+             package / "reports/research.py", package / "features/lineage.py",
+             package / "portfolio/models.py"]
     return digest({str(p.relative_to(package)): hashlib.sha256(p.read_bytes()).hexdigest()
                    for p in sorted(files)})
 

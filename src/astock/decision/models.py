@@ -1,10 +1,10 @@
 """Small explicit contracts; research criteria never authorize trading parameters."""
-from decimal import Decimal
 from typing import Literal
 
 from pydantic import Field, model_validator
 
 from astock.company.models import Strict
+from astock.portfolio.models import PositionScope
 from astock.research.core import instant, require
 
 
@@ -87,20 +87,4 @@ class RunInput(Strict):
         for a in self.review_actions:
             require(a.code in codes and instant(a.recorded_at) <= cutoff, 'DECISION_ACTION_SCOPE_TIME')
             require((self.mode == 'OFFLINE_SIMULATION') == (a.provenance == 'OFFLINE_SIMULATION_NOT_USER_ACTION'), 'DECISION_ACTION_MODE')
-        return self
-
-
-class PositionScope(Strict):
-    mode: Literal['USER_MANUAL', 'SIMULATED']
-    snapshot_at: str
-    position_event_ids: list[str]
-    complete_positions_confirmed: bool = False
-    cash_cny: Decimal | None = Field(default=None, ge=0, allow_inf_nan=False)
-    cash_confirmed: bool = False
-
-    @model_validator(mode='after')
-    def valid_scope(self):
-        instant(self.snapshot_at)
-        require(len(set(self.position_event_ids)) == len(self.position_event_ids), 'PORTFOLIO_DUPLICATE_EVENT')
-        require(not self.cash_confirmed or self.cash_cny is not None, 'PORTFOLIO_CASH_UNKNOWN')
         return self

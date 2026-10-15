@@ -12,12 +12,8 @@ def public_snapshot(snapshot: dict) -> dict:
     result = deepcopy({k:v for k,v in snapshot.items() if k in allowed})
     # Intern repeated provenance vectors without dropping any business metric or source.
     # A full-market JSON must not repeat the same daily source hashes thousands of times.
-    source_hash_sets = {}
-    for feature in result.get('features', []):
-        hashes = sorted(set(feature.pop('source_hashes', [])))
-        key = digest(hashes)
-        source_hash_sets[key] = hashes
-        feature['source_hash_set_id'] = key
+    from astock.features.lineage import intern_feature_sources
+    result['features'], source_hash_sets = intern_feature_sources(result.get('features', []))
     result['source_hash_sets'] = source_hash_sets
     # A manual list is personal even when it contains otherwise public tickers.
     result['manual_cards'] = []
