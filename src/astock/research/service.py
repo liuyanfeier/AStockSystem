@@ -1,5 +1,6 @@
 """One computation path for market, screen and report; no parallel business implementations."""
 from __future__ import annotations
+from typing import Callable
 
 from astock.features.market import ObservationParameters, features
 from astock.regime.market import market_regime
@@ -12,7 +13,8 @@ from astock.screening.candidates import observation_card, screen
 def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: ObservationParameters,
             watch: list[str] | None = None, *, radar: bool = False,
             components: list[str] | None = None, revisions: dict | None = None,
-            include_journal: bool = True) -> dict:
+            include_journal: bool = True,
+            snapshot_consumer: Callable[[dict, dict], None] | None = None) -> dict:
     cutoff = instant(as_of)
     if components:
         from astock.research.increment import compose
@@ -89,4 +91,8 @@ def analyze(store: ResearchStore, bundle_id: str, as_of: str, parameters: Observ
         if components:
             result['composition'] = manifest['composition']
             result['limitations'].append('增量复权因子来自多个采集版本；回溯修订需另作来源版本检查，不能宣称所有历史因子同一vintage。冲突需明确来源选择。')
+    # Internal consumers share these already verified, as-of-filtered rows only
+    # during this calculation. No cache survives the call or skips Store validation.
+    if snapshot_consumer is not None:
+        snapshot_consumer(manifest, rows)
     return result

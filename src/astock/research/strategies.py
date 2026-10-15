@@ -22,6 +22,13 @@ def observe_setups(primary: ResearchStore, bundle: str, as_of: str, required_mar
     store = LinkedResearchStore(primary, owners or {})
     members = components or []
     manifest, rows = compose(store, [bundle,*members], as_of, revisions or {}) if members else store.snapshot(bundle,as_of)
+    return observations_from_snapshot(manifest, rows, [bundle, *members], as_of, required_market_date, parameters)
+
+
+def observations_from_snapshot(manifest: dict, rows: dict, bundle_ids: list[str], as_of: str,
+                               required_market_date: str, parameters: StrategyParameters) -> dict:
+    """Compute from verified application inputs; no source admission or persistence here."""
+    require(instant(as_of) >= parameters.frozen_at, 'STRATEGY_PARAMETERS_AFTER_ASOF')
     grades = sorted({f.get('evidence_grade','USER_DECLARED') for f in manifest['files']})
     synthetic = grades == ['SYNTHETIC']
     require(synthetic or instant(as_of) <= datetime.now(timezone.utc), 'STRATEGY_FUTURE_REAL_OBSERVATION')
@@ -53,7 +60,7 @@ def observe_setups(primary: ResearchStore, bundle: str, as_of: str, required_mar
     return dict(protocol='STRATEGY_OBSERVATIONS_V1',mode='OFFLINE_SYNTHETIC' if synthetic else 'CURRENT_OBSERVATION',
         as_of=instant(as_of).isoformat(),market_date=manifest['window_end'],required_market_date=required_market_date,
         parameters=parameters.model_dump(mode='json'),parameters_hash=digest(parameters.model_dump(mode='json')),
-        code_hash=strategy_code_hash(),bundle_ids=[bundle,*members],source_manifest_hash=digest(manifest),
+        code_hash=strategy_code_hash(),bundle_ids=bundle_ids,source_manifest_hash=digest(manifest),
         source_grades=grades,source_hash_sets=hash_sets,
         summary={v:{**c,'rejection_reasons':dict(c['rejection_reasons']),'paper_blockers':dict(c['paper_blockers'])}
                  for v,c in summary.items()},observations=observations,ranked=ranked,

@@ -32,8 +32,12 @@ def verified_market_context(snapshot: dict, store) -> list[dict]:
     from astock.research.service import analyze
     from astock.research.public_results import public_snapshot
     parameters = ObservationParameters.model_validate(snapshot['parameters'])
+    memberships = []
+    def consume(manifest: dict, rows: dict) -> None:
+        memberships.extend({k:r[k] for k in ('code','industry_code','source_hash')}
+                           for r in rows.get('industry_membership', []))
     regenerated = public_snapshot(analyze(store, snapshot['bundle_id'], snapshot['as_of'], parameters,
-                                         radar=True, include_journal=False))
+                                         radar=True, include_journal=False, snapshot_consumer=consume))
     if digest(regenerated) != digest(snapshot):
         # Old published results include the old engine and private-snapshot hashes.
         # Preserve that exact original anchor, then verify every business field with
@@ -47,8 +51,7 @@ def verified_market_context(snapshot: dict, store) -> list[dict]:
             return result
         require(digest(business(regenerated)) == digest(business(snapshot)),
                 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
-    _, rows = store.snapshot(snapshot['bundle_id'], snapshot['as_of'])
-    return [{k: r[k] for k in ('code', 'industry_code', 'source_hash')} for r in rows.get('industry_membership', [])]
+    return memberships
 
 
 def shortlist(snapshot: dict, memberships: list[dict], policy: dict) -> dict:

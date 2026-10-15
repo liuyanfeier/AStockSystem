@@ -298,6 +298,13 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     profile['strategy_parameters'] = 'config/strategy.json'
     path.write_bytes(encoded(profile))
     before = sha256(source_path.read_bytes()).hexdigest()
+    reads=[]
+    original_snapshot=ResearchStore.snapshot
+    def counted_snapshot(store,*args,**kwargs):
+        if store.path==source_path:
+            reads.append(args)
+        return original_snapshot(store,*args,**kwargs)
+    monkeypatch.setattr(ResearchStore,'snapshot',counted_snapshot)
     clock = [datetime(2026, 10, 14, 4, tzinfo=timezone.utc)]
     monkeypatch.setattr(manual, 'now_utc', lambda: clock[0])
     case = root, path, profile, clock
@@ -358,7 +365,7 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     from astock.decision.report import public_projection
     assert 'strategy_observations' not in public_projection(new_version.report)
     assert sha256(source_path.read_bytes()).hexdigest() == before
-    assert sha256(source_path.read_bytes()).hexdigest() == before
+    assert len(reads)==12  # Six native observations, one current and one original-baseline read each.
 
 
 def test_renderer_change_publishes_a_new_pair_and_preserves_old_bytes(workspace, monkeypatch):

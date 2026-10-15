@@ -62,12 +62,10 @@ def _execute_close(profile: DailyProfile, instruction: RunInput, progress: Calla
     primary = ResearchStore(profile.store)
     owners = {item.bundle: ResearchStore(item.store) for item in profile.components}
     parameters = ObservationParameters.model_validate(read_json(profile.parameters))
-    market, members = market_increment.market_context(primary, profile.bundle, instruction.observed_at, parameters,
-                                     [item.bundle for item in profile.components], owners,
-                                     read_json(profile.revisions) if profile.revisions else None)
     setups = None
+    snapshot_consumer = None
     if profile.strategy_parameters is not None:
-        from astock.research.strategies import observe_setups
+        from astock.research.strategies import observations_from_snapshot
         from astock.screening.strategy_models import StrategyParameters
         progress('STRATEGIES')
         policy = StrategyParameters.model_validate(read_json(profile.strategy_parameters))
@@ -75,9 +73,18 @@ def _execute_close(profile: DailyProfile, instruction: RunInput, progress: Calla
             setups = dict(status='NOT_AVAILABLE_AT_OBSERVATION', frozen_at=policy.frozen_at.isoformat(),
                           explanation='报告截止早于本版策略参数冻结；不把新规则回填成过去的判断。')
         else:
-            setups = dict(status='OBSERVED', **observe_setups(primary, profile.bundle, instruction.observed_at,
-                instruction.required_market_date, policy, components=[item.bundle for item in profile.components],
-                owners=owners, revisions=read_json(profile.revisions) if profile.revisions else None))
+            def consume(manifest: dict, rows: dict) -> None:
+                nonlocal setups
+                progress('STRATEGIES')
+                setups = dict(status='OBSERVED', **observations_from_snapshot(manifest, rows,
+                    [profile.bundle, *[item.bundle for item in profile.components]], instruction.observed_at,
+                    instruction.required_market_date, policy))
+            snapshot_consumer = consume
+    progress('MARKET')
+    market, members = market_increment.market_context(primary, profile.bundle, instruction.observed_at, parameters,
+                                     [item.bundle for item in profile.components], owners,
+                                     read_json(profile.revisions) if profile.revisions else None,
+                                     snapshot_consumer=snapshot_consumer)
     progress('EVIDENCE')
     old = verified_catalog(read_json(profile.previous), profile.documents)
     new = verified_catalog(read_json(profile.latest), profile.documents)

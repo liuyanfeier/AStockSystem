@@ -21,6 +21,12 @@ def test_market_only_native_contract_uses_same_numbers_without_journal_or_publis
     monkeypatch.setattr(publication, 'public_snapshot', denied)
     direct = analyze(store, bundle, ASOF, ObservationParameters(**PARAMS), include_journal=False)
     assert direct['features'] == old['features'] and direct['market'] == old['market'] and 'journal' not in direct
+    snapshots=[]
+    original_snapshot=store.snapshot
+    def tracked(*args,**kwargs):
+        snapshots.append(args)
+        return original_snapshot(*args,**kwargs)
+    monkeypatch.setattr(store,'snapshot',tracked)
     native, memberships = market_context(store, bundle, ASOF, ObservationParameters(**PARAMS))
     assert native['protocol'] == 'MARKET_SNAPSHOT_V1' and memberships == []
     assert 'journal' not in native and 'publication' not in native and 'manual_cards' not in native
@@ -28,6 +34,7 @@ def test_market_only_native_contract_uses_same_numbers_without_journal_or_publis
         original = next(f for f in old['features'] if f['code'] == feature['code'])
         assert feature['close'] == original['close']
         assert set(native['source_hash_sets'][feature['source_hash_set_id']]) == set(original['source_hashes'])
+    assert len(snapshots)==1
 
 
 def test_old_baseline_requires_exact_anchor_then_full_business_reproduction(sample, tmp_path, monkeypatch):
