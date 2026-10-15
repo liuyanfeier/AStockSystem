@@ -197,6 +197,7 @@ def attach_prior_observations(report: dict, store) -> None:
             if old.get('protocol')=='DECISION_INITIAL_PLAN_V0' and old.get('mode')==report['mode'] and old['plan']['code']==card['code'] and old['as_of']==card['plan']['created_at']:
                 require(old['plan']==card['plan'],'DECISION_INITIAL_PLAN_REDEFINED')
             if old.get('protocol')!='DECISION_LOOP_REPORT_V0' or old.get('mode')!=report['mode'] or instant(old['as_of'])>=instant(report['as_of']):continue
+            require(digest(old)==key,'DECISION_PRIOR_REPORT_CHANGED')
             for prior in old['cards']:
                 if prior['code']==card['code'] and prior['plan']==card['plan']:
                     matching.append((instant(old['as_of']),key,old,prior))
@@ -204,8 +205,12 @@ def attach_prior_observations(report: dict, store) -> None:
             card['previous_observation']=None;card['changes_since_prior']=[];continue
         latest_time=max(r[0] for r in matching)
         newest=[r for r in matching if r[0]==latest_time]
-        require(len(newest)==1,'DECISION_AMBIGUOUS_PRIOR_OBSERVATION')
-        _,key,old,prior=newest[0]
+        # Re-rendering/recomputing the same cutoff may change execution metadata.
+        # Collapse only byte-equivalent corporate decisions with the same evidence catalog.
+        # Keep genuine conflicts blocked rather than picking whichever row SQLite returns first.
+        signatures={digest(dict(card=r[3],catalog_hash=r[2]['latest_catalog_hash'])) for r in newest}
+        require(len(signatures)==1,'DECISION_AMBIGUOUS_PRIOR_OBSERVATION')
+        _,key,old,prior=min(newest,key=lambda r:r[1])
         prior_checks={c['id']:c for c in prior['checks']}
         same_facts=fact_signature(card)==fact_signature(prior)
         acknowledgement=bool(card.get('manual_action') and card['manual_action']['action']=='ACKNOWLEDGE_CHANGED_EVIDENCE')
@@ -244,6 +249,8 @@ def attach_prior_observations(report: dict, store) -> None:
         card['previous_observation']=dict(report_id=key,as_of=old['as_of'],catalog_hash=old['latest_catalog_hash'],
                                           state=prior['state'],price=prior_price,
                                           personal_action_included=bool(prior.get('manual_action') and prior['manual_action']['provenance']=='USER_MANUAL'))
+        if len(newest)>1:
+            card['previous_observation']['equivalent_report_ids']=sorted(r[1] for r in newest)
         card['changes_since_prior']=changes
 
 

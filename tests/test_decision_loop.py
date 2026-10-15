@@ -240,3 +240,25 @@ def test_old_initial_plan_cannot_be_redefined_with_same_creation_time(tmp_path):
     store=ResearchStore(tmp_path/'loop.duckdb');r=report();persist(r,store,tmp_path/'events')
     r['as_of']='2026-10-14T04:00:00+00:00';r['cards'][0]['plan']['thesis']='改写过去判断'
     with pytest.raises(ValueError,match='DECISION_INITIAL_PLAN_REDEFINED'):persist(r,store,tmp_path/'events')
+
+
+@pytest.mark.parametrize('conflict',[None,'card','catalog'])
+def test_same_cutoff_execution_versions_only_collapse_identical_decisions(tmp_path,conflict):
+    from astock.decision.workflow import attach_prior_observations
+    store=ResearchStore(tmp_path/'loop.duckdb');store.initialize();first=report()
+    key1=store.save_report(first)
+    second=deepcopy(first);second['market_snapshot_hash']='e'*64
+    second['baseline_verification']={'current_code_hash':'f'*64}
+    if conflict=='card':second['cards'][0]['checks'][0]['state']='UNKNOWN'
+    if conflict=='catalog':second['latest_catalog_hash']='0'*64
+    key2=store.save_report(second)
+    current=report();current['as_of']='2026-10-15T03:00:00Z'
+    if conflict:
+        with pytest.raises(ValueError,match='DECISION_AMBIGUOUS_PRIOR_OBSERVATION'):
+            attach_prior_observations(current,store)
+    else:
+        attach_prior_observations(current,store)
+        previous=current['cards'][0]['previous_observation']
+        assert previous['report_id']==min(key1,key2)
+        assert previous['equivalent_report_ids']==sorted([key1,key2])
+        assert not current['cards'][0]['changes_since_prior']
