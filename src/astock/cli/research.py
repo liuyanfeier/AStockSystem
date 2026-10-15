@@ -318,3 +318,5 @@ app.command('record')(record_command)
 from astock.cli.workflow import daily_status_command, plan_command
 app.command('plan')(plan_command)
 app.command('daily-status')(daily_status_command)
+from astock.cli.strategies import setups_command
+app.command('setups')(setups_command)

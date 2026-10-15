@@ -1,0 +1,19 @@
+{
+  "protocol": "STRATEGY_RESEARCH_V1",
+  "version": "2026-10-15-p0-b0-t0",
+  "frozen_at": "2026-10-15T07:51:08Z",
+  "variants": ["P0", "B0", "T0"],
+  "fast_sessions": 20,
+  "slow_sessions": 60,
+  "return_sessions": 20,
+  "trend_lag_sessions": 5,
+  "pullback_sessions": 5,
+  "touch_high_ratio": "1.03",
+  "touch_close_floor_ratio": "0.97",
+  "extension_cap_ratio": "1.08",
+  "min_mean_amount_cny": "10000000",
+  "top_n": 10,
+  "research_only": true,
+  "strategy_validated": false,
+  "real_risk_budget": null
+}
