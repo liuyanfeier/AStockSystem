@@ -6,6 +6,7 @@ from astock.research.publication import publish_bytes
 
 
 def markdown(report: dict, *, public: bool = False) -> str:
+    simulated = report['mode'] == 'OFFLINE_SIMULATION'
     lines = ['# 每日决策报告 · Decision Loop V0', '',
              f"研究截止：{report['as_of']}；行情截至：{report['window_end']}；要求完整交易日：{report['required_market_date']}。",
              f"证据模式：{report['mode']}。模拟事件不是实际披露，研究提醒不产生订单。", '',
@@ -26,7 +27,7 @@ def markdown(report: dict, *, public: bool = False) -> str:
     lines += ['', 'C. 重点公司新事实与假设变化', '']
     for card in report['cards']:
         lines += [f"**{card['name']} {card['code']}：{card['state_text']}**",
-                  f"研究检查：{card['hypothesis_state']}；真实证据变化 {len(card['evidence_changes'])} 项。"]
+                  f"研究检查：{card['hypothesis_state']}；{'合成' if simulated else '真实'}证据变化 {len(card['evidence_changes'])} 项。"]
         if card.get('price'):
             price=card['price']
             lines += [f"报价日 {price.get('last_date')}；收盘 {price.get('close')}；MA60上方={price.get('above_ma60')}；该行情截面筛选资格={card.get('technical_eligible','UNKNOWN')}。"]
@@ -39,7 +40,8 @@ def markdown(report: dict, *, public: bool = False) -> str:
             lines += [f"- {check['reason']}：{check['state']}；{check['explanation']}（{check['evidence_class']}）。"]
             before,after=check.get('previous'),check.get('latest')
             if before and after:
-                lines += [f"  原披露 {before['value']} → 最新保留披露 {after['value']} {after['unit']}，期间 {after['period_end']}；模拟事件不改写这些真实数字。"]
+                basis = '合成夹具数字，不是实际披露' if simulated else '模拟事件不改写这些真实数字'
+                lines += [f"  原记录 {before['value']} → 最新保留记录 {after['value']} {after['unit']}，期间 {after['period_end']}；{basis}。"]
         lines += [f"下一步：{'；'.join(card['next_actions'])}", '']
     lines += ['D. 今日不应交易的对象与理由', '']
     for card in report['cards']:
