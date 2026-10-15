@@ -320,3 +320,5 @@ app.command('plan')(plan_command)
 app.command('daily-status')(daily_status_command)
 from astock.cli.strategies import setups_command
 app.command('setups')(setups_command)
+from astock.cli.paper_lab import paper_demo_command
+app.command('paper-demo')(paper_demo_command)

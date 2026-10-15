@@ -1,0 +1,15 @@
+{
+  "protocol": "THREE_RULE_SYNTHETIC_LAB_V1",
+  "frozen_at": "2026-10-15T08:25:37Z",
+  "simulation_only": true,
+  "shares": 100,
+  "entry_fee_rate": "0.0003",
+  "exit_fee_rate": "0.0008",
+  "slippage_rate": "0.001",
+  "time_exit_sessions": 20,
+  "review_sessions": [5, 10],
+  "nominal_lab_cash": "100000",
+  "execution_order": "SAME_OPEN_SELLS_THEN_BUYS_CODE_ORDER",
+  "higher_cost_multiplier": "2",
+  "fee_basis": "SYNTHETIC_FIXED_RATE_NO_VERIFIED_MINIMUM_OR_TAX_SCHEDULE"
+}

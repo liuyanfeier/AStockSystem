@@ -67,59 +67,28 @@ def simulate(sessions: list[Session], experiment: Experiment) -> dict:
     require(all(instant(experiment.frozen_at) < instant(s.available_at) for s in sessions), 'PAPER_PARAMETERS_AFTER_SAMPLE')
     # This V0 lab proves mechanics with marked synthetic sessions, never reports a historical strategy return.
     require(all(s.source_grade == 'OFFLINE_SYNTHETIC' for s in sessions), 'PAPER_REAL_HISTORY_NOT_ADMITTED')
-    pending, position, trades, log = None, None, [], []
-    cash = experiment.nominal_lab_cash
-    peak, drawdown = cash, Decimal(0)
-    for i,s in enumerate(sessions):
-        record = dict(date=s.date, code=s.code, source_hash=s.source_hash, actions=[])
-        executable = (s.suspended is False and s.st is False and s.liquidity_confirmed is True and
-                      s.up_limit is not None and s.down_limit is not None and s.volume is not None and s.volume > 0)
-        if pending:
-            side = pending['side']
-            # Orders are based solely on the preceding close; unknown states never imply executable.
-            if side == 'BUY' and not executable:
-                record['actions'].append('CANCEL_SETUP_UNKNOWN_OR_UNTRADABLE');pending=None
-            elif side == 'BUY':
-                fill = s.open*(1+experiment.slippage_rate)
-                cost = fill*experiment.shares*(1+experiment.entry_fee_rate)
-                if fill >= s.up_limit or fill <= s.down_limit or cost > cash:
-                    record['actions'].append('CANCEL_SETUP_LIMIT_GAP_OR_LAB_CASH');pending=None
-                else:
-                    position=dict(entry_date=s.date, entry_i=i, entry=fill, cost=cost, stop_reference=pending['stop_reference'],
-                                  entry_gap_from_signal=fill/pending['signal_close']-1)
-                    cash-=cost;pending=None;record['actions'].append('SIMULATED_BUY_NEXT_OPEN')
-            elif position and s.date > position['entry_date']:
-                fill=s.open*(1-experiment.slippage_rate)
-                if not executable or fill <= s.down_limit or fill >= s.up_limit:
-                    record['actions'].append('EXIT_PENDING_LIMIT_SUSPENSION_OR_UNKNOWN')
-                else:
-                    proceeds=fill*experiment.shares*(1-experiment.exit_fee_rate)
-                    pnl=proceeds-position['cost'];cash+=proceeds
-                    trades.append(dict(entry_date=position['entry_date'], exit_date=s.date,
-                                       pnl_cny=str(pnl), return_net=str(pnl/position['cost']), reason=pending['reason'],
-                                       entry_deviation_from_signal=str(position['entry_gap_from_signal']),
-                                       exit_deviation_from_signal=str(fill/pending['signal_close']-1)))
-                    position=None;pending=None;record['actions'].append('SIMULATED_SELL_T_PLUS_1')
-        if position and pending is None:
-            reason = ('INITIAL_REFERENCE_BROKEN' if position['stop_reference'] is not None and s.close < position['stop_reference']
-                      else 'TREND_REVIEW' if s.ma20 is not None and s.close < s.ma20
-                      else 'TIME_REVIEW' if i-position['entry_i']+1 >= experiment.time_exit_sessions else None)
-            if reason:pending=dict(side='SELL',reason=reason,signal_close=s.close)
-        elif position is None and pending is None:
-            signal=(executable and s.market_allowed is True and s.prior_high20 is not None and s.prior_low20 is not None and s.ma60 is not None
-                    and s.close > s.prior_high20 and s.close > s.ma60)
-            if signal:pending=dict(side='BUY',stop_reference=s.prior_low20,signal_close=s.close);record['actions'].append('BREAKOUT_CLOSE_OBSERVATION')
-        equity=cash+(s.close*experiment.shares if position else 0)
-        peak=max(peak,equity);drawdown=max(drawdown,(peak-equity)/peak)
-        record.update(marked_lab_equity_cny=str(equity), pending={k:str(v) if isinstance(v,Decimal) else v for k,v in pending.items()} if pending else None)
-        log.append(record)
-    returns=[Decimal(t['return_net']) for t in trades]
+    from astock.backtest.execution import run_execution
+    def entry(session, active):
+        executable = (session.suspended is False and session.st is False and session.liquidity_confirmed is True and
+                      session.up_limit is not None and session.down_limit is not None and session.volume is not None and session.volume > 0)
+        signal = (not active and executable and session.market_allowed is True and session.prior_high20 is not None and
+                  session.prior_low20 is not None and session.ma60 is not None and
+                  session.close > session.prior_high20 and session.close > session.ma60)
+        return dict(buy=dict(stop_reference=session.prior_low20, signal_close=session.close) if signal else None,
+                    action='BREAKOUT_CLOSE_OBSERVATION')
+    result = run_execution(sessions, experiment, entry)
+    trade_fields = ('entry_date', 'exit_date', 'pnl_cny', 'return_net', 'reason',
+                    'entry_deviation_from_signal', 'exit_deviation_from_signal')
+    pending_fields = {'side', 'reason', 'signal_close', 'stop_reference'}
+    legacy_sessions = [{**record, 'actions':[action for action in record['actions'] if action != 'HOLDING_TREND_CHECK_UNKNOWN'],
+                        'pending':{k:v for k,v in record['pending'].items() if k in pending_fields}
+                        if record['pending'] else None} for record in result['sessions']]
     return dict(protocol='BREAKOUT_FORWARD_LAB_RESULT_V0', mode='OFFLINE_SYNTHETIC_MECHANICS_ONLY',
-                experiment=experiment.model_dump(mode='json'), trades=trades, sessions=log,
-                win_rate=str(Decimal(sum(r>0 for r in returns))/len(returns)) if returns else None,
-                average_net_return=str(sum(returns)/len(returns)) if returns else None,
-                lab_mark_to_market_max_drawdown=str(drawdown), unclosed_position=position is not None,
-                actual_user_pnl=None, strategy_effectiveness='NOT_VALIDATED',
+                experiment=experiment.model_dump(mode='json'),
+                trades=[{key:trade[key] for key in trade_fields} for trade in result['trades']], sessions=legacy_sessions,
+                win_rate=result['win_rate'], average_net_return=result['average_net_return'],
+                lab_mark_to_market_max_drawdown=result['lab_mark_to_market_max_drawdown'],
+                unclosed_position=bool(result['open_positions']), actual_user_pnl=None, strategy_effectiveness='NOT_VALIDATED',
                 limitations=['合成输入只证明流程；非历史回测/真实成交', '费用及滑点为固定实验假设，不是核实的券商费率',
                              '涨跌停附近/停牌/未知状态拒绝成交；跳空仍按可执行下一开盘计价，不假设止损价成交',
                              '实验100股、名义本金及5交易日复核只适用模拟主板案例，未授权用户仓位与风险',
