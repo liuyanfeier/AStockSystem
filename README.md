@@ -45,7 +45,7 @@ export PATH="$PWD/scripts:$PATH"
 uv sync --locked
 uv run --offline --frozen astock doctor
 uv run --offline --frozen astock data contracts
-uv run --offline --frozen pytest
+uv run --offline --frozen python scripts/managed_pytest.py
 ~~~
 
 首次同步会下载软件依赖。已有环境可直接离线运行上述检查；doctor 与 data contracts

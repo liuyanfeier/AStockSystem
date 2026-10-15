@@ -1,0 +1,98 @@
+{
+  "protocol": "M0_STORAGE_LIFECYCLE_VALIDATION_V1",
+  "recorded_at": "2026-10-15T04:58:21.561352+00:00",
+  "data": "SYNTHETIC software regression and metadata-only capacity; no new market conclusion",
+  "implementation_sha": "3ddd5172a2190e3f53ccb6306411169218f7ac85",
+  "source_tree_sha256": "8f30929d53aff08cc413d1158692f23748bb55a93b2894f881f1c89b7a1dca19",
+  "full_suite": {
+    "tests": 1264,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 1264,
+    "duration_seconds": 1436.61,
+    "warnings": 1,
+    "source_unchanged": true,
+    "evidence_sha256": {
+      "junit.xml": "443a67b01b93f72d76d5fe1a503fd6f064dbbc7fe7cd2548c404e3e6f5925c8b",
+      "pytest.log": "686a799ba4ec92f2b3df20071db3f3d7860a11c76e5567a7fb696d67b8a2281e"
+    },
+    "workspace": {
+      "files": 78216,
+      "logical_bytes": 5920603140,
+      "symlinks": 395,
+      "special_files": 0
+    }
+  },
+  "offline_checks": {
+    "doctor": "PASS",
+    "original_contracts": 12,
+    "v2_contracts": 9
+  },
+  "preservation": {
+    "original_market_store_and_31_pdf_hashes_unchanged": true,
+    "market_http_requests": 0,
+    "destructive_deletions": 0,
+    "orders": 0,
+    "historical_failed_cache_preserved": true,
+    "interrupted_root_and_failure_families_preserved": true
+  },
+  "cleanup_proposal": {
+    "manifest_sha256": "78c785ec7b751d79af91d78fae9e96019f12db7c428ec488d38ab216c68b93fb",
+    "selected_directories": 1626,
+    "associated_aliases": 707,
+    "selected_logical_bytes": 11078189085,
+    "protected_directories": 382,
+    "protected_logical_bytes": 2188275155,
+    "full_replay_sha": "3ddd5172a2190e3f53ccb6306411169218f7ac85",
+    "full_replay_counts": {
+      "tests": 1264,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 1264
+    },
+    "deletion_performed": false,
+    "groups": {
+      "pytest-278": {
+        "directories": 805,
+        "logical_bytes": 5530774269
+      },
+      "pytest-279": {
+        "directories": 14,
+        "logical_bytes": 12539027
+      },
+      "pytest-280": {
+        "directories": 807,
+        "logical_bytes": 5534875789
+      }
+    },
+    "authorization": "NOT_APPROVED",
+    "restore": "Recorded full synthetic generator replay; not historical byte-identical DB restoration",
+    "guard": "Exact immutable private manifest, unchanged directory/inode/metadata, fresh open-file/reference check and explicit user confirmation"
+  },
+  "capacity": {
+    "observed_start": "2026-10-15T04:57:45.446643+00:00",
+    "observed_end": "2026-10-15T04:58:21.176846+00:00",
+    "verified_project_roots": 17,
+    "logical_bytes": 47816217322,
+    "unique_file_allocated_bytes": 49065050112,
+    "complete": true,
+    "errors": 0,
+    "conditional_after_approved_cleanup_logical_bytes": 36738028237,
+    "limitation": "Verified roots only; unknown external backups excluded; one-off /tmp audit script text and post-snapshot small doc/Git writes excluded; APFS physical release unknown"
+  },
+  "policy": {
+    "managed_test_budget_bytes": 7000000000,
+    "default_expected_peak_bytes": 6000000000,
+    "free_disk_reserve_bytes": 1000000000,
+    "passed_retention_days": 7,
+    "automatic_deletion": false,
+    "limitation": "Preflight check, not filesystem quota or project-wide automatic monitor"
+  },
+  "review": {
+    "kind": "author local verification",
+    "remote_ci": "NOT_RUN_AT_RECORDING",
+    "private_verification": "Private paths, DB/raw/account contents and credentials omitted; external readers cannot independently inspect private inventory"
+  }
+}
