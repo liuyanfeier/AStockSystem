@@ -1,0 +1,129 @@
+{
+  "as_of": "2026-10-15T08:52:48.512580+00:00",
+  "attempt_id": "696a3dd67ec44e6783ac4f1f1874f90e",
+  "baseline_business_reproduction": "PASS",
+  "code_hash": "5c62dca0c213f6d5312a19147b6bd25eac67bfbb179ba00d3efb9e19ed259a23",
+  "daily_report_id": "a070bf2190e5f3bebca5f109cc529fd50c5c15f66cd70a0f8b249a2181c1b27e",
+  "engine_hash": "dcdfe5d3ca7f36c0df4dc2f9e140683979fd9a22aae5559a345a87e9d1bfae5b",
+  "market_date": "2026-10-12",
+  "orders_created": 0,
+  "parameters_hash": "c2d171478fbbc4e84ff623802532c5cd94d289aaae587bdcc55988248f07aeaa",
+  "personal_records_included": false,
+  "protocol": "DAILY_STRATEGY_PUBLIC_SUMMARY_V1",
+  "raw_included": false,
+  "required_market_date": "2026-10-14",
+  "same_cutoff_equivalent_versions": [
+    {
+      "as_of": "2026-10-14T12:22:30.843577+00:00",
+      "code": "600036.SH",
+      "report_ids": [
+        "340afe75227d84d875a3d357777828f696a3364ae716cda58ef652cfa2371ae9",
+        "3f2fbb2a92ea55aa71cee3df41122203e154997b0a5a2e6503a934af0ce92582",
+        "61d5cd5d34c6f5f9fc23813ab9dcb6349c459f2b5c21c3027d5d13d704a75b7d",
+        "fb2b007597dd1199935a6e0353b2668f05cb2526e8206f8fcd882a34c71a7ad1"
+      ]
+    },
+    {
+      "as_of": "2026-10-14T12:22:30.843577+00:00",
+      "code": "000002.SZ",
+      "report_ids": [
+        "340afe75227d84d875a3d357777828f696a3364ae716cda58ef652cfa2371ae9",
+        "3f2fbb2a92ea55aa71cee3df41122203e154997b0a5a2e6503a934af0ce92582",
+        "61d5cd5d34c6f5f9fc23813ab9dcb6349c459f2b5c21c3027d5d13d704a75b7d",
+        "fb2b007597dd1199935a6e0353b2668f05cb2526e8206f8fcd882a34c71a7ad1"
+      ]
+    },
+    {
+      "as_of": "2026-10-14T12:22:30.843577+00:00",
+      "code": "601872.SH",
+      "report_ids": [
+        "340afe75227d84d875a3d357777828f696a3364ae716cda58ef652cfa2371ae9",
+        "3f2fbb2a92ea55aa71cee3df41122203e154997b0a5a2e6503a934af0ce92582",
+        "61d5cd5d34c6f5f9fc23813ab9dcb6349c459f2b5c21c3027d5d13d704a75b7d",
+        "fb2b007597dd1199935a6e0353b2668f05cb2526e8206f8fcd882a34c71a7ad1"
+      ]
+    }
+  ],
+  "source_manifest_hash": "64f88be1c6058c7fae56585c2f6ce2cfe417b78051065b74645714d1c35ecf53",
+  "summary": {
+    "B0": {
+      "condition_matches": 147,
+      "first_matches": 104,
+      "known": 5440,
+      "paper_blockers": {
+        "BOARD_NOT_MODELED": 2377,
+        "LIMIT_RULE_UNKNOWN": 5574,
+        "LIQUIDITY_NOT_CONFIRMED": 161,
+        "MARKET_DATE_STALE": 5574,
+        "NO_CONFIRMED_ACTIVITY": 13,
+        "REAL_PROSPECTIVE_EXECUTION_NOT_ADMITTED": 5574,
+        "ST_OR_UNKNOWN": 5574,
+        "SUSPENDED_OR_UNKNOWN": 5574
+      },
+      "paper_ready": 0,
+      "pool": 5574,
+      "rejection_reasons": {
+        "CONDITION_ALREADY_PRESENT": 43,
+        "above_slow": 3292,
+        "close_breaks_prior_high": 5422,
+        "factor_basis_known": 13,
+        "relative_not_negative": 2316
+      },
+      "unknown": 134
+    },
+    "P0": {
+      "condition_matches": 93,
+      "first_matches": 67,
+      "known": 5430,
+      "paper_blockers": {
+        "BOARD_NOT_MODELED": 2377,
+        "LIMIT_RULE_UNKNOWN": 5574,
+        "LIQUIDITY_NOT_CONFIRMED": 161,
+        "MARKET_DATE_STALE": 5574,
+        "NO_CONFIRMED_ACTIVITY": 13,
+        "REAL_PROSPECTIVE_EXECUTION_NOT_ADMITTED": 5574,
+        "ST_OR_UNKNOWN": 5574,
+        "SUSPENDED_OR_UNKNOWN": 5574
+      },
+      "paper_ready": 0,
+      "pool": 5574,
+      "rejection_reasons": {
+        "CONDITION_ALREADY_PRESENT": 26,
+        "above_fast": 3923,
+        "factor_basis_known": 13,
+        "fast_above_slow": 2447,
+        "fast_not_falling": 4032,
+        "not_extended": 272,
+        "rebound_over_prior_high": 4891,
+        "recent_pullback": 1390,
+        "relative_not_negative": 2316,
+        "since_touch_above_slow": 3466
+      },
+      "unknown": 144
+    },
+    "T0": {
+      "condition_matches": 100,
+      "first_matches": 100,
+      "known": 5436,
+      "paper_blockers": {
+        "BOARD_NOT_MODELED": 2377,
+        "LIMIT_RULE_UNKNOWN": 5574,
+        "LIQUIDITY_NOT_CONFIRMED": 161,
+        "MARKET_DATE_STALE": 5574,
+        "NO_CONFIRMED_ACTIVITY": 13,
+        "REAL_PROSPECTIVE_EXECUTION_NOT_ADMITTED": 5574,
+        "ST_OR_UNKNOWN": 5574,
+        "SUSPENDED_OR_UNKNOWN": 5574
+      },
+      "paper_ready": 0,
+      "pool": 5574,
+      "rejection_reasons": {
+        "above_slow": 3292,
+        "factor_basis_known": 13,
+        "prior_not_above_slow": 2760,
+        "relative_not_negative": 2316
+      },
+      "unknown": 138
+    }
+  }
+}

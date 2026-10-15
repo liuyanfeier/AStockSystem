@@ -1,4 +1,4 @@
-# 日常任务与中文录入 M1
+# 日常任务、中文录入与策略观察
 
 适合收盘后、盘前集中处理及数周到数月持有。当前实现为离线命令与中文简报；真实数据仍停留在已取得的日期，未部署后台更新或提醒。
 
@@ -97,4 +97,19 @@ flowchart LR
 
 [本批真实重查与合成闭环证据](research/results/2026-10-15-daily-workflow/README.md)。已经覆盖错误模式/未来事实拒绝、原子回滚、幂等与预览竞争、已阅不解风险、晚录不回填、未知现金及公开隔离。
 
-计划、待办和恢复的[实际演示与机器证据](research/results/2026-10-15-plans-and-recovery/README.md)已追加；当前实现的完整CI和真实连续使用分别验收。真实账户尚未提供，真实新行情/公告更新未执行。任意新公司证据接入、跨基线计划迁移、复杂持仓更正问答、策略候选与统一退出/PAPER继续按[路线](ROADMAP.md)推进；不以软件闭环或合成通过宣称真实策略有效。
+计划、待办和恢复的[实际演示与机器证据](research/results/2026-10-15-plans-and-recovery/README.md)已追加，M1完整CI已通过。真实账户尚未提供，真实新行情/公告更新未执行。任意新公司证据接入、跨基线计划迁移、复杂持仓更正问答及真实连续试用继续按[路线](ROADMAP.md)推进；不以软件闭环或合成通过宣称真实策略有效。
+
+## 三组规则与合成演示
+
+当前日常配置启用`strategy_parameters`，新观察会在同一份中文简报显示P0趋势回踩、B0突破、T0简单趋势的全市场计数和少量展示对象；全部符合形态记录、来源和Hash留在同名私有JSON。截止时间早于参数冻结时明确显示未启用该版本，不把新规则回填成旧判断。观察结果不会自动创建人工研究计划或交易；当前真实资料不具备PAPER执行准入。
+
+```bash
+# 独立的只读形态扫描：不依赖公司目录或个人账户
+.venv/bin/astock research setups --profile config/daily/retained-evidence.json \
+  --observe-now --market-date 2026-10-14
+
+# 全部虚构的三组规则/成本/跳空与退出受阻演示，不读取行情或账户
+.venv/bin/astock research paper-demo
+```
+
+合成报告写到`reports/private/research-v1/strategy-lab-v1/`，相同输入/版本重跑幂等，不覆盖旧报告。三组独立名义账户、统一进出与费用，保留亏损与双倍成本结果。它检验程序机制，不能评价策略优劣；[实际样例](research/results/2026-10-15-strategy-v1/SYNTHETIC_PAPER.md)。

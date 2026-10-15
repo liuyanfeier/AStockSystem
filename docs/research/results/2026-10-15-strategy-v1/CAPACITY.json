@@ -1,0 +1,137 @@
+{
+  "ceiling_bytes": 100000000000,
+  "complete": true,
+  "counted_roots": 17,
+  "deletion_performed_this_batch": false,
+  "errors": [],
+  "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+  "logical_bytes": 37779428188,
+  "managed_test_budget_bytes": 7000000000,
+  "managed_test_bytes": 6985132289,
+  "observed_end": "2026-10-15T09:00:21.518649+00:00",
+  "observed_start": "2026-10-15T08:59:50.112688+00:00",
+  "requested_roots": 17,
+  "root_groups": [
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 23,
+      "files": 179,
+      "logical_bytes": 15232732,
+      "symlinks": 24
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 23,
+      "files": 179,
+      "logical_bytes": 15232732,
+      "symlinks": 24
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4332422,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 88734330,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 90316182,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 0,
+      "files": 2,
+      "logical_bytes": 77678,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 12728156,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4347402,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4347402,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4356390,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4350398,
+      "symlinks": 0
+    },
+    {
+      "category": "checkout",
+      "databases": 1689,
+      "files": 292911,
+      "logical_bytes": 27142695370,
+      "symlinks": 1288
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 787,
+      "files": 76901,
+      "logical_bytes": 8204401835,
+      "symlinks": 409
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 330,
+      "files": 4358,
+      "logical_bytes": 1812462509,
+      "symlinks": 124
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 20,
+      "files": 4014,
+      "logical_bytes": 187906325,
+      "symlinks": 8
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 0,
+      "files": 0,
+      "logical_bytes": 0,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 20,
+      "files": 4014,
+      "logical_bytes": 187906325,
+      "symlinks": 8
+    }
+  ],
+  "target_bytes": 50000000000,
+  "unique_file_allocated_bytes": 38948253696
+}

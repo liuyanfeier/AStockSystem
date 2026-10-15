@@ -1,0 +1,51 @@
+{
+  "generated_results_bytes": 1895534,
+  "helper_scripts_retained_in_governed_checkout": 3,
+  "items": [
+    {
+      "category": "CURRENT_OBSERVATION_RESULT",
+      "file_hashes": {
+        ".json": "a4f3ded8dc236dc375f16ed170c57097ceaa8657339b8195b4f866071e719ab0",
+        ".md": "bac0f96b471fbcdaeea3401ac3aa34382df9d4c4bbe63b01587f7f7ddcdebeeb"
+      },
+      "logical_bytes": 538943,
+      "owner": "research.setups",
+      "protection": "Never part of automatic deletion; raw/consumption/personal logs remain separate protected inputs",
+      "rebuild": "research setups using exact as-of/market-date, parameters, source bundle and code",
+      "report_id": "260e792a3fde675cd6ff94fea0d6caccaa1faa7c6a8bfd1aca7c44f119b04e90",
+      "retention": "Keep version definition and all variant summaries; real observation/decision history immutable; detailed synthetic outputs candidates only after exact dependency/recovery verification and scoped confirmation",
+      "role": "real_setups"
+    },
+    {
+      "category": "SYNTHETIC_EXPERIMENT_RESULT",
+      "file_hashes": {
+        ".json": "4327a49e3b96f977aa4f5054bd0f3f773e6badce1f26e90ab2a0567cbf3c9e5b",
+        ".md": "ab169a1cae226659042075bf409d8e86ccae3dfdc15e68b356310ecdf21f3ea3"
+      },
+      "logical_bytes": 726695,
+      "owner": "research.paper-demo",
+      "protection": "Never part of automatic deletion; raw/consumption/personal logs remain separate protected inputs",
+      "rebuild": "research paper-demo using the exact code/config/generator hash",
+      "report_id": "96d2dea6708532b449cd78f2681be413004b8f489eda1f95c3e5375cc116c24d",
+      "retention": "Keep version definition and all variant summaries; real observation/decision history immutable; detailed synthetic outputs candidates only after exact dependency/recovery verification and scoped confirmation",
+      "role": "synthetic_paper"
+    },
+    {
+      "category": "DAILY_DECISION_RESULT",
+      "file_hashes": {
+        ".json": "97c211796bc8b47b28172b25d19bf96a5c2f63c52f23f563b90f4dc4bc1a56e9",
+        ".md": "706d4dd2311dd3d3c52e3d197a01384d490f435ae69fe8d6463a5ccf48b7e8bf"
+      },
+      "logical_bytes": 629896,
+      "owner": "research.daily",
+      "protection": "Never part of automatic deletion; raw/consumption/personal logs remain separate protected inputs",
+      "rebuild": "research daily with exact cutoff, source files, journal facts and code; changes require a new observation",
+      "report_id": "a070bf2190e5f3bebca5f109cc529fd50c5c15f66cd70a0f8b249a2181c1b27e",
+      "retention": "Keep version definition and all variant summaries; real observation/decision history immutable; detailed synthetic outputs candidates only after exact dependency/recovery verification and scoped confirmation",
+      "role": "daily"
+    }
+  ],
+  "protocol": "M2_ARTIFACT_REGISTER_V1",
+  "raw_copied": false,
+  "retention_automation_deployed": false
+}
