@@ -177,3 +177,10 @@ LinkedResearchStore只读链接组件，后续日更不复制旧窗口。portfol
 - REPLACE：旧`decision.paper.simulate`的执行循环已移除，改为`backtest.execution.run_execution`的薄适配；旧协议/10项回归保留。新三组共用该内核的现金、次日开盘、退出待成交、估值和费用计算，不长期维护两条执行逻辑。
 - 保留来源Store、compose/独立Journal、冻结解码和原始消费；无schema升级、依赖新增或真实采集。缺少公司/账户不阻止独立形态扫描；未知价格/交易状态不赋予成交资格。
 - 尚未迁出所有旧Phase1活跃工具或完成真实PAPER准入；合成迁移通过不等于完整历史执行规则验证。
+
+## M3已核验输入共享（2026-10-15）
+
+- REUSE：Store.snapshot/Raw重建/SQL等价/as-of、compose与精确旧锚点保持原实现。没有扩大缓存或迁移原库。
+- REPLACE：市场上下文和旧基线核验中为提取行业成员而重复snapshot/compose的调用已移除，成员从该次完整analyze使用的已核验输入提取。
+- REFACTOR：三组观察计算提取为同一函数；独立扫描先读取来源，日报则在当前市场计算末尾消费同一输入。旧“日报再独立扫描一遍Store”的调用已移除，没有平行选股公式。
+- 验证：24项相关反例与原生六次闭环通过，真实前后完整业务等价；普通运行69.390秒、同采样降49.6%。代码和测量边界见[当前Review](REVIEW.md)。

@@ -1,0 +1,136 @@
+{
+  "ceiling_bytes": 100000000000,
+  "complete": false,
+  "completeness_note": "13 existing roots counted; four former pytest roots missing, not treated as zero or attributed to this task; last complete 17-root snapshot retained",
+  "counted_roots": 13,
+  "deletion_performed_this_batch": false,
+  "errors": [],
+  "existing_roots_complete": true,
+  "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+  "logical_bytes": 35604663902,
+  "managed_test_budget_bytes": 7000000000,
+  "managed_test_bytes": 6996250341,
+  "missing_roots": [
+    {
+      "last_known_logical_bytes": 1812462509,
+      "root_id": 14,
+      "state": "FileNotFoundError"
+    },
+    {
+      "last_known_logical_bytes": 187906325,
+      "root_id": 15,
+      "state": "FileNotFoundError"
+    },
+    {
+      "last_known_logical_bytes": 0,
+      "root_id": 16,
+      "state": "FileNotFoundError"
+    },
+    {
+      "last_known_logical_bytes": 187906325,
+      "root_id": 17,
+      "state": "FileNotFoundError"
+    }
+  ],
+  "new_source_database_copies": 0,
+  "observed_end": "2026-10-15T13:30:50.326712+00:00",
+  "observed_start": "2026-10-15T13:30:20.297541+00:00",
+  "original_expected_roots": 17,
+  "overall_scope_complete": false,
+  "requested_roots": 13,
+  "root_groups": [
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 23,
+      "files": 179,
+      "logical_bytes": 15232732,
+      "symlinks": 24
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 23,
+      "files": 179,
+      "logical_bytes": 15232732,
+      "symlinks": 24
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4332422,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 88734330,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 90316182,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 0,
+      "files": 2,
+      "logical_bytes": 77678,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 12728156,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4347402,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4347402,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4356390,
+      "symlinks": 0
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 1,
+      "files": 1777,
+      "logical_bytes": 4350398,
+      "symlinks": 0
+    },
+    {
+      "category": "checkout",
+      "databases": 1694,
+      "files": 293108,
+      "logical_bytes": 27156206243,
+      "symlinks": 1297
+    },
+    {
+      "category": "confirmed_external_project_root",
+      "databases": 787,
+      "files": 76901,
+      "logical_bytes": 8204401835,
+      "symlinks": 409
+    }
+  ],
+  "target_bytes": 50000000000,
+  "unique_file_allocated_bytes": 36737130496
+}

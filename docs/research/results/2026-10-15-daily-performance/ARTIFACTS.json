@@ -1,0 +1,128 @@
+{
+  "diagnostic_logical_bytes": 416836,
+  "items": [
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 1394,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "after-unprofiled.json",
+      "sha256": "8c432c14bda84d05857c6817373ca6f01e261d99809476f7f2f196aa637cd6f8"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 1385,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "after.json",
+      "sha256": "856b8850dff02329ac6cf37cc33a1e3d8d69361beedfe69484ddf42459abedda"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 173516,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "after.prof",
+      "sha256": "fb3aaad1de5a82f033f8f7cd333bf365bce432889c00e0deb4dfdeb8a517ec07"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 1228,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "before.json",
+      "sha256": "88620619f932447d50cf1b8d237997563a0d4022a1ae5925c1c9b212f118288d"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 172336,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "before.prof",
+      "sha256": "53ad6a4125b8fbf6eeb14ffb7e50660268b854ac9a876d74f7bc3301a0f7f507"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 39616,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "capacity-after.json",
+      "sha256": "0ed2f162fe9c6d484134017eececc21bee11ce9fbe0575b5cebbcb78a0da99f1"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 3241,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "comparison.json",
+      "sha256": "a6b1e7f8acacf584892005eab9ced8fb120f1dc863c0d39e4cfd4b218444a9bb"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 2810,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "root-presence.json",
+      "sha256": "7cbed7af1a1279e93eaf5cc59ddd4f14f28ed435b2208fdd7cb832798bace9ea"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 118,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "snapshot-size.json",
+      "sha256": "e80d73759b6cb1ea75afc1493579e057152826745cda8b49c081c581a515770e"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 7607,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "test-retention-after.json",
+      "sha256": "c7b8b3eb64e912498d1c85bb8e857653dced4964f89f99e746378e7129046778"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 5837,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "tools/build_evidence.py",
+      "sha256": "67c59140b6fa9dca50e341f5fcd0467eac84b29912021dc8b518af538ab37a3e"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 2543,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "tools/profile_daily.py",
+      "sha256": "9619777a8f830e51aab746ced2831a486ace722e685122c19dc23dd325b26b31"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 2562,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "tools/profile_daily_after.py",
+      "sha256": "073403adcee9124e98be6a182b17ce353d238ec51473be29a636935679d4acdc"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 2459,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "tools/time_daily_after.py",
+      "sha256": "f6d292693766c4682b1ae6f087057c4e5bcd06d18551fe703eff883589105ebe"
+    },
+    {
+      "category": "PERFORMANCE_DIAGNOSTIC",
+      "logical_bytes": 184,
+      "owner": "daily-performance",
+      "retention": "Derived diagnostic; candidate only after reproduction evidence and dependency verification; no automatic deletion",
+      "role": "verified-call-counts.json",
+      "sha256": "a9f4b179cf4f348902967630ac559dceeb5d7043daf372468f03441dff36756e"
+    }
+  ],
+  "new_databases": 0,
+  "raw_copies": 0,
+  "source_context_lifetime": "One calculation; released on return; next request validates sources again"
+}
