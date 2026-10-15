@@ -8,6 +8,7 @@
 
 - [长期项目宪章 V2](docs/PROJECT_CHARTER.md)：完整业务目标。
 - [当前状态](docs/CURRENT_STATE.md)：已有软件、真实数据与缺口。
+- [系统设计与整体实施计划](docs/SYSTEM_DESIGN.md)：资产取舍、存储生命周期、架构、目标日期和验收。
 - [业务路线](docs/ROADMAP.md) · [架构与迁移](docs/ARCHITECTURE.md)。
 - [Research V3 公司/催化与条件化决策](docs/RESEARCH_V3.md) · [简明研究摘要](docs/research/results/2026-10-14-company-v3/DECISION_BRIEF.md)。
 - [Research V2 市场与行业雷达](docs/RESEARCH_V2.md) · [原Research V1契约](docs/RESEARCH_V1.md)。
@@ -88,9 +89,18 @@ Research V1.1支持九类供应商原JSON直接入库、连续窗口候选Setup�
 历史V1.1试点之后已完成真实128日样本与当前全市场雷达；实际覆盖和未来许可边界以上述当前状态为准。
 当前整批变更/验证与数据边界见[REVIEW](docs/REVIEW.md)，一次采集预算见
 [RESEARCH_ACQUISITION](docs/RESEARCH_ACQUISITION.md)。
-# 当前主线：Decision Loop V0
+# 当前主线：日常工作流整体实施
 
 真实市场/行业与8家公司研究已形成起点；当前补持续判断、持仓退出、组合风险和复盘。
 [三案例决策报告](docs/research/results/2026-10-14-decision-loop-v0/README.md)、
 [收盘命令与边界](docs/DECISION_LOOP_V0.md)、[当前状态](docs/CURRENT_STATE.md)。
 行情仍截至2026-10-12；真实持仓未知、风险参数未授权、无真实订单。
+
+2026-10-15开始按系统设计连续实施，GPT仅由用户按需介入。首批日常入口把原收盘命令的多个参数放入一个配置，复用原计算与来源验证：
+
+```bash
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json --check
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json
+```
+
+此示例固定重查10月14日研究/10月12日行情，不获取新行情或自动改写日期。`--check`仅校验配置/路径，不打开数据库，不证明行情已可用；正常运行使用新的小型私有Journal和报告目录。后续个人配置放ignored私有目录，不提交账户信息。

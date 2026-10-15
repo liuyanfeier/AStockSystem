@@ -1,0 +1,112 @@
+{
+  "protocol": "DAILY_FOUNDATION_VALIDATION_V1",
+  "recorded_at": "2026-10-15T03:54:47.109821+00:00",
+  "implementation_sha": "8f13a48310fa6b0509bbb8bcc9c37b13c68badd3",
+  "implementation_files_unchanged_after_commit": true,
+  "baseline_sha": "83a9c8819baa2c8986c74116ddd0c4aff8cd140a",
+  "validation_owner": "author local verification; not independent audit",
+  "tests": {
+    "data": "synthetic; network forbidden by conftest",
+    "passed": 57,
+    "failed": 0,
+    "duration_seconds": 1.71,
+    "new_daily_cases": 14,
+    "groups": [
+      "test_daily_profile.py",
+      "test_decision_loop.py",
+      "test_decision_increment.py",
+      "test_decision_paper.py",
+      "test_cli.py"
+    ],
+    "full_suite": "NOT_RUN",
+    "remote_ci": "NOT_RUN"
+  },
+  "offline_diagnostics": {
+    "doctor": "PASS",
+    "original_contracts": 12,
+    "v2_contracts": 9
+  },
+  "retained_real_source_check": {
+    "preflight_exit": 0,
+    "daily_exit": 0,
+    "mode": "REAL_EVIDENCE",
+    "observed_at": "2026-10-14T12:22:30.843577+00:00",
+    "required_market_date": "2026-10-14",
+    "actual_market_window_end": "2026-10-12",
+    "market_fresh": false,
+    "report_content_id": "22627805c7a856e98060d169abba35d05130a4d1fcf0379c11d7a79e2d2d04a6",
+    "source_store_sha256": "03dc5ce70ab9a8ea31546a7913708717a01a3bc632fec4c4d3ada00041602cbe",
+    "pdf_count": 31,
+    "sorted_pdf_sha256_list_digest": "c0a945f929aea930898bc0634a8217d6f7c4dfa40399e9fabffb965a84c8d96a",
+    "pdf_digest_method": "SHA256 of lexicographically sorted individual SHA256 strings, one per line, final newline",
+    "original_store_and_pdf_hashes_unchanged": true,
+    "cards": [
+      {
+        "code": "600036.SH",
+        "name": "招商银行",
+        "state": "CONTINUE_WATCH",
+        "state_text": "继续观察",
+        "evidence_changes": 0,
+        "no_new_disclosures": true,
+        "trade_eligible": false,
+        "order_created": false
+      },
+      {
+        "code": "000002.SZ",
+        "name": "万科A",
+        "state": "WAIT_EVIDENCE",
+        "state_text": "暂停新交易，等待证据",
+        "evidence_changes": 0,
+        "no_new_disclosures": true,
+        "trade_eligible": false,
+        "order_created": false
+      },
+      {
+        "code": "601872.SH",
+        "name": "招商轮船",
+        "state": "CONTINUE_WATCH",
+        "state_text": "继续观察",
+        "evidence_changes": 0,
+        "no_new_disclosures": true,
+        "trade_eligible": false,
+        "order_created": false
+      }
+    ],
+    "meaning": "Retained-source workflow check only; no new market day, no new disclosure, no strategy efficacy claim",
+    "market_http_requests": 0,
+    "destructive_deletions": 0,
+    "orders": 0
+  },
+  "configuration_sha256": {
+    "config/daily/retained-evidence.json": "e7706c15380ef0c573017ec173adb4b8eb47d630065917d1599c6da29c1aa273",
+    "config/decision-loop/real-run.json": "2a160475980027a94b0252162f17aa728ab1f4c2f341c45059194d7ea255a312",
+    "config/research/observation-v1.json": "911c2e610720f6a019c79519bbbcda8d48021d00a9e3592d71fa31d646adf06e",
+    "config/research/company-evidence-20261014.json": "013da6593e6735d39549860871c49ef0530329b8767bf1ed7df72704efb082a2",
+    "config/decision-loop/rechecked-catalog.json": "d872514d3c1bf4dd5976fdfc6989a96be4f5d8fcf1b5ae76c3d66ccd066d891e"
+  },
+  "bounded_new_runtime_artifacts": {
+    "targeted_test_run_001": {
+      "files": 179,
+      "logical_bytes": 15232732
+    },
+    "targeted_test_run_002": {
+      "files": 179,
+      "logical_bytes": 15232732
+    },
+    "new_private_journal": {
+      "files": 1,
+      "logical_bytes": 2633728
+    },
+    "new_private_reports": {
+      "files": 9,
+      "logical_bytes": 186888
+    },
+    "private_validation": {
+      "files": 4,
+      "logical_bytes": 5331
+    }
+  },
+  "bounded_new_runtime_logical_bytes": 33291411,
+  "storage_scope": "Only listed new local test, journal, report and validation artifacts; not a fresh whole-project scan; code/docs and audit snapshot excluded",
+  "privacy": "No account positions, manual execution history, private absolute paths, raw contents or credentials included; local source equality cannot be independently verified without private data"
+}

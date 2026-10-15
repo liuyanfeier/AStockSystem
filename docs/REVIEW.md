@@ -1,73 +1,43 @@
-# 当前Review：Decision Loop V0
+# 当前交付与验证：日常工作流基础 M0
 
-## 问题与结果
+2026-10-15用户确认整体计划后开始实施。当前分支为`codex/daily-workflow-foundation`，基线为`83a9c8819baa2c8986c74116ddd0c4aff8cd140a`。整体架构、资产取舍及预计日期见[SYSTEM_DESIGN](SYSTEM_DESIGN.md)，当前任务状态见[CURRENT_STATE](CURRENT_STATE.md)。
 
-已有价格/公司研究缺少持续判断与退出复盘。本批以招行、万科、招商轮船为起点，比较证据版本、
-保留初始逻辑与上次观察，生成继续观察/等待证据/逻辑失效复核/观察结束四类状态，接入私有Journal和最小组合风险。
-核心验收是同一公司为何保留或改变判断、何时暂停入场及下一人工检查，不是新增股票/来源/测试数。
-[实际报告与生命周期](research/results/2026-10-14-decision-loop-v0/README.md)，[命令与边界](DECISION_LOOP_V0.md)。
+用户已改为由Codex自主负责普通研发、修复、验证和推进，GPT只在用户认为需要时介入。本文件是交付证据入口，不是新增人工Gate。本批不授权或执行新真实市场请求、私有破坏性删除、真钱风险参数或交易。
 
-## 用户授权、合并与基线
+## 本批结果
 
-最新直接用户任务授权普通合并已接受PR #8、专用分支集中开发/测试/公开受控结果及一个Review-ready PR。
-不授权新真实市场API、私有破坏性删除、用户风险参数或订单。
-用户明确告知GPT独立Review接受固定3dec08495e0ea4f9b19427b868e5878ad1c81e1d。
-实际核对PR open/head、base main18eb7325、mergeable=true/clean、Push38536193218和PR38536199081 success，
-本地干净后普通merge为0159d72b67b111b5d21a81624bbbb363c231baa7。
-只记录用户提供的审查结论及实际Git核验，不另造人工签名/审批事实。
+已有收盘命令需要重复输入多个路径和来源参数。本批增加`research daily --profile`，把参数放入一个严格版本配置，直接调用原`decision-close`；没有复制决策、持仓或来源计算路径。
 
-新分支codex/decision-loop-v0；完整累计Diff为git diff 0159d72b67b111b5d21a81624bbbb363c231baa7..HEAD。
-最终固定版本从本PR HEAD取得；受测SHA、文档HEAD和CI按实际分别记录，不用旧成功冒充。
+- 相对路径统一以项目根解析，拒绝越界、父级跳转和符号链接。
+- 模拟/真实Journal目录及账户模式分开；来源库与Journal同路径或硬链接会拒绝。
+- 观察时间来自显式run输入，不自动改为现在；拒绝未来真实观察。
+- `--check`只读配置和路径，不打开数据库或创建Journal/报告；通过不代表行情内容已验证。
+- 只输出私有报告，不因配置夹带字段自动取得API或公开发布权限。无账户仍UNKNOWN，不推断空仓。
+- 新增配置固定重查旧10月14日研究、10月12日行情，生成新小型私有Journal和报告，不覆盖冻结交付。
 
-## 业务与实现
+## 已完成验证
 
-- 真实第二观察重查已有V3财报/公告，无新披露或行情。招行/招商轮船有限指标支持继续研究，万科重大风险仍待证据。
-- 模拟新信息中招行继续，轮船回款信息UNKNOWN→等待证据，万科模拟债务/交付事件→逻辑失效复核；再模拟结束轮船观察。
-  虚拟10月16/17日明确OFFLINE_SIMULATION，不是当时真实发生。原财务值与来源未改写，真实用户动作/订单0。
-- 初始市场Hash先从真实Store复算核验，公司目录校验原PDF/实体/时间。保留原假设、反面证据、下次指标及程序提出复核日期。
-  指标单位/期间不可比或缺失保持UNKNOWN；新公告/反面证据进入人工检查，确认须绑定当前来源Hash。
-- 同计划/模式/截止前的上次观察来自Journal关联报告；初始PLAN稳定，REVIEW/EXIT追加，报告不可覆盖。
-  观察退出、逻辑失效和实际卖出分开；USER_MANUAL确认与模拟人工动作分清，不伪造用户真实判断历史。
-- 组合从POSITION及明确范围声明计算。无真实输入UNKNOWN；缺报价不重新归一化，现金/完整性/确认/时效不足时账户总资产与权重UNKNOWN。
-  已报持仓/行业暴露只是对应快照的描述，风险阈值/仓位/单笔风险仍未授权。真实用户持仓未接入。
-- 收盘命令复用原features/radar/compose，LinkedResearchStore只读链接组件，不复制旧窗口、重构采集器或新增调度器。
-  专用小型私有Journal Store复用五表，不写旧Store。公开投影只含任务指定三家公司，排除组合/Journal/私人计划和来源自由描述。
-- 一个固定Breakout实验只验证合成机制：次日开盘、T+1、未知/停牌/限价阻断、跳空、固定费率/滑点、时间/趋势/初始参考复核。
-  合成亏损、胜率/净盈亏/实验回撤及偏差如实保留，策略效果NOT_VALIDATED；当前池不能当无幸存者偏差历史。
+14项新入口与既有决策、增量、PAPER、CLI组共57项通过，实现SHA上1.71秒。测试使用合成数据并禁止网络；市场边界在入口贯通测试中以合成快照替代，来源文档字节检查、决策、Journal和不可变报告路径实际运行。
 
-## 验证与保全
+```bash
+.venv/bin/python -m pytest tests/test_daily_profile.py tests/test_decision_loop.py tests/test_decision_increment.py tests/test_decision_paper.py tests/test_cli.py --basetemp /private/tmp/独立新目录 -q
+.venv/bin/astock doctor
+.venv/bin/astock data contracts
+.venv/bin/astock data contracts --catalog v2
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json --check
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json
+```
 
-33项新增业务反例通过，与公司/增量组共57项通过。实际收盘CLI成功；原128日Store只读验证，
-706095条旧日行情保留，三公司合成两日增量各130连续日，不宣称13/14日真实输入已取得。
-原Store字节及31文档Hash检查不变，旧消费/原库/用户真实Journal未改；无真实市场请求、私有删除或订单。
-不重复全历史文件Hash审计。公开变更源/结果凭据扫描无发现；Doctor/原12合同通过。
-完整回归、准确受测SHA和最终HEAD CI完成后在PR验证记录同步；pending/失败不称通过。
-[复现Hash](research/results/2026-10-14-decision-loop-v0/REPRODUCTION.json)、[验证细节](research/results/2026-10-14-decision-loop-v0/VALIDATION.md)。
+Doctor PASS；原12与v2九合同PASS。真实旧来源配置检查与收盘入口均成功；运行前后原Store及31份PDF的SHA256不变。新市场请求0、删除0、订单0。日期/真实变化与Hash见[本批验证](research/results/2026-10-15-daily-foundation/README.md)。这是保留来源重查，不是新市场日或新公告研究。
 
-普通开发中局部序列化和隐私反例已修复，未跳过测试/删除重要回归/关闭安全验证。
-内部生成草稿保留新私有draft目录；不改已接受V2/V3证据。
-容量按仓库、外部历史工作目录和已识别临时根stat盘点，不做全历史Hash：本批测试前15根逻辑30.359GB、
-文件blocks31.186GB，274663文件/1354数据库。与原V3快照差异包含pytest临时根轮换，不是作者清空旧数据。
-50GB目标/100GB上限；完整回归会改变临时目录，时点/边界见STORAGE，不能当全机物理容量或删除收益。
+完整1236+回归及新HEAD的远端CI本批尚未运行；没有沿用PR #9旧CI宣称本批通过。受测实现SHA与本地验证记录在本批结果文件中绑定，不在正文制造自引用HEAD。
 
-## 唯一待授权更新与剩余工作
+## 范围、保全和剩余工作
 
-[13–14日49请求计划](../config/research/decision-market-20261013-14-proposal.json)，
-[准确Hash/预算](research/results/2026-10-14-decision-loop-v0/ACQUISITION_PROPOSAL.json)。
-49请求/49尝试，2MiB响应、98MiB总响应、新目的地384MiB；无购买、重试/日期扩张，有限失败继续、系统性故障熔断。
-目的地未创建、execution_authorized=false，替代旧未执行45请求；日历返回须确认两日开市。
-当前实现Hash已变化，不继承002或旧V3Hash许可。只读链接旧窗口已消除数据库复制，仍保留本合同身份/行业刷新；
-后续缓存需独立时点/失效条件验证，不能为了少请求偷偷更改语义。
+15根容量盘点41.798GB是10月15日11:22—11:23的先前快照，不是本批完成后实时总量。四个pytest根13.266GB和九个演示根0.214GB是候选，未完成完整恢复/最小失败证据核验，也没有执行删除。新定向测试使用独立basetemp，避免pytest默认轮换清掉旧临时根。新私有Journal、测试及报告增量另列于本批结果。
 
-剩余：真实新行情/新公告变更闭环、用户实际持仓输入、批准风险参数、真实前瞻样本/交易约束、估值与重大未决证据。
-本批完成离线软件与明确模拟闭环，不宣称真实日更、真实账户、策略盈利或退出实盘已验证。
-ROADMAP/CURRENT_STATE已改为当前能力，旧累计描述通过HISTORY索引保留，不重启文档治理。
+当前完成M0的日常入口；存储清理核验和新产物退出规则仍在推进。M1继续简单录入、统一应用接口和首轮策略合同；真实新数据需准确范围授权，不因该支线未获授权停止其他开发。
 
-运行实现87b3bc471a1f82ee04357d5563030c4b94c5756f本地完整回归：1234 passed、1 warning，1319.02秒。
-之后自查补同计划观察结束/未决状态跨日延续及禁止重写初始计划，57项相关反例通过；最终HEAD完整CI另核验。
-未把前一SHA的全量结果冒充后续SHA的本地全量结果。
+CLI源码变化会影响采集implementation hash，旧49请求未授权提案不能直接用于新实现；实际请求前重新准备准确计划与匹配实现。既有Raw、消费/失败/UNKNOWN、旧Store及真实记录不重置。用户原有六项文件删除和五份未跟踪蓝图保留在工作树，不包含在本批提交。
 
-跨日修复运行SHA57388143cf263d6fba3b1069fce6e4f314822d2e本地完整回归：1236 passed、1 warning，1273.64秒。
-最新Doctor PASS、v2九合同PASS；原Store字节与31文档Hash再次核验不变。最终文档HEAD完整CI以[PR #9](https://github.com/liuyanfeier/AStockSystem/pull/9)验证记录/Checks为准，提交时尚在运行，不提前宣称成功。
-
-测试后同一盘点范围15根逻辑42.172GB、文件blocks43.399GB，428555文件/2386数据库；增量主要包含完整回归临时产物，不是新增真实数据或清空旧目录。
+[Decision Loop V0固定版Review](https://github.com/liuyanfeier/AStockSystem/blob/8fb35e9eeb69e5d63c30ac07969d45ec90976277/docs/REVIEW.md)保留其当时范围和验证事实；[交接](handoffs/2026-10-15-project-and-decision-loop-handoff.md)记录后续CI及停止现场，不改写历史。
