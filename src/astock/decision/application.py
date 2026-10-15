@@ -16,7 +16,7 @@ from astock.decision.todos import decision_items
 from astock.features.market import ObservationParameters
 from astock.portfolio.manual import resolve_position_scope
 from astock.portfolio.models import PositionScope
-from astock.research.core import digest, read_json
+from astock.research.core import digest, instant, read_json
 from astock.research.journal import journal_snapshot
 from astock.research.store import ResearchStore
 
@@ -65,6 +65,19 @@ def _execute_close(profile: DailyProfile, instruction: RunInput, progress: Calla
     market, members = market_increment.market_context(primary, profile.bundle, instruction.observed_at, parameters,
                                      [item.bundle for item in profile.components], owners,
                                      read_json(profile.revisions) if profile.revisions else None)
+    setups = None
+    if profile.strategy_parameters is not None:
+        from astock.research.strategies import observe_setups
+        from astock.screening.strategy_models import StrategyParameters
+        progress('STRATEGIES')
+        policy = StrategyParameters.model_validate(read_json(profile.strategy_parameters))
+        if instant(instruction.observed_at) < policy.frozen_at:
+            setups = dict(status='NOT_AVAILABLE_AT_OBSERVATION', frozen_at=policy.frozen_at.isoformat(),
+                          explanation='报告截止早于本版策略参数冻结；不把新规则回填成过去的判断。')
+        else:
+            setups = dict(status='OBSERVED', **observe_setups(primary, profile.bundle, instruction.observed_at,
+                instruction.required_market_date, policy, components=[item.bundle for item in profile.components],
+                owners=owners, revisions=read_json(profile.revisions) if profile.revisions else None))
     progress('EVIDENCE')
     old = verified_catalog(read_json(profile.previous), profile.documents)
     new = verified_catalog(read_json(profile.latest), profile.documents)
@@ -109,6 +122,8 @@ def _execute_close(profile: DailyProfile, instruction: RunInput, progress: Calla
     report['research_inputs'] = [dict(receipt_id=e['event_id'], recorded_at=e['recorded_at'],
                                      **e['research_input']['request']) for e in plan_records]
     report['decision_items'] = decision_items(report)
+    if setups is not None:
+        report['strategy_observations'] = setups
     progress('PUBLISH')
     key = publish_private(report, profile.output)
     return DailyResult(key, report, profile.output / f'{key}.json', profile.output / f'{key}.md', attempt_id)

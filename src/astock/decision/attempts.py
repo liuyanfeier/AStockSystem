@@ -18,10 +18,11 @@ from astock.research.journal import active_events
 from astock.research.store import ResearchStore
 
 
-Stage = Literal['START', 'MARKET', 'EVIDENCE', 'BASELINE', 'PLANS', 'DECISIONS', 'PORTFOLIO', 'PERSIST', 'PUBLISH', 'RECEIPT', 'DONE']
+Stage = Literal['START', 'MARKET', 'STRATEGIES', 'EVIDENCE', 'BASELINE', 'PLANS', 'DECISIONS', 'PORTFOLIO', 'PERSIST', 'PUBLISH', 'RECEIPT', 'DONE']
 SAFE_MESSAGES = {
     'START': '任务回执尚未建立；检查本地目录权限和空间。',
     'MARKET': '行情来源核验或计算失败；核对本地来源、用途和覆盖，不自动重新采集。',
+    'STRATEGIES': '策略参数或来源计算失败；核对冻结版本与输入，不推断已有交易信号。',
     'EVIDENCE': '公司目录或保留文档核验失败；核对原文件，保留现有来源。',
     'BASELINE': '原研究基线未能复现；检查原锚点和版本，不覆盖旧基线。',
     'PLANS': '研究计划版本或范围冲突；核对计划记录及基线。',
@@ -76,7 +77,7 @@ def engine_fingerprint() -> str:
 
 def inputs_fingerprint(profile: DailyProfile, instruction: RunInput) -> str:
     paths = [getattr(profile, name) for name in ('run', 'previous', 'latest', 'baseline_market',
-                                                'parameters', 'revisions', 'position_scope')]
+                                                'parameters', 'revisions', 'position_scope', 'strategy_parameters')]
     run = instruction.model_dump(mode='json')
     run['observed_at'] = instant(instruction.observed_at).isoformat()
     return digest(dict(profile=profile.model_dump(mode='json'), instruction=run,

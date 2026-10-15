@@ -271,7 +271,8 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
                         for date in ('2026-10-10', '2026-10-11'))
         pq.write_table(pa.Table.from_pylist(data), source_path)
         spec.update(sha256=sha256(source_path.read_bytes()).hexdigest(),
-                    retrieved_at='2026-10-14T00:00:00Z', available_at='2026-10-14T00:00:00Z')
+                    retrieved_at='2026-10-14T00:00:00Z', available_at='2026-10-14T00:00:00Z',
+                    evidence_grade='SYNTHETIC')
     bundle.update(universe=[codes[c] for c in bundle['universe']],
                   benchmarks=[codes[c] for c in bundle['benchmarks']],
                   window_start='2026-10-06', window_end='2026-10-12')
@@ -292,6 +293,9 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     (root / profile['run']).write_bytes(encoded(run))
     profile.update(bundle=bundle_id,
                    journal_store='data/private/research-v1/decision-loop-v0/simulated/native/journal.duckdb')
+    strategy_path = root/'config/strategy.json'
+    strategy_path.write_bytes((Path(__file__).parents[1]/'config/research/strategy-research-v1.json').read_bytes())
+    profile['strategy_parameters'] = 'config/strategy.json'
     path.write_bytes(encoded(profile))
     before = sha256(source_path.read_bytes()).hexdigest()
     clock = [datetime(2026, 10, 14, 4, tzinfo=timezone.utc)]
@@ -305,6 +309,8 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
         return run_close(root, resolved, DailyObservation(observed_at=clock[0] + timedelta(seconds=1),
                                                          required_market_date='2026-10-12'))
     first = observe()
+    assert first.report['strategy_observations']['status'] == 'NOT_AVAILABLE_AT_OBSERVATION'
+    assert '不把新规则回填' in first.markdown_path.read_text()
     assert first.report['portfolio']['account_assets_cny'] == '3800.0'
     clock[0] += timedelta(minutes=1)
     manual.record_manual_input(root, path, request(case, 'native-sell', 'EXECUTION', shares=100,
@@ -343,6 +349,15 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     restarted = observe()
     assert restarted.report['cards'][0]['state'] == 'CONTINUE_WATCH'
     assert restarted.report['cards'][0]['plan']['thesis'] == draft.thesis
+    clock[0] = datetime(2026,10,15,9,tzinfo=timezone.utc)
+    new_version = observe()
+    strategies = new_version.report['strategy_observations']
+    assert strategies['status'] == 'OBSERVED' and strategies['mode'] == 'OFFLINE_SYNTHETIC'
+    assert all(c['pool']==2 and c['unknown']==2 and c['paper_ready']==0 for c in strategies['summary'].values())
+    assert '三组规则观察' in new_version.markdown_path.read_text()
+    from astock.decision.report import public_projection
+    assert 'strategy_observations' not in public_projection(new_version.report)
+    assert sha256(source_path.read_bytes()).hexdigest() == before
     assert sha256(source_path.read_bytes()).hexdigest() == before
 
 

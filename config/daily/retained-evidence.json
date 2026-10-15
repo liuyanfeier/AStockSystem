@@ -9,5 +9,6 @@
   "store": "data/private/research-v1/market-v2-20261013-002/research.duckdb",
   "journal_store": "data/private/research-v1/decision-loop-v0/real/daily-workspace/journal.duckdb",
   "output": "reports/private/research-v1/daily-workspace/retained-20261014",
-  "parameters": "config/research/observation-v1.json"
+  "parameters": "config/research/observation-v1.json",
+  "strategy_parameters": "config/research/strategy-research-v1.json"
 }

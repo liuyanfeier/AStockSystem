@@ -32,6 +32,7 @@ class DailyProfile(Strict):
     journal_store: Path
     output: Path
     parameters: Path = Path("config/research/observation-v1.json")
+    strategy_parameters: Path | None = None
     components: list[DailyComponent] = Field(default_factory=list, max_length=32)
     revisions: Path | None = None
     position_scope: Path | None = None
@@ -43,6 +44,7 @@ class DailyProfile(Strict):
             documents=self.documents, baseline_market=self.baseline_market,
             bundle=self.bundle, store=self.store, journal_store=self.journal_store,
             output=self.output, parameters=self.parameters,
+            strategy_parameters=self.strategy_parameters,
             component=[item.bundle for item in self.components],
             component_store=[item.store for item in self.components],
             revisions=self.revisions, position_scope=self.position_scope,
@@ -82,7 +84,7 @@ def resolve_daily_profile(root: Path, profile: DailyProfile,
     values = profile.model_dump()
     for name in ("run", "previous", "latest", "baseline_market", "parameters"):
         values[name] = json_input(root, getattr(profile, name))
-    for name in ("revisions", "position_scope"):
+    for name in ("revisions", "position_scope", "strategy_parameters"):
         value = getattr(profile, name)
         values[name] = json_input(root, value) if value is not None else None
     if values["position_scope"] is not None:

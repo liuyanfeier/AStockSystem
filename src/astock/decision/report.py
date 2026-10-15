@@ -23,8 +23,20 @@ def markdown(report: dict, *, public: bool = False) -> str:
     metrics = report['market']['metrics']
     breadth = metrics.get('return_20', {}); trend = metrics.get('above_ma60', {})
     lines += [f"20日上涨 {breadth.get('up','UNKNOWN')}/{breadth.get('denominator','UNKNOWN')}；MA60上方 {trend.get('count','UNKNOWN')}/{trend.get('denominator','UNKNOWN')}。",
-              '行情完整日未刷新，不能宣称今天市场状态已验证。' if not report['market_fresh'] else '已覆盖要求日期；描述性指标不代替风险预算。', '',
-              'B. 持仓与组合风险', '']
+              '行情完整日未刷新，不能宣称今天市场状态已验证。' if not report['market_fresh'] else '已覆盖要求日期；描述性指标不代替风险预算。']
+    setups = report.get('strategy_observations') if not public else None
+    if setups:
+        lines += ['', '三组规则观察', '']
+        if setups['status'] != 'OBSERVED':
+            lines += [setups['explanation']]
+        else:
+            lines += [f"行情截至 {setups['market_date']}；PAPER/真实成交均未生成。策略效果未验证。"]
+            for variant, counts in setups['summary'].items():
+                lines += [f"- {variant}：观察池{counts['pool']}，形态{counts['condition_matches']}，首次{counts['first_matches']}，未知{counts['unknown']}，实验前置资格{counts['paper_ready']}。"]
+                for item in setups['ranked'][variant][:3]:
+                    lines += [f"  {item['name'] or item['code']} {item['code']}：20日相对表现 {item['metrics']['relative_return']}；阻断 {'、'.join(item['paper_blockers']) or '须另查下一开盘与实验资金'}。"]
+            lines += ['全部符合形态的记录、排序和来源Hash保留在同名私有JSON；候选展示不是收益预测或买入建议。']
+    lines += ['', 'B. 持仓与组合风险', '']
     if public:
         lines += ['公开结果不包含个人持仓、现金、Journal或人工备注。真实账户状态无法从本报告推断。']
     else:
