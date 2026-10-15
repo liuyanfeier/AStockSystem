@@ -1,10 +1,26 @@
 # 数据存储治理
 
-2026-10-11 实测。GB 使用十进制，GiB 使用 2^30；文件逻辑长度与磁盘分配 blocks 分开。
+GB 使用十进制，GiB 使用 2^30；文件逻辑长度与磁盘分配 blocks 分开。
 完整路径/hash/副本删除候选属于私有材料，不提交真实行或数据库。
-本批真实数据删除为 0；下面全部私有清理仍待用户确认。
+下面历史清理候选均不自动取得删除许可；当前实施和容量见[系统设计](SYSTEM_DESIGN.md)、[当前状态](CURRENT_STATE.md)。
 
-## 现场容量
+## 2026-10-15：新增合成测试产物生命周期
+
+已实现`python scripts/managed_pytest.py [tests/文件或节点...]`，用于本地合成回归；不迁入或接管旧pytest根、真实Raw、消费事实或个人记录。每次独占创建新的私有运行目录，显式设置全新basetemp，并关闭pytest缓存插件，避免默认轮换触碰旧临时根。
+
+运行前保存Git版本、源码/测试/配置/schema/锁文件综合指纹、选择器、参数和保留政策；运行日志、JUnit和结果随任务留存。前后指纹变化、失败、无有效用例或未知结果均不列可清理候选。失败产物暂时保留，随后按具体问题提取最小失败证据，不将其自动视为垃圾。
+
+政策在`config/storage/synthetic-tests-v1.json`：受管测试目录总预算7GB，默认预计峰值6GB，另留1GB可用磁盘余量；通过产物7天后仅列候选，仍需精确核验和确认。预算是运行前的容量检查，不是文件系统配额或峰值硬限制；结果另记实际保留大小。它只覆盖新增受管测试目录，不代表全项目50/100GB限额已自动监控。小组验证可显式提供更小的预计峰值。
+
+```bash
+uv run --offline --frozen python scripts/managed_pytest.py
+uv run --offline --frozen python scripts/managed_pytest.py tests/test_daily_profile.py --expected-peak-bytes 100000000
+uv run --offline --frozen python scripts/managed_pytest.py --status
+```
+
+当前实现没有删除命令或后台清理任务；缓存2GB/7天、报告草稿退出规则仍是后续政策，不能写成已部署。不要默认重复多轮全套；已有大回归产物使新任务预算不足时，先处理精确旧候选，不能自动扩预算或删来源。
+
+## 2026-10-11历史现场容量
 
 开始扫描（不含本轮治理证据）普通数据文件 155,655 个，逻辑字节 17,998,464,927（18.00GB）。
 整个 checkout 含工具/环境/Git 的去重 inode 文件 blocks 为 19,217,330,176 字节（19.22GB）。

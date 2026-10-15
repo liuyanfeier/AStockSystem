@@ -1,0 +1,7 @@
+{
+  "version": "SYNTHETIC_TEST_LIFECYCLE_V1",
+  "managed_budget_bytes": 7000000000,
+  "default_expected_peak_bytes": 6000000000,
+  "free_disk_reserve_bytes": 1000000000,
+  "passed_retention_days": 7
+}

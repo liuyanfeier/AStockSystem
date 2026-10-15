@@ -48,12 +48,14 @@ REVIEW保存交付证据；真实采集、交易风险及私有破坏性清理�
 ~~~bash
 export PATH="$PWD/scripts:$PATH"
 uv sync --locked
-uv run --offline --frozen pytest
+uv run --offline --frozen python scripts/managed_pytest.py
 uv run --offline --frozen astock doctor
 uv run --offline --frozen astock data contracts
 ~~~
 
 测试使用合成数据并禁止网络；不得跳过失败测试、删除重要回归或关闭安全检查来完成迁移。
+本地测试使用上述受管入口，或显式全新且不复用的`--basetemp`；不使用pytest默认轮转清掉旧受保护根。
+受管入口记录来源指纹、日志、JUnit和结果，先检查新增测试预算；`--status`只列保留建议，不删除。
 业务研究需要可解释的入选/退出逻辑、反面证据和可复盘输出。
 回测必须考虑 T+1、涨跌停/停牌、规则生效日、流动性、成本和不可成交情况；
 样本外及真实验证前不能宣称策略有效。入场、退出、组合风险和日志同等重要。
