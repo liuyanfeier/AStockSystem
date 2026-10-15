@@ -315,6 +315,7 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     manual.record_manual_input(root, path, request(case, 'native-note', 'NOTE', note='合成已阅；未知现金和风险仍需核实'))
     final = observe()
     assert final.report['portfolio']['positions'][0]['shares'] == 100
+    assert '600036.SH：已报 100股' in final.markdown_path.read_text()
     assert final.report['portfolio']['cash_cny'] is None
     assert len(final.report['manual_records']) == 3
     assert sha256(source_path.read_bytes()).hexdigest() == before

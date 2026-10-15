@@ -21,7 +21,7 @@ def markdown(report: dict, *, public: bool = False) -> str:
         p = report['portfolio']
         lines += [f"模式：{p['mode']}；持仓范围：{p['positions_state']}；账户总资产：{p.get('account_assets_cny') or 'UNKNOWN'}。"]
         for row in p['positions']:
-            lines += [f"- {row['code']}：{row['priority']}；用户确认={row['confirmed']}；价格新鲜={row['price_fresh']}；逻辑={row['hypothesis_state']}。"]
+            lines += [f"- {row['code']}：已报 {row['shares']}股；{row['priority']}；用户确认={row['confirmed']}；价格新鲜={row['price_fresh']}；逻辑={row['hypothesis_state']}。"]
         lines += [*p['gaps']]
     lines += ['', 'C. 重点公司新事实与假设变化', '']
     for card in report['cards']:
