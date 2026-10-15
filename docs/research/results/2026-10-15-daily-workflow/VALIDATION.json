@@ -1,0 +1,204 @@
+{
+  "ci": {
+    "conclusion": null,
+    "note": "Snapshot only; check actual SHA and latest conclusion. Earlier M0 CI is not M1 coverage.",
+    "run_id": 38695943659,
+    "sha": "1e43cb652a9f52898d62141568231a0d84bb4000",
+    "status": "in_progress",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/38695943659"
+  },
+  "diagnostics": {
+    "contracts_original": 12,
+    "contracts_v2": 9,
+    "doctor": "PASS"
+  },
+  "generated_at": "2026-10-15T07:03:45.064176+00:00",
+  "implementation_sha": "1e43cb652a9f52898d62141568231a0d84bb4000",
+  "limitations": [
+    "Synthetic process verification is not strategy performance evidence",
+    "Real market still ends 2026-10-12; no real personal account supplied",
+    "Historical failed test fixture log retained; complete calendar corrected, no bypass",
+    "No current all-history PIT, automatic updates or alerts; generic plan intake still pending"
+  ],
+  "managed_test_usage": {
+    "budget_bytes": 7000000000,
+    "logical_bytes": 6593388001,
+    "observed_at": "2026-10-15T07:03:38.079354+00:00"
+  },
+  "market_http_requests": 0,
+  "orders_created": 0,
+  "protocol": "DAILY_WORKFLOW_M1_VALIDATION_V1",
+  "real_recheck": {
+    "as_of": "2026-10-14T12:22:30.843577+00:00",
+    "baseline_verification": {
+      "baseline_hash": "0d235e75a112e3e3a03da497c51fd550ea3551e9c80d3f247dd92a5e363db9ef",
+      "current_code_hash": "f2de448a912065c12c5f1437f353f29f0a84edf749f63c8a8ee0c025e0f19c74",
+      "method": "Recompute all public business fields; require exact retained original anchor when execution metadata differs",
+      "original_code_hash": "08bf843c265521fea513bf518ac34929bac970a36de1793b6afc0864cd378a0f"
+    },
+    "market_date": "2026-10-12",
+    "market_fresh": false,
+    "mode": "REAL_EVIDENCE",
+    "personal_records_supplied": false,
+    "private_report_hash": "9a42bf1fa671a0354c144eaf341fb9141d6ef06093f5ebead3a6e41c43441966",
+    "public_report_hash": "cb7f2111f5b772d7dd56ad510cbb03c2bdd8a0646a0efd1684f083594d1a96cc",
+    "required_market_date": "2026-10-14",
+    "source_store_and_31_pdfs_unchanged": true,
+    "source_store_sha256": "03dc5ce70ab9a8ea31546a7913708717a01a3bc632fec4c4d3ada00041602cbe"
+  },
+  "source_tree_sha256": "42b934f4c2eac1d8b2432f710f76414bf28b91613fa64c499ac375e148024176",
+  "synthetic": {
+    "bundle_id": "eefdc43ad01ce47ff6c0570cc8c2ac5ea7d7269a249e9c93919664924f2b6e91",
+    "implementation_sha": "1e43cb652a9f52898d62141568231a0d84bb4000",
+    "injected_boundary": "Synthetic clock only; all source validation, computation, intake and reports are production calls",
+    "market_company_services_replaced": false,
+    "mode": "OFFLINE_SIMULATION",
+    "parameters": {
+      "activity_sessions": 3,
+      "breakout_sessions": 3,
+      "max_stale_calendar_days": 7,
+      "min_mean_amount_cny": 0.0,
+      "return_sessions": 3,
+      "risk_budget": null,
+      "strategy_validated": false,
+      "top_n": 5,
+      "trend_sessions": 3,
+      "version": "SYNTHETIC_OBSERVATION_TEST"
+    },
+    "parameters_hash": "efbeff272b7412762b7a6cf195aea7e89acdf1ca63c61bab670c277c1e36cd20",
+    "pdf_sha256": "20227f8fb4a723e14deaf49b4b1f20b20f19d91ecdfbc973bc4e838624a2a8a6",
+    "research_code_hash": "f2de448a912065c12c5f1437f353f29f0a84edf749f63c8a8ee0c025e0f19c74",
+    "source_files": [
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "instruments",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "2c0a3a5f29ff092868f552d05f8653ca98fce580a8dbb1cb0a3305d168708011",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "calendar",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "0e3c7061333d0a8a90273e5ad914952ee8dd1e8a27441c0b519ffde40844b17f",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "daily",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "bd631043e7d7d4ceca57d64d8d31189d874acaf86ac4336aaf2b6b8a4d4177b8",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "index_daily",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "89dc81dd064acce82e7587ae4facf345351d85293b33a0b200020cb723d17d40",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "adj_factor",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "8888db96f4ab2f15b4b86034125fb98e7bcad3908fc860d4aeb159e504094fbe",
+        "source": "SYNTHETIC_FIXTURE"
+      }
+    ]
+  },
+  "tests": [
+    {
+      "counts": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 270,
+        "skipped": 0,
+        "tests": 270
+      },
+      "evidence_sha256": {
+        "junit.xml": "b711a8971056f5f6b3c196d485efd99cfcaedc2eba9ac51224b1a8079d0d1dae",
+        "pytest.log": "b12df6f22e7455bf01af9975e41ed61be0158d49f04070930566c249f6cc16bb"
+      },
+      "finished_at": "2026-10-15T06:49:30.340527+00:00",
+      "implementation_sha": "74a16b954bec3f353d6c6d451614f0b5d7d169bf",
+      "run_id": "ef94f3b15e824b24b7bc405cc3d6edf1",
+      "selections": [
+        "tests/test_research_benchmark_reuse.py",
+        "tests/test_research_capture_continuation.py",
+        "tests/test_research_capture_evidence.py",
+        "tests/test_research_capture_local_failures.py",
+        "tests/test_research_increment.py",
+        "tests/test_research_public_size.py",
+        "tests/test_research_publication.py",
+        "tests/test_research_v1.py",
+        "tests/test_research_v1_1.py",
+        "tests/test_research_v2.py",
+        "tests/test_manual_workflow.py",
+        "tests/test_native_market_context.py",
+        "tests/test_daily_profile.py",
+        "tests/test_decision_loop.py",
+        "tests/test_decision_increment.py",
+        "tests/test_decision_paper.py",
+        "tests/test_cli.py",
+        "tests/test_company_research.py"
+      ],
+      "source_tree_sha256": "a499c24b536d1efbf75f513f2fbcaa62b38ac25b0861cb99ef6368da8b5fb4c5",
+      "source_unchanged": true,
+      "workspace": {
+        "files": 13862,
+        "logical_bytes": 181982297,
+        "special_files": 0,
+        "symlinks": 122
+      }
+    },
+    {
+      "counts": {
+        "errors": 0,
+        "failures": 0,
+        "passed": 97,
+        "skipped": 0,
+        "tests": 97
+      },
+      "evidence_sha256": {
+        "junit.xml": "f047225fc1688afa8238384d69946cc925538f1d481135832027a0fe458c7e51",
+        "pytest.log": "07a7cf3c2701e2c5be983595f914be341d4edada70e7c80cb7d9c063b6e2da21"
+      },
+      "finished_at": "2026-10-15T07:00:46.640177+00:00",
+      "implementation_sha": "1e43cb652a9f52898d62141568231a0d84bb4000",
+      "run_id": "a17da6930c0d4013a083b1e6aa3c1c48",
+      "selections": [
+        "tests/test_manual_workflow.py",
+        "tests/test_native_market_context.py",
+        "tests/test_decision_loop.py",
+        "tests/test_decision_increment.py",
+        "tests/test_decision_paper.py",
+        "tests/test_daily_profile.py",
+        "tests/test_cli.py",
+        "tests/test_company_research.py"
+      ],
+      "source_tree_sha256": "42b934f4c2eac1d8b2432f710f76414bf28b91613fa64c499ac375e148024176",
+      "source_unchanged": true,
+      "workspace": {
+        "files": 456,
+        "logical_bytes": 49007682,
+        "special_files": 0,
+        "symlinks": 43
+      }
+    }
+  ],
+  "capacity_after_m1": {
+    "observed_start": "2026-10-15T07:03:18.138033+00:00",
+    "observed_end": "2026-10-15T07:03:49.176964+00:00",
+    "logical_bytes": 37382244316,
+    "unique_file_allocated_bytes": 38539157504,
+    "complete": true,
+    "errors": [],
+    "requested_roots": 17,
+    "counted_roots": 17,
+    "target_bytes": 50000000000,
+    "ceiling_bytes": 100000000000,
+    "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+    "private_inventory_sha256": "aadce2f35aa7b7b7c0b0b482802f7603f4571cf30179687adf6365960611a83a",
+    "scope": "17 previously verified project roots; includes all retained managed tests; later small docs/Git writes are outside this snapshot"
+  }
+}

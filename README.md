@@ -104,3 +104,16 @@ Research V1.1支持九类供应商原JSON直接入库、连续窗口候选Setup�
 ```
 
 此示例固定重查10月14日研究/10月12日行情，不获取新行情或自动改写日期。`--check`仅校验配置/路径，不打开数据库，不证明行情已可用；正常运行使用新的小型私有Journal和报告目录。后续个人配置放ignored私有目录，不提交账户信息。
+
+M1已增加中文问答录入，并与下一次观察接续：
+
+```bash
+.venv/bin/astock research record --profile config/daily/retained-evidence.json
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json \
+  --observe-now --market-date 2026-10-14
+```
+
+`record`只保存你提供的备注、持仓快照或已发生成交；演示成交请使用独立模拟工作区。
+明确补录成交后股数才更新持仓；已阅不解除风险。新观察需同时提供时间与行情要求日期，
+不联网补行情、不改冻结配置、不产生订单。详见[日常任务说明](docs/DAILY_WORKFLOW.md)和
+[完整合成闭环样例](docs/research/results/2026-10-15-daily-workflow/README.md)。

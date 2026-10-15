@@ -145,3 +145,19 @@ publication与Journal为REUSE，全部只读复用既有真实窗口。原V2实�
 新增decision层复用Journal五表、features/radar和compose；没有替换旧采集/历史解码或新建行情实现。
 LinkedResearchStore只读链接组件，后续日更不复制旧窗口。portfolio/backtest旧目录仍为空占位，
 本批小型组合观察和合成实验位于decision，不宣称完整组合/回测系统完成；未来迁移保持单一生产实现。
+
+## 日常任务 M1 首段（2026-10-15）
+
+|能力|处置|实际结果与边界|
+|---|---|---|
+|daily/decision-close内联编排|MIGRATE完成|统一调用decision.application.run_close；旧命令只保留参数适配，原重复编排已移除|
+|公开行情JSON作为内部接口|DELETE该依赖|原生MarketSnapshot V1来自同一analyze计算；市场分析可明确排除私人Journal|
+|来源向量压缩|REUSE/提取|features.lineage纯函数供原生快照与公开投影共用，原数值/来源向量等价|
+|PositionScope|MOVE|唯一实现迁入portfolio.models；decision.models兼容导入，不保留两份类型|
+|Journal/独立五表工作容器|REUSE/扩展|增加类型化INPUT/ACCOUNT、批量事务和更正链约束；原来源库/schema/旧行不改写|
+|portfolio包|部分落地|新增人工事实/范围服务；组合估值仍复用decision.portfolio，不宣称完整风险引擎|
+|旧公开基线复现|MIGRATE|必须精确原锚点+全部业务字段等价；分开旧/当前执行Hash，不跳过数值或来源验证|
+|中文录入CLI|新增薄适配|所有写入由portfolio.manual负责；已阅/持仓/成交与下一次报告接续，无第二套日志实现|
+
+完整合成来源到录入/下份日报及旧真实来源均已读回，故障回滚/幂等/晚录/隐私/模式测试保留。
+未删除历史decoder、消费读取或旧采集代码，没有新增依赖；通用计划、策略与PAPER继续按路线演进。
