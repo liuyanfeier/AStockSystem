@@ -1,0 +1,15 @@
+{
+  "observed_start": "2026-10-15T07:38:59.246879+00:00",
+  "observed_end": "2026-10-15T07:39:31.471962+00:00",
+  "logical_bytes": 37670939138,
+  "unique_file_allocated_bytes": 38836350976,
+  "complete": true,
+  "errors": [],
+  "requested_roots": 17,
+  "counted_roots": 17,
+  "target_bytes": 50000000000,
+  "ceiling_bytes": 100000000000,
+  "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+  "private_inventory_sha256": "9bc3cbea45278be760f75d7aea2d6110842a16ec2ec0ea8b65240ac2be22dc99",
+  "scope": "Same 17 verified project roots; includes retained tests and reports; later small docs/Git writes outside this snapshot"
+}

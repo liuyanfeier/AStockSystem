@@ -117,3 +117,15 @@ M1已增加中文问答录入，并与下一次观察接续：
 明确补录成交后股数才更新持仓；已阅不解除风险。新观察需同时提供时间与行情要求日期，
 不联网补行情、不改冻结配置、不产生订单。详见[日常任务说明](docs/DAILY_WORKFLOW.md)和
 [完整合成闭环样例](docs/research/results/2026-10-15-daily-workflow/README.md)。
+
+研究计划、合并待办和任务恢复也已接入：
+
+```bash
+.venv/bin/astock research plan --profile config/daily/retained-evidence.json
+.venv/bin/astock research daily-status --profile config/daily/retained-evidence.json
+# 将“实际任务号”替换为上次输出的32位任务号
+.venv/bin/astock research daily --profile config/daily/retained-evidence.json --resume 实际任务号
+```
+
+结束观察后仍有持仓会继续提示风险；重开计划保留旧版本。明确研究复核绑定当前目录和来源版本，普通已阅不解除风险。
+恢复只补同输入/同运行版本的离线任务，不重发市场请求。详见[新演示与恢复记录](docs/research/results/2026-10-15-plans-and-recovery/README.md)。

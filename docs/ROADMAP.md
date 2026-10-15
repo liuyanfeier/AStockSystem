@@ -15,4 +15,4 @@
 
 普通实现、修复、验证连续推进，GPT只在用户要求时介入。真实API、真钱风险/交易及私有不可恢复清理保持明确授权；50GB目标、100GB上限。
 
-M1日常服务/中文事实录入已落地，使用见[DAILY_WORKFLOW](DAILY_WORKFLOW.md)；首轮策略问题与规则见[STRATEGY_RESEARCH_V1](STRATEGY_RESEARCH_V1.md)。通用计划操作、待办与恢复交互继续推进；不把首段闭环或研究合同当作M1/M2全部完成。
+M1日常服务、中文事实/研究计划录入、合并待办与显式恢复已落地，当前完整CI及真实连续使用仍分别验收，使用见[DAILY_WORKFLOW](DAILY_WORKFLOW.md)。接下来推进M2同一规则服务与模拟执行；首轮问题与规则见[STRATEGY_RESEARCH_V1](STRATEGY_RESEARCH_V1.md)，不把合同或合成机制当策略有效。

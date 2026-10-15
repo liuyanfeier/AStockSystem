@@ -136,6 +136,8 @@ flowchart TD
 
 `research daily --profile`和旧`decision-close`共用原生run_close应用服务，没有第二套决策计算。`--check`只检查配置/路径/账户模式，不打开数据库或创建输出；不能当作市场数据已验收。默认固定观察时间；新观察使用显式参数，不改写冻结输入。中文录入及事件事务见[日常任务](DAILY_WORKFLOW.md)。
 
+M1随后已接入研究计划的新增/结束/重开和明确复核、按对象合并的私有待办，以及启动/终态回执和同版本显式恢复；仍复用原compare/portfolio/Journal，不另开业务路径。当前计划绑定同一配置/证据基线且最多20对象，真实目录覆盖8家公司；跨基线迁移、任意新公司接入与真实连续日更仍是后续工作。[实际样例](research/results/2026-10-15-plans-and-recovery/README.md)区分合成机制与保留真实重查。
+
 首个配置`config/daily/retained-evidence.json`重查既有10月14日研究与10月12日行情，写入新的小型私有Journal和报告目录，不覆盖既有冻结交付。它用于入口验证，不能称作真实新交易日观察。
 
 本批只执行用户批准的精确旧合成测试清理，没有执行新真实市场API；源码、容量、测试和剩余工作以CURRENT_STATE/REVIEW为准。

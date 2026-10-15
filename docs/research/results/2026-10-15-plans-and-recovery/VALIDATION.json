@@ -1,0 +1,202 @@
+{
+  "current_implementation_ci": {
+    "conclusion": null,
+    "run_id": 38699499993,
+    "sha": "0c2953442b902e14913008ff0786f80cef450a33",
+    "status": "in_progress",
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/38699499993"
+  },
+  "diagnostics": {
+    "contracts_original": 12,
+    "contracts_v2": 9,
+    "doctor": "PASS"
+  },
+  "expanded_tests": {
+    "counts": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 111,
+      "skipped": 0,
+      "tests": 111
+    },
+    "evidence_sha256": {
+      "junit.xml": "37dbe2a15d08b53123932f0993842c8b0e0cdd67d51ca2194d0c05697b8698fb",
+      "pytest.log": "2e30747690850141e926320fd8084d88d3190a406f3f701dcea819083267aa98"
+    },
+    "finished_at": "2026-10-15T07:30:42.746868+00:00",
+    "git_head_at_start": "b361e0abd7b2bd135b6c05997305f00ea8e1a803",
+    "run_id": "1902b376355e49e0961803ce4949cf7f",
+    "selections": [
+      "tests/test_daily_workflow_controls.py",
+      "tests/test_manual_workflow.py",
+      "tests/test_native_market_context.py",
+      "tests/test_daily_profile.py",
+      "tests/test_decision_loop.py",
+      "tests/test_decision_increment.py",
+      "tests/test_decision_paper.py",
+      "tests/test_cli.py",
+      "tests/test_company_research.py"
+    ],
+    "source_tree_sha256": "ecb6f5ea83ccdef1e0f699fb970867ccd2d418f4a66f9d7ae7eb1f5dba23eae6",
+    "source_unchanged": true,
+    "workspace": {
+      "files": 780,
+      "logical_bytes": 77287707,
+      "special_files": 0,
+      "symlinks": 58
+    }
+  },
+  "generated_at": "2026-10-15T07:38:06.251408+00:00",
+  "implementation_sha": "0c2953442b902e14913008ff0786f80cef450a33",
+  "implementation_sha_tests": {
+    "counts": {
+      "errors": 0,
+      "failures": 0,
+      "passed": 34,
+      "skipped": 0,
+      "tests": 34
+    },
+    "evidence_sha256": {
+      "junit.xml": "56afdd7607c7441844f4a9567cf30afde329130ca92de24d9056c8b4449e5fbc",
+      "pytest.log": "58197618c7128c9f6a961b88851c702df7ccdacf5753c23c5354d38f088e917c"
+    },
+    "finished_at": "2026-10-15T07:33:08.710216+00:00",
+    "git_head_at_start": "0c2953442b902e14913008ff0786f80cef450a33",
+    "run_id": "9248ede71e9b4dfe8164e9a9bc5cb31d",
+    "selections": [
+      "tests/test_daily_workflow_controls.py",
+      "tests/test_manual_workflow.py",
+      "tests/test_native_market_context.py"
+    ],
+    "source_tree_sha256": "ecb6f5ea83ccdef1e0f699fb970867ccd2d418f4a66f9d7ae7eb1f5dba23eae6",
+    "source_unchanged": true,
+    "workspace": {
+      "files": 586,
+      "logical_bytes": 62769781,
+      "special_files": 0,
+      "symlinks": 31
+    }
+  },
+  "limitations": [
+    "Research plans are bounded to existing verified catalog and market evidence; no generic new-company ingestion",
+    "One question-driven criterion; multiple criteria through the typed service; risk thresholds remain unset",
+    "No real new trading days, personal account, automatic alerts or strategy-performance validation",
+    "Initial synthetic timing-fixture failure retained; explicit observation passed through the helper, no safety check bypass",
+    "Local targeted results are not full-suite CI; check actual final branch HEAD separately"
+  ],
+  "managed_test_usage": {
+    "logical_bytes": 6881046370,
+    "managed_budget_bytes": 7000000000,
+    "observed_at": "2026-10-15T07:37:57.602728+00:00"
+  },
+  "market_http_requests": 0,
+  "orders_created": 0,
+  "previous_head_ci": {
+    "conclusion": "success",
+    "pytest_seconds": 1651.97,
+    "run_id": 38696541371,
+    "sha": "b361e0abd7b2bd135b6c05997305f00ea8e1a803",
+    "tests": 1284,
+    "url": "https://github.com/liuyanfeier/AStockSystem/actions/runs/38696541371",
+    "warnings": 5
+  },
+  "protocol": "DAILY_CONTROLS_M1_VALIDATION_V1",
+  "public_safety": {
+    "actual_credentials_or_encoded_forms_found": false,
+    "decoded_literals_checked": true,
+    "existing_generic_forbidden_prefix_guards_preserved": 2,
+    "private_paths_included": false
+  },
+  "real_recheck": {
+    "actual_personal_records_supplied": false,
+    "actual_research_plan_commands": 0,
+    "as_of": "2026-10-14T12:22:30.843577+00:00",
+    "baseline_verification": {
+      "baseline_hash": "0d235e75a112e3e3a03da497c51fd550ea3551e9c80d3f247dd92a5e363db9ef",
+      "current_code_hash": "b6f9ebc58ba24ea6e56d21620433069bd3b932039be4e2fe3b058f4777959a7c",
+      "method": "Recompute all public business fields; require exact retained original anchor when execution metadata differs",
+      "original_code_hash": "08bf843c265521fea513bf518ac34929bac970a36de1793b6afc0864cd378a0f"
+    },
+    "market_date": "2026-10-12",
+    "private_report_hash": "30e9079c427a03b2460d549837bf52e0ea0c3c0aefe45f59004c78fa98fec6d6",
+    "protected_hashes_unchanged": true,
+    "protected_source_count": 32,
+    "public_report_hash": "99acdadb3eaf70c08a598eb38c66d41a534f42b7b1298c478133ff9fd8f9f4c9",
+    "required_market_date": "2026-10-14",
+    "source_store_sha256": "03dc5ce70ab9a8ea31546a7913708717a01a3bc632fec4c4d3ada00041602cbe",
+    "status_query": "SUCCEEDED; read-only",
+    "resume_preflight": "PASS; exact original observation and input/code/human-fact hashes; no run executed"
+  },
+  "source_tree_sha256": "ecb6f5ea83ccdef1e0f699fb970867ccd2d418f4a66f9d7ae7eb1f5dba23eae6",
+  "synthetic": {
+    "market_or_company_services_replaced": false,
+    "mode": "OFFLINE_SIMULATION",
+    "parameters": {
+      "activity_sessions": 3,
+      "breakout_sessions": 3,
+      "max_stale_calendar_days": 7,
+      "min_mean_amount_cny": 0.0,
+      "return_sessions": 3,
+      "risk_budget": null,
+      "strategy_validated": false,
+      "top_n": 5,
+      "trend_sessions": 3,
+      "version": "SYNTHETIC_OBSERVATION_TEST"
+    },
+    "parameters_hash": "efbeff272b7412762b7a6cf195aea7e89acdf1ca63c61bab670c277c1e36cd20",
+    "pdf_sha256": "20227f8fb4a723e14deaf49b4b1f20b20f19d91ecdfbc973bc4e838624a2a8a6",
+    "source_files": [
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "instruments",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "2c0a3a5f29ff092868f552d05f8653ca98fce580a8dbb1cb0a3305d168708011",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "calendar",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "0e3c7061333d0a8a90273e5ad914952ee8dd1e8a27441c0b519ffde40844b17f",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "daily",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "bd631043e7d7d4ceca57d64d8d31189d874acaf86ac4336aaf2b6b8a4d4177b8",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "index_daily",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "89dc81dd064acce82e7587ae4facf345351d85293b33a0b200020cb723d17d40",
+        "source": "SYNTHETIC_FIXTURE"
+      },
+      {
+        "available_at": "2026-10-14T00:00:00Z",
+        "dataset": "adj_factor",
+        "retrieved_at": "2026-10-14T00:00:00Z",
+        "sha256": "8888db96f4ab2f15b4b86034125fb98e7bcad3908fc860d4aeb159e504094fbe",
+        "source": "SYNTHETIC_FIXTURE"
+      }
+    ],
+    "synthetic_clock_injected": true
+  },
+  "capacity_after_controls": {
+    "observed_start": "2026-10-15T07:38:59.246879+00:00",
+    "observed_end": "2026-10-15T07:39:31.471962+00:00",
+    "logical_bytes": 37670939138,
+    "unique_file_allocated_bytes": 38836350976,
+    "complete": true,
+    "errors": [],
+    "requested_roots": 17,
+    "counted_roots": 17,
+    "target_bytes": 50000000000,
+    "ceiling_bytes": 100000000000,
+    "limitation": "Explicit verified project roots only; file blocks exclude directory blocks/APFS clone sharing; symlinks not followed",
+    "private_inventory_sha256": "9bc3cbea45278be760f75d7aea2d6110842a16ec2ec0ea8b65240ac2be22dc99",
+    "scope": "Same 17 verified project roots; includes retained tests and reports; later small docs/Git writes outside this snapshot"
+  }
+}

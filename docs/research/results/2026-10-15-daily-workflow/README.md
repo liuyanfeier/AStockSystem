@@ -1,5 +1,7 @@
 # M1首段：日常服务、中文录入与下次接续
 
+后续状态：该批最终提交`b361e0abd7b2bd135b6c05997305f00ea8e1a803`的[完整CI已成功](https://github.com/liuyanfeier/AStockSystem/actions/runs/38696541371)，1284 passed、5 warnings、1651.97秒。下文/VALIDATION.json保留生成时的CI快照；新的计划/待办/恢复交付见[后续结果](../2026-10-15-plans-and-recovery/README.md)，旧CI不覆盖新实现。
+
 运行实现`1e43cb652a9f52898d62141568231a0d84bb4000`；主实现`74a16b954bec3f353d6c6d451614f0b5d7d169bf`。
 [机器验证](VALIDATION.json)绑定源码指纹、合成参数/来源Hash、真实基线、测试日志/JUnit Hash及CI快照。
 这是作者验证，未取得新真实行情/公告，也不是独立审计或策略效果结论。
