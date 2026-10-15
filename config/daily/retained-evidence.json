@@ -1,0 +1,13 @@
+{
+  "protocol": "DAILY_PROFILE_V1",
+  "run": "config/decision-loop/real-run.json",
+  "previous": "config/research/company-evidence-20261014.json",
+  "latest": "config/decision-loop/rechecked-catalog.json",
+  "documents": "data/private/research-v3/2026-10-14-documents",
+  "baseline_market": "docs/research/results/2026-10-14-real-market-v2/0d235e75a112e3e3a03da497c51fd550ea3551e9c80d3f247dd92a5e363db9ef.json",
+  "bundle": "64f88be1c6058c7fae56585c2f6ce2cfe417b78051065b74645714d1c35ecf53",
+  "store": "data/private/research-v1/market-v2-20261013-002/research.duckdb",
+  "journal_store": "data/private/research-v1/decision-loop-v0/real/daily-workspace/journal.duckdb",
+  "output": "reports/private/research-v1/daily-workspace/retained-20261014",
+  "parameters": "config/research/observation-v1.json"
+}

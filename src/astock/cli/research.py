@@ -226,6 +226,24 @@ def company_command(market: Path = typer.Option(..., '--market'),
         raise typer.Exit(1) from None
 
 
+@app.command('daily')
+def daily_command(profile: Path = typer.Option(..., '--profile'),
+                  check: bool = typer.Option(False, '--check')) -> None:
+    """Run the existing offline close from one profile; no implicit dates or HTTP."""
+    from astock.decision.daily import load_daily_profile
+    try:
+        resolved, instruction = load_daily_profile(get_project_root(), profile)
+    except Exception:
+        typer.echo('日常配置检查失败：请检查配置版本、路径、文件和真实/模拟模式；未运行收盘流程。')
+        raise typer.Exit(1) from None
+    typer.echo(f'固定观察时间：{instruction.observed_at}；要求行情日：{instruction.required_market_date}；模式：{instruction.mode}')
+    if check:
+        typer.echo('配置检查通过；仅读取配置和路径，尚未核验行情内容；未创建Journal或报告。')
+        return
+    decision_close(**resolved.close_options())
+    typer.echo('离线研究摘要已生成；未获取新行情，固定旧输入不代表当日更新。')
+
+
 @app.command('decision-close')
 def decision_close(run: Path = typer.Option(..., '--run'),
                    previous: Path = typer.Option(..., '--previous'),
