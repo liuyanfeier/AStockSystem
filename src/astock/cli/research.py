@@ -231,30 +231,45 @@ def daily_command(profile: Path = typer.Option(..., '--profile'),
                   check: bool = typer.Option(False, '--check'),
                   observed_at: str | None = typer.Option(None, '--observed-at'),
                   observe_now: bool = typer.Option(False, '--observe-now'),
-                  market_date: str | None = typer.Option(None, '--market-date')) -> None:
+                  market_date: str | None = typer.Option(None, '--market-date'),
+                  resume: str | None = typer.Option(None, '--resume')) -> None:
     """Run the existing offline close from one profile; no implicit dates or HTTP."""
     from datetime import datetime, timezone
     from astock.decision.daily import DailyObservation, load_daily_profile
     from astock.decision.application import run_close
+    from astock.decision.attempts import DailyRunFailure, SAFE_MESSAGES, resume_observation
     try:
+        if resume and (observed_at or observe_now or market_date):
+            raise ValueError('DAILY_RESUME_OBSERVATION_CONFLICT')
         if observed_at and observe_now or bool(observed_at or observe_now) != bool(market_date):
             raise ValueError('OBSERVATION_DATE_PAIR_REQUIRED')
         observation = DailyObservation(
             observed_at=datetime.now(timezone.utc) if observe_now else observed_at,
             required_market_date=market_date) if observed_at or observe_now else None
+        if resume:
+            observation = resume_observation(get_project_root(), profile, resume)
         resolved, instruction = load_daily_profile(get_project_root(), profile, observation)
     except Exception:
-        typer.echo('日常配置检查失败：请检查配置版本、路径、文件和真实/模拟模式；未运行收盘流程。')
+        typer.echo('恢复检查失败：核对原配置、输入和运行版本；原回执保留。版本已改变时请新建显式观察。' if resume else
+                   '日常配置检查失败：请检查配置版本、路径、文件和真实/模拟模式；未运行收盘流程。')
         raise typer.Exit(1) from None
     typer.echo(f'固定观察时间：{instruction.observed_at}；要求行情日：{instruction.required_market_date}；模式：{instruction.mode}')
     if check:
         typer.echo('配置检查通过；仅读取配置和路径，尚未核验行情内容；未创建Journal或报告。')
         return
     try:
-        result = run_close(get_project_root(), resolved, observation)
+        result = run_close(get_project_root(), resolved, observation, resumes_attempt_id=resume)
         typer.echo(f'DECISION_LOOP_V0 mode={result.report["mode"]}; run={result.report_id}; no HTTP/orders; private portfolio separated')
         typer.echo('中文简报：' + str(result.markdown_path.relative_to(get_project_root())))
+        typer.echo('任务回执：' + result.attempt_id)
         typer.echo('离线研究摘要已生成；未获取新行情，数据是否陈旧以报告截止日为准。')
+    except DailyRunFailure as error:
+        typer.echo('日常研究未完成：' + SAFE_MESSAGES[error.stage])
+        if error.attempt_id:
+            typer.echo('任务号：' + error.attempt_id)
+        typer.echo('终态回执已保存；可用 daily-status 查看。' if error.receipt_saved else '终态回执未能写入，请先核对本地空间与已有输出。')
+        typer.echo('未重新采集行情或产生订单。')
+        raise typer.Exit(1) from None
     except Exception:
         typer.echo('日常研究运行失败（私有细节已隐藏）；未获取行情或产生订单。')
         raise typer.Exit(1) from None
@@ -300,3 +315,6 @@ def decision_close(run: Path = typer.Option(..., '--run'),
 
 from astock.cli.manual import record_command
 app.command('record')(record_command)
+from astock.cli.workflow import daily_status_command, plan_command
+app.command('plan')(plan_command)
+app.command('daily-status')(daily_status_command)

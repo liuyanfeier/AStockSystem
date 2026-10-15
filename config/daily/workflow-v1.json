@@ -1,0 +1,5 @@
+{
+  "version": "DAILY_WORKFLOW_POLICY_V1",
+  "default_research_review_days": 7,
+  "visible_todo_limit": 8
+}

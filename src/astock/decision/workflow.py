@@ -144,10 +144,11 @@ def compare(run: RunInput, previous: ResearchCatalog, latest: ResearchCatalog, m
                 limitation='继续观察不代表可入场；研究指标检查不等于全部假设已证实；未检索新公告不等于没有新公告；逻辑失效复核不产生卖单')
 
 
-def persist(report: dict, store, output: Path) -> str:
+def persist(report: dict, store, output: Path, *, attach_prior: bool = True) -> str:
     """Dedicated private loop store reuses the five-table schema and ordinary REVIEW events."""
     store.initialize()
-    attach_prior_observations(report,store)
+    if attach_prior:
+        attach_prior_observations(report,store)
     key = store.save_report(report)
     output.mkdir(parents=True, exist_ok=True)
     publish_bytes(output / f'{key}.json', encoded(report) + b'\n')

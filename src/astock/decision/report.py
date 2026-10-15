@@ -10,8 +10,16 @@ def markdown(report: dict, *, public: bool = False) -> str:
     simulated = report['mode'] == 'OFFLINE_SIMULATION'
     lines = ['# 每日决策报告 · Decision Loop V0', '',
              f"研究截止：{report['as_of']}；行情截至：{report['window_end']}；要求完整交易日：{report['required_market_date']}。",
-             f"证据模式：{report['mode']}。模拟事件不是实际披露，研究提醒不产生订单。", '',
-             'A. 今日市场风险状态', '']
+             f"证据模式：{report['mode']}。模拟事件不是实际披露，研究提醒不产生订单。", '']
+    if not public and report.get('decision_items'):
+        queue = report['decision_items']
+        lines += ['今日先处理', '']
+        for item in queue['items'][:queue['visible_limit']]:
+            label = item['code'] or ('市场数据' if item['priority'] == 1 else '账户信息')
+            lines += [f"- {label}（{item['priority_text']}）：{'；'.join(item['reasons'])}。下一步：{'；'.join(item['next_actions'])}。"]
+        if queue['total'] > queue['visible_limit']:
+            lines += [f"其余{queue['total'] - queue['visible_limit']}项保存在同名私有JSON中；没有丢弃或自动解除。"]
+    lines += ['', 'A. 今日市场风险状态', '']
     metrics = report['market']['metrics']
     breadth = metrics.get('return_20', {}); trend = metrics.get('above_ma60', {})
     lines += [f"20日上涨 {breadth.get('up','UNKNOWN')}/{breadth.get('denominator','UNKNOWN')}；MA60上方 {trend.get('count','UNKNOWN')}/{trend.get('denominator','UNKNOWN')}。",
@@ -34,6 +42,8 @@ def markdown(report: dict, *, public: bool = False) -> str:
             lines += [f"报价日 {price.get('last_date')}；收盘 {price.get('close')}；MA60上方={price.get('above_ma60')}；该行情截面筛选资格={card.get('technical_eligible','UNKNOWN')}。"]
         if card['no_new_disclosures']:
             lines += ['原披露事实未变化；本次没有新的真实公告证据，不能推断没有新公告。']
+        if card.get('retained_baseline_only'):
+            lines += ['仅有基线保留材料；该对象未进入本轮复核目录，当前研究检查保持未知。']
         if card.get('previous_observation'):
             p=card['previous_observation']
             lines += [f"上次观察 {p['as_of']}：{p['state']} → {card['state']}；两次观察变化 {len(card.get('changes_since_prior',[]))} 项。"]
@@ -49,9 +59,14 @@ def markdown(report: dict, *, public: bool = False) -> str:
         lines += [f"- {card['name']}：{'；'.join(card['no_trade_reasons'])}。"]
     lines += ['', 'E. 到期复盘或退出检查', '']
     for card in report['cards']:
-        lines += [f"- {card['name']}：{'已到期，需人工复核' if card['review_overdue'] else '未到期'}；{card['plan']['review_due']}（程序提出的研究复核日期）。"]
+        basis = '用户确认的研究复核日期' if card['plan'].get('review_date_basis') == 'USER_CONFIRMED_RESEARCH_DATE' else '程序提出的研究复核日期'
+        status = '已结束观察；持仓风险仍单独检查' if card['state'] == 'END_WATCH' else '已到期，需人工复核' if card['review_overdue'] else '未到期'
+        lines += [f"- {card['name']}：{status}；{card['plan']['review_due']}（{basis}）。"]
     lines += ['', 'F. 今日人工动作', '']
     if not public:
+        for item in report.get('research_inputs', [])[-5:]:
+            action = {'CREATE': '新增/重开研究计划', 'END_WATCH': '结束研究观察', 'REVIEW_EVIDENCE': '明确复核当前证据'}[item['action']]
+            lines += [f"- {item['code']}：{action}；{item['reason']}；录入 {item['recorded_at']}（{item['mode']}）。"]
         records = sorted(report.get('manual_records', []), key=lambda r: (r['recorded_at'], r['receipt_id']))
         for item in records[-10:]:
             detail = item['note'] if item['kind'] == 'NOTE' else (

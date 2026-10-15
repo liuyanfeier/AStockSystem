@@ -13,11 +13,12 @@ from astock.research.core import day, digest, encoded, instant, market_day, read
 from astock.research.inputs import StrictModel
 from astock.research.store import ResearchStore
 from astock.portfolio.models import ManualInput, PositionScope
+from astock.decision.plan_models import PlanRecord
 
 
 class JournalEvent(StrictModel):
     event_id: str = Field(min_length=1, max_length=100)
-    kind: Literal["PLAN", "POSITION", "EXECUTION", "EXIT", "REVIEW", "ACCOUNT", "INPUT"]
+    kind: Literal["PLAN", "POSITION", "EXECUTION", "EXIT", "REVIEW", "ACCOUNT", "INPUT", "RESEARCH_INPUT"]
     code: str = Field(min_length=1, max_length=40)
     event_at: AwareDatetime
     recorded_at: AwareDatetime
@@ -35,6 +36,7 @@ class JournalEvent(StrictModel):
     input_mode: Literal['USER_MANUAL', 'SIMULATED'] | None = None
     position_scope: PositionScope | None = None
     manual_input: ManualInput | None = None
+    research_input: PlanRecord | None = None
     # User prose records a plan; no executable risk parameters, account or order fields.
 
     @model_validator(mode="after")
@@ -52,6 +54,18 @@ class JournalEvent(StrictModel):
                     'JOURNAL_INPUT_BINDING')
         else:
             require(self.manual_input is None, 'JOURNAL_INPUT_KIND')
+        if self.kind == 'RESEARCH_INPUT':
+            require(self.research_input is not None and self.research_input.request.code == self.code,
+                    'JOURNAL_RESEARCH_INPUT_REQUIRED')
+            require(self.input_mode == self.research_input.request.mode and self.event_at == self.recorded_at,
+                    'JOURNAL_RESEARCH_INPUT_BINDING')
+            require(not self.research_input.plan or instant(self.research_input.plan.created_at) == self.recorded_at,
+                    'JOURNAL_RESEARCH_CREATED_TIME')
+            require(not self.research_input.review or instant(self.research_input.review.recorded_at) == self.recorded_at,
+                    'JOURNAL_RESEARCH_REVIEW_TIME')
+            require(self.correction_of is None, 'PLAN_RECORD_IMMUTABLE')
+        else:
+            require(self.research_input is None, 'JOURNAL_RESEARCH_INPUT_KIND')
         return self
 
 

@@ -53,9 +53,10 @@ def request(workspace, identifier, kind='POSITION', **values):
 
 def close(workspace, at=None):
     root, path, _, clock = workspace
-    profile, _ = load_daily_profile(root, path)
-    return run_close(root, profile, DailyObservation(observed_at=at or clock[0] + timedelta(seconds=1),
-                                                    required_market_date='2026-10-13'))
+    observation = DailyObservation(observed_at=at or clock[0] + timedelta(seconds=1),
+                                   required_market_date='2026-10-13')
+    profile, _ = load_daily_profile(root, path, observation)
+    return run_close(root, profile, observation)
 
 
 def rows(workspace):
@@ -321,6 +322,28 @@ def test_native_source_to_manual_input_to_next_brief(daily_case, sample, monkeyp
     assert len(final.report['manual_records']) == 3
     assert sha256(source_path.read_bytes()).hexdigest() == before
     assert all(not c['trade_eligible'] and c['order'] is None for c in final.report['cards'])
+    from astock.decision.plan_models import PlanDraft, PlanInput
+    from astock.decision import plans
+    clock[0] += timedelta(minutes=1)
+    end = PlanInput(request_id='native-end', mode='SIMULATED', action='END_WATCH', code='600036.SH',
+                    expected_plan_hash=plans.preview_plans(root, path)['plan_hash'], reason='合成结束观察，持仓仍在')
+    plans.record_plan_input(root, path, end)
+    ended = observe()
+    assert ended.report['cards'][0]['state'] == 'END_WATCH'
+    assert ended.report['portfolio']['positions'][0]['shares'] == 100
+    assert any('仍有已报持仓' in reason for item in ended.report['decision_items']['items'] for reason in item['reasons'])
+    clock[0] += timedelta(minutes=1)
+    draft = PlanDraft(thesis='合成新版本研究逻辑', attention_reason='合成重新观察',
+        no_trade_reasons=['未核实估值'], observable_checks=['核对原始收入表'], invalidation_conditions=['原始收入逻辑失效'],
+        criteria=[dict(id='new-income', metric_id='revenue', expectation='NOT_LOWER', reason='合成收入检查')],
+        review_due=clock[0] + timedelta(days=7))
+    restart = PlanInput(request_id='native-restart', mode='SIMULATED', action='CREATE', code='600036.SH',
+        expected_plan_hash=plans.preview_plans(root, path)['plan_hash'], reason='合成重开新计划', draft=draft)
+    plans.record_plan_input(root, path, restart)
+    restarted = observe()
+    assert restarted.report['cards'][0]['state'] == 'CONTINUE_WATCH'
+    assert restarted.report['cards'][0]['plan']['thesis'] == draft.thesis
+    assert sha256(source_path.read_bytes()).hexdigest() == before
 
 
 def test_renderer_change_publishes_a_new_pair_and_preserves_old_bytes(workspace, monkeypatch):

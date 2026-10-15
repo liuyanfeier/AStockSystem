@@ -12,6 +12,21 @@ from astock.research.publication import publish_bytes
 from astock.screening.candidates import observation_card, screen
 
 
+def verify_retained_market_anchor(snapshot: dict, store) -> None:
+    """Verify the exact old observation, without granting current-data readiness."""
+    import json
+    from astock.data.warehouse_lock import warehouse_connection
+    from astock.research.public_results import public_snapshot
+    key = snapshot.get('publication', {}).get('private_snapshot_hash')
+    require(key is not None and hasattr(store, 'path'), 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
+    with warehouse_connection(store.path, read_only=True) as db:
+        row = db.execute('SELECT snapshot FROM research_report WHERE id=?', [key]).fetchone()
+    require(row is not None, 'COMPANY_MARKET_ORIGINAL_ANCHOR_REQUIRED')
+    original = json.loads(row[0])
+    require(digest(original) == key and digest(public_snapshot(original)) == digest(snapshot),
+            'COMPANY_MARKET_ORIGINAL_ANCHOR_CHANGED')
+
+
 def verified_market_context(snapshot: dict, store) -> list[dict]:
     """Reuse the established Raw→Store→report path, not self-declared member hashes."""
     from astock.research.service import analyze
@@ -24,16 +39,7 @@ def verified_market_context(snapshot: dict, store) -> list[dict]:
         # Preserve that exact original anchor, then verify every business field with
         # the current engine. Never replace old metadata with new execution claims.
         from copy import deepcopy
-        import json
-        from astock.data.warehouse_lock import warehouse_connection
-        key = snapshot.get('publication', {}).get('private_snapshot_hash')
-        require(key is not None and hasattr(store, 'path'), 'COMPANY_MARKET_REPRODUCTION_MISMATCH')
-        with warehouse_connection(store.path, read_only=True) as db:
-            row = db.execute('SELECT snapshot FROM research_report WHERE id=?', [key]).fetchone()
-        require(row is not None, 'COMPANY_MARKET_ORIGINAL_ANCHOR_REQUIRED')
-        original = json.loads(row[0])
-        require(digest(original) == key and digest(public_snapshot(original)) == digest(snapshot),
-                'COMPANY_MARKET_ORIGINAL_ANCHOR_CHANGED')
+        verify_retained_market_anchor(snapshot, store)
         def business(value):
             result = deepcopy(value)
             result.pop('code_hash', None)

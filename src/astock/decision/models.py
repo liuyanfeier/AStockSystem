@@ -31,7 +31,7 @@ class ResearchPlan(Strict):
     criteria: list[Criterion] = Field(min_length=1)
     created_at: str
     review_due: str
-    review_date_basis: Literal['PROGRAM_PROPOSED_RESEARCH_DATE'] = 'PROGRAM_PROPOSED_RESEARCH_DATE'
+    review_date_basis: Literal['PROGRAM_PROPOSED_RESEARCH_DATE', 'USER_CONFIRMED_RESEARCH_DATE'] = 'PROGRAM_PROPOSED_RESEARCH_DATE'
 
     @model_validator(mode='after')
     def validate_plan(self):
